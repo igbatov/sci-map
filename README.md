@@ -30,10 +30,13 @@ yarn test:e2e
 yarn lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Run in docker
+```shell script
+docker build -t sci-map .
+docker run -d -p 80:80 --rm --name sci-map sci-map
+```
 
 
-### Deploy
+## Deploy
 https://blog.logrocket.com/how-to-auto-deploy-a-vue-application-using-gitlab-ci-cd-on-ubuntu/
 Don't forget to disable shared runners in your gitlab.com account (section Ruuners in https://gitlab.com/<username>/sci-map/-/settings/ci_cd)
