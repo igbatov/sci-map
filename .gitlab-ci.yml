@@ -7,6 +7,6 @@ step-deploy-prod:
   stage: deploy
   script:
     - docker ps
-    - docker stop $(docker ps -q)
+    - docker stop sci-map || true
     - docker build -t sci-map .
     - docker restart -d -p 80:80 --rm --name sci-map sci-map
