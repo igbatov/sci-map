@@ -1,18 +1,17 @@
 <template>
-  <div class="map" ref="parent">
-    <div
-      class="item"
-      :style="{'width': itemWH.w +'%', height: itemWH.h + '%'}"
-      v-for="(item, index) in items"
+  <svg :height="height + 'px'" :width="width + 'px'" :x="x + 'px'" :y="y + 'px'" ref="parent">
+<!--    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle">{{node.title}}</text>-->
+    <rect fill="none" stroke="black" x="0" y="0" width="100%" height="100%"/>
+    <Map
+      v-for="(item, index) in node.children"
       :key="index"
-    >
-      <div class="title">{{item.title}}</div>
-      <Map :items="item.children"/>
-    </div>
-  </div>
-<!--  <svg height="100%" width="100%">-->
-<!--    <rect fill="green" height="100%" width="10%" :x="index*100/map.root.children.length+'%'" v-for="(item, index) in map.root.children" :key="index">{{item.title}}</rect>-->
-<!--  </svg>-->
+      :node="item"
+      :height="itemWH.h"
+      :width="itemWH.w"
+      :x="index%grid.rowNum*itemWH.w"
+      :y="Math.floor(index/grid.rowNum)*itemWH.h"
+    />
+  </svg>
 </template>
 
 <script>
@@ -20,53 +19,50 @@
     name: "Map",
 
     props: {
-      items: [],
+      node: Object,
+      width: Number,
+      height: Number,
+      x: Number,
+      y: Number,
     },
 
     data: () => ({
-      windowWidth:  window.innerWidth,
-      windowHeight: window.innerHeight,
+      colNum:  0,
+      rawNum: 0,
     }),
 
-    created() {
-      window.addEventListener('resize', this.onResize);
-    },
-
-    destroyed() {
-      window.removeEventListener('resize', this.onResize);
-    },
-
-    methods: {
-      onResize() {
-        this.windowWidth = window.innerWidth;
-        this.windowHeight = window.innerHeight;
-      },
-    },
-
     computed: {
-      itemWH() {
-        let width = this.windowWidth;
-        let height = this.windowHeight;
-        let rowLength = this.items.length;
-        let colLength = 1;
-        if (width > height) {
-          let itemWidth = width/rowLength;
-          let itemHeight = height/colLength;
-          while (itemHeight/itemWidth > 1) {
-            rowLength = rowLength / 2;
-            colLength++;
-            itemWidth = width/rowLength;
-            itemHeight = height/colLength;
+      grid() {
+        let rowLength = this.node.children.length;
+        if (rowLength < 2) {
+          return {
+            rowNum: 1,
+            colNum: 1,
           }
         }
+        let colLength = 1;
+        let parentWidth = this.width;
+        let parentHeight = this.height;
 
-        const rowNum = Math.ceil(rowLength*2)
-        const colNum = (colLength-1)
-        console.log('rowNum', rowNum, 'colNum', colNum);
+        let itemHeight = parentHeight/colLength;
+        let itemWidth = parentWidth/rowLength;
+        while (itemHeight/itemWidth > 1) {
+          colLength++;
+          rowLength = Math.ceil(this.node.children.length / colLength);
+          itemHeight = parentHeight / colLength;
+          itemWidth = parentWidth / rowLength;
+        }
 
         return {
-          w: 100/rowNum,
-          h: 100/colNum,
+          rowNum: rowLength,
+          colNum: colLength,
+        }
+      },
+
+      itemWH() {
+        return {
+          w: this.width/this.grid.rowNum,
+          h: this.height/this.grid.colNum,
         };
       },
     },
