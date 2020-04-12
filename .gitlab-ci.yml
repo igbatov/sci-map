@@ -9,4 +9,4 @@ step-deploy-prod:
     - docker ps
     - docker stop sci-map || true
     - docker build -t sci-map .
-    - docker restart -d -p 80:80 --rm --name sci-map sci-map
+    - docker run -d -p 80:80 --rm --name sci-map sci-map
