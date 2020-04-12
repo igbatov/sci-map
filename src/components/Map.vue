@@ -1,7 +1,7 @@
 <template>
   <svg :height="height + 'px'" :width="width + 'px'" :x="x + 'px'" :y="y + 'px'" ref="parent">
-<!--    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle">{{node.title}}</text>-->
-    <rect fill="none" stroke="black" x="0" y="0" width="100%" height="100%"/>
+    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle">{{node.title}}</text>
+    <rect fill="none" stroke="green" x="0" y="0" width="100%" height="100%"/>
     <Map
       v-for="(item, index) in node.children"
       :key="index"
@@ -51,6 +51,12 @@
           rowLength = Math.ceil(this.node.children.length / colLength);
           itemHeight = parentHeight / colLength;
           itemWidth = parentWidth / rowLength;
+        }
+
+        // make sure number of rows is even number (for better parent title visibility)
+        if (colLength%2 !== 0 && colLength !== 1) {
+          colLength--;
+          rowLength = Math.ceil(this.node.children.length / colLength);
         }
 
         return {
