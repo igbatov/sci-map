@@ -7,7 +7,7 @@
       :key="index"
       :node="item"
       :height="itemWH.h"
-      :width="itemWH.w"
+      :width="(node.children.length % grid.rowNum === 0) ? itemWH.w : ((index < node.children.length - 1) ? itemWH.w : itemWH.w * (1 + grid.rowNum - node.children.length % grid.rowNum))"
       :x="index%grid.rowNum*itemWH.w"
       :y="Math.floor(index/grid.rowNum)*itemWH.h"
     />
@@ -54,9 +54,18 @@
         }
 
         // make sure number of rows is even number (for better parent title visibility)
-        if (colLength%2 !== 0 && colLength !== 1) {
-          colLength--;
-          rowLength = Math.ceil(this.node.children.length / colLength);
+        if (colLength%2 !== 0) {
+          if (rowLength === 1) {
+            if (colLength === 1) {
+              console.error("Parent must have at least 2 children!")
+            } else {
+              colLength--;
+              rowLength = Math.ceil(this.node.children.length / colLength);
+            }
+          } else {
+            colLength++;
+            rowLength = Math.ceil(this.node.children.length / colLength);
+          }
         }
 
         return {
