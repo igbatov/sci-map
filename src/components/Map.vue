@@ -1,6 +1,6 @@
 <template>
   <svg :height="height + 'px'" :width="width + 'px'" :x="x + 'px'" :y="y + 'px'" ref="parent">
-    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle">{{node.title}}</text>
+    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" class="text">{{node.title}}</text>
     <rect fill="none" stroke="green" x="0" y="0" width="100%" height="100%"/>
     <Map
       v-for="(item, index) in node.children"
@@ -85,25 +85,7 @@
 </script>
 
 <style scoped>
-  .map {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: stretch;
-    width:100%;
-    height:100%;
+  .text {
+    user-select: none;
   }
-
-  .item {
-    flex-grow: 1;
-    border: solid bisque 1px;
-    box-sizing: border-box;
-    text-align: center;
-  }
-
-  .title {
-    position: relative;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-
 </style>
