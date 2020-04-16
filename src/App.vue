@@ -72,18 +72,15 @@
           return;
         }
 
-        // const newX = this.x + (this.parentWidth - newW)/(this.parentWidth/event.x);
-        // const newY = this.y + (this.parentHeight - newH)/(this.parentHeight/event.y);
         let newX = this.x, newY = this.y;
-        // if (event.deltaY < 0) {
-           newX = this.x - event.x * (SCALE_CF - 1);
-           newY = this.y - event.y * (SCALE_CF - 1);
-        // }
-        // else if (event.deltaY > 0) {
-        //   newX = this.x - event.x / SCALE_CF;
-        //   newY = this.y - event.y / SCALE_CF;
-        // }
-        console.log(newX, newY, event.x, event.y);
+        if (event.deltaY < 0) {
+           newX = this.x - (-this.x + event.x)*(SCALE_CF - 1);
+           newY = this.y - (-this.y + event.y)*(SCALE_CF - 1);
+        }
+        else if (event.deltaY > 0) {
+          newX = this.x + (-this.x + event.x)*( 1 - 1 / SCALE_CF);
+          newY = this.y + (-this.y + event.y)*( 1 - 1 / SCALE_CF);
+        }
         this.parentWidth = newW;
         this.parentHeight = newH;
         this.x = newX;
