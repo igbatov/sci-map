@@ -50,8 +50,6 @@
         }
         this.x = newX;
         this.y = newY;
-        // console.log(event, this.x, this.y);
-       // this.mouseDown = false;
       },
       onResize() {
         this.parentWidth = window.innerWidth;
@@ -73,6 +71,8 @@
         }
 
         let newX = this.x, newY = this.y;
+
+        // during zoom pan to area under mouse cursor
         if (event.deltaY < 0) {
            newX = this.x - (-this.x + event.x)*(SCALE_CF - 1);
            newY = this.y - (-this.y + event.y)*(SCALE_CF - 1);
@@ -81,10 +81,14 @@
           newX = this.x + (-this.x + event.x)*( 1 - 1 / SCALE_CF);
           newY = this.y + (-this.y + event.y)*( 1 - 1 / SCALE_CF);
         }
+
+        // apply changes
         this.parentWidth = newW;
         this.parentHeight = newH;
         this.x = newX;
         this.y = newY;
+
+        // stop panning if area is out of the borders
         if (newX > 0) {
           this.x = 0;
         }
