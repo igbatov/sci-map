@@ -1,20 +1,20 @@
 <template>
   <svg height="100%" width="100%" id="rootSVG">
-    <Map
-        :width="parentWidth"
-        :height="parentHeight"
-        :x="x"
-        :y="y"
-        :node="map.root"
-    />
+    <Map :nodeId="GetRoot.id"/>
   </svg>
 </template>
 
 <script>
   import Map from "./components/Map";
-  const map = require("./assets/map.json");
-  map.root.title = "";
-  console.log(map);
+  import {
+    SET_ROOT_WH,
+    SET_ROOT_XY,
+    StoreFlatMap,
+    GetRoot,
+  } from './store';
+  import {
+    mapGetters,
+  } from 'vuex';
 
   export default {
     name: "App",
@@ -29,8 +29,11 @@
       x: 0,
       y: 0,
       mouseDown: false,
-      map,
     }),
+
+    computed: {
+      ...mapGetters([GetRoot]),
+    },
 
     methods: {
       mouseDownHandler() {
@@ -102,6 +105,12 @@
           this.y = window.innerHeight - newH;
         }
       }
+    },
+
+    beforeMount() {
+      this.$store.commit(SET_ROOT_WH, {width:window.innerWidth, height:window.innerHeight});
+      this.$store.commit(SET_ROOT_XY, {x:0, y:0});
+      this.$store.dispatch(StoreFlatMap);
     },
 
     mounted() {
