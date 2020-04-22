@@ -24,10 +24,6 @@
     },
 
     data: () => ({
-      parentWidth:  0,
-      parentHeight: 0,
-      x: 0,
-      y: 0,
       mouseDown: false,
     }),
 
@@ -46,21 +42,20 @@
         if (this.mouseDown === false) {
           return;
         }
-        const newX = this.x + event.movementX;
-        const newY = this.y + event.movementY;
-        if (newX > 0 || newY > 0 || newX + this.parentWidth < window.innerWidth || newY + this.parentHeight < window.innerHeight) {
+        const newX = this.GetRoot.GetXY().x + event.movementX;
+        const newY = this.GetRoot.GetXY().y + event.movementY;
+        if (newX > 0
+          || newY > 0
+          || newX + this.GetRoot.GetWH().width < window.innerWidth
+          || newY + this.GetRoot.GetWH().height < window.innerHeight
+        ) {
           return;
         }
-        this.x = newX;
-        this.y = newY;
-      },
-      onResize() {
-        this.parentWidth = window.innerWidth;
-        this.parentHeight = window.innerHeight;
+        this.$store.commit(SET_ROOT_XY, {x:newX, y:newY});
       },
       mouseWheelHandler (event) {
         const SCALE_CF = 1.01;
-        let newW = this.parentWidth, newH = this.parentHeight;
+        let newW = this.GetRoot.GetWH().width, newH = this.GetRoot.GetWH().height;
         if (event.deltaY < 0) {
           newW = newW * SCALE_CF;
           newH = newH * SCALE_CF;
@@ -73,58 +68,52 @@
           return;
         }
 
-        let newX = this.x, newY = this.y;
+        let newX = this.GetRoot.GetXY().x, newY = this.GetRoot.GetXY().y;
 
         // during zoom pan to area under mouse cursor
         if (event.deltaY < 0) {
-           newX = this.x - (-this.x + event.x)*(SCALE_CF - 1);
-           newY = this.y - (-this.y + event.y)*(SCALE_CF - 1);
+           newX = this.GetRoot.GetXY().x - (-this.GetRoot.GetXY().x + event.x)*(SCALE_CF - 1);
+           newY = this.GetRoot.GetXY().y - (-this.GetRoot.GetXY().y + event.y)*(SCALE_CF - 1);
         }
         else if (event.deltaY > 0) {
-          newX = this.x + (-this.x + event.x)*( 1 - 1 / SCALE_CF);
-          newY = this.y + (-this.y + event.y)*( 1 - 1 / SCALE_CF);
+          newX = this.GetRoot.GetXY().x + (-this.GetRoot.GetXY().x + event.x)*( 1 - 1 / SCALE_CF);
+          newY = this.GetRoot.GetXY().y + (-this.GetRoot.GetXY().y + event.y)*( 1 - 1 / SCALE_CF);
         }
-
-        // apply changes
-        this.parentWidth = newW;
-        this.parentHeight = newH;
-        this.x = newX;
-        this.y = newY;
 
         // stop panning if area is out of the borders
         if (newX > 0) {
-          this.x = 0;
+          newX = 0;
         }
         if (newY > 0) {
-          this.y = 0;
+          newY = 0;
         }
         if (newX + newW < window.innerWidth) {
-          this.x = window.innerWidth - newW;
+          newX = window.innerWidth - newW;
         }
         if (newY + newH < window.innerHeight) {
-          this.y = window.innerHeight - newH;
+          newY = window.innerHeight - newH;
         }
+
+        // apply changes
+        this.$store.commit(SET_ROOT_WH, {width:newW, height:newH});
+        this.$store.commit(SET_ROOT_XY, {x:newX, y:newY});
       }
     },
 
     beforeMount() {
+      this.$store.dispatch(StoreFlatMap);
       this.$store.commit(SET_ROOT_WH, {width:window.innerWidth, height:window.innerHeight});
       this.$store.commit(SET_ROOT_XY, {x:0, y:0});
-      this.$store.dispatch(StoreFlatMap);
     },
 
     mounted() {
-      window.addEventListener('resize', this.onResize);
       window.addEventListener('wheel', this.mouseWheelHandler);
       window.addEventListener('mousedown', this.mouseDownHandler);
       window.addEventListener('mouseup', this.mouseUpHandler);
       window.addEventListener('mousemove', this.mouseMoveHandler);
-
-      this.onResize()
     },
 
     destroyed() {
-      window.removeEventListener('resize', this.onResize);
       window.removeEventListener('wheel', this.mouseWheelHandler);
       window.removeEventListener('mousedown', this.mouseDownHandler);
       window.removeEventListener('mouseup', this.mouseUpHandler);
