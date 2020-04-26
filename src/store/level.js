@@ -31,6 +31,9 @@ export default {
   getters: {
     GetCurrentLevel(state) {
       return state.currentLevel;
+    },
+    GetVisibiltyDepth() {
+      return 3;
     }
   },
   actions: {

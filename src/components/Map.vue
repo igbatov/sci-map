@@ -1,5 +1,6 @@
 <template>
   <svg
+    v-if="level < GetCurrentLevel + GetVisibiltyDepth"
     :height="wh.height + 'px'"
     :width="wh.width + 'px'"
     :x="xy.x + 'px'"
@@ -20,6 +21,8 @@
 </template>
 
 <script>
+import {mapGetters} from "vuex"
+
 export default {
   name: "Map",
 
@@ -27,6 +30,10 @@ export default {
     nodeId: Number
   },
   computed: {
+    ...mapGetters('level', ['GetCurrentLevel', 'GetVisibiltyDepth']),
+    level() {
+      return this.$store.getters.GetNode(this.nodeId).GetLevel();
+    },
     wh() {
       return this.$store.getters.GetNode(this.nodeId).GetWH();
     },
