@@ -24,6 +24,15 @@ export class TreeItem {
     return this.parent.GetChildrenXY(this.id);
   }
 
+  GetAbsoluteXY() {
+    const parentAbsXY = this.parent.GetAbsoluteXY();
+    const xy = this.GetXY();
+    return {
+      x: parentAbsXY.x + xy.x,
+      y: parentAbsXY.y + xy.y,
+    };
+  }
+
   GetLevel() {
     return this.parent.GetLevel() + 1;
   }
@@ -76,6 +85,13 @@ export class RootTreeItem extends TreeItem {
   }
 
   GetXY() {
+    return {
+      x: this.x,
+      y: this.y
+    };
+  }
+
+  GetAbsoluteXY() {
     return {
       x: this.x,
       y: this.y

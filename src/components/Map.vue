@@ -1,6 +1,6 @@
 <template>
   <svg
-    v-if="level < GetCurrentLevel + GetVisibiltyDepth"
+    v-if="isVisible"
     :height="wh.height + 'px'"
     :width="wh.width + 'px'"
     :x="xy.x + 'px'"
@@ -31,6 +31,10 @@ export default {
   },
   computed: {
     ...mapGetters('level', ['GetCurrentLevel', 'GetVisibiltyDepth']),
+    isVisible() {
+      const wh = this.wh;
+      return (wh.height*wh.width)/(window.innerHeight*window.innerWidth) > 0.001
+    },
     level() {
       return this.$store.getters.GetNode(this.nodeId).GetLevel();
     },

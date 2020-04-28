@@ -3,10 +3,13 @@ import Vue from "vue";
 export const Init = "Init";
 export const UpdateCurrentLevel = "UpdateCurrentLevel";
 
+const VISIBLE_LEVELS = 4;
+const LEVEL_THRESHOLD = 1;
+
 export default {
   namespaced: true,
   state: {
-    currentRootWH: { width: 0, height: 0 },
+    prevRootWH: { width: 0, height: 0 },
     currentLevel: 0,
     treeItemsByLevel: {}
   },
@@ -21,11 +24,11 @@ export default {
       state.treeItemsByLevel[level].push(item);
     },
     SET_CURRENT_LEVEL(state, v) {
-      console.log(v);
+      console.log('SET_CURRENT_LEVEL', v)
       state.currentLevel = v;
     },
     SET_CURRENT_ROOT_WH(state, wh) {
-      state.currentRootWH = wh;
+      state.prevRootWH = wh;
     }
   },
   getters: {
@@ -33,7 +36,7 @@ export default {
       return state.currentLevel;
     },
     GetVisibiltyDepth() {
-      return 3;
+      return VISIBLE_LEVELS;
     }
   },
   actions: {
@@ -48,23 +51,26 @@ export default {
     [UpdateCurrentLevel]({ commit, state, rootGetters }) {
       const rootWH = rootGetters["GetRoot"].GetWH();
       // If zoom-in then check that next level is not too big
-      if (rootWH.width > state.currentRootWH.width) {
+      if (rootWH.width > state.prevRootWH.width) {
         if (!state.treeItemsByLevel[state.currentLevel + 1]) {
           return;
         }
         const maxSquarePercent = getMaxVisibleSquare(
           state.treeItemsByLevel[state.currentLevel + 1]
         );
-        if (maxSquarePercent > 0.4) {
+        if (maxSquarePercent >= LEVEL_THRESHOLD) {
           commit("SET_CURRENT_LEVEL", state.currentLevel + 1);
         }
       }
       // If zoom-out then check that this level is not too small
-      if (rootWH.width < state.currentRootWH.width) {
+      if (rootWH.width < state.prevRootWH.width) {
+        if (state.currentLevel < 0) {
+          return;
+        }
         const maxSquarePercent = getMaxVisibleSquare(
           state.treeItemsByLevel[state.currentLevel]
         );
-        if (maxSquarePercent <= 0.4) {
+        if (maxSquarePercent < LEVEL_THRESHOLD) {
           commit("SET_CURRENT_LEVEL", state.currentLevel - 1);
         }
       }
@@ -79,7 +85,6 @@ export default {
         const treeItem = rootState.treeItems[id];
         commit("ADD_TREE_ITEM", { level: treeItem.GetLevel(), item: treeItem });
       });
-      console.log(state.treeItemsByLevel);
     }
   }
 };
@@ -88,7 +93,7 @@ const getMaxVisibleSquare = items => {
   let maxSquarePercent = 0;
   for (let item of items) {
     // calc percent this items occupies on viewport
-    const xy = item.GetXY();
+    const xy = item.GetAbsoluteXY();
     const wh = item.GetWH();
     if (
       xy.x > window.innerWidth ||
