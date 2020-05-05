@@ -79,7 +79,7 @@ export default {
         height: rootWH.height
       });
     },
-    UpdateLevelItems({ commit, state, rootState }) {
+    UpdateLevelItems({ commit, rootState }) {
       commit("CLEAN_LEVEL_ITEMS");
       Object.keys(rootState.treeItems).forEach(id => {
         const treeItem = rootState.treeItems[id];
