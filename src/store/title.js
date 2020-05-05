@@ -2,6 +2,7 @@
  * Store that maintains title width and height
  */
 import Vue from "vue";
+import {GetNode} from "./index";
 
 export default {
   namespaced: true,
@@ -20,8 +21,15 @@ export default {
         if (!titleWH) {
           return true;
         }
-        const nodeWH = rootGetters.GetNode(nodeId).GetWH();
-        return (
+        const node = rootGetters[GetNode](nodeId)
+        const parent = node.parent;
+        if (!parent) {
+          return true;
+        }
+
+        const nodeWH = node.GetWH();
+
+        return getters.GetIsVisible(parent.id) && (
           nodeWH.width > titleWH.width + 20 &&
           nodeWH.height > titleWH.height + 10
         );

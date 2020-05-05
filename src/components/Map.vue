@@ -15,8 +15,13 @@
       text-anchor="middle"
       class="text"
       :id="textID"
+      font-family="Roboto, Arial, Helvetica, sans-serif"
+      :font-size="title.size"
+      :font-weight="title.weight"
+      :letter-spacing="title.letterSpacing"
+      :fill="title.color"
     >
-      {{ isTitleVisible ? title : "" }}
+      {{ isTitleVisible ? title.text : "" }}
     </text>
   </svg>
 </template>
@@ -55,17 +60,78 @@ export default {
           height: bbox.height
         });
       }
-    }
+    },
+    toTitleCase(str) {
+      return str
+        .toLowerCase()
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ')
+    },
   },
 
   computed: {
     ...mapGetters("level", ["GetCurrentLevel"]),
     ...mapGetters("title", ["GetIsVisible", "GetTitleWH"]),
     borderLightness() {
-      return 100 - 90/Math.max(1, (this.level - this.GetCurrentLevel + 1))
+      const lvl = this.level - this.GetCurrentLevel + 1
+      if (lvl <= 2) {
+        return 40;
+      }
+      if (lvl === 3) {
+        return 60;
+      }
+      if (lvl === 4) {
+        return 80;
+      }
+      if (lvl >= 5) {
+        return 90;
+      }
+
+      return 100;
     },
     borderWidth() {
       return Math.max(1, 5/(this.level - this.GetCurrentLevel + 1))
+    },
+    title() {
+      const lvl = this.level - this.GetCurrentLevel + 1
+      if (lvl <= 2) {
+        return {
+          letterSpacing: 3,
+          text: this.toTitleCase(this.titleText),
+          size: 28,
+          weight: 500,
+          color: 'black',
+        }
+      }
+
+      if (lvl === 3) {
+        return {
+          letterSpacing: 2,
+          text: this.titleText.toUpperCase(),
+          size: 12,
+          weight: 550,
+          color: 'grey',
+        }
+      }
+
+      if (lvl === 4) {
+        return {
+          letterSpacing: 1,
+          text: this.titleText.toUpperCase(),
+          size: 10,
+          weight: 400,
+          color: 'grey',
+        }
+      }
+
+      return {
+        letterSpacing: 1,
+        text: this.toTitleCase(this.titleText),
+        size: 10,
+        weight: 200,
+        color: 'grey',
+      }
     },
     isVisible() {
       const node = this.$store.getters.GetNode(this.nodeId);
@@ -94,12 +160,7 @@ export default {
         return true;
       }
 
-      const parent = this.$store.getters[GetNode](this.nodeId).parent;
-      if (!parent) {
-        return true;
-      }
-
-      return this.GetIsVisible(parent.id) && this.GetIsVisible(this.nodeId);
+      return this.GetIsVisible(this.nodeId);
     },
     textID() {
       return `text_${this.nodeId}`;
@@ -113,7 +174,7 @@ export default {
     xy() {
       return this.$store.getters[GetNode](this.nodeId).GetXY();
     },
-    title() {
+    titleText() {
       return this.$store.getters[GetNode](this.nodeId).title;
     },
     children() {
