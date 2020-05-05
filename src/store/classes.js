@@ -29,7 +29,7 @@ export class TreeItem {
     const xy = this.GetXY();
     return {
       x: parentAbsXY.x + xy.x,
-      y: parentAbsXY.y + xy.y,
+      y: parentAbsXY.y + xy.y
     };
   }
 

@@ -14,7 +14,7 @@
       class="text"
       :id="textID"
     >
-      {{ titleVisible ? title : "" }}
+      {{ isTitleVisible ? title : "" }}
     </text>
     <rect fill="none" stroke="green" x="0" y="0" width="100%" height="100%" />
     <Map v-for="itemId in children" :key="itemId" :nodeId="itemId" />
@@ -22,39 +22,47 @@
 </template>
 
 <script>
-import {mapGetters} from "vuex"
+import { mapGetters, mapMutations } from "vuex";
+import { GetNode } from "../store";
 
 export default {
   name: "Map",
-
-  data: () => ({
-    titleWidth: 0,
-  }),
 
   props: {
     nodeId: Number
   },
 
   mounted() {
-    this.initTitleWidth()
+    this.$nextTick(function() {
+      this.initTitleWidth();
+    });
   },
   updated() {
-    this.initTitleWidth()
+    this.$nextTick(function() {
+      this.initTitleWidth();
+    });
   },
 
   methods: {
+    ...mapMutations("title", ["SET_TITLE_WH"]),
     initTitleWidth() {
-      // some nodes may not be shown at all because they are too small
-      if (this.isVisible && this.titleWidth === 0) {
-        this.titleWidth = document.getElementById(this.textID).getBBox().width;
+      if (this.isVisible && !this.GetTitleWH(this.nodeId)) {
+        // if container is visible and we have not yet taken its title bbox, do it now
+        const bbox = document.getElementById(this.textID).getBBox();
+        this.SET_TITLE_WH({
+          nodeId: this.nodeId,
+          width: bbox.width,
+          height: bbox.height
+        });
       }
     }
   },
 
   computed: {
-    ...mapGetters('level', ['GetCurrentLevel', 'GetVisibiltyDepth']),
+    ...mapGetters("level", ["GetCurrentLevel", "GetVisibiltyDepth"]),
+    ...mapGetters("title", ["GetIsVisible", "GetTitleWH"]),
     isVisible() {
-      const node = this.$store.getters.GetNode(this.nodeId)
+      const node = this.$store.getters.GetNode(this.nodeId);
       const xy = node.GetAbsoluteXY();
       const wh = node.GetWH();
       if (
@@ -65,32 +73,45 @@ export default {
       ) {
         return false;
       }
-      return (wh.height*wh.width)/(window.innerHeight*window.innerWidth) > 0.001
+      return (
+        (wh.height * wh.width) / (window.innerHeight * window.innerWidth) >
+        0.001
+      );
     },
-    titleVisible() {
-      if (this.isVisible && this.titleWidth === 0) {
+    isTitleVisible() {
+      if (!this.isVisible) {
+        return false;
+      }
+
+      const titleWH = this.GetTitleWH(this.nodeId);
+      if (this.isVisible && !titleWH) {
         return true;
       }
-      const wh = this.wh;
-      return (wh.width > this.titleWidth + 20);
+
+      const parent = this.$store.getters[GetNode](this.nodeId).parent;
+      if (!parent) {
+        return true;
+      }
+
+      return this.GetIsVisible(parent.id) && this.GetIsVisible(this.nodeId);
     },
     textID() {
-      return `text_${this.nodeId}`
+      return `text_${this.nodeId}`;
     },
     level() {
-      return this.$store.getters.GetNode(this.nodeId).GetLevel();
+      return this.$store.getters[GetNode](this.nodeId).GetLevel();
     },
     wh() {
-      return this.$store.getters.GetNode(this.nodeId).GetWH();
+      return this.$store.getters[GetNode](this.nodeId).GetWH();
     },
     xy() {
-      return this.$store.getters.GetNode(this.nodeId).GetXY();
+      return this.$store.getters[GetNode](this.nodeId).GetXY();
     },
     title() {
-      return this.$store.getters.GetNode(this.nodeId).title;
+      return this.$store.getters[GetNode](this.nodeId).title;
     },
     children() {
-      return this.$store.getters.GetNode(this.nodeId).children;
+      return this.$store.getters[GetNode](this.nodeId).children;
     }
   }
 };

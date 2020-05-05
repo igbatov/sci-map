@@ -1,3 +1,6 @@
+/**
+ * Store to track current visible level
+ */
 import Vue from "vue";
 
 export const Init = "Init";
@@ -24,7 +27,6 @@ export default {
       state.treeItemsByLevel[level].push(item);
     },
     SET_CURRENT_LEVEL(state, v) {
-      console.log('SET_CURRENT_LEVEL', v)
       state.currentLevel = v;
     },
     SET_CURRENT_ROOT_WH(state, wh) {

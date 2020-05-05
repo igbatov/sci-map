@@ -1,8 +1,12 @@
+/**
+ * Main store that maintain flat tree and set zoom and position
+ */
 import Vue from "vue";
 import Vuex from "vuex";
 import { TreeItem, RootTreeItem } from "./classes";
 import { treeToHash } from "./utils";
 import level from "./level";
+import title from "./title";
 
 export const SET_ROOT_WH = "SET_ROOT_WH";
 export const SET_ROOT_XY = "SET_ROOT_XY";
@@ -30,7 +34,7 @@ map.root.title = "";
 //     ],
 //   }
 // }
-
+console.log(map);
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -99,6 +103,7 @@ export default new Vuex.Store({
     }
   },
   modules: {
-    level
+    level,
+    title
   }
 });
