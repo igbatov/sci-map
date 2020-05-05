@@ -6,6 +6,8 @@
     :x="xy.x + 'px'"
     :y="xy.y + 'px'"
   >
+    <rect :stroke-width="borderWidth" fill="none" :stroke="`hsl(120, 40%, ${borderLightness}%)`" x="0" y="0" width="100%" height="100%" />
+    <Map v-for="itemId in children" :key="itemId" :nodeId="itemId" />
     <text
       x="50%"
       y="50%"
@@ -16,8 +18,6 @@
     >
       {{ isTitleVisible ? title : "" }}
     </text>
-    <rect fill="none" stroke="green" x="0" y="0" width="100%" height="100%" />
-    <Map v-for="itemId in children" :key="itemId" :nodeId="itemId" />
   </svg>
 </template>
 
@@ -59,8 +59,14 @@ export default {
   },
 
   computed: {
-    ...mapGetters("level", ["GetCurrentLevel", "GetVisibiltyDepth"]),
+    ...mapGetters("level", ["GetCurrentLevel"]),
     ...mapGetters("title", ["GetIsVisible", "GetTitleWH"]),
+    borderLightness() {
+      return 100 - 90/Math.max(1, (this.level - this.GetCurrentLevel + 1))
+    },
+    borderWidth() {
+      return Math.max(1, 5/(this.level - this.GetCurrentLevel + 1))
+    },
     isVisible() {
       const node = this.$store.getters.GetNode(this.nodeId);
       const xy = node.GetAbsoluteXY();

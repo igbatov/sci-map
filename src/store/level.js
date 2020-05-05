@@ -6,7 +6,6 @@ import Vue from "vue";
 export const Init = "Init";
 export const UpdateCurrentLevel = "UpdateCurrentLevel";
 
-const VISIBLE_LEVELS = 4;
 const LEVEL_THRESHOLD = 1;
 
 export default {
@@ -37,9 +36,6 @@ export default {
     GetCurrentLevel(state) {
       return state.currentLevel;
     },
-    GetVisibiltyDepth() {
-      return VISIBLE_LEVELS;
-    }
   },
   actions: {
     [Init]({ dispatch, rootGetters, commit }) {
