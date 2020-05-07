@@ -6,7 +6,15 @@
     :x="xy.x + 'px'"
     :y="xy.y + 'px'"
   >
-    <rect :stroke-width="borderWidth" fill="none" :stroke="`hsl(120, 40%, ${borderLightness}%)`" x="0" y="0" width="100%" height="100%" />
+    <rect
+      :stroke-width="borderWidth"
+      fill="none"
+      :stroke="`hsl(120, 40%, ${borderLightness}%)`"
+      x="0"
+      y="0"
+      width="100%"
+      height="100%"
+    />
     <Map v-for="itemId in children" :key="itemId" :nodeId="itemId" />
     <text
       x="50%"
@@ -64,17 +72,17 @@ export default {
     toTitleCase(str) {
       return str
         .toLowerCase()
-        .split(' ')
+        .split(" ")
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ')
-    },
+        .join(" ");
+    }
   },
 
   computed: {
     ...mapGetters("level", ["GetCurrentLevel"]),
     ...mapGetters("title", ["GetIsVisible", "GetTitleWH"]),
     borderLightness() {
-      const lvl = this.level - this.GetCurrentLevel + 1
+      const lvl = this.level - this.GetCurrentLevel + 1;
       if (lvl <= 2) {
         return 40;
       }
@@ -91,18 +99,18 @@ export default {
       return 100;
     },
     borderWidth() {
-      return Math.max(1, 5/(this.level - this.GetCurrentLevel + 1))
+      return Math.max(1, 5 / (this.level - this.GetCurrentLevel + 1));
     },
     title() {
-      const lvl = this.level - this.GetCurrentLevel + 1
+      const lvl = this.level - this.GetCurrentLevel + 1;
       if (lvl <= 2) {
         return {
           letterSpacing: 3,
           text: this.toTitleCase(this.titleText),
           size: 28,
-          weight: 500,
-          color: 'black',
-        }
+          weight: "500",
+          color: "black"
+        };
       }
 
       if (lvl === 3) {
@@ -110,9 +118,9 @@ export default {
           letterSpacing: 2,
           text: this.titleText.toUpperCase(),
           size: 12,
-          weight: 550,
-          color: 'grey',
-        }
+          weight: "550",
+          color: "grey"
+        };
       }
 
       if (lvl === 4) {
@@ -120,18 +128,18 @@ export default {
           letterSpacing: 1,
           text: this.titleText.toUpperCase(),
           size: 10,
-          weight: 400,
-          color: 'grey',
-        }
+          weight: "400",
+          color: "grey"
+        };
       }
 
       return {
         letterSpacing: 1,
         text: this.toTitleCase(this.titleText),
         size: 10,
-        weight: 200,
-        color: 'grey',
-      }
+        weight: "200",
+        color: "grey"
+      };
     },
     isVisible() {
       const node = this.$store.getters.GetNode(this.nodeId);

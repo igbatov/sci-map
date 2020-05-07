@@ -12,7 +12,7 @@ export default {
   namespaced: true,
   state: {
     prevRootWH: { width: 0, height: 0 },
-    currentLevel: 0,
+    currentTreeItemStack: [],
     treeItemsByLevel: {}
   },
   mutations: {
@@ -25,8 +25,11 @@ export default {
       }
       state.treeItemsByLevel[level].push(item);
     },
-    SET_CURRENT_LEVEL(state, v) {
-      state.currentLevel = v;
+    PUSH_CURRENT_TREE_ITEM_STACK(state, treeItemId) {
+      state.currentTreeItemStack.push(treeItemId);
+    },
+    POP_CURRENT_TREE_ITEM_STACK(state) {
+      state.currentTreeItemStack.pop();
     },
     SET_CURRENT_ROOT_WH(state, wh) {
       state.prevRootWH = wh;
@@ -34,8 +37,11 @@ export default {
   },
   getters: {
     GetCurrentLevel(state) {
-      return state.currentLevel;
+      return state.currentTreeItemStack.length;
     },
+    GetCurrentTreeItemStack(state) {
+      return state.currentTreeItemStack;
+    }
   },
   actions: {
     [Init]({ dispatch, rootGetters, commit }) {
@@ -46,30 +52,30 @@ export default {
       });
       dispatch("UpdateLevelItems");
     },
-    [UpdateCurrentLevel]({ commit, state, rootGetters }) {
+    [UpdateCurrentLevel]({ commit, state, getters, rootGetters }) {
       const rootWH = rootGetters["GetRoot"].GetWH();
       // If zoom-in then check that next level is not too big
       if (rootWH.width > state.prevRootWH.width) {
-        if (!state.treeItemsByLevel[state.currentLevel + 1]) {
+        if (!state.treeItemsByLevel[getters.GetCurrentLevel + 1]) {
           return;
         }
-        const maxSquarePercent = getMaxVisibleSquare(
-          state.treeItemsByLevel[state.currentLevel + 1]
+        const maxVisibleContainer = getMaxVisibleContainer(
+          state.treeItemsByLevel[getters.GetCurrentLevel + 1]
         );
-        if (maxSquarePercent >= LEVEL_THRESHOLD) {
-          commit("SET_CURRENT_LEVEL", state.currentLevel + 1);
+        if (maxVisibleContainer.squarePercent >= LEVEL_THRESHOLD) {
+          commit("PUSH_CURRENT_TREE_ITEM_STACK", maxVisibleContainer.id);
         }
       }
       // If zoom-out then check that this level is not too small
       if (rootWH.width < state.prevRootWH.width) {
-        if (state.currentLevel < 0) {
+        if (getters.GetCurrentLevel < 0) {
           return;
         }
-        const maxSquarePercent = getMaxVisibleSquare(
-          state.treeItemsByLevel[state.currentLevel]
+        const maxVisibleContainer = getMaxVisibleContainer(
+          state.treeItemsByLevel[getters.GetCurrentLevel]
         );
-        if (maxSquarePercent < LEVEL_THRESHOLD) {
-          commit("SET_CURRENT_LEVEL", state.currentLevel - 1);
+        if (maxVisibleContainer.squarePercent < LEVEL_THRESHOLD) {
+          commit("POP_CURRENT_TREE_ITEM_STACK");
         }
       }
       commit("SET_CURRENT_ROOT_WH", {
@@ -87,8 +93,11 @@ export default {
   }
 };
 
-const getMaxVisibleSquare = items => {
-  let maxSquarePercent = 0;
+const getMaxVisibleContainer = items => {
+  const maxVisibleContainer = {
+    squarePercent: 0,
+    id: 0
+  };
   for (let item of items) {
     // calc percent this items occupies on viewport
     const xy = item.GetAbsoluteXY();
@@ -107,10 +116,11 @@ const getMaxVisibleSquare = items => {
       Math.min(xy.y + wh.height, window.innerHeight) - Math.max(xy.y, 0);
     const squarePercent =
       (visibleWidth * visibleHeight) / (window.innerHeight * window.innerWidth);
-    if (squarePercent > maxSquarePercent) {
-      maxSquarePercent = squarePercent;
+    if (squarePercent > maxVisibleContainer.squarePercent) {
+      maxVisibleContainer.squarePercent = squarePercent;
+      maxVisibleContainer.id = item.id;
     }
   }
 
-  return maxSquarePercent;
+  return maxVisibleContainer;
 };

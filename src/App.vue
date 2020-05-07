@@ -1,11 +1,15 @@
 <template>
-  <svg height="100%" width="100%" id="rootSVG">
-    <Map :nodeId="GetRoot.id" />
-  </svg>
+  <div class="wrapper">
+    <svg height="100%" width="100%" id="rootSVG">
+      <Map :nodeId="GetRoot.id" />
+    </svg>
+    <BreadCrumbs />
+  </div>
 </template>
 
 <script>
 import Map from "./components/Map";
+import BreadCrumbs from "./components/BreadCrumbs";
 import { SET_ROOT_WH, SET_ROOT_XY, InitFlatMap, GetRoot } from "./store";
 import { Init, UpdateCurrentLevel } from "./store/level";
 import { mapGetters } from "vuex";
@@ -14,7 +18,8 @@ export default {
   name: "App",
 
   components: {
-    Map
+    Map,
+    BreadCrumbs
   },
 
   data: () => ({
@@ -130,3 +135,10 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.wrapper {
+  width: 100%;
+  height: 100%;
+}
+</style>
