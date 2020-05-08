@@ -6,7 +6,7 @@ import Vue from "vue";
 export const Init = "Init";
 export const UpdateCurrentLevel = "UpdateCurrentLevel";
 
-const LEVEL_THRESHOLD = 1;
+const LEVEL_THRESHOLD = 0.7;
 
 export default {
   namespaced: true,
@@ -24,6 +24,9 @@ export default {
         Vue.set(state.treeItemsByLevel, level, []);
       }
       state.treeItemsByLevel[level].push(item);
+    },
+    UPDATE_CURRENT_TREE_ITEM_STACK(state, newStack) {
+      state.currentTreeItemStack = newStack;
     },
     PUSH_CURRENT_TREE_ITEM_STACK(state, treeItemId) {
       state.currentTreeItemStack.push(treeItemId);
@@ -54,7 +57,24 @@ export default {
     },
     [UpdateCurrentLevel]({ commit, state, getters, rootGetters }) {
       const rootWH = rootGetters["GetRoot"].GetWH();
-      // If zoom-in then check that next level is not too big
+      // If pan then we should fill CURRENT_TREE_ITEM_STACK from ground up
+      if (rootWH.width === state.prevRootWH.width) {
+        const newStack = [];
+        let maxVisibleContainer = {
+          squarePercent: LEVEL_THRESHOLD
+        }
+        let cLevel = 1;
+        while (maxVisibleContainer.squarePercent >= LEVEL_THRESHOLD) {
+          maxVisibleContainer = getMaxVisibleContainer(
+            state.treeItemsByLevel[cLevel]
+          );
+          if (maxVisibleContainer.squarePercent >= LEVEL_THRESHOLD) {
+            newStack.push(maxVisibleContainer.id)
+          }
+          cLevel++;
+        }
+        commit('UPDATE_CURRENT_TREE_ITEM_STACK', newStack)
+      }
       if (rootWH.width > state.prevRootWH.width) {
         if (!state.treeItemsByLevel[getters.GetCurrentLevel + 1]) {
           return;

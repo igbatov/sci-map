@@ -1,3 +1,23 @@
+export const fixSingleChild = tree => {
+  let stack = [];
+  stack.push(tree.root);
+  while (stack.length > 0) {
+    const node = stack.pop();
+    if (node.children && node.children.length === 1) {
+      node.children.push({
+        id: -node.children[0].id,
+        title: '',
+        children: [],
+      })
+    }
+    node.children.forEach(child => {
+      stack.push(child);
+    });
+  }
+
+  return tree;
+};
+
 export const treeToHash = tree => {
   let hash = {};
   let stack = [];

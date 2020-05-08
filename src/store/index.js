@@ -4,7 +4,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import { TreeItem, RootTreeItem } from "./classes";
-import { treeToHash } from "./utils";
+import { treeToHash, fixSingleChild } from "./utils";
 import level from "./level";
 import title from "./title";
 
@@ -70,7 +70,8 @@ export default new Vuex.Store({
   },
   actions: {
     [InitFlatMap]({ commit }) {
-      const mapHash = treeToHash(map);
+      const fixedMap = fixSingleChild(map);
+      const mapHash = treeToHash(fixedMap);
       let stack = [];
       const root = new RootTreeItem({
         id: map.root.id,

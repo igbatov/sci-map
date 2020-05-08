@@ -52,6 +52,7 @@ export default {
         return;
       }
       this.$store.commit(SET_ROOT_XY, { x: newX, y: newY });
+      this.$store.dispatch("level/" + UpdateCurrentLevel);
     },
     mouseWheelHandler(event) {
       const SCALE_CF = 1.01;
