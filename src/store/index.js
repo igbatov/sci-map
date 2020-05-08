@@ -16,6 +16,7 @@ export const GetNode = "GetNode";
 
 const map = require("../assets/map.json");
 map.root.title = "";
+map.root.children = map.root.children.sort((a,b) => (a.pos[1] > b.pos[1]) ? 1 : ((b.pos[1] > a.pos[1]) ? -1 : 0));
 // const map = {
 //   root: {
 //     id: 0,

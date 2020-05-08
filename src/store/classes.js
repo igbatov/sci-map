@@ -111,4 +111,24 @@ export class RootTreeItem extends TreeItem {
     this.width = width;
     this.height = height;
   }
+  //
+  // GetChildrenWH() {
+  //   const wh = this.GetWH();
+  //   const width = wh.width;
+  //   const height = wh.height;
+  //   const childrenLength = this.children.length;
+  //   return {
+  //     width: width,
+  //     height: height/childrenLength
+  //   };
+  // }
+  //
+  // GetChildrenXY(id) {
+  //   const childWH = this.GetChildrenWH(this.children[0]);
+  //   const index = this.children.indexOf(id);
+  //   return {
+  //     x: 0,
+  //     y: Math.floor(index) * childWH.height
+  //   };
+  // }
 }
