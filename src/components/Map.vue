@@ -22,6 +22,20 @@
       dominant-baseline="middle"
       text-anchor="middle"
       class="text"
+      font-family="Roboto, Arial, Helvetica, sans-serif"
+      :font-size="title.size"
+      :font-weight="title.weight"
+      :letter-spacing="title.letterSpacing"
+      :fill="title.color"
+    >
+      {{ isTitleVisible ? elipsis(title.text) : "" }}
+    </text>
+    <text
+      x="-9999999"
+      y="-9999999"
+      dominant-baseline="middle"
+      text-anchor="middle"
+      class="text"
       :id="textID"
       font-family="Roboto, Arial, Helvetica, sans-serif"
       :font-size="title.size"
@@ -29,7 +43,7 @@
       :letter-spacing="title.letterSpacing"
       :fill="title.color"
     >
-      {{ isTitleVisible ? title.text : "" }}
+      {{ title.text }}
     </text>
   </svg>
 </template>
@@ -45,6 +59,11 @@ export default {
     nodeId: Number
   },
 
+  data: () => ({
+    levelChanged: false
+  }),
+
+
   mounted() {
     this.$nextTick(function() {
       this.initTitleWidth();
@@ -59,7 +78,8 @@ export default {
   methods: {
     ...mapMutations("title", ["SET_TITLE_WH"]),
     initTitleWidth() {
-      if (this.isVisible && !this.GetTitleWH(this.nodeId)) {
+      if (this.isVisible && (this.levelChanged || !this.GetTitleWH(this.nodeId))) {
+        this.levelChanged = false;
         // if container is visible and we have not yet taken its title bbox, do it now
         const bbox = document.getElementById(this.textID).getBBox();
         this.SET_TITLE_WH({
@@ -82,11 +102,20 @@ export default {
         return str;
       }
       if (titleWH.width > this.wh.width) {
-        const lettersToShow = Math.floor(this.wh.width/(titleWH.width/str.length)) - 3;
+        const lettersToShow = Math.floor(this.wh.width/(1.5*(titleWH.width/str.length))) - 3;
         return str.substr(0, lettersToShow) + "...";
       }
 
       return str;
+    },
+  },
+
+  watch: {
+    GetCurrentLevel: {
+      handler () {
+        this.levelChanged = true;
+      },
+      immediate: true,
     },
   },
 
@@ -121,7 +150,7 @@ export default {
       if (lvl <= 2) {
         return {
           letterSpacing: 3,
-          text: this.elipsis(this.toTitleCase(this.titleText)),
+          text: this.toTitleCase(this.titleText),
           size: 28,
           weight: "500",
           color: "black"
@@ -131,7 +160,7 @@ export default {
       if (lvl === 3) {
         return {
           letterSpacing: 2,
-          text: this.elipsis(this.titleText.toUpperCase()),
+          text: this.titleText.toUpperCase(),
           size: 12,
           weight: "550",
           color: "grey"
@@ -141,7 +170,7 @@ export default {
       if (lvl === 4) {
         return {
           letterSpacing: 1,
-          text: this.elipsis(this.titleText.toUpperCase()),
+          text: this.titleText.toUpperCase(),
           size: 10,
           weight: "400",
           color: "grey"
@@ -150,7 +179,7 @@ export default {
 
       return {
         letterSpacing: 1,
-        text: this.elipsis(this.toTitleCase(this.titleText)),
+        text: this.toTitleCase(this.titleText),
         size: 10,
         weight: "200",
         color: "grey"
