@@ -6,7 +6,7 @@ import Vue from "vue";
 export const Init = "Init";
 export const UpdateCurrentLevel = "UpdateCurrentLevel";
 
-const LEVEL_THRESHOLD = 0.7;
+const LEVEL_THRESHOLD = 0.85;
 
 export default {
   namespaced: true,

@@ -9,7 +9,7 @@
     <rect
       :stroke-width="borderWidth"
       fill="none"
-      :stroke="`hsl(120, 40%, ${borderLightness}%)`"
+      :stroke="`hsl(${borderColor}, 40%, ${borderLightness}%)`"
       x="0"
       y="0"
       width="100%"
@@ -75,12 +75,27 @@ export default {
         .split(" ")
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
         .join(" ");
-    }
+    },
+    elipsis(str) {
+      const titleWH = this.GetTitleWH(this.nodeId)
+      if (!titleWH) {
+        return str;
+      }
+      if (titleWH.width > this.wh.width) {
+        const lettersToShow = Math.floor(this.wh.width/(titleWH.width/str.length)) - 3;
+        return str.substr(0, lettersToShow) + "...";
+      }
+
+      return str;
+    },
   },
 
   computed: {
     ...mapGetters("level", ["GetCurrentLevel"]),
     ...mapGetters("title", ["GetIsVisible", "GetTitleWH"]),
+    borderColor() {
+      return this.level - this.GetCurrentLevel >= 3 ? 360 : 120;
+    },
     borderLightness() {
       const lvl = this.level - this.GetCurrentLevel + 1;
       if (lvl <= 2) {
@@ -106,7 +121,7 @@ export default {
       if (lvl <= 2) {
         return {
           letterSpacing: 3,
-          text: this.toTitleCase(this.titleText),
+          text: this.elipsis(this.toTitleCase(this.titleText)),
           size: 28,
           weight: "500",
           color: "black"
@@ -116,7 +131,7 @@ export default {
       if (lvl === 3) {
         return {
           letterSpacing: 2,
-          text: this.titleText.toUpperCase(),
+          text: this.elipsis(this.titleText.toUpperCase()),
           size: 12,
           weight: "550",
           color: "grey"
@@ -126,7 +141,7 @@ export default {
       if (lvl === 4) {
         return {
           letterSpacing: 1,
-          text: this.titleText.toUpperCase(),
+          text: this.elipsis(this.titleText.toUpperCase()),
           size: 10,
           weight: "400",
           color: "grey"
@@ -135,7 +150,7 @@ export default {
 
       return {
         letterSpacing: 1,
-        text: this.toTitleCase(this.titleText),
+        text: this.elipsis(this.toTitleCase(this.titleText)),
         size: 10,
         weight: "200",
         color: "grey"

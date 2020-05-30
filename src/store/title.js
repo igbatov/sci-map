@@ -4,6 +4,8 @@
 import Vue from "vue";
 import { GetNode } from "./index";
 
+const MaxVisibleLevel = 3;
+
 export default {
   namespaced: true,
   state: {
@@ -24,24 +26,12 @@ export default {
 
         const node = rootGetters[GetNode](nodeId);
 
-        if (node.GetLevel() <= rootGetters["level/GetCurrentLevel"]) {
+        if (node.GetLevel() <= rootGetters["level/GetCurrentLevel"] ||
+        node.GetLevel() > rootGetters["level/GetCurrentLevel"] + MaxVisibleLevel) {
           return false;
         }
 
-        const parent = node.parent;
-        if (!parent) {
-          return true;
-        }
-
-        const nodeWH = node.GetWH();
-
-        return (
-          (parent.GetLevel() <= rootGetters["level/GetCurrentLevel"] ||
-            (parent.GetLevel() > rootGetters["level/GetCurrentLevel"] &&
-              getters.GetIsVisible(parent.id))) &&
-          nodeWH.width > titleWH.width + 20 &&
-          nodeWH.height > titleWH.height + 10
-        );
+        return true;
       };
     },
     GetTitleWH(state) {
