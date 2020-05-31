@@ -101,8 +101,8 @@ export default {
       if (!titleWH) {
         return str;
       }
-      if (titleWH.width > this.wh.width) {
-        const lettersToShow = Math.floor(this.wh.width/(1.5*(titleWH.width/str.length))) - 3;
+      if (titleWH.width > this.wh.width - 10) {
+        const lettersToShow = Math.floor(this.wh.width/(1.2*(titleWH.width/str.length))) - 3;
         return str.substr(0, lettersToShow) + "...";
       }
 
