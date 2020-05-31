@@ -62,18 +62,18 @@ export default {
         const newStack = [];
         let maxVisibleContainer = {
           squarePercent: LEVEL_THRESHOLD
-        }
+        };
         let cLevel = 1;
         while (maxVisibleContainer.squarePercent >= LEVEL_THRESHOLD) {
           maxVisibleContainer = getMaxVisibleContainer(
             state.treeItemsByLevel[cLevel]
           );
           if (maxVisibleContainer.squarePercent >= LEVEL_THRESHOLD) {
-            newStack.push(maxVisibleContainer.id)
+            newStack.push(maxVisibleContainer.id);
           }
           cLevel++;
         }
-        commit('UPDATE_CURRENT_TREE_ITEM_STACK', newStack)
+        commit("UPDATE_CURRENT_TREE_ITEM_STACK", newStack);
       }
       if (rootWH.width > state.prevRootWH.width) {
         if (!state.treeItemsByLevel[getters.GetCurrentLevel + 1]) {

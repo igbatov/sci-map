@@ -63,7 +63,6 @@ export default {
     levelChanged: false
   }),
 
-
   mounted() {
     this.$nextTick(function() {
       this.initTitleWidth();
@@ -78,7 +77,10 @@ export default {
   methods: {
     ...mapMutations("title", ["SET_TITLE_WH"]),
     initTitleWidth() {
-      if (this.isVisible && (this.levelChanged || !this.GetTitleWH(this.nodeId))) {
+      if (
+        this.isVisible &&
+        (this.levelChanged || !this.GetTitleWH(this.nodeId))
+      ) {
         this.levelChanged = false;
         // if container is visible and we have not yet taken its title bbox, do it now
         const bbox = document.getElementById(this.textID).getBBox();
@@ -97,26 +99,27 @@ export default {
         .join(" ");
     },
     elipsis(str) {
-      const titleWH = this.GetTitleWH(this.nodeId)
+      const titleWH = this.GetTitleWH(this.nodeId);
       if (!titleWH) {
         return str;
       }
       if (titleWH.width > this.wh.width - 10) {
-        const lettersToShow = Math.floor(this.wh.width/(1.2*(titleWH.width/str.length))) - 3;
+        const lettersToShow =
+          Math.floor(this.wh.width / (1.2 * (titleWH.width / str.length))) - 3;
         return str.substr(0, lettersToShow) + "...";
       }
 
       return str;
-    },
+    }
   },
 
   watch: {
     GetCurrentLevel: {
-      handler () {
+      handler() {
         this.levelChanged = true;
       },
-      immediate: true,
-    },
+      immediate: true
+    }
   },
 
   computed: {

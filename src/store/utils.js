@@ -6,9 +6,9 @@ export const fixSingleChild = tree => {
     if (node.children && node.children.length === 1) {
       node.children.push({
         id: -node.children[0].id,
-        title: '',
-        children: [],
-      })
+        title: "",
+        children: []
+      });
     }
     node.children.forEach(child => {
       stack.push(child);
