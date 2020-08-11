@@ -13,6 +13,7 @@ import BreadCrumbs from "./components/BreadCrumbs";
 import { SET_ROOT_WH, SET_ROOT_XY, InitFlatMap, GetRoot } from "./store";
 import { Init, UpdateCurrentLevel } from "./store/level";
 import { mapGetters } from "vuex";
+import { Zoom } from "@/store/zoomPan";
 
 export default {
   name: "App",
@@ -55,59 +56,7 @@ export default {
       this.$store.dispatch("level/" + UpdateCurrentLevel);
     },
     mouseWheelHandler(event) {
-      const SCALE_CF = 1.03;
-      let newW = this.GetRoot.GetWH().width,
-        newH = this.GetRoot.GetWH().height;
-      if (event.deltaY < 0) {
-        newW = newW * SCALE_CF;
-        newH = newH * SCALE_CF;
-      } else if (event.deltaY > 0) {
-        newW = newW / SCALE_CF;
-        newH = newH / SCALE_CF;
-      }
-
-      if (newW < window.innerWidth || newH < window.innerHeight) {
-        return;
-      }
-
-      let newX = this.GetRoot.GetXY().x,
-        newY = this.GetRoot.GetXY().y;
-
-      // during zoom pan to area under mouse cursor
-      if (event.deltaY < 0) {
-        newX =
-          this.GetRoot.GetXY().x -
-          (-this.GetRoot.GetXY().x + event.x) * (SCALE_CF - 1);
-        newY =
-          this.GetRoot.GetXY().y -
-          (-this.GetRoot.GetXY().y + event.y) * (SCALE_CF - 1);
-      } else if (event.deltaY > 0) {
-        newX =
-          this.GetRoot.GetXY().x +
-          (-this.GetRoot.GetXY().x + event.x) * (1 - 1 / SCALE_CF);
-        newY =
-          this.GetRoot.GetXY().y +
-          (-this.GetRoot.GetXY().y + event.y) * (1 - 1 / SCALE_CF);
-      }
-
-      // stop panning if area is out of the borders
-      if (newX > 0) {
-        newX = 0;
-      }
-      if (newY > 0) {
-        newY = 0;
-      }
-      if (newX + newW < window.innerWidth) {
-        newX = window.innerWidth - newW;
-      }
-      if (newY + newH < window.innerHeight) {
-        newY = window.innerHeight - newH;
-      }
-
-      // apply changes
-      this.$store.commit(SET_ROOT_WH, { width: newW, height: newH });
-      this.$store.commit(SET_ROOT_XY, { x: newX, y: newY });
-      this.$store.dispatch("level/" + UpdateCurrentLevel);
+      this.$store.dispatch("zoomPan/" + Zoom, event);
     }
   },
 

@@ -17,15 +17,15 @@
     />
     <Map v-for="itemId in children" :key="itemId" :nodeId="itemId" />
     <rect
-        v-if="isTitleVisible"
-        fill="white"
-        stroke="none"
-        :x="wh.width/2 - titleWH.width/2"
-        :y="wh.height/2 - titleWH.height/2"
-        :width="titleWH.width"
-        :height="titleWH.height"
-        cursor="pointer"
-        @click="labelClick"
+      v-if="isTitleVisible"
+      fill="white"
+      stroke="none"
+      :x="wh.width / 2 - titleWH.width / 2"
+      :y="wh.height / 2 - titleWH.height / 2"
+      :width="titleWH.width"
+      :height="titleWH.height"
+      cursor="pointer"
+      @click="labelClick"
     />
     <text
       x="50%"
@@ -62,7 +62,8 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-import { GetNode } from "../store";
+import { GetNode } from "@/store";
+import { SCALE_CF, Zoom } from "@/store/zoomPan";
 
 export default {
   name: "Map",
@@ -88,8 +89,33 @@ export default {
 
   methods: {
     ...mapMutations("title", ["SET_TITLE_WH"]),
-    labelClick() {
-      console.log('gggggggggggg');
+    labelClick(event) {
+      // zoom until top and bottom fit window height or left and right fit 2/3 of window width
+      const tillHeightSteps =
+        Math.log(window.innerHeight / this.wh.height) / Math.log(SCALE_CF);
+      const tillWidthSteps =
+        Math.log((window.innerWidth * (2 / 3)) / this.wh.width) /
+        Math.log(SCALE_CF);
+      console.log(
+        "clicked on node",
+        event,
+        this.nodeId,
+        this.wh,
+        this.xy,
+        window.innerHeight / this.wh.height,
+        tillHeightSteps,
+        tillWidthSteps
+      );
+
+      for (let i = 0; i < Math.min(tillHeightSteps, tillWidthSteps); i++) {
+        window.setTimeout(() => {
+          this.$store.dispatch("zoomPan/" + Zoom, {
+            deltaY: -1,
+            x: event.x,
+            y: event.y
+          });
+        }, i * 50);
+      }
     },
     initTitleWidth() {
       if (
@@ -252,7 +278,7 @@ export default {
       if (wh) {
         return wh;
       } else {
-        return {width:0, height:0};
+        return { width: 0, height: 0 };
       }
     },
     children() {

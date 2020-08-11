@@ -118,7 +118,7 @@ export class RootTreeItem extends TreeItem {
     const height = wh.height;
     const childrenLength = this.children.length;
     return {
-      width: width/childrenLength,
+      width: width / childrenLength,
       height: height
     };
   }
