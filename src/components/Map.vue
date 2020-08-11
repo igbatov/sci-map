@@ -16,6 +16,17 @@
       height="100%"
     />
     <Map v-for="itemId in children" :key="itemId" :nodeId="itemId" />
+    <rect
+        v-if="isTitleVisible"
+        fill="white"
+        stroke="none"
+        :x="wh.width/2 - titleWH.width/2"
+        :y="wh.height/2 - titleWH.height/2"
+        :width="titleWH.width"
+        :height="titleWH.height"
+        cursor="pointer"
+        @click="labelClick"
+    />
     <text
       x="50%"
       y="50%"
@@ -27,6 +38,7 @@
       :font-weight="title.weight"
       :letter-spacing="title.letterSpacing"
       :fill="title.color"
+      pointer-events="none"
     >
       {{ isTitleVisible ? elipsis(title.text) : "" }}
     </text>
@@ -76,6 +88,9 @@ export default {
 
   methods: {
     ...mapMutations("title", ["SET_TITLE_WH"]),
+    labelClick() {
+      console.log('gggggggggggg');
+    },
     initTitleWidth() {
       if (
         this.isVisible &&
@@ -231,6 +246,14 @@ export default {
     },
     titleText() {
       return this.$store.getters[GetNode](this.nodeId).title;
+    },
+    titleWH() {
+      const wh = this.GetTitleWH(this.nodeId);
+      if (wh) {
+        return wh;
+      } else {
+        return {width:0, height:0};
+      }
     },
     children() {
       return this.$store.getters[GetNode](this.nodeId).children;

@@ -55,7 +55,7 @@ export default {
       this.$store.dispatch("level/" + UpdateCurrentLevel);
     },
     mouseWheelHandler(event) {
-      const SCALE_CF = 1.01;
+      const SCALE_CF = 1.03;
       let newW = this.GetRoot.GetWH().width,
         newH = this.GetRoot.GetWH().height;
       if (event.deltaY < 0) {
