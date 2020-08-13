@@ -111,6 +111,8 @@ export default {
         return;
       }
 
+      history.pushState({}, "", this.nodeId.toString())
+
       const targetXY = {
         x: window.innerWidth * (2 / 3),
         y: window.innerHeight / 2
