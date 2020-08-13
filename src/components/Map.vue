@@ -26,6 +26,8 @@
       :height="titleWH.height"
       cursor="pointer"
       @click="labelClick"
+      @mousedown="labelMouseDown"
+      @mouseup="labelMouseUp"
     />
     <text
       x="50%"
@@ -81,7 +83,9 @@ export default {
   },
 
   data: () => ({
-    levelChanged: false
+    levelChanged: false,
+    mouseDownXY: {x:0, y:0},
+    mouseUpXY: {x:0, y:0},
   }),
 
   mounted() {
@@ -97,7 +101,18 @@ export default {
 
   methods: {
     ...mapMutations("title", ["SET_TITLE_WH"]),
+    labelMouseDown(e) {
+      this.mouseDownXY = {x: e.x, y: e.y};
+    },
+    labelMouseUp(e) {
+      this.mouseUpXY = {x: e.x, y: e.y};
+    },
     async labelClick() {
+      // If that was pan move, do nothing
+      if (!(this.mouseDownXY.x == this.mouseUpXY.x && this.mouseDownXY.y == this.mouseUpXY.y)) {
+        return;
+      }
+
       const targetXY = {
         x: window.innerWidth*(2/3),
         y: window.innerHeight/2
