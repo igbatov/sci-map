@@ -62,8 +62,16 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-import { GetNode } from "@/store";
-import { SCALE_CF, Zoom } from "@/store/zoomPan";
+import {
+  GetNode,
+  GetRoot,
+  SET_ROOT_XY
+} from "@/store";
+import {
+  SCALE_CF,
+  Zoom
+} from "@/store/zoomPan";
+import {sleep} from "@/store/utils";
 
 export default {
   name: "Map",
@@ -89,32 +97,69 @@ export default {
 
   methods: {
     ...mapMutations("title", ["SET_TITLE_WH"]),
-    labelClick(event) {
-      // zoom until top and bottom fit window height or left and right fit 2/3 of window width
-      const tillHeightSteps =
-        Math.log(window.innerHeight / this.wh.height) / Math.log(SCALE_CF);
-      const tillWidthSteps =
-        Math.log((window.innerWidth * (2 / 3)) / this.wh.width) /
-        Math.log(SCALE_CF);
-      console.log(
-        "clicked on node",
-        event,
-        this.nodeId,
-        this.wh,
-        this.xy,
-        window.innerHeight / this.wh.height,
-        tillHeightSteps,
-        tillWidthSteps
-      );
+    async labelClick() {
+      const targetXY = {
+        x: window.innerWidth*(2/3),
+        y: window.innerHeight/2
+      }
 
-      for (let i = 0; i < Math.min(tillHeightSteps, tillWidthSteps); i++) {
-        window.setTimeout(() => {
-          this.$store.dispatch("zoomPan/" + Zoom, {
-            deltaY: -1,
-            x: event.x,
-            y: event.y
-          });
-        }, i * 50);
+      // Zoom until top and bottom fit window height or left and right fit 2/3 of window width
+      let zoomStepCount = 0
+      let zoomDirection = 0
+      if (this.wh.height < window.innerHeight && this.wh.width < window.innerWidth * (2 / 3)) {
+        zoomDirection = -1
+        let tillHeightSteps = 0
+        let height = this.wh.height
+        while (height < window.innerHeight) {
+          height = height * SCALE_CF;
+          tillHeightSteps++;
+        }
+        let tillWidthSteps = 0
+        let width = this.wh.width
+        while (width < window.innerWidth * (2 / 3)) {
+          width = width * SCALE_CF;
+          tillWidthSteps++;
+        }
+        zoomStepCount = Math.min(tillHeightSteps, tillWidthSteps)
+      } else if (this.wh.height > window.innerHeight) {
+        zoomDirection = 1
+        let height = this.wh.height
+        while (height > window.innerHeight) {
+          height = height / SCALE_CF;
+          zoomStepCount++
+        }
+      } else if (this.wh.width > window.innerWidth * (2 / 3)) {
+        zoomDirection = 1
+        let width = this.wh.width
+        while (width > window.innerWidth * (2 / 3)) {
+          width = width / SCALE_CF;
+          zoomStepCount++
+        }
+      }
+
+      let nodeMiddle = {x: this.absoluteXY.x + this.wh.width/2, y: this.absoluteXY.y + this.wh.height/2};
+
+
+      if (zoomStepCount <= 1) {
+        // if we do not need zoom
+        const DEFAULT_STEP = 10
+        const xStep = (targetXY.x-nodeMiddle.x)/DEFAULT_STEP;
+        const yStep = (targetXY.y-nodeMiddle.y)/DEFAULT_STEP;
+        for (let i = 0; i < DEFAULT_STEP; i++) {
+          const rootXY = this.GetRoot.GetXY()
+          this.$store.commit(SET_ROOT_XY, { x: rootXY.x + xStep, y: rootXY.y + yStep});
+          await sleep(50);
+        }
+      } else {
+        const xStep = (targetXY.x-nodeMiddle.x)/zoomStepCount;
+        const yStep = (targetXY.y-nodeMiddle.y)/zoomStepCount;
+        for (let i = 0; i < zoomStepCount; i++) {
+          nodeMiddle = {x: this.absoluteXY.x + this.wh.width/2, y: this.absoluteXY.y + this.wh.height/2};
+          await this.$store.dispatch("zoomPan/" + Zoom, {deltaY: zoomDirection, x: nodeMiddle.x, y: nodeMiddle.y})
+          const rootXY = this.GetRoot.GetXY()
+          this.$store.commit(SET_ROOT_XY, { x: rootXY.x + xStep, y: rootXY.y + yStep});
+          await sleep(50);
+        }
       }
     },
     initTitleWidth() {
@@ -164,6 +209,7 @@ export default {
   },
 
   computed: {
+    ...mapGetters([GetRoot]),
     ...mapGetters("level", ["GetCurrentLevel"]),
     ...mapGetters("title", ["GetIsVisible", "GetTitleWH"]),
     borderColor() {
@@ -269,6 +315,9 @@ export default {
     },
     xy() {
       return this.$store.getters[GetNode](this.nodeId).GetXY();
+    },
+    absoluteXY() {
+      return this.$store.getters[GetNode](this.nodeId).GetAbsoluteXY();
     },
     titleText() {
       return this.$store.getters[GetNode](this.nodeId).title;

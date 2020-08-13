@@ -74,3 +74,6 @@ export const getGrid = (itemsNum, width, height) => {
     colNum: colLength
   };
 };
+
+export const sleep = async m => new Promise(r => setTimeout(r, m))
+

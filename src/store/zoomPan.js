@@ -28,7 +28,7 @@ export default {
   }
 };
 
-const calcZoom = (rootXY, rootWH, event) => {
+export const calcZoom = (rootXY, rootWH, event) => {
   let newW = rootWH.width,
     newH = rootWH.height;
   if (event.deltaY < 0) {
@@ -43,33 +43,30 @@ const calcZoom = (rootXY, rootWH, event) => {
     return;
   }
 
-  let oldX = rootXY.x,
-    oldY = rootXY.y;
-
-  let newX = oldX,
-    newY = oldY;
+  let newX = rootXY.x,
+    newY = rootXY.y;
   // during zoom pan to area under mouse cursor
   if (event.deltaY < 0) {
-    newX = oldX - (-oldX + event.x) * (SCALE_CF - 1);
-    newY = oldY - (-oldY + event.y) * (SCALE_CF - 1);
+    newX = rootXY.x - (-rootXY.x + event.x) * (SCALE_CF - 1);
+    newY = rootXY.y - (-rootXY.y + event.y) * (SCALE_CF - 1);
   } else if (event.deltaY > 0) {
-    newX = oldX + (-oldX + event.x) * (1 - 1 / SCALE_CF);
-    newY = oldY + (-oldY + event.y) * (1 - 1 / SCALE_CF);
+    newX = rootXY.x + (-rootXY.x + event.x) * (1 - 1 / SCALE_CF);
+    newY = rootXY.y + (-rootXY.y + event.y) * (1 - 1 / SCALE_CF);
   }
 
-  // stop panning if area is out of the borders
-  if (newX > 0) {
-    newX = 0;
-  }
-  if (newY > 0) {
-    newY = 0;
-  }
-  if (newX + newW < window.innerWidth) {
-    newX = window.innerWidth - newW;
-  }
-  if (newY + newH < window.innerHeight) {
-    newY = window.innerHeight - newH;
-  }
+  // Stop panning if area is out of the borders
+  // if (newX > 0) {
+  //   newX = 0;
+  // }
+  // if (newY > 0) {
+  //   newY = 0;
+  // }
+  // if (newX + newW < window.innerWidth) {
+  //   newX = window.innerWidth - newW;
+  // }
+  // if (newY + newH < window.innerHeight) {
+  //   newY = window.innerHeight - newH;
+  // }
 
   return { width: newW, height: newH, x: newX, y: newY };
 };
