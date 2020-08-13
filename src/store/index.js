@@ -98,6 +98,7 @@ export default new Vuex.Store({
           const treeItem = new TreeItem({
             id: nodeId,
             title: node.title,
+            wiki: node.link,
             parent: parent,
             children: node.children.map(child => child.id)
           });

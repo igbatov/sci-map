@@ -1,10 +1,13 @@
 <template>
-  <div class="wrapper">
-    <svg height="100%" width="100%" id="rootSVG">
-      <Map :nodeId="GetRoot.id" />
-    </svg>
-    <BreadCrumbs />
-  </div>
+    <div class="wrapper">
+      <div class="infoBox">
+
+      </div>
+      <svg height="100%" width="100%" id="rootSVG">
+        <Map :nodeId="GetRoot.id" />
+      </svg>
+      <BreadCrumbs />
+    </div>
 </template>
 
 <script>
@@ -29,6 +32,12 @@ export default {
 
   computed: {
     ...mapGetters([GetRoot])
+  },
+
+  watch: {
+    $route(to, from) {
+      console.log(to, from)
+    }
   },
 
   methods: {
@@ -91,5 +100,12 @@ export default {
 .wrapper {
   width: 100%;
   height: 100%;
+}
+.infoBox {
+  position: absolute;
+  width: 33%;
+  height: 100%;
+  background-color: white;
+  box-shadow: 5px 0 21px 3px rgba(122, 122, 119, 0.50);
 }
 </style>
