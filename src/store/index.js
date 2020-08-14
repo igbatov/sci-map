@@ -8,6 +8,7 @@ import { treeToHash, fixSingleChild } from "./utils";
 import level from "./level";
 import title from "./title";
 import zoomPan from "./zoomPan";
+import infoBox from "./infoBox";
 
 export const SET_ROOT_WH = "SET_ROOT_WH";
 export const SET_ROOT_XY = "SET_ROOT_XY";
@@ -111,6 +112,7 @@ export default new Vuex.Store({
   modules: {
     level,
     title,
-    zoomPan
+    zoomPan,
+    infoBox,
   }
 });

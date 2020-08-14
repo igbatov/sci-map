@@ -64,9 +64,7 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-import { GetNode, GetRoot, SET_ROOT_XY } from "@/store";
-import { SCALE_CF, Zoom } from "@/store/zoomPan";
-import { sleep } from "@/store/utils";
+import { GetNode, GetRoot } from "@/store";
 
 export default {
   name: "Map",
@@ -104,95 +102,15 @@ export default {
       // If that was pan move, do nothing
       if (
         !(
-          this.mouseDownXY.x == this.mouseUpXY.x &&
-          this.mouseDownXY.y == this.mouseUpXY.y
+          this.mouseDownXY.x === this.mouseUpXY.x &&
+          this.mouseDownXY.y === this.mouseUpXY.y
         )
       ) {
         return;
       }
 
-      history.pushState({}, "", this.nodeId.toString())
-
-      const targetXY = {
-        x: window.innerWidth * (2 / 3),
-        y: window.innerHeight / 2
-      };
-
-      // Zoom until top and bottom fit window height or left and right fit 2/3 of window width
-      let zoomStepCount = 0;
-      let zoomDirection = 0;
-      if (
-        this.wh.height < window.innerHeight &&
-        this.wh.width < window.innerWidth * (2 / 3)
-      ) {
-        zoomDirection = -1;
-        let tillHeightSteps = 0;
-        let height = this.wh.height;
-        while (height < window.innerHeight) {
-          height = height * SCALE_CF;
-          tillHeightSteps++;
-        }
-        let tillWidthSteps = 0;
-        let width = this.wh.width;
-        while (width < window.innerWidth * (2 / 3)) {
-          width = width * SCALE_CF;
-          tillWidthSteps++;
-        }
-        zoomStepCount = Math.min(tillHeightSteps, tillWidthSteps);
-      } else if (this.wh.height > window.innerHeight) {
-        zoomDirection = 1;
-        let height = this.wh.height;
-        while (height > window.innerHeight) {
-          height = height / SCALE_CF;
-          zoomStepCount++;
-        }
-      } else if (this.wh.width > window.innerWidth * (2 / 3)) {
-        zoomDirection = 1;
-        let width = this.wh.width;
-        while (width > window.innerWidth * (2 / 3)) {
-          width = width / SCALE_CF;
-          zoomStepCount++;
-        }
-      }
-
-      let nodeMiddle = {
-        x: this.absoluteXY.x + this.wh.width / 2,
-        y: this.absoluteXY.y + this.wh.height / 2
-      };
-
-      if (zoomStepCount <= 1) {
-        // if we do not need zoom
-        const DEFAULT_STEP = 10;
-        const xStep = (targetXY.x - nodeMiddle.x) / DEFAULT_STEP;
-        const yStep = (targetXY.y - nodeMiddle.y) / DEFAULT_STEP;
-        for (let i = 0; i < DEFAULT_STEP; i++) {
-          const rootXY = this.GetRoot.GetXY();
-          this.$store.commit(SET_ROOT_XY, {
-            x: rootXY.x + xStep,
-            y: rootXY.y + yStep
-          });
-          await sleep(50);
-        }
-      } else {
-        const xStep = (targetXY.x - nodeMiddle.x) / zoomStepCount;
-        const yStep = (targetXY.y - nodeMiddle.y) / zoomStepCount;
-        for (let i = 0; i < zoomStepCount; i++) {
-          nodeMiddle = {
-            x: this.absoluteXY.x + this.wh.width / 2,
-            y: this.absoluteXY.y + this.wh.height / 2
-          };
-          await this.$store.dispatch("zoomPan/" + Zoom, {
-            deltaY: zoomDirection,
-            x: nodeMiddle.x,
-            y: nodeMiddle.y
-          });
-          const rootXY = this.GetRoot.GetXY();
-          this.$store.commit(SET_ROOT_XY, {
-            x: rootXY.x + xStep,
-            y: rootXY.y + yStep
-          });
-          await sleep(50);
-        }
+      if (this.$router.currentRoute.params.id != this.nodeId) {
+        await this.$router.push({ path: this.nodeId.toString() })
       }
     },
     initTitleWidth() {

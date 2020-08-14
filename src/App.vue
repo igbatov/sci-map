@@ -1,8 +1,6 @@
 <template>
     <div class="wrapper">
-      <div class="infoBox">
-
-      </div>
+      <InfoBox :content="content"/>
       <svg height="100%" width="100%" id="rootSVG">
         <Map :nodeId="GetRoot.id" />
       </svg>
@@ -13,30 +11,54 @@
 <script>
 import Map from "./components/Map";
 import BreadCrumbs from "./components/BreadCrumbs";
+import InfoBox from "./components/InfoBox";
 import { SET_ROOT_WH, SET_ROOT_XY, InitFlatMap, GetRoot } from "./store";
 import { Init, UpdateCurrentLevel } from "./store/level";
 import { mapGetters } from "vuex";
-import { Zoom } from "@/store/zoomPan";
+import {Zoom, ZoomAndPan} from "@/store/zoomPan";
+import {FetchWiki} from "@/store/infoBox";
 
 export default {
   name: "App",
 
   components: {
     Map,
-    BreadCrumbs
+    BreadCrumbs,
+    InfoBox,
   },
 
   data: () => ({
-    mouseDown: false
+    mouseDown: false,
+    content: "",
   }),
 
   computed: {
-    ...mapGetters([GetRoot])
+    ...mapGetters([GetRoot]),
+    ...mapGetters("infoBox", ["GetContent"]),
+
   },
 
   watch: {
-    $route(to, from) {
-      console.log(to, from)
+    async $route(to) {
+      let nodeId = to.params.id
+      if (!nodeId) {
+        nodeId = this.GetRoot.GetID()
+      }
+      await this.$store.dispatch(
+        "zoomPan/" + ZoomAndPan,
+        {
+          nodeId: nodeId,
+          targetXY: { x: window.innerWidth * (2 / 3), y: window.innerHeight / 2 },
+          targetWH: { width: window.innerWidth*(2/3), height: window.innerHeight }
+        }
+      );
+
+      if (nodeId === this.GetRoot.GetID()) {
+        this.content = ""
+      } else {
+        await this.$store.dispatch("infoBox/" + FetchWiki, nodeId)
+        this.content = this.GetContent(nodeId)
+      }
     }
   },
 
@@ -81,17 +103,19 @@ export default {
   },
 
   mounted() {
-    window.addEventListener("wheel", this.mouseWheelHandler);
-    window.addEventListener("mousedown", this.mouseDownHandler);
-    window.addEventListener("mouseup", this.mouseUpHandler);
-    window.addEventListener("mousemove", this.mouseMoveHandler);
+    const root = document.getElementById("rootSVG")
+    root.addEventListener("wheel", this.mouseWheelHandler);
+    root.addEventListener("mousedown", this.mouseDownHandler);
+    root.addEventListener("mouseup", this.mouseUpHandler);
+    root.addEventListener("mousemove", this.mouseMoveHandler);
   },
 
   destroyed() {
-    window.removeEventListener("wheel", this.mouseWheelHandler);
-    window.removeEventListener("mousedown", this.mouseDownHandler);
-    window.removeEventListener("mouseup", this.mouseUpHandler);
-    window.removeEventListener("mousemove", this.mouseMoveHandler);
+    const root = document.getElementById("rootSVG")
+    root.removeEventListener("wheel", this.mouseWheelHandler);
+    root.removeEventListener("mousedown", this.mouseDownHandler);
+    root.removeEventListener("mouseup", this.mouseUpHandler);
+    root.removeEventListener("mousemove", this.mouseMoveHandler);
   }
 };
 </script>
@@ -100,12 +124,5 @@ export default {
 .wrapper {
   width: 100%;
   height: 100%;
-}
-.infoBox {
-  position: absolute;
-  width: 33%;
-  height: 100%;
-  background-color: white;
-  box-shadow: 5px 0 21px 3px rgba(122, 122, 119, 0.50);
 }
 </style>
