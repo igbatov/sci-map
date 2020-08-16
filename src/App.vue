@@ -76,14 +76,14 @@ export default {
       const newX = this.GetRoot.GetXY().x + event.movementX;
       const newY = this.GetRoot.GetXY().y + event.movementY;
       // Stop pan if area out of borders
-      // if (
-      //   newX > 0 ||
-      //   newY > 0 ||
-      //   newX + this.GetRoot.GetWH().width < window.innerWidth ||
-      //   newY + this.GetRoot.GetWH().height < window.innerHeight
-      // ) {
-      //   return;
-      // }
+      if (
+       // newX > 0 ||
+        newY > 0 ||
+       // newX + this.GetRoot.GetWH().width < window.innerWidth ||
+        newY + this.GetRoot.GetWH().height < window.innerHeight
+      ) {
+        return;
+      }
       this.$store.commit(SET_ROOT_XY, { x: newX, y: newY });
       this.$store.dispatch("level/" + UpdateCurrentLevel);
     },

@@ -146,15 +146,15 @@ export const calcZoom = (rootXY, rootWH, event) => {
   // if (newX > 0) {
   //   newX = 0;
   // }
-  // if (newY > 0) {
-  //   newY = 0;
-  // }
+  if (newY > 0) {
+    newY = 0;
+  }
   // if (newX + newW < window.innerWidth) {
   //   newX = window.innerWidth - newW;
   // }
-  // if (newY + newH < window.innerHeight) {
-  //   newY = window.innerHeight - newH;
-  // }
+  if (newY + newH < window.innerHeight) {
+    newY = window.innerHeight - newH;
+  }
 
   return { width: newW, height: newH, x: newX, y: newY };
 };
