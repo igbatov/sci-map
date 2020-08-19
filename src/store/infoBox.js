@@ -70,7 +70,7 @@ export default {
         wordwrap: false,
         preserveNewlines: true,
       }).split("\n").filter((str) => !!str);
-      const sections = [];
+      const sections = {};
       noteList.forEach((note) => {
         const rg = /\[([a-zA-Z0-9_\- ]+)\]\[([a-zA-Z0-9_\- ]+)\]\[([a-zA-Z0-9_\- ]+)\]([^[]+)\[([^\]]+)\]/g;
         const groups = rg.exec(note)

@@ -9,15 +9,14 @@
 </template>
 
 <script>
-import Vue from "vue";
 import Map from "./components/Map";
 import BreadCrumbs from "./components/BreadCrumbs";
 import InfoBox from "./components/InfoBox";
 import { SET_ROOT_WH, SET_ROOT_XY, InitFlatMap, GetRoot } from "./store";
 import { Init, UpdateCurrentLevel } from "./store/level";
 import { mapGetters } from "vuex";
-import {Zoom, ZoomAndPan} from "@/store/zoomPan";
-import {FetchWiki, ParseSections} from "@/store/infoBox";
+import {Zoom} from "@/store/zoomPan";
+import {processNodeSelect} from "@/store/utils";
 
 export default {
   name: "App",
@@ -30,45 +29,17 @@ export default {
 
   data: () => ({
     mouseDown: false,
-    content: "",
-    sections: {},
   }),
 
   computed: {
     ...mapGetters([GetRoot]),
     ...mapGetters("infoBox", ["GetContent", "GetSections"]),
-  },
-
-  watch: {
-    async $route(to) {
-      let nodeId = to.params.id
-      if (!nodeId) {
-        nodeId = this.GetRoot.GetID()
-      }
-      await this.$store.dispatch(
-        "zoomPan/" + ZoomAndPan,
-        {
-          nodeId: nodeId,
-          targetXY: { x: window.innerWidth * (2 / 3), y: window.innerHeight / 2 },
-          targetWH: { width: window.innerWidth*(2/3), height: window.innerHeight }
-        }
-      );
-
-      if (nodeId === this.GetRoot.GetID()) {
-        this.content = ""
-      } else {
-        await this.$store.dispatch("infoBox/" + FetchWiki, nodeId)
-        await this.$store.dispatch("infoBox/" + ParseSections, nodeId)
-        this.content = this.GetContent(nodeId)
-        for (let j in this.sections) {
-          Vue.delete(this.sections, j)
-        }
-        const sections = this.GetSections(nodeId)
-        for (let i in sections) {
-          Vue.set(this.sections, i, sections[i])
-        }
-      }
-    }
+    content() {
+      return this.GetContent(this.$route.params.id)
+    },
+    sections() {
+      return this.GetSections(this.$route.params.id)
+    },
   },
 
   methods: {
@@ -111,12 +82,13 @@ export default {
     this.$store.dispatch("level/" + Init);
   },
 
-  mounted() {
+  async mounted() {
     const root = document.getElementById("rootSVG")
     root.addEventListener("wheel", this.mouseWheelHandler);
     root.addEventListener("mousedown", this.mouseDownHandler);
     root.addEventListener("mouseup", this.mouseUpHandler);
     root.addEventListener("mousemove", this.mouseMoveHandler);
+    await processNodeSelect(this.$route.params.id)
   },
 
   destroyed() {
