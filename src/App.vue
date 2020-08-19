@@ -1,6 +1,6 @@
 <template>
     <div class="wrapper">
-      <InfoBox :content="content"/>
+      <InfoBox :content="content" :sections="sections"/>
       <svg height="100%" width="100%" id="rootSVG">
         <Map :nodeId="GetRoot.id" />
       </svg>
@@ -9,6 +9,7 @@
 </template>
 
 <script>
+import Vue from "vue";
 import Map from "./components/Map";
 import BreadCrumbs from "./components/BreadCrumbs";
 import InfoBox from "./components/InfoBox";
@@ -16,7 +17,7 @@ import { SET_ROOT_WH, SET_ROOT_XY, InitFlatMap, GetRoot } from "./store";
 import { Init, UpdateCurrentLevel } from "./store/level";
 import { mapGetters } from "vuex";
 import {Zoom, ZoomAndPan} from "@/store/zoomPan";
-import {FetchWiki} from "@/store/infoBox";
+import {FetchWiki, ParseSections} from "@/store/infoBox";
 
 export default {
   name: "App",
@@ -30,12 +31,12 @@ export default {
   data: () => ({
     mouseDown: false,
     content: "",
+    sections: {},
   }),
 
   computed: {
     ...mapGetters([GetRoot]),
-    ...mapGetters("infoBox", ["GetContent"]),
-
+    ...mapGetters("infoBox", ["GetContent", "GetSections"]),
   },
 
   watch: {
@@ -57,7 +58,15 @@ export default {
         this.content = ""
       } else {
         await this.$store.dispatch("infoBox/" + FetchWiki, nodeId)
+        await this.$store.dispatch("infoBox/" + ParseSections, nodeId)
         this.content = this.GetContent(nodeId)
+        for (let j in this.sections) {
+          Vue.delete(this.sections, j)
+        }
+        const sections = this.GetSections(nodeId)
+        for (let i in sections) {
+          Vue.set(this.sections, i, sections[i])
+        }
       }
     }
   },

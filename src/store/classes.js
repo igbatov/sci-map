@@ -1,12 +1,13 @@
 import { getGrid } from "./utils";
 
 export class TreeItem {
-  constructor({ id, title, parent, children, wiki }) {
+  constructor({ id, title, parent, children, link, note }) {
     this.id = id;
     this.title = title;
     this.parent = parent;
     this.children = children;
-    this.wiki = wiki;
+    this.link = link;
+    this.note = note;
   }
 
   IsLastChild(id) {
