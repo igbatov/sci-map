@@ -1,6 +1,6 @@
-import store, {GetRoot} from "@/store/index";
-import {FetchWiki, ParseSections} from "@/store/infoBox";
-import {ZoomAndPan} from "@/store/zoomPan";
+import store, { GetRoot } from "@/store/index";
+import { FetchWiki, ParseSections } from "@/store/infoBox";
+import { ZoomAndPan } from "@/store/zoomPan";
 
 export const fixSingleChild = tree => {
   let stack = [];
@@ -81,22 +81,19 @@ export const getGrid = (itemsNum, width, height) => {
 
 export const sleep = async m => new Promise(r => setTimeout(r, m));
 
-export const processNodeSelect = async (nodeId) => {
-  const rootId = store.getters[GetRoot].GetID()
+export const processNodeSelect = async nodeId => {
+  const rootId = store.getters[GetRoot].GetID();
   if (!nodeId) {
-    nodeId = rootId
+    nodeId = rootId;
   }
-  await store.dispatch(
-    "zoomPan/" + ZoomAndPan,
-    {
-      nodeId: nodeId,
-      targetXY: { x: window.innerWidth * (2 / 3), y: window.innerHeight / 2 },
-      targetWH: { width: window.innerWidth*(2/3), height: window.innerHeight }
-    }
-  );
+  await store.dispatch("zoomPan/" + ZoomAndPan, {
+    nodeId: nodeId,
+    targetXY: { x: window.innerWidth * (2 / 3), y: window.innerHeight / 2 },
+    targetWH: { width: window.innerWidth * (2 / 3), height: window.innerHeight }
+  });
 
   if (nodeId !== rootId) {
-    await store.dispatch("infoBox/" + FetchWiki, nodeId)
-    await store.dispatch("infoBox/" + ParseSections, nodeId)
+    await store.dispatch("infoBox/" + FetchWiki, nodeId);
+    await store.dispatch("infoBox/" + ParseSections, nodeId);
   }
-}
+};

@@ -1,6 +1,6 @@
-import {SET_ROOT_WH, SET_ROOT_XY, GetRoot, GetNode} from "@/store/index";
+import { SET_ROOT_WH, SET_ROOT_XY, GetRoot, GetNode } from "@/store/index";
 import { UpdateCurrentLevel } from "@/store/level";
-import {sleep} from "@/store/utils";
+import { sleep } from "@/store/utils";
 
 export const SCALE_CF = 1.03;
 export const Zoom = "Zoom";
@@ -9,16 +9,16 @@ export const ZoomAndPan = "ZoomAndPan";
 export default {
   namespaced: true,
   actions: {
-    async [ZoomAndPan]({ commit, dispatch, rootGetters }, {nodeId, targetXY, targetWH}) {
-      const node = rootGetters[GetNode](nodeId)
-      let nodeWH = node.GetWH()
-      let nodeAbsXY = node.GetAbsoluteXY()
+    async [ZoomAndPan](
+      { commit, dispatch, rootGetters },
+      { nodeId, targetXY, targetWH }
+    ) {
+      const node = rootGetters[GetNode](nodeId);
+      let nodeWH = node.GetWH();
+      let nodeAbsXY = node.GetAbsoluteXY();
       let zoomStepCount = 0;
       let zoomDirection = 0;
-      if (
-        nodeWH.height < targetWH.height &&
-        nodeWH.width < targetWH.width
-      ) {
+      if (nodeWH.height < targetWH.height && nodeWH.width < targetWH.width) {
         // Zoom in until top and bottom fit targetWH.height or left and right fit targetWH.width
         zoomDirection = -1;
         let tillHeightSteps = 0;
@@ -57,7 +57,7 @@ export default {
         y: nodeAbsXY.y + nodeWH.height / 2
       };
 
-      const root = rootGetters[GetRoot]
+      const root = rootGetters[GetRoot];
       if (zoomStepCount <= 1) {
         // if we do not need zoom
         const DEFAULT_STEP = 10;
@@ -65,9 +65,10 @@ export default {
         const yStep = (targetXY.y - nodeMiddle.y) / DEFAULT_STEP;
         for (let i = 0; i < DEFAULT_STEP; i++) {
           const rootXY = root.GetXY();
-          commit(SET_ROOT_XY,
+          commit(
+            SET_ROOT_XY,
             { x: rootXY.x + xStep, y: rootXY.y + yStep },
-            { root: true },
+            { root: true }
           );
           await sleep(50);
         }
@@ -75,22 +76,30 @@ export default {
         const xStep = (targetXY.x - nodeMiddle.x) / zoomStepCount;
         const yStep = (targetXY.y - nodeMiddle.y) / zoomStepCount;
         for (let i = 0; i < zoomStepCount; i++) {
-          nodeAbsXY = node.GetAbsoluteXY()
-          nodeWH = node.GetWH()
+          nodeAbsXY = node.GetAbsoluteXY();
+          nodeWH = node.GetWH();
           nodeMiddle = {
             x: nodeAbsXY.x + nodeWH.width / 2,
             y: nodeAbsXY.y + nodeWH.height / 2
           };
-          await dispatch("zoomPan/" + Zoom, {
-            deltaY: zoomDirection,
-            x: nodeMiddle.x,
-            y: nodeMiddle.y
-          }, { root: true });
+          await dispatch(
+            "zoomPan/" + Zoom,
+            {
+              deltaY: zoomDirection,
+              x: nodeMiddle.x,
+              y: nodeMiddle.y
+            },
+            { root: true }
+          );
           const rootXY = root.GetXY();
-          commit(SET_ROOT_XY, {
-            x: rootXY.x + xStep,
-            y: rootXY.y + yStep
-          }, { root: true });
+          commit(
+            SET_ROOT_XY,
+            {
+              x: rootXY.x + xStep,
+              y: rootXY.y + yStep
+            },
+            { root: true }
+          );
           await sleep(50);
         }
       }

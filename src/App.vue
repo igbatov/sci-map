@@ -1,11 +1,11 @@
 <template>
-    <div class="wrapper">
-      <InfoBox :content="content" :sections="sections"/>
-      <svg height="100%" width="100%" id="rootSVG">
-        <Map :nodeId="GetRoot.id" />
-      </svg>
-      <BreadCrumbs />
-    </div>
+  <div class="wrapper">
+    <InfoBox :content="content" :sections="sections" />
+    <svg height="100%" width="100%" id="rootSVG">
+      <Map :nodeId="GetRoot.id" />
+    </svg>
+    <BreadCrumbs />
+  </div>
 </template>
 
 <script>
@@ -15,8 +15,8 @@ import InfoBox from "./components/InfoBox";
 import { SET_ROOT_WH, SET_ROOT_XY, InitFlatMap, GetRoot } from "./store";
 import { Init, UpdateCurrentLevel } from "./store/level";
 import { mapGetters } from "vuex";
-import {Zoom} from "@/store/zoomPan";
-import {processNodeSelect} from "@/store/utils";
+import { Zoom } from "@/store/zoomPan";
+import { processNodeSelect } from "@/store/utils";
 
 export default {
   name: "App",
@@ -24,22 +24,22 @@ export default {
   components: {
     Map,
     BreadCrumbs,
-    InfoBox,
+    InfoBox
   },
 
   data: () => ({
-    mouseDown: false,
+    mouseDown: false
   }),
 
   computed: {
     ...mapGetters([GetRoot]),
     ...mapGetters("infoBox", ["GetContent", "GetSections"]),
     content() {
-      return this.GetContent(this.$route.params.id)
+      return this.GetContent(this.$route.params.id);
     },
     sections() {
-      return this.GetSections(this.$route.params.id)
-    },
+      return this.GetSections(this.$route.params.id);
+    }
   },
 
   methods: {
@@ -57,9 +57,9 @@ export default {
       const newY = this.GetRoot.GetXY().y + event.movementY;
       // Stop pan if area out of borders
       if (
-       // newX > 0 ||
+        // newX > 0 ||
         newY > 0 ||
-       // newX + this.GetRoot.GetWH().width < window.innerWidth ||
+        // newX + this.GetRoot.GetWH().width < window.innerWidth ||
         newY + this.GetRoot.GetWH().height < window.innerHeight
       ) {
         return;
@@ -83,16 +83,16 @@ export default {
   },
 
   async mounted() {
-    const root = document.getElementById("rootSVG")
+    const root = document.getElementById("rootSVG");
     root.addEventListener("wheel", this.mouseWheelHandler);
     root.addEventListener("mousedown", this.mouseDownHandler);
     root.addEventListener("mouseup", this.mouseUpHandler);
     root.addEventListener("mousemove", this.mouseMoveHandler);
-    await processNodeSelect(this.$route.params.id)
+    await processNodeSelect(this.$route.params.id);
   },
 
   destroyed() {
-    const root = document.getElementById("rootSVG")
+    const root = document.getElementById("rootSVG");
     root.removeEventListener("wheel", this.mouseWheelHandler);
     root.removeEventListener("mousedown", this.mouseDownHandler);
     root.removeEventListener("mouseup", this.mouseUpHandler);

@@ -110,7 +110,7 @@ export default {
       }
 
       if (this.$router.currentRoute.params.id != this.nodeId) {
-        await this.$router.push({ path: this.nodeId.toString() })
+        await this.$router.push({ path: this.nodeId.toString() });
       }
     },
     initTitleWidth() {

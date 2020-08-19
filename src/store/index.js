@@ -114,6 +114,6 @@ export default new Vuex.Store({
     level,
     title,
     zoomPan,
-    infoBox,
+    infoBox
   }
 });
