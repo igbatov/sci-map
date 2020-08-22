@@ -13,6 +13,8 @@ export default {
       { commit, dispatch, rootGetters },
       { nodeId, targetXY, targetWH }
     ) {
+      const MAX_ZOOM_HEIGHT = 0.9
+      const MAX_ZOOM_WIDTH = 0.9
       const node = rootGetters[GetNode](nodeId);
       let nodeWH = node.GetWH();
       let nodeAbsXY = node.GetAbsoluteXY();
@@ -23,13 +25,13 @@ export default {
         zoomDirection = -1;
         let tillHeightSteps = 0;
         let height = nodeWH.height;
-        while (height < targetWH.height) {
+        while (height < targetWH.height*MAX_ZOOM_HEIGHT) {
           height = height * SCALE_CF;
           tillHeightSteps++;
         }
         let tillWidthSteps = 0;
         let width = nodeWH.width;
-        while (width < targetWH.width) {
+        while (width < targetWH.width*MAX_ZOOM_WIDTH) {
           width = width * SCALE_CF;
           tillWidthSteps++;
         }
