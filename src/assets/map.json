@@ -31,7 +31,7 @@
         "rank": 1,
         "pos": [
           52,
-          -1916
+          -1288
         ],
         "floating": false,
         "icon": null,
@@ -542,7 +542,7 @@
         "rank": 2,
         "pos": [
           24,
-          -3168
+          -1644
         ],
         "floating": null,
         "icon": null,
@@ -591,7 +591,7 @@
           },
           {
             "id": 1584257089,
-            "title": "quantum field threory",
+            "title": "quantum field theory",
             "rank": 2,
             "pos": [
               null,
@@ -601,7 +601,7 @@
             "icon": null,
             "style": null,
             "created_at": "2020-08-09T08:03:39.000Z",
-            "updated_at": "2020-08-09T08:10:22.000Z",
+            "updated_at": "2020-08-20T07:01:00.000Z",
             "note": "Was born as an attempt to unify quantum mechanics with special relativity theory [QUANTUM FIELD THEORY\u003Cbr\u003EIN A NUTSHELL Enthony Zee, I.1]",
             "link": null,
             "task": {
@@ -627,7 +627,7 @@
         "rank": 4,
         "pos": [
           106,
-          -784
+          -271
         ],
         "floating": null,
         "icon": [],
@@ -2082,7 +2082,7 @@
         "rank": 5,
         "pos": [
           132,
-          2410
+          2933
         ],
         "floating": null,
         "icon": null,
@@ -2308,14 +2308,14 @@
         "rank": 5,
         "pos": [
           45,
-          -2662
+          -2215
         ],
         "floating": null,
         "icon": null,
         "style": null,
         "created_at": "2020-05-08T03:11:55.000Z",
-        "updated_at": "2020-08-18T10:33:15.000Z",
-        "note": "[ME][Textbook][0]The Feynman Lectures On Physics, Ch 1[https://www.feynmanlectures.caltech.edu/I_01.html]\n  \n[ME][Course][0] Khan Academy Electronic Structure Of Atoms [https://www.khanacademy.org/science/chemistry/electronic-structure-of-atoms]\n\n[ME][SciPop][0]Isaac Asimov \"Inside Atom\"[https://www.amazon.com/Inside-Atom-Isaac-Asimov/dp/0200714449]\n\n[ME][SciPop][0]Atom Visual Tour[https://www.amazon.com/Atom-Visual-Tour-MIT-Press/dp/026203736X]",
+        "updated_at": "2020-08-22T05:50:33.000Z",
+        "note": "[ME][Textbook][]The Feynman Lectures On Physics, Ch 1[https://www.feynmanlectures.caltech.edu/I_01.html]\u003Cbr\u003E  \u003Cbr\u003E[ME][Course][]Khan Academy Electronic Structure Of Atoms [https://www.khanacademy.org/science/chemistry/electronic-structure-of-atoms]\u003Cbr\u003E\u003Cbr\u003E[ME][SciPop][Isaac Asimov]Inside Atom[https://www.amazon.com/Inside-Atom-Isaac-Asimov/dp/0200714449]\u003Cbr\u003E\u003Cbr\u003E[ME][SciPop][0]Atom Visual Tour[https://www.amazon.com/Atom-Visual-Tour-MIT-Press/dp/026203736X]\u003Cbr\u003E",
         "link": "https://en.wikipedia.org/wiki/Atom",
         "task": {
           "from": null,
@@ -3060,6 +3060,119 @@
             ],
             "boundary": null,
             "video": null
+          },
+          {
+            "id": 1594431054,
+            "title": "Elements",
+            "rank": 3,
+            "pos": [
+              null,
+              null
+            ],
+            "floating": null,
+            "icon": null,
+            "style": null,
+            "created_at": "2020-08-20T07:02:32.000Z",
+            "updated_at": "2020-08-20T10:54:57.000Z",
+            "note": null,
+            "link": null,
+            "task": {
+              "from": null,
+              "until": null,
+              "resource": null,
+              "effort": null,
+              "notify": 1
+            },
+            "attachments": [],
+            "image": null,
+            "children": [
+              {
+                "id": 1594578923,
+                "title": "Helium",
+                "rank": 1,
+                "pos": [
+                  null,
+                  null
+                ],
+                "floating": null,
+                "icon": null,
+                "style": null,
+                "created_at": "2020-08-20T10:55:09.000Z",
+                "updated_at": "2020-08-20T10:55:09.000Z",
+                "note": null,
+                "link": null,
+                "task": {
+                  "from": null,
+                  "until": null,
+                  "resource": null,
+                  "effort": null,
+                  "notify": 1
+                },
+                "attachments": [],
+                "image": null,
+                "children": [],
+                "boundary": null,
+                "video": null
+              },
+              {
+                "id": 1594578966,
+                "title": "Hydrogen",
+                "rank": 2,
+                "pos": [
+                  null,
+                  null
+                ],
+                "floating": null,
+                "icon": null,
+                "style": null,
+                "created_at": "2020-08-20T10:55:16.000Z",
+                "updated_at": "2020-08-20T10:55:16.000Z",
+                "note": null,
+                "link": null,
+                "task": {
+                  "from": null,
+                  "until": null,
+                  "resource": null,
+                  "effort": null,
+                  "notify": 1
+                },
+                "attachments": [],
+                "image": null,
+                "children": [],
+                "boundary": null,
+                "video": null
+              },
+              {
+                "id": 1594579008,
+                "title": "Oxygen",
+                "rank": 3,
+                "pos": [
+                  null,
+                  null
+                ],
+                "floating": null,
+                "icon": null,
+                "style": null,
+                "created_at": "2020-08-20T10:55:23.000Z",
+                "updated_at": "2020-08-20T10:55:23.000Z",
+                "note": null,
+                "link": null,
+                "task": {
+                  "from": null,
+                  "until": null,
+                  "resource": null,
+                  "effort": null,
+                  "notify": 1
+                },
+                "attachments": [],
+                "image": null,
+                "children": [],
+                "boundary": null,
+                "video": null
+              }
+            ],
+            "boundary": null,
+            "video": null
           }
         ],
         "boundary": null,
@@ -3071,7 +3184,7 @@
         "rank": 6,
         "pos": [
           65,
-          -1560
+          504
         ],
         "floating": null,
         "icon": null,
@@ -3156,7 +3269,7 @@
         "rank": 7,
         "pos": [
           10,
-          -3749
+          -3814
         ],
         "floating": null,
         "icon": [
@@ -3178,37 +3291,9 @@
         "image": null,
         "children": [
           {
-            "id": 1444535540,
-            "title": "Universal Darwinism",
-            "rank": 1,
-            "pos": [
-              null,
-              null
-            ],
-            "floating": false,
-            "icon": null,
-            "style": null,
-            "created_at": "2020-03-21T08:04:45.000Z",
-            "updated_at": "2020-07-18T06:43:28.000Z",
-            "note": "",
-            "link": "https://en.wikipedia.org/wiki/Universal_Darwinism",
-            "task": {
-              "from": null,
-              "until": null,
-              "resource": null,
-              "effort": null,
-              "notify": 1
-            },
-            "attachments": [],
-            "image": null,
-            "children": [],
-            "boundary": null,
-            "video": null
-          },
-          {
             "id": 1506734087,
             "title": "Mathematics",
-            "rank": 2,
+            "rank": 1,
             "pos": [
               null,
               null
@@ -3232,7 +3317,7 @@
             "children": [
               {
                 "id": 1499657751,
-                "title": "Logic",
+                "title": "Foundations",
                 "rank": 1,
                 "pos": [
                   null,
@@ -3242,9 +3327,9 @@
                 "icon": null,
                 "style": null,
                 "created_at": "2020-05-09T04:56:55.000Z",
-                "updated_at": "2020-07-10T03:49:11.000Z",
-                "note": null,
-                "link": null,
+                "updated_at": "2020-09-01T13:41:04.000Z",
+                "note": "[ME][Textbook][Wolf] A Tour Through Mathematical Logic [https://www.scribd.com/document/332668344/R-Wolf-A-Tour-Through-Mathematical-Logic?language_settings_changed=English]",
+                "link": "https://en.wikipedia.org/wiki/Mathematical_logic",
                 "task": {
                   "from": null,
                   "until": null,
@@ -3254,13 +3339,182 @@
                 },
                 "attachments": [],
                 "image": null,
-                "children": [],
+                "children": [
+                  {
+                    "id": 1597194791,
+                    "title": "Predicate Logic",
+                    "rank": 1,
+                    "pos": [
+                      null,
+                      null
+                    ],
+                    "floating": false,
+                    "icon": null,
+                    "style": null,
+                    "created_at": "2020-08-23T15:41:15.000Z",
+                    "updated_at": "2020-08-23T15:53:38.000Z",
+                    "note": "[ME][Textbook][Wolf] A Tour through Mathematical Logic [https://www.scribd.com/document/332668344/R-Wolf-A-Tour-Through-Mathematical-Logic][Ch 1][ISBN9781614440284]",
+                    "link": "https://en.wikipedia.org/wiki/First-order_logic",
+                    "task": {
+                      "from": null,
+                      "until": null,
+                      "resource": null,
+                      "effort": null,
+                      "notify": 1
+                    },
+                    "attachments": [],
+                    "image": null,
+                    "children": [],
+                    "boundary": null,
+                    "video": null
+                  },
+                  {
+                    "id": 1594426188,
+                    "title": "Set Theory",
+                    "rank": 2,
+                    "pos": [
+                      null,
+                      null
+                    ],
+                    "floating": null,
+                    "icon": null,
+                    "style": null,
+                    "created_at": "2020-08-20T06:54:07.000Z",
+                    "updated_at": "2020-08-24T07:18:20.000Z",
+                    "note": "[ME][Textbook][Wolf] A Tour through Mathematical Logic [https://www.scribd.com/document/332668344/R-Wolf-A-Tour-Through-Mathematical-Logic][Ch 2, Ch 6][ISBN9781614440284]",
+                    "link": "https://en.wikipedia.org/wiki/Set_theory",
+                    "task": {
+                      "from": null,
+                      "until": null,
+                      "resource": null,
+                      "effort": null,
+                      "notify": 1
+                    },
+                    "attachments": [],
+                    "image": null,
+                    "children": [],
+                    "boundary": null,
+                    "video": null
+                  },
+                  {
+                    "id": 1597198186,
+                    "title": "Computability",
+                    "rank": 3,
+                    "pos": [
+                      null,
+                      null
+                    ],
+                    "floating": null,
+                    "icon": null,
+                    "style": null,
+                    "created_at": "2020-08-23T15:49:11.000Z",
+                    "updated_at": "2020-08-23T16:00:41.000Z",
+                    "note": "[ME][Textbook][Wolf] A Tour through Mathematical Logic [https://www.scribd.com/document/332668344/R-Wolf-A-Tour-Through-Mathematical-Logic][Ch 3][ISBN9781614440284]\u003Cbr\u003E\u003Cbr\u003E",
+                    "link": "https://en.wikipedia.org/wiki/Computability_theory",
+                    "task": {
+                      "from": null,
+                      "until": null,
+                      "resource": null,
+                      "effort": null,
+                      "notify": 1
+                    },
+                    "attachments": [],
+                    "image": null,
+                    "children": [],
+                    "boundary": null,
+                    "video": null
+                  },
+                  {
+                    "id": 1597203202,
+                    "title": "Gödel's incompleteness theorems",
+                    "rank": 4,
+                    "pos": [
+                      null,
+                      null
+                    ],
+                    "floating": null,
+                    "icon": null,
+                    "style": null,
+                    "created_at": "2020-08-23T16:00:14.000Z",
+                    "updated_at": "2020-08-24T05:04:48.000Z",
+                    "note": "[ME][Textbook][Wolf] A Tour through Mathematical Logic [https://www.scribd.com/document/332668344/R-Wolf-A-Tour-Through-Mathematical-Logic][Ch 4][ISBN9781614440284]\u003Cbr\u003E",
+                    "link": "https://en.wikipedia.org/wiki/G%C3%B6del%27s_incompleteness_theorems",
+                    "task": {
+                      "from": null,
+                      "until": null,
+                      "resource": null,
+                      "effort": null,
+                      "notify": 1
+                    },
+                    "attachments": [],
+                    "image": null,
+                    "children": [],
+                    "boundary": null,
+                    "video": null
+                  },
+                  {
+                    "id": 1597203600,
+                    "title": "Model Theory",
+                    "rank": 5,
+                    "pos": [
+                      null,
+                      null
+                    ],
+                    "floating": null,
+                    "icon": null,
+                    "style": null,
+                    "created_at": "2020-08-23T16:01:19.000Z",
+                    "updated_at": "2020-08-24T05:13:12.000Z",
+                    "note": "[ME][Textbook][Wolf] A Tour through Mathematical Logic [https://www.scribd.com/document/332668344/R-Wolf-A-Tour-Through-Mathematical-Logic][Ch 5][ISBN9781614440284]\u003Cbr\u003E",
+                    "link": "https://en.wikipedia.org/wiki/Model_theory",
+                    "task": {
+                      "from": null,
+                      "until": null,
+                      "resource": null,
+                      "effort": null,
+                      "notify": 1
+                    },
+                    "attachments": [],
+                    "image": null,
+                    "children": [],
+                    "boundary": null,
+                    "video": null
+                  },
+                  {
+                    "id": 1597640657,
+                    "title": "Nonstandard analysis",
+                    "rank": 6,
+                    "pos": [
+                      null,
+                      null
+                    ],
+                    "floating": null,
+                    "icon": null,
+                    "style": null,
+                    "created_at": "2020-08-24T05:11:50.000Z",
+                    "updated_at": "2020-08-24T05:12:31.000Z",
+                    "note": "[ME][Textbook][Wolf] A Tour through Mathematical Logic [https://www.scribd.com/document/332668344/R-Wolf-A-Tour-Through-Mathematical-Logic][Ch 7][ISBN9781614440284]",
+                    "link": "https://en.wikipedia.org/wiki/Nonstandard_analysis",
+                    "task": {
+                      "from": null,
+                      "until": null,
+                      "resource": null,
+                      "effort": null,
+                      "notify": 1
+                    },
+                    "attachments": [],
+                    "image": null,
+                    "children": [],
+                    "boundary": null,
+                    "video": null
+                  }
+                ],
                 "boundary": null,
                 "video": null
               },
               {
                 "id": 1499657981,
-                "title": "Algebra",
+                "title": "Structures",
                 "rank": 2,
                 "pos": [
                   null,
@@ -3270,7 +3524,7 @@
                 "icon": null,
                 "style": null,
                 "created_at": "2020-05-09T04:57:34.000Z",
-                "updated_at": "2020-07-10T03:49:20.000Z",
+                "updated_at": "2020-09-03T06:20:22.000Z",
                 "note": "",
                 "link": null,
                 "task": {
@@ -3284,9 +3538,122 @@
                 "image": null,
                 "children": [
                   {
+                    "id": 1603843571,
+                    "title": "Number Theory",
+                    "rank": 1,
+                    "pos": [
+                      null,
+                      null
+                    ],
+                    "floating": false,
+                    "icon": null,
+                    "style": null,
+                    "created_at": "2020-08-30T10:01:26.000Z",
+                    "updated_at": "2020-08-30T17:31:24.000Z",
+                    "note": "[ME][Textbook][Hardy]An Introduction to the Theory of Numbers[https://www.scribd.com/doc/227913422/G-Hardy-An-Introduction-to-the-Theory-of-Numbers-6th-ed-pdf]",
+                    "link": "https://en.wikipedia.org/wiki/Number_theory",
+                    "task": {
+                      "from": null,
+                      "until": null,
+                      "resource": null,
+                      "effort": null,
+                      "notify": 1
+                    },
+                    "attachments": [],
+                    "image": null,
+                    "children": [
+                      {
+                        "id": 1603843653,
+                        "title": "Primes",
+                        "rank": 1,
+                        "pos": [
+                          null,
+                          null
+                        ],
+                        "floating": null,
+                        "icon": null,
+                        "style": null,
+                        "created_at": "2020-08-30T10:01:40.000Z",
+                        "updated_at": "2020-08-30T16:50:19.000Z",
+                        "note": "\u003Cdiv class=\"line\"\u003E[ME][Textbook][Hardy]An Introduction to the Theory of Numbers[https://www.scribd.com/doc/227913422/G-Hardy-An-Introduction-to-the-Theory-of-Numbers-6th-ed-pdf][Ch 1, Ch 2]\u003C/div\u003E",
+                        "link": "https://en.wikipedia.org/wiki/Prime_number",
+                        "task": {
+                          "from": null,
+                          "until": null,
+                          "resource": null,
+                          "effort": null,
+                          "notify": 1
+                        },
+                        "attachments": [],
+                        "image": null,
+                        "children": [],
+                        "boundary": null,
+                        "video": null
+                      },
+                      {
+                        "id": 1604041796,
+                        "title": "Minkowski Theorem",
+                        "rank": 2,
+                        "pos": [
+                          null,
+                          null
+                        ],
+                        "floating": false,
+                        "icon": null,
+                        "style": null,
+                        "created_at": "2020-08-30T16:50:36.000Z",
+                        "updated_at": "2020-08-30T16:51:50.000Z",
+                        "note": "[ME][Textbook][Hardy]An Introduction to the Theory of Numbers[https://www.scribd.com/doc/227913422/G-Hardy-An-Introduction-to-the-Theory-of-Numbers-6th-ed-pdf][Ch 3]",
+                        "link": "https://en.wikipedia.org/wiki/Minkowski's_theorem",
+                        "task": {
+                          "from": null,
+                          "until": null,
+                          "resource": null,
+                          "effort": null,
+                          "notify": 1
+                        },
+                        "attachments": [],
+                        "image": null,
+                        "children": [],
+                        "boundary": null,
+                        "video": null
+                      },
+                      {
+                        "id": 1603844234,
+                        "title": "Irrational Numbers",
+                        "rank": 3,
+                        "pos": [
+                          null,
+                          null
+                        ],
+                        "floating": null,
+                        "icon": null,
+                        "style": null,
+                        "created_at": "2020-08-30T10:02:00.000Z",
+                        "updated_at": "2020-08-30T16:54:37.000Z",
+                        "note": "[ME][Textbook][Hardy]An Introduction to the Theory of Numbers[https://www.scribd.com/doc/227913422/G-Hardy-An-Introduction-to-the-Theory-of-Numbers-6th-ed-pdf][Ch 4]",
+                        "link": "https://en.wikipedia.org/wiki/Irrational_number",
+                        "task": {
+                          "from": null,
+                          "until": null,
+                          "resource": null,
+                          "effort": null,
+                          "notify": 1
+                        },
+                        "attachments": [],
+                        "image": null,
+                        "children": [],
+                        "boundary": null,
+                        "video": null
+                      }
+                    ],
+                    "boundary": null,
+                    "video": null
+                  },
+                  {
                     "id": 1524157803,
                     "title": "Elementary Algebra",
-                    "rank": 1,
+                    "rank": 2,
                     "pos": [
                       null,
                       null
@@ -3295,8 +3662,8 @@
                     "icon": null,
                     "style": null,
                     "created_at": "2020-05-31T08:38:19.000Z",
-                    "updated_at": "2020-06-14T15:09:49.000Z",
-                    "note": "\u003Ca href=\"https://www.feynmanlectures.caltech.edu/I_01.html\" style=\"line-height: 21px;\"\u003Ehttps://www.feynmanlectures.caltech.edu/I_22.html\u003C/a\u003E",
+                    "updated_at": "2020-08-30T17:29:36.000Z",
+                    "note": "[ME][Course][Khan Academy]Algebra Basics[https://www.khanacademy.org/math/algebra-basics][]\n[ME][Course][Khan Academy]Algebra[https://www.khanacademy.org/math/algebra][]\n[ME][Textbook][Feynman]Lectures On Physics[https://www.feynmanlectures.caltech.edu/I_22.html][ch 22]",
                     "link": "https://en.wikipedia.org/wiki/Elementary_algebra",
                     "task": {
                       "from": null,
@@ -3314,7 +3681,7 @@
                   {
                     "id": 1524157842,
                     "title": "Abstract Algebra",
-                    "rank": 2,
+                    "rank": 3,
                     "pos": [
                       null,
                       null
@@ -3323,8 +3690,8 @@
                     "icon": null,
                     "style": null,
                     "created_at": "2020-05-31T08:38:28.000Z",
-                    "updated_at": "2020-06-14T15:06:52.000Z",
-                    "note": "\u003Cdiv\u003EVinberg \"A Course in Algebra\"\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Cbr\u003E\u003C/div\u003E\u003Ca href=\"https://en.wikipedia.org/wiki/Lie_group#More_examples_of_Lie_groups\" style=\"line-height: 21px;\"\u003Ehttps://en.wikipedia.org/wiki/Lie_group#More_examples_of_Lie_groups\u003C/a\u003E",
+                    "updated_at": "2020-08-30T18:10:11.000Z",
+                    "note": "[ME][Textbook][Vinberg]A Course in Algebra[https://kupdf.net/download/vinberg-a-course-in-algebra_59c5b36508bbc5a1196871c6_pdf]",
                     "link": "https://en.wikipedia.org/wiki/Abstract_algebra",
                     "task": {
                       "from": null,
@@ -3348,9 +3715,9 @@
                         "icon": null,
                         "style": null,
                         "created_at": "2020-06-17T05:24:09.000Z",
-                        "updated_at": "2020-06-17T05:24:21.000Z",
-                        "note": "\u003Cdiv\u003EVinberg \"A Course in Algebra\"\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003Ech 1\u003C/div\u003E",
-                        "link": null,
+                        "updated_at": "2020-08-30T18:09:57.000Z",
+                        "note": "[ME][Textbook][Vinberg]A Course in Algebra[https://kupdf.net/download/vinberg-a-course-in-algebra_59c5b36508bbc5a1196871c6_pdf][Ch 1]",
+                        "link": "https://en.wikipedia.org/wiki/Algebraic_structure",
                         "task": {
                           "from": null,
                           "until": null,
@@ -3376,9 +3743,9 @@
                         "icon": null,
                         "style": null,
                         "created_at": "2020-06-17T05:24:46.000Z",
-                        "updated_at": "2020-06-17T05:24:49.000Z",
-                        "note": "\u003Cdiv\u003EVinberg \"A Course in Algebra\"\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003Ech 2\u003C/div\u003E",
-                        "link": null,
+                        "updated_at": "2020-08-30T18:12:52.000Z",
+                        "note": "[ME][Textbook][Vinberg]A Course in Algebra[https://kupdf.net/download/vinberg-a-course-in-algebra_59c5b36508bbc5a1196871c6_pdf][Ch 2]\u003Cbr\u003E",
+                        "link": "https://en.wikipedia.org/wiki/Linear_algebra",
                         "task": {
                           "from": null,
                           "until": null,
@@ -3391,80 +3758,274 @@
                         "children": [],
                         "boundary": null,
                         "video": null
-                      }
-                    ],
-                    "boundary": null,
-                    "video": null
-                  }
-                ],
-                "boundary": null,
-                "video": null
-              },
-              {
-                "id": 1499659183,
-                "title": "Probability theory",
-                "rank": 3,
-                "pos": [
-                  null,
-                  null
-                ],
-                "floating": false,
-                "icon": null,
-                "style": null,
-                "created_at": "2020-05-09T05:00:54.000Z",
-                "updated_at": "2020-05-31T06:30:15.000Z",
-                "note": "\u003Cdiv\u003E\u003Cp class=\"p1\" style='margin-bottom:0px;font-size: 12px;line-height: normal;font-family: \"Helvetica Neue\";color: rgb(0, 0, 0);white-space: normal;'\u003ELiterature\u003C/p\u003E\u003Cp class=\"p2\" style='margin-bottom:0px;font-size: 12px;line-height: normal;font-family: \"Helvetica Neue\";color: rgb(0, 0, 0);white-space: normal;'\u003E\u003Cbr\u003E\u003C/p\u003E\u003Cp class=\"p1\" style='margin-bottom:0px;font-size: 12px;line-height: normal;font-family: \"Helvetica Neue\";color: rgb(0, 0, 0);white-space: normal;'\u003E1 The Drunkard's Walk: How Randomness Rules Our Lives\u003C/p\u003E\u003Cp class=\"p2\" style='margin-bottom:0px;font-size: 12px;line-height: normal;font-family: \"Helvetica Neue\";color: rgb(0, 0, 0);white-space: normal;'\u003E\u003Cbr\u003E\u003C/p\u003E\u003Cp class=\"p1\" style='font-size: 12px;line-height: normal;font-family: \"Helvetica Neue\";color: rgb(0, 0, 0);white-space: normal;'\u003E2 The Feynman Lectures on Physics, vol 1, ch 6 https://www.feynmanlectures.caltech.edu/I_06.html\u003C/p\u003E\u003C/div\u003E",
-                "link": "https://en.wikipedia.org/wiki/Probability",
-                "task": {
-                  "from": null,
-                  "until": null,
-                  "resource": null,
-                  "effort": null,
-                  "notify": 1
-                },
-                "attachments": [],
-                "image": null,
-                "children": [
-                  {
-                    "id": 1514793061,
-                    "title": "Frequentist approach",
-                    "rank": 1,
-                    "pos": [
-                      null,
-                      null
-                    ],
-                    "floating": null,
-                    "icon": null,
-                    "style": null,
-                    "created_at": "2020-05-22T07:59:10.000Z",
-                    "updated_at": "2020-05-31T06:26:38.000Z",
-                    "note": null,
-                    "link": "https://en.wikipedia.org/wiki/Frequentist_probability",
-                    "task": {
-                      "from": null,
-                      "until": null,
-                      "resource": null,
-                      "effort": null,
-                      "notify": 1
-                    },
-                    "attachments": [],
-                    "image": null,
-                    "children": [
+                      },
                       {
-                        "id": 1524228293,
-                        "title": "Regression model",
-                        "rank": 1,
+                        "id": 1604084078,
+                        "title": "Polynomial Algebra",
+                        "rank": 3,
                         "pos": [
                           null,
                           null
                         ],
-                        "floating": false,
+                        "floating": null,
                         "icon": null,
                         "style": null,
-                        "created_at": "2020-05-31T10:53:59.000Z",
-                        "updated_at": "2020-05-31T10:59:14.000Z",
-                        "note": "\u003Ca href=\"https://medium.com/markovian-labs/linear-regression-frequentist-and-bayesian-447f97c8d330\"\u003Ehttps://medium.com/markovian-labs/linear-regression-frequentist-and-bayesian-447f97c8d330\u003C/a\u003E\u003Cdiv\u003E\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Ca href=\"https://educationalresearchtechniques.com/2017/10/18/linear-regression-vs-bayesian-regression/\"\u003Ehttps://educationalresearchtechniques.com/2017/10/18/linear-regression-vs-bayesian-regression/\u003C/a\u003E\u003Cbr\u003E\u003C/div\u003E",
-                        "link": "https://en.wikipedia.org/wiki/Linear_regression",
+                        "created_at": "2020-08-30T18:12:08.000Z",
+                        "updated_at": "2020-08-30T18:12:57.000Z",
+                        "note": "[ME][Textbook][Vinberg]A Course in Algebra[https://kupdf.net/download/vinberg-a-course-in-algebra_59c5b36508bbc5a1196871c6_pdf][Ch 3]",
+                        "link": "https://en.wikipedia.org/wiki/Polynomial_ring",
+                        "task": {
+                          "from": null,
+                          "until": null,
+                          "resource": null,
+                          "effort": null,
+                          "notify": 1
+                        },
+                        "attachments": [],
+                        "image": null,
+                        "children": [],
+                        "boundary": null,
+                        "video": null
+                      },
+                      {
+                        "id": 1604084929,
+                        "title": "Group Theory",
+                        "rank": 4,
+                        "pos": [
+                          null,
+                          null
+                        ],
+                        "floating": null,
+                        "icon": null,
+                        "style": null,
+                        "created_at": "2020-08-30T18:14:01.000Z",
+                        "updated_at": "2020-08-30T18:14:20.000Z",
+                        "note": "[ME][Textbook][Vinberg]A Course in Algebra[https://kupdf.net/download/vinberg-a-course-in-algebra_59c5b36508bbc5a1196871c6_pdf][Ch 4]",
+                        "link": "https://en.wikipedia.org/wiki/Group_theory",
+                        "task": {
+                          "from": null,
+                          "until": null,
+                          "resource": null,
+                          "effort": null,
+                          "notify": 1
+                        },
+                        "attachments": [],
+                        "image": null,
+                        "children": [],
+                        "boundary": null,
+                        "video": null
+                      },
+                      {
+                        "id": 1604102469,
+                        "title": "Vector Spaces",
+                        "rank": 5,
+                        "pos": [
+                          null,
+                          null
+                        ],
+                        "floating": null,
+                        "icon": null,
+                        "style": null,
+                        "created_at": "2020-08-30T18:37:44.000Z",
+                        "updated_at": "2020-08-31T06:24:37.000Z",
+                        "note": "[ME][Textbook][Vinberg]A Course in Algebra[https://kupdf.net/download/vinberg-a-course-in-algebra_59c5b36508bbc5a1196871c6_pdf][Ch 5]",
+                        "link": "https://en.wikipedia.org/wiki/Vector_space",
+                        "task": {
+                          "from": null,
+                          "until": null,
+                          "resource": null,
+                          "effort": null,
+                          "notify": 1
+                        },
+                        "attachments": [],
+                        "image": null,
+                        "children": [],
+                        "boundary": null,
+                        "video": null
+                      },
+                      {
+                        "id": 1604526796,
+                        "title": "Linear Operators",
+                        "rank": 6,
+                        "pos": [
+                          null,
+                          null
+                        ],
+                        "floating": null,
+                        "icon": null,
+                        "style": null,
+                        "created_at": "2020-08-31T06:06:50.000Z",
+                        "updated_at": "2020-08-31T06:24:33.000Z",
+                        "note": "[ME][Textbook][Vinberg]A Course in Algebra[https://kupdf.net/download/vinberg-a-course-in-algebra_59c5b36508bbc5a1196871c6_pdf][Ch 6]",
+                        "link": "https://en.wikipedia.org/wiki/Linear_map",
+                        "task": {
+                          "from": null,
+                          "until": null,
+                          "resource": null,
+                          "effort": null,
+                          "notify": 1
+                        },
+                        "attachments": [],
+                        "image": null,
+                        "children": [],
+                        "boundary": null,
+                        "video": null
+                      },
+                      {
+                        "id": 1604539802,
+                        "title": "Affine and Projective Spaces",
+                        "rank": 7,
+                        "pos": [
+                          null,
+                          null
+                        ],
+                        "floating": null,
+                        "icon": null,
+                        "style": null,
+                        "created_at": "2020-08-31T06:25:58.000Z",
+                        "updated_at": "2020-08-31T06:35:30.000Z",
+                        "note": "[ME][Textbook][Vinberg]A Course in Algebra[https://kupdf.net/download/vinberg-a-course-in-algebra_59c5b36508bbc5a1196871c6_pdf][Ch 7]",
+                        "link": "https://en.wikipedia.org/wiki/Affine_space",
+                        "task": {
+                          "from": null,
+                          "until": null,
+                          "resource": null,
+                          "effort": null,
+                          "notify": 1
+                        },
+                        "attachments": [],
+                        "image": null,
+                        "children": [],
+                        "boundary": null,
+                        "video": null
+                      },
+                      {
+                        "id": 1604546711,
+                        "title": "Tensor algebra",
+                        "rank": 8,
+                        "pos": [
+                          null,
+                          null
+                        ],
+                        "floating": null,
+                        "icon": null,
+                        "style": null,
+                        "created_at": "2020-08-31T06:37:09.000Z",
+                        "updated_at": "2020-08-31T06:37:40.000Z",
+                        "note": "[ME][Textbook][Vinberg]A Course in Algebra[https://kupdf.net/download/vinberg-a-course-in-algebra_59c5b36508bbc5a1196871c6_pdf][Ch 8]",
+                        "link": "https://en.wikipedia.org/wiki/Tensor_algebra",
+                        "task": {
+                          "from": null,
+                          "until": null,
+                          "resource": null,
+                          "effort": null,
+                          "notify": 1
+                        },
+                        "attachments": [],
+                        "image": null,
+                        "children": [],
+                        "boundary": null,
+                        "video": null
+                      },
+                      {
+                        "id": 1604547333,
+                        "title": "Commutative Algebra",
+                        "rank": 9,
+                        "pos": [
+                          null,
+                          null
+                        ],
+                        "floating": null,
+                        "icon": null,
+                        "style": null,
+                        "created_at": "2020-08-31T06:37:59.000Z",
+                        "updated_at": "2020-08-31T06:38:40.000Z",
+                        "note": "[ME][Textbook][Vinberg]A Course in Algebra[https://kupdf.net/download/vinberg-a-course-in-algebra_59c5b36508bbc5a1196871c6_pdf][Ch 9]",
+                        "link": "https://en.wikipedia.org/wiki/Associative_algebra",
+                        "task": {
+                          "from": null,
+                          "until": null,
+                          "resource": null,
+                          "effort": null,
+                          "notify": 1
+                        },
+                        "attachments": [],
+                        "image": null,
+                        "children": [],
+                        "boundary": null,
+                        "video": null
+                      },
+                      {
+                        "id": 1604548027,
+                        "title": "Groups",
+                        "rank": 10,
+                        "pos": [
+                          null,
+                          null
+                        ],
+                        "floating": null,
+                        "icon": null,
+                        "style": null,
+                        "created_at": "2020-08-31T06:38:50.000Z",
+                        "updated_at": "2020-08-31T06:41:01.000Z",
+                        "note": "[ME][Textbook][Vinberg]A Course in Algebra[https://kupdf.net/download/vinberg-a-course-in-algebra_59c5b36508bbc5a1196871c6_pdf][Ch 10]",
+                        "link": "https://en.wikipedia.org/wiki/Group_(mathematics)",
+                        "task": {
+                          "from": null,
+                          "until": null,
+                          "resource": null,
+                          "effort": null,
+                          "notify": 1
+                        },
+                        "attachments": [],
+                        "image": null,
+                        "children": [],
+                        "boundary": null,
+                        "video": null
+                      },
+                      {
+                        "id": 1604550128,
+                        "title": "Representation theory",
+                        "rank": 11,
+                        "pos": [
+                          null,
+                          null
+                        ],
+                        "floating": null,
+                        "icon": null,
+                        "style": null,
+                        "created_at": "2020-08-31T06:43:02.000Z",
+                        "updated_at": "2020-08-31T06:43:18.000Z",
+                        "note": "[ME][Textbook][Vinberg]A Course in Algebra[https://kupdf.net/download/vinberg-a-course-in-algebra_59c5b36508bbc5a1196871c6_pdf][Ch 11]",
+                        "link": "https://en.wikipedia.org/wiki/Representation_theory",
+                        "task": {
+                          "from": null,
+                          "until": null,
+                          "resource": null,
+                          "effort": null,
+                          "notify": 1
+                        },
+                        "attachments": [],
+                        "image": null,
+                        "children": [],
+                        "boundary": null,
+                        "video": null
+                      },
+                      {
+                        "id": 1604550375,
+                        "title": "Lie Groups",
+                        "rank": 12,
+                        "pos": [
+                          null,
+                          null
+                        ],
+                        "floating": null,
+                        "icon": null,
+                        "style": null,
+                        "created_at": "2020-08-31T06:43:39.000Z",
+                        "updated_at": "2020-08-31T06:50:59.000Z",
+                        "note": "[ME][Textbook][Vinberg]A Course in Algebra[https://kupdf.net/download/vinberg-a-course-in-algebra_59c5b36508bbc5a1196871c6_pdf][Ch 12]\n\n[ME][Textbook][Sternberg]Group Theory and Physics[https://books.google.ru/books/about/Group_Theory_and_Physics.html?id=k2Fp3JA93oYC][Ch 4]",
+                        "link": "https://en.wikipedia.org/wiki/Lie_group",
                         "task": {
                           "from": null,
                           "until": null,
@@ -3483,9 +4044,9 @@
                     "video": null
                   },
                   {
-                    "id": 1514793099,
-                    "title": "Bayesian approach",
-                    "rank": 2,
+                    "id": 1605996065,
+                    "title": "Graph Theory",
+                    "rank": 4,
                     "pos": [
                       null,
                       null
@@ -3493,10 +4054,10 @@
                     "floating": null,
                     "icon": null,
                     "style": null,
-                    "created_at": "2020-05-22T07:59:12.000Z",
-                    "updated_at": "2020-05-31T11:01:50.000Z",
-                    "note": "\u003Cspan style='color: rgb(255, 233, 166);font-family: Avenir, \"Segoe UI\", Helvetica, Arial, sans-serif;font-size: 14.3px;background-color: rgb(61, 71, 77);'\u003EBayesian Methods for Hackers\u003C/span\u003E\u003Cdiv\u003E\u003Cspan style=\"background-color: rgb(61, 71, 77);\"\u003E\u003Cspan style=\"font-size: 14.3px;\"\u003Ehttps://github.com/CamDavidsonPilon/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers\u003Cbr\u003E\u003C/span\u003E\u003C/span\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Cspan style='color: rgb(255, 233, 166);font-family: Avenir, \"Segoe UI\", Helvetica, Arial, sans-serif;font-size: 14.3px;background-color: rgb(61, 71, 77);'\u003E\u003Cbr\u003E\u003C/span\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Cspan style='color: rgb(255, 233, 166);font-family: Avenir, \"Segoe UI\", Helvetica, Arial, sans-serif;font-size: 14.3px;background-color: rgb(61, 71, 77);'\u003E\u003Cbr\u003E\u003C/span\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Cspan style='color: rgb(255, 233, 166);font-family: Avenir, \"Segoe UI\", Helvetica, Arial, sans-serif;font-size: 14.3px;background-color: rgb(61, 71, 77);'\u003E\u003Cspan style=\"font-size: 14.3px;\"\u003ERisk Assessment and Decision Analysis with Bayesian Networks\u003C/span\u003E\u003Cbr\u003E\u003C/span\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Cspan style='color: rgb(255, 233, 166);font-family: Avenir, \"Segoe UI\", Helvetica, Arial, sans-serif;font-size: 14.3px;background-color: rgb(61, 71, 77);'\u003E\u003Cspan style=\"font-size: 14.3px;\"\u003E\u003Cbr\u003E\u003C/span\u003E\u003C/span\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Cspan style='color: rgb(255, 233, 166);font-family: Avenir, \"Segoe UI\", Helvetica, Arial, sans-serif;font-size: 14.3px;background-color: rgb(61, 71, 77);'\u003E\u003Cspan style=\"font-size: 14.3px;\"\u003E\u003Cbr\u003E\u003C/span\u003E\u003C/span\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Cspan style='color: rgb(255, 233, 166);font-family: Avenir, \"Segoe UI\", Helvetica, Arial, sans-serif;font-size: 14.3px;background-color: rgb(61, 71, 77);'\u003E\u003Cspan style=\"line-height: 20.02px;font-size: 14.3px;\"\u003EThe Theory That Would Not Die: How Bayes' Rule Cracked the Enigma Code, Hunted Down Russian Submarines, and Emerged Triumphant\u003C/span\u003E\u003Cdiv style='color: rgb(138, 148, 153);font-family: Avenir, \"Avenir Next\", \"Segoe UI\", Helvetica, Arial, sans-serif;font-size: 15px;background-color: rgb(255, 247, 204);'\u003E\u003Cspan style='line-height: 20.02px;color: rgb(255, 233, 166);font-family: Avenir, \"Segoe UI\", Helvetica, Arial, sans-serif;font-size: 14.3px;background-color: rgb(61, 71, 77);'\u003E\u003Cbr\u003E\u003C/span\u003E\u003C/div\u003E\u003Cdiv style='color: rgb(138, 148, 153);font-family: Avenir, \"Avenir Next\", \"Segoe UI\", Helvetica, Arial, sans-serif;font-size: 15px;background-color: rgb(255, 247, 204);'\u003E\u003Cspan style='line-height: 20.02px;color: rgb(255, 233, 166);font-family: Avenir, \"Segoe UI\", Helvetica, Arial, sans-serif;font-size: 14.3px;background-color: rgb(61, 71, 77);'\u003E\u003Cbr\u003E\u003C/span\u003E\u003C/div\u003E\u003C/span\u003E\u003C/div\u003E",
-                    "link": "https://en.wikipedia.org/wiki/Bayesian_probability",
+                    "created_at": "2020-09-01T13:44:16.000Z",
+                    "updated_at": "2020-09-01T13:57:47.000Z",
+                    "note": "[ME][Textbook][Bondy]Graph Theory With Applications[http://www.maths.lse.ac.uk/Personal/jozef/LTCC/Graph_Theory_Bondy_Murty.pdf]",
+                    "link": "https://en.wikipedia.org/wiki/Graph_theory",
                     "task": {
                       "from": null,
                       "until": null,
@@ -3506,36 +4067,148 @@
                     },
                     "attachments": [],
                     "image": null,
-                    "children": [
-                      {
-                        "id": 1524231714,
-                        "title": "Regression model",
-                        "rank": 1,
-                        "pos": [
-                          null,
-                          null
-                        ],
-                        "floating": null,
-                        "icon": null,
-                        "style": null,
-                        "created_at": "2020-05-31T11:02:02.000Z",
-                        "updated_at": "2020-05-31T11:04:57.000Z",
-                        "note": null,
-                        "link": "https://en.wikipedia.org/wiki/Bayesian_linear_regression",
-                        "task": {
-                          "from": null,
-                          "until": null,
-                          "resource": null,
-                          "effort": null,
-                          "notify": 1
-                        },
-                        "attachments": [],
-                        "image": null,
-                        "children": [],
-                        "boundary": null,
-                        "video": null
-                      }
+                    "children": [],
+                    "boundary": null,
+                    "video": null
+                  }
+                ],
+                "boundary": null,
+                "video": null
+              },
+              {
+                "id": 1604046161,
+                "title": "Geometry",
+                "rank": 3,
+                "pos": [
+                  null,
+                  null
+                ],
+                "floating": false,
+                "icon": null,
+                "style": null,
+                "created_at": "2020-08-30T17:00:07.000Z",
+                "updated_at": "2020-09-01T14:29:04.000Z",
+                "note": null,
+                "link": "https://en.wikipedia.org/wiki/Geometry",
+                "task": {
+                  "from": null,
+                  "until": null,
+                  "resource": null,
+                  "effort": null,
+                  "notify": 1
+                },
+                "attachments": [],
+                "image": null,
+                "children": [
+                  {
+                    "id": 1606018163,
+                    "title": "Euclidean Geometry",
+                    "rank": 1,
+                    "pos": [
+                      null,
+                      null
                     ],
+                    "floating": null,
+                    "icon": null,
+                    "style": null,
+                    "created_at": "2020-09-01T14:05:35.000Z",
+                    "updated_at": "2020-09-01T14:36:44.000Z",
+                    "note": "[ME][Course][Khan academy]Geometry[https://www.khanacademy.org/math/geometry-home]",
+                    "link": "https://en.wikipedia.org/wiki/Euclidean_geometry",
+                    "task": {
+                      "from": null,
+                      "until": null,
+                      "resource": null,
+                      "effort": null,
+                      "notify": 1
+                    },
+                    "attachments": [],
+                    "image": null,
+                    "children": [],
+                    "boundary": null,
+                    "video": null
+                  },
+                  {
+                    "id": 1606036561,
+                    "title": "Analytic Geometry",
+                    "rank": 2,
+                    "pos": [
+                      null,
+                      null
+                    ],
+                    "floating": null,
+                    "icon": null,
+                    "style": null,
+                    "created_at": "2020-09-01T14:22:11.000Z",
+                    "updated_at": "2020-09-01T14:35:57.000Z",
+                    "note": "[ME][Course][Khan academy]Get ready for Geometry[https://www.khanacademy.org/math/get-ready-for-geometry]\u003Cbr\u003E\u003Cbr\u003E[ME][Course][Khan academy]High school geometry[https://www.khanacademy.org/math/geometry]\u003Cbr\u003E",
+                    "link": "https://en.wikipedia.org/wiki/Analytic_geometry",
+                    "task": {
+                      "from": null,
+                      "until": null,
+                      "resource": null,
+                      "effort": null,
+                      "notify": 1
+                    },
+                    "attachments": [],
+                    "image": null,
+                    "children": [],
+                    "boundary": null,
+                    "video": null
+                  },
+                  {
+                    "id": 1606037945,
+                    "title": "Differential geometry",
+                    "rank": 3,
+                    "pos": [
+                      null,
+                      null
+                    ],
+                    "floating": null,
+                    "icon": null,
+                    "style": null,
+                    "created_at": "2020-09-01T14:23:31.000Z",
+                    "updated_at": "2020-09-01T14:46:31.000Z",
+                    "note": "[ME][Textbook][Sochi]Introduction to Differential Geometry of Space Curves and Surfaces[https://ru.scribd.com/document/441303417/Taha-Sochi-Introduction-to-Differential-Geometry-of-Space-Curves-and-Surfaces-2017-CreateSpace-Independent-Publishing-Platform]",
+                    "link": "https://en.wikipedia.org/wiki/Differential_geometry",
+                    "task": {
+                      "from": null,
+                      "until": null,
+                      "resource": null,
+                      "effort": null,
+                      "notify": 1
+                    },
+                    "attachments": [],
+                    "image": null,
+                    "children": [],
+                    "boundary": null,
+                    "video": null
+                  },
+                  {
+                    "id": 1606040934,
+                    "title": "Topology",
+                    "rank": 4,
+                    "pos": [
+                      null,
+                      null
+                    ],
+                    "floating": null,
+                    "icon": null,
+                    "style": null,
+                    "created_at": "2020-09-01T14:26:32.000Z",
+                    "updated_at": "2020-09-01T14:39:57.000Z",
+                    "note": "[ME][Textbook][Munkres]Topology[https://www.amazon.co.uk/dp/0131816292]",
+                    "link": "https://en.wikipedia.org/wiki/Topology",
+                    "task": {
+                      "from": null,
+                      "until": null,
+                      "resource": null,
+                      "effort": null,
+                      "notify": 1
+                    },
+                    "attachments": [],
+                    "image": null,
+                    "children": [],
                     "boundary": null,
                     "video": null
                   }
@@ -3555,9 +4228,9 @@
                 "icon": null,
                 "style": null,
                 "created_at": "2020-05-09T04:57:45.000Z",
-                "updated_at": "2020-08-14T14:51:10.000Z",
-                "note": "V Zorich \"Mathematical Analysis\"",
-                "link": "",
+                "updated_at": "2020-09-01T15:04:22.000Z",
+                "note": "[ME][Textbook][Zorich]Mathematical Analysis I[http://instructor.sdu.edu.kz/~verbovskiy/Math%20Analysis%201/Zorich1_en.pdf]\u003Cbr\u003E\u003Cbr\u003E[ME][Textbook][Zorich]Mathematical Analysis II[http://instructor.sdu.edu.kz/~verbovskiy/Math%20Analysis%201/Zorich2_en.pdf]\u003Cbr\u003E",
+                "link": "https://en.wikipedia.org/wiki/Mathematical_analysis",
                 "task": {
                   "from": null,
                   "until": null,
@@ -3580,9 +4253,9 @@
                     "icon": null,
                     "style": null,
                     "created_at": "2020-06-14T15:23:16.000Z",
-                    "updated_at": "2020-06-14T15:25:22.000Z",
-                    "note": "V Zorich \"Mathematical Analysis\" Ch 1",
-                    "link": null,
+                    "updated_at": "2020-09-01T15:17:43.000Z",
+                    "note": "[ME][Textbook][Zorich]Mathematical Analysis I[http://instructor.sdu.edu.kz/~verbovskiy/Math%20Analysis%201/Zorich1_en.pdf][Ch 1]",
+                    "link": "https://en.wikipedia.org/wiki/Function_(mathematics)",
                     "task": {
                       "from": null,
                       "until": null,
@@ -3608,9 +4281,9 @@
                     "icon": null,
                     "style": null,
                     "created_at": "2020-06-14T15:25:30.000Z",
-                    "updated_at": "2020-06-14T15:25:57.000Z",
-                    "note": "V Zorich \"Mathematical Analysis\" Ch 2",
-                    "link": null,
+                    "updated_at": "2020-09-01T15:19:14.000Z",
+                    "note": "[ME][Textbook][Zorich]Mathematical Analysis I[http://instructor.sdu.edu.kz/~verbovskiy/Math%20Analysis%201/Zorich1_en.pdf][Ch 2]",
+                    "link": "https://en.wikipedia.org/wiki/Real_number",
                     "task": {
                       "from": null,
                       "until": null,
@@ -3636,9 +4309,9 @@
                     "icon": null,
                     "style": null,
                     "created_at": "2020-06-14T15:26:26.000Z",
-                    "updated_at": "2020-06-14T15:26:40.000Z",
-                    "note": "V Zorich \"Mathematical Analysis\" Ch 3",
-                    "link": null,
+                    "updated_at": "2020-09-01T15:19:48.000Z",
+                    "note": "[ME][Textbook][Zorich]Mathematical Analysis I[http://instructor.sdu.edu.kz/~verbovskiy/Math%20Analysis%201/Zorich1_en.pdf][Ch 3]",
+                    "link": "https://en.wikipedia.org/wiki/Limit_(mathematics)",
                     "task": {
                       "from": null,
                       "until": null,
@@ -3664,9 +4337,9 @@
                     "icon": null,
                     "style": null,
                     "created_at": "2020-06-14T15:26:58.000Z",
-                    "updated_at": "2020-06-14T15:27:23.000Z",
-                    "note": "V Zorich \"Mathematical Analysis\" Ch 4",
-                    "link": null,
+                    "updated_at": "2020-09-01T15:20:38.000Z",
+                    "note": "[ME][Textbook][Zorich]Mathematical Analysis I[http://instructor.sdu.edu.kz/~verbovskiy/Math%20Analysis%201/Zorich1_en.pdf][Ch 4]",
+                    "link": "https://en.wikipedia.org/wiki/Continuous_function",
                     "task": {
                       "from": null,
                       "until": null,
@@ -3692,9 +4365,9 @@
                     "icon": null,
                     "style": null,
                     "created_at": "2020-06-14T07:41:22.000Z",
-                    "updated_at": "2020-07-04T18:25:13.000Z",
-                    "note": "",
-                    "link": null,
+                    "updated_at": "2020-09-01T15:21:30.000Z",
+                    "note": "[ME][Textbook][Zorich]Mathematical Analysis I[http://instructor.sdu.edu.kz/~verbovskiy/Math%20Analysis%201/Zorich1_en.pdf][Ch 5, Ch 7, Ch 8]\u003Cdiv\u003E\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003E[ME][Textbook][Zorich]Mathematical Analysis II[http://instructor.sdu.edu.kz/~verbovskiy/Math%20Analysis%201/Zorich2_en.pdf][Ch 14 par 1]\u003Cbr\u003E\u003C/div\u003E",
+                    "link": "https://en.wikipedia.org/wiki/Differential_calculus",
                     "task": {
                       "from": null,
                       "until": null,
@@ -3717,9 +4390,9 @@
                         "icon": null,
                         "style": null,
                         "created_at": "2020-07-04T18:25:09.000Z",
-                        "updated_at": "2020-07-04T18:25:23.000Z",
-                        "note": "V Zorich \"Mathematical Analysis\" Ch 5, 7, 8",
-                        "link": null,
+                        "updated_at": "2020-09-01T15:24:24.000Z",
+                        "note": "[ME][Textbook][Zorich]Mathematical Analysis I[http://instructor.sdu.edu.kz/~verbovskiy/Math%20Analysis%201/Zorich1_en.pdf][Ch 5, Ch 7, Ch 8]",
+                        "link": "https://en.wikipedia.org/wiki/Differential_calculus",
                         "task": {
                           "from": null,
                           "until": null,
@@ -3774,9 +4447,9 @@
                         "icon": null,
                         "style": null,
                         "created_at": "2020-07-04T18:25:33.000Z",
-                        "updated_at": "2020-07-04T18:30:52.000Z",
-                        "note": "V Zorich \"Mathematical Analysis\" II Ch 14 par 1\u003Cdiv\u003E\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Ca href=\"https://www.feynmanlectures.caltech.edu/II_01.html\" style=\"line-height: 21px;\"\u003Ehttps://www.feynmanlectures.caltech.edu/II_02.html\u003C/a\u003E\u003Cbr\u003E\u003Cdiv\u003E\u003Cbr\u003E\u003C/div\u003E\u003C/div\u003E",
-                        "link": null,
+                        "updated_at": "2020-09-01T15:25:57.000Z",
+                        "note": "[ME][Textbook][Zorich]Mathematical Analysis II[http://instructor.sdu.edu.kz/~verbovskiy/Math%20Analysis%201/Zorich2_en.pdf][Ch 14 par 1]\u003Cbr\u003E\u003Cbr\u003E[ME][Textbook][Feynman]The Feynman Lectures on Physics[https://www.feynmanlectures.caltech.edu/II_02.html][Volume 2, Ch 2]\u003Cbr\u003E",
+                        "link": "https://en.wikipedia.org/wiki/Tensor_calculus",
                         "task": {
                           "from": null,
                           "until": null,
@@ -3806,9 +4479,9 @@
                     "icon": null,
                     "style": null,
                     "created_at": "2020-06-14T15:28:07.000Z",
-                    "updated_at": "2020-07-04T18:30:14.000Z",
-                    "note": "",
-                    "link": null,
+                    "updated_at": "2020-09-01T15:26:37.000Z",
+                    "note": "[ME][Textbook][Zorich]Mathematical Analysis I[http://instructor.sdu.edu.kz/~verbovskiy/Math%20Analysis%201/Zorich1_en.pdf][Ch 6]\u003Cdiv\u003E\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003E[ME][Textbook][Zorich]Mathematical Analysis II[http://instructor.sdu.edu.kz/~verbovskiy/Math%20Analysis%201/Zorich2_en.pdf][Ch 14 par 2]\u003Cbr\u003E\u003C/div\u003E",
+                    "link": "https://en.wikipedia.org/wiki/Integral",
                     "task": {
                       "from": null,
                       "until": null,
@@ -3831,9 +4504,9 @@
                         "icon": null,
                         "style": null,
                         "created_at": "2020-07-04T18:29:53.000Z",
-                        "updated_at": "2020-07-04T18:30:17.000Z",
-                        "note": "V Zorich \"Mathematical Analysis\" Ch 6",
-                        "link": null,
+                        "updated_at": "2020-09-01T15:27:04.000Z",
+                        "note": "[ME][Textbook][Zorich]Mathematical Analysis I[http://instructor.sdu.edu.kz/~verbovskiy/Math%20Analysis%201/Zorich1_en.pdf][Ch 6]\u003Cdiv\u003E\u003Cbr\u003E\u003C/div\u003E",
+                        "link": "https://en.wikipedia.org/wiki/Integral",
                         "task": {
                           "from": null,
                           "until": null,
@@ -3859,9 +4532,9 @@
                         "icon": null,
                         "style": null,
                         "created_at": "2020-07-04T18:30:03.000Z",
-                        "updated_at": "2020-07-04T18:31:46.000Z",
-                        "note": "V Zorich \"Mathematical Analysis\" II Ch 14 par 2\u003Cdiv\u003E\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Ca href=\"https://www.feynmanlectures.caltech.edu/II_01.html\" style=\"line-height: 21px;\"\u003Ehttps://www.feynmanlectures.caltech.edu/II_03.html\u003C/a\u003E\u003Cbr\u003E\u003C/div\u003E",
-                        "link": null,
+                        "updated_at": "2020-09-01T15:27:41.000Z",
+                        "note": "\u003Cdiv\u003E[ME][Textbook][Zorich]Mathematical Analysis II[http://instructor.sdu.edu.kz/~verbovskiy/Math%20Analysis%201/Zorich2_en.pdf][Ch 14 par 2]\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Cbr\u003E[ME][Textbook][Feynman]The Feynman Lectures on Physics[https://www.feynmanlectures.caltech.edu/II_02.html][Volume 2, Ch 3]\u003Cbr\u003E\u003C/div\u003E",
+                        "link": "https://en.wikipedia.org/wiki/Tensor_calculus",
                         "task": {
                           "from": null,
                           "until": null,
@@ -3891,13 +4564,13 @@
                   null,
                   null
                 ],
-                "floating": null,
+                "floating": false,
                 "icon": null,
                 "style": null,
                 "created_at": "2020-06-17T05:40:54.000Z",
-                "updated_at": "2020-06-17T06:32:47.000Z",
-                "note": "\u003Cspan style=\"font-size: 14px;white-space: normal;\"\u003E\u003Cb\u003EOrdinary Differential Equations  Morris Tenenbaum, Harry Pollard\u003C/b\u003E\u003C/span\u003E\u003Cbr\u003E\u003Cdiv\u003E\u003Cspan style=\"font-size: 14px;white-space: normal;\"\u003E\u003Cb\u003E\u003Cbr\u003E\u003C/b\u003E\u003C/span\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Cspan style=\"\"\u003E\u003Cspan style=\"font-size: 14px;white-space: normal;\"\u003E\u003Cb\u003EOrdinary Differential Equations\u003C/b\u003E\u003C/span\u003E\u003C/span\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Cspan style=\"\"\u003E\u003Cspan style=\"font-size: 14px;white-space: normal;\"\u003E\u003Cb\u003EV. I. Arnold \u003C/b\u003E\u003Cbr\u003E\u003C/span\u003E\u003C/span\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Cspan style=\"font-size: 14px;white-space: normal;\"\u003E\u003Cb\u003E\u003Cbr\u003E\u003C/b\u003E\u003C/span\u003E\u003C/div\u003E",
-                "link": null,
+                "updated_at": "2020-09-02T08:20:51.000Z",
+                "note": "",
+                "link": "https://en.wikipedia.org/wiki/Differential_equation",
                 "task": {
                   "from": null,
                   "until": null,
@@ -3910,7 +4583,7 @@
                 "children": [
                   {
                     "id": 1541291860,
-                    "title": "Linear equations",
+                    "title": "Ordinary",
                     "rank": 1,
                     "pos": [
                       null,
@@ -3920,9 +4593,293 @@
                     "icon": null,
                     "style": null,
                     "created_at": "2020-06-17T06:32:56.000Z",
-                    "updated_at": "2020-06-17T06:33:24.000Z",
+                    "updated_at": "2020-09-02T08:20:35.000Z",
+                    "note": "[ME][Textbook][Tenenbaum]Ordinary Differential Equations[https://archive.org/details/morris-tenenbaum-harry-pollard-ordinary-differential-equations-copy/mode/2up]\u003Cbr\u003E",
+                    "link": "https://en.wikipedia.org/wiki/Ordinary_differential_equation",
+                    "task": {
+                      "from": null,
+                      "until": null,
+                      "resource": null,
+                      "effort": null,
+                      "notify": 1
+                    },
+                    "attachments": [],
+                    "image": null,
+                    "children": [],
+                    "boundary": null,
+                    "video": null
+                  },
+                  {
+                    "id": 1606855939,
+                    "title": "Partial",
+                    "rank": 2,
+                    "pos": [
+                      null,
+                      null
+                    ],
+                    "floating": null,
+                    "icon": null,
+                    "style": null,
+                    "created_at": "2020-09-02T08:20:15.000Z",
+                    "updated_at": "2020-09-02T08:21:17.000Z",
                     "note": null,
-                    "link": null,
+                    "link": "https://en.wikipedia.org/wiki/Partial_differential_equation",
+                    "task": {
+                      "from": null,
+                      "until": null,
+                      "resource": null,
+                      "effort": null,
+                      "notify": 1
+                    },
+                    "attachments": [],
+                    "image": null,
+                    "children": [],
+                    "boundary": null,
+                    "video": null
+                  }
+                ],
+                "boundary": null,
+                "video": null
+              },
+              {
+                "id": 1499659183,
+                "title": "Probability and Statistics",
+                "rank": 6,
+                "pos": [
+                  null,
+                  null
+                ],
+                "floating": false,
+                "icon": null,
+                "style": null,
+                "created_at": "2020-05-09T05:00:54.000Z",
+                "updated_at": "2020-09-07T05:51:21.000Z",
+                "note": "\u003Cdiv\u003E\u003Cp class=\"p1\" style='margin-bottom:0px;font-size: 12px;line-height: normal;font-family: \"Helvetica Neue\";color: rgb(0, 0, 0);white-space: normal;'\u003ELiterature\u003C/p\u003E\u003Cp class=\"p2\" style='margin-bottom:0px;font-size: 12px;line-height: normal;font-family: \"Helvetica Neue\";color: rgb(0, 0, 0);white-space: normal;'\u003E\u003Cbr\u003E\u003C/p\u003E\u003Cp class=\"p1\" style='margin-bottom:0px;font-size: 12px;line-height: normal;font-family: \"Helvetica Neue\";color: rgb(0, 0, 0);white-space: normal;'\u003E1 The Drunkard's Walk: How Randomness Rules Our Lives\u003C/p\u003E\u003Cp class=\"p2\" style='margin-bottom:0px;font-size: 12px;line-height: normal;font-family: \"Helvetica Neue\";color: rgb(0, 0, 0);white-space: normal;'\u003E\u003Cbr\u003E\u003C/p\u003E\u003Cp class=\"p1\" style='font-size: 12px;line-height: normal;font-family: \"Helvetica Neue\";color: rgb(0, 0, 0);white-space: normal;'\u003E2 The Feynman Lectures on Physics, vol 1, ch 6 https://www.feynmanlectures.caltech.edu/I_06.html\u003C/p\u003E\u003C/div\u003E",
+                "link": "https://en.wikipedia.org/wiki/Probability",
+                "task": {
+                  "from": null,
+                  "until": null,
+                  "resource": null,
+                  "effort": null,
+                  "notify": 1
+                },
+                "attachments": [],
+                "image": null,
+                "children": [
+                  {
+                    "id": 1611482664,
+                    "title": "Statistics",
+                    "rank": 1,
+                    "pos": [
+                      null,
+                      null
+                    ],
+                    "floating": null,
+                    "icon": null,
+                    "style": null,
+                    "created_at": "2020-09-07T05:50:40.000Z",
+                    "updated_at": "2020-09-07T06:32:50.000Z",
+                    "note": "[ME][Course][Orloff]Comparison of frequentist and Bayesian inference[https://ocw.mit.edu/courses/mathematics/18-05-introduction-to-probability-and-statistics-spring-2014/readings/MIT18_05S14_Reading20.pdf]",
+                    "link": "https://en.wikipedia.org/wiki/Statistics",
+                    "task": {
+                      "from": null,
+                      "until": null,
+                      "resource": null,
+                      "effort": null,
+                      "notify": 1
+                    },
+                    "attachments": [],
+                    "image": null,
+                    "children": [
+                      {
+                        "id": 1514793061,
+                        "title": "Frequentist inference",
+                        "rank": 1,
+                        "pos": [
+                          null,
+                          null
+                        ],
+                        "floating": false,
+                        "icon": null,
+                        "style": null,
+                        "created_at": "2020-05-22T07:59:10.000Z",
+                        "updated_at": "2020-09-07T06:41:10.000Z",
+                        "note": "[ME][Textbook][Kiefer]Introduction to Statistical Inference[https://link.springer.com/book/10.1007/978-1-4613-9578-2]",
+                        "link": "https://en.wikipedia.org/wiki/Frequentist_probability",
+                        "task": {
+                          "from": null,
+                          "until": null,
+                          "resource": null,
+                          "effort": null,
+                          "notify": 1
+                        },
+                        "attachments": [],
+                        "image": null,
+                        "children": [
+                          {
+                            "id": 1524228293,
+                            "title": "Regression model",
+                            "rank": 1,
+                            "pos": [
+                              null,
+                              null
+                            ],
+                            "floating": false,
+                            "icon": null,
+                            "style": null,
+                            "created_at": "2020-05-31T10:53:59.000Z",
+                            "updated_at": "2020-09-07T06:41:41.000Z",
+                            "note": "\u003Cbr\u003E\u003Cdiv\u003E\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Ca href=\"https://educationalresearchtechniques.com/2017/10/18/linear-regression-vs-bayesian-regression/\"\u003Ehttps://educationalresearchtechniques.com/2017/10/18/linear-regression-vs-bayesian-regression/\u003C/a\u003E\u003Cbr\u003E\u003C/div\u003E",
+                            "link": "https://en.wikipedia.org/wiki/Linear_regression",
+                            "task": {
+                              "from": null,
+                              "until": null,
+                              "resource": null,
+                              "effort": null,
+                              "notify": 1
+                            },
+                            "attachments": [],
+                            "image": null,
+                            "children": [],
+                            "boundary": null,
+                            "video": null
+                          }
+                        ],
+                        "boundary": null,
+                        "video": null
+                      },
+                      {
+                        "id": 1514793099,
+                        "title": "Bayesian inference",
+                        "rank": 2,
+                        "pos": [
+                          null,
+                          null
+                        ],
+                        "floating": false,
+                        "icon": null,
+                        "style": null,
+                        "created_at": "2020-05-22T07:59:12.000Z",
+                        "updated_at": "2020-09-07T06:24:21.000Z",
+                        "note": "[ME][Textbook][Sivia]Data Analysis. A Bayesian Tutorial.[http://aprsa.villanova.edu/files/sivia.pdf][ISBN0198568320]\n\n[IL][Book][Mcgrayne]The Theory That Would Not Die: How Bayes' Rule Cracked the Enigma Code, Hunted Down Russian Submarines, and Emerged Triumphant[https://www.amazon.com/Theory-That-Would-Not-Die/dp/0300188226]",
+                        "link": "https://en.wikipedia.org/wiki/Bayesian_inference",
+                        "task": {
+                          "from": null,
+                          "until": null,
+                          "resource": null,
+                          "effort": null,
+                          "notify": 1
+                        },
+                        "attachments": [],
+                        "image": null,
+                        "children": [
+                          {
+                            "id": 1524231714,
+                            "title": "Regression model",
+                            "rank": 1,
+                            "pos": [
+                              null,
+                              null
+                            ],
+                            "floating": null,
+                            "icon": null,
+                            "style": null,
+                            "created_at": "2020-05-31T11:02:02.000Z",
+                            "updated_at": "2020-05-31T11:04:57.000Z",
+                            "note": null,
+                            "link": "https://en.wikipedia.org/wiki/Bayesian_linear_regression",
+                            "task": {
+                              "from": null,
+                              "until": null,
+                              "resource": null,
+                              "effort": null,
+                              "notify": 1
+                            },
+                            "attachments": [],
+                            "image": null,
+                            "children": [],
+                            "boundary": null,
+                            "video": null
+                          },
+                          {
+                            "id": 1607953320,
+                            "title": "Bayes Networks",
+                            "rank": 2,
+                            "pos": [
+                              null,
+                              null
+                            ],
+                            "floating": null,
+                            "icon": null,
+                            "style": null,
+                            "created_at": "2020-09-03T07:03:15.000Z",
+                            "updated_at": "2020-09-07T06:08:08.000Z",
+                            "note": "[ME][Textbook][Fenton]Risk Assessment and Decision Analysis with Bayesian Networks[https://www.amazon.com/Assessment-Decision-Analysis-Bayesian-Networks/dp/1439809100][ISBN1439809100]",
+                            "link": "https://en.wikipedia.org/wiki/Bayesian_network",
+                            "task": {
+                              "from": null,
+                              "until": null,
+                              "resource": null,
+                              "effort": null,
+                              "notify": 1
+                            },
+                            "attachments": [],
+                            "image": null,
+                            "children": [],
+                            "boundary": null,
+                            "video": null
+                          },
+                          {
+                            "id": 1611491111,
+                            "title": "Bayesian Inference in Python",
+                            "rank": 3,
+                            "pos": [
+                              null,
+                              null
+                            ],
+                            "floating": null,
+                            "icon": null,
+                            "style": null,
+                            "created_at": "2020-09-07T06:01:19.000Z",
+                            "updated_at": "2020-09-07T06:03:57.000Z",
+                            "note": "[ME][Textbook][Davidson-Pilon]Bayesian Methods for Hackers[https://github.com/CamDavidsonPilon/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers][ISBN0133902838]",
+                            "link": null,
+                            "task": {
+                              "from": null,
+                              "until": null,
+                              "resource": null,
+                              "effort": null,
+                              "notify": 1
+                            },
+                            "attachments": [],
+                            "image": null,
+                            "children": [],
+                            "boundary": null,
+                            "video": null
+                          }
+                        ],
+                        "boundary": null,
+                        "video": null
+                      }
+                    ],
+                    "boundary": null,
+                    "video": null
+                  },
+                  {
+                    "id": 1611483129,
+                    "title": "Probability theory",
+                    "rank": 2,
+                    "pos": [
+                      null,
+                      null
+                    ],
+                    "floating": null,
+                    "icon": null,
+                    "style": null,
+                    "created_at": "2020-09-07T05:51:11.000Z",
+                    "updated_at": "2020-09-07T05:56:00.000Z",
+                    "note": "[ME][Textbook][Grimmet]Probability and random processes[https://www.academia.edu/31210737/Probability_and_random_process_by_geoffrey_grimmett_and_david_stirzaker][ISBN0198572220]",
+                    "link": "https://en.wikipedia.org/wiki/Probability",
                     "task": {
                       "from": null,
                       "until": null,
@@ -3947,7 +4904,7 @@
           {
             "id": 1506737845,
             "title": "Physics",
-            "rank": 3,
+            "rank": 2,
             "pos": [
               null,
               null
@@ -4226,6 +5183,34 @@
             ],
             "boundary": null,
             "video": null
+          },
+          {
+            "id": 1444535540,
+            "title": "Universal Darwinism",
+            "rank": 3,
+            "pos": [
+              null,
+              null
+            ],
+            "floating": false,
+            "icon": null,
+            "style": null,
+            "created_at": "2020-03-21T08:04:45.000Z",
+            "updated_at": "2020-08-20T06:48:26.000Z",
+            "note": "",
+            "link": "https://en.wikipedia.org/wiki/Universal_Darwinism",
+            "task": {
+              "from": null,
+              "until": null,
+              "resource": null,
+              "effort": null,
+              "notify": 1
+            },
+            "attachments": [],
+            "image": null,
+            "children": [],
+            "boundary": null,
+            "video": null
           }
         ],
         "boundary": null,
@@ -4237,7 +5222,7 @@
         "rank": 8,
         "pos": [
           49,
-          1068
+          1675
         ],
         "floating": null,
         "icon": null,
