@@ -3,9 +3,11 @@
 ## Rules of classification
 General rule of classification is somewhat similar to Barbara Minto pyramid ([summary](https://medium.com/lessons-from-mckinsey/the-pyramid-principle-f0885dd3c5c7)):
  - parent node gives a summary of its children nodes and contains a mental picture of context, situation or complication
+ - parent node is more abstract and tend to be more fun and popular - one of its main goals is to give the reader a sense of the theme and arouse curiosity
  - children nodes give mutually exclusive and completely exhaustive partition of the parent content
  - children nodes also logically connected and structured in obvious manner - by size or timeline or academic field, etc
-
+ - number of children should be kept small, no more than 12 (ideally around 5-7)
+ 
 Every node must have a link to a wikipedia article and may have links to other resources
 (articles, books chapters, online lecture, etc) that explains the same idea with different words and examples 
 

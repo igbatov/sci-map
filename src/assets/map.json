@@ -31,7 +31,7 @@
         "rank": 1,
         "pos": [
           52,
-          -1288
+          -1283
         ],
         "floating": false,
         "icon": null,
@@ -541,14 +541,14 @@
         "title": "subatomic",
         "rank": 2,
         "pos": [
-          24,
-          -1644
+          55,
+          -3111
         ],
         "floating": null,
         "icon": null,
         "style": null,
         "created_at": "2020-03-20T06:09:45.000Z",
-        "updated_at": "2020-05-08T07:36:55.000Z",
+        "updated_at": "2020-10-08T04:40:20.000Z",
         "note": "",
         "link": "",
         "task": {
@@ -562,19 +562,19 @@
         "image": null,
         "children": [
           {
-            "id": 1444528897,
-            "title": "string theory",
+            "id": 1584257089,
+            "title": "quantum field theory",
             "rank": 1,
             "pos": [
-              454,
-              -3881
+              null,
+              null
             ],
-            "floating": false,
+            "floating": null,
             "icon": null,
             "style": null,
-            "created_at": "2020-03-21T07:38:33.000Z",
-            "updated_at": "2020-08-09T08:11:07.000Z",
-            "note": "Was born as an attempt to unify quantum field theory with general relativity theory [QUANTUM FIELD THEORY\u003Cbr\u003EIN A NUTSHELL Enthony Zee, I.1]",
+            "created_at": "2020-08-09T08:03:39.000Z",
+            "updated_at": "2020-10-14T08:24:49.000Z",
+            "note": "",
             "link": null,
             "task": {
               "from": null,
@@ -585,24 +585,109 @@
             },
             "attachments": [],
             "image": null,
-            "children": [],
+            "children": [
+              {
+                "id": 1653814088,
+                "title": "strong forces (chromodynamics)",
+                "rank": 1,
+                "pos": [
+                  null,
+                  null
+                ],
+                "floating": false,
+                "icon": null,
+                "style": null,
+                "created_at": "2020-10-13T08:22:22.000Z",
+                "updated_at": "2020-10-14T08:24:32.000Z",
+                "note": null,
+                "link": null,
+                "task": {
+                  "from": null,
+                  "until": null,
+                  "resource": null,
+                  "effort": null,
+                  "notify": 1
+                },
+                "attachments": [],
+                "image": null,
+                "children": [],
+                "boundary": null,
+                "video": null
+              },
+              {
+                "id": 1653813567,
+                "title": "electroweak forces",
+                "rank": 2,
+                "pos": [
+                  null,
+                  null
+                ],
+                "floating": false,
+                "icon": null,
+                "style": null,
+                "created_at": "2020-10-13T08:21:47.000Z",
+                "updated_at": "2020-10-14T08:24:27.000Z",
+                "note": null,
+                "link": null,
+                "task": {
+                  "from": null,
+                  "until": null,
+                  "resource": null,
+                  "effort": null,
+                  "notify": 1
+                },
+                "attachments": [],
+                "image": null,
+                "children": [],
+                "boundary": null,
+                "video": null
+              },
+              {
+                "id": 1655173596,
+                "title": "graviton",
+                "rank": 3,
+                "pos": [
+                  null,
+                  null
+                ],
+                "floating": null,
+                "icon": null,
+                "style": null,
+                "created_at": "2020-10-14T08:25:17.000Z",
+                "updated_at": "2020-10-14T08:25:17.000Z",
+                "note": null,
+                "link": null,
+                "task": {
+                  "from": null,
+                  "until": null,
+                  "resource": null,
+                  "effort": null,
+                  "notify": 1
+                },
+                "attachments": [],
+                "image": null,
+                "children": [],
+                "boundary": null,
+                "video": null
+              }
+            ],
             "boundary": null,
             "video": null
           },
           {
-            "id": 1584257089,
-            "title": "quantum field theory",
+            "id": 1444528897,
+            "title": "string theory",
             "rank": 2,
             "pos": [
               null,
               null
             ],
-            "floating": null,
+            "floating": false,
             "icon": null,
             "style": null,
-            "created_at": "2020-08-09T08:03:39.000Z",
-            "updated_at": "2020-08-20T07:01:00.000Z",
-            "note": "Was born as an attempt to unify quantum mechanics with special relativity theory [QUANTUM FIELD THEORY\u003Cbr\u003EIN A NUTSHELL Enthony Zee, I.1]",
+            "created_at": "2020-03-21T07:38:33.000Z",
+            "updated_at": "2020-11-05T03:27:50.000Z",
+            "note": "Was born as an attempt to unify quantum field theory with general relativity theory [QUANTUM FIELD THEORY\u003Cbr\u003EIN A NUTSHELL Enthony Zee, I.1]",
             "link": null,
             "task": {
               "from": null,
@@ -626,14 +711,14 @@
         "title": "organisms",
         "rank": 4,
         "pos": [
-          106,
-          -271
+          180,
+          -20
         ],
         "floating": null,
         "icon": [],
         "style": null,
         "created_at": "2020-03-21T08:03:37.000Z",
-        "updated_at": "2020-08-14T14:50:55.000Z",
+        "updated_at": "2020-10-11T04:20:37.000Z",
         "note": null,
         "link": "https://en.wikipedia.org/wiki/Organism",
         "task": {
@@ -761,7 +846,7 @@
           },
           {
             "id": 1444562602,
-            "title": "animals",
+            "title": "Animals",
             "rank": 4,
             "pos": [
               null,
@@ -771,7 +856,7 @@
             "icon": null,
             "style": null,
             "created_at": "2020-03-21T09:35:00.000Z",
-            "updated_at": "2020-03-25T06:18:34.000Z",
+            "updated_at": "2020-09-28T05:45:54.000Z",
             "note": null,
             "link": null,
             "task": {
@@ -920,7 +1005,7 @@
                     "children": [
                       {
                         "id": 1444633789,
-                        "title": "Deseases",
+                        "title": "Vulnerabilities",
                         "rank": 1,
                         "pos": [
                           -200,
@@ -930,7 +1015,7 @@
                         "icon": null,
                         "style": null,
                         "created_at": "2020-03-21T12:20:52.000Z",
-                        "updated_at": "2020-03-25T05:06:44.000Z",
+                        "updated_at": "2020-09-20T11:00:03.000Z",
                         "note": null,
                         "link": null,
                         "task": {
@@ -948,7 +1033,7 @@
                       },
                       {
                         "id": 1498410110,
-                        "title": "education",
+                        "title": "Parenting",
                         "rank": 2,
                         "pos": [
                           null,
@@ -958,9 +1043,9 @@
                         "icon": null,
                         "style": null,
                         "created_at": "2020-05-08T01:36:01.000Z",
-                        "updated_at": "2020-05-08T01:36:01.000Z",
-                        "note": null,
-                        "link": null,
+                        "updated_at": "2020-09-20T10:58:58.000Z",
+                        "note": "[ME][Course][Coursera]Everyday Parenting: The ABCs of Child Rearing[https://www.coursera.org/learn/everyday-parenting/home/week/1]\n\n[ME][Course][EdX]UCSanDiegoX. The Science of Parenting[learning.edx.org/course/course-v1:UCSanDiegoX+Parenting101x+2T2019/]",
+                        "link": "https://en.wikipedia.org/wiki/Parenting",
                         "task": {
                           "from": null,
                           "until": null,
@@ -1428,20 +1513,20 @@
                         "video": null
                       },
                       {
-                        "id": 1444720892,
+                        "id": 1444721086,
                         "title": "Vulnerabilities",
                         "rank": 2,
                         "pos": [
                           null,
                           null
                         ],
-                        "floating": null,
+                        "floating": false,
                         "icon": null,
                         "style": null,
                         "created_at": "2020-04-03T04:40:29.000Z",
-                        "updated_at": "2020-05-31T13:56:40.000Z",
-                        "note": null,
-                        "link": null,
+                        "updated_at": "2020-09-20T14:34:29.000Z",
+                        "note": "[ME][Statistics][healthdata.org]Causes of Disability Adjusted Life Years[https://vizhub.healthdata.org/gbd-compare/]",
+                        "link": "https://en.wikipedia.org/wiki/Disability-adjusted_life_year",
                         "task": {
                           "from": null,
                           "until": null,
@@ -1453,9 +1538,65 @@
                         "image": null,
                         "children": [
                           {
-                            "id": 1444721086,
-                            "title": "HALE statistics",
+                            "id": 1444721746,
+                            "title": "Circulatory system diseases",
                             "rank": 1,
+                            "pos": [
+                              null,
+                              null
+                            ],
+                            "floating": null,
+                            "icon": null,
+                            "style": null,
+                            "created_at": "2020-04-03T04:40:29.000Z",
+                            "updated_at": "2020-04-03T04:40:29.000Z",
+                            "note": null,
+                            "link": null,
+                            "task": {
+                              "from": null,
+                              "until": null,
+                              "resource": null,
+                              "effort": null,
+                              "notify": 1
+                            },
+                            "attachments": [],
+                            "image": null,
+                            "children": [],
+                            "boundary": null,
+                            "video": null
+                          },
+                          {
+                            "id": 1444722334,
+                            "title": "Car incidents",
+                            "rank": 2,
+                            "pos": [
+                              null,
+                              null
+                            ],
+                            "floating": null,
+                            "icon": null,
+                            "style": null,
+                            "created_at": "2020-04-03T04:40:29.000Z",
+                            "updated_at": "2020-04-03T04:40:29.000Z",
+                            "note": null,
+                            "link": null,
+                            "task": {
+                              "from": null,
+                              "until": null,
+                              "resource": null,
+                              "effort": null,
+                              "notify": 1
+                            },
+                            "attachments": [],
+                            "image": null,
+                            "children": [],
+                            "boundary": null,
+                            "video": null
+                          },
+                          {
+                            "id": 1448461265,
+                            "title": "malnutrition",
+                            "rank": 3,
                             "pos": [
                               null,
                               null
@@ -1478,65 +1619,9 @@
                             "image": null,
                             "children": [
                               {
-                                "id": 1444721746,
-                                "title": "Circulatory system diseases",
+                                "id": 1448461706,
+                                "title": "fertilizers",
                                 "rank": 1,
-                                "pos": [
-                                  null,
-                                  null
-                                ],
-                                "floating": null,
-                                "icon": null,
-                                "style": null,
-                                "created_at": "2020-04-03T04:40:29.000Z",
-                                "updated_at": "2020-04-03T04:40:29.000Z",
-                                "note": null,
-                                "link": null,
-                                "task": {
-                                  "from": null,
-                                  "until": null,
-                                  "resource": null,
-                                  "effort": null,
-                                  "notify": 1
-                                },
-                                "attachments": [],
-                                "image": null,
-                                "children": [],
-                                "boundary": null,
-                                "video": null
-                              },
-                              {
-                                "id": 1444722334,
-                                "title": "Car incidents",
-                                "rank": 2,
-                                "pos": [
-                                  null,
-                                  null
-                                ],
-                                "floating": null,
-                                "icon": null,
-                                "style": null,
-                                "created_at": "2020-04-03T04:40:29.000Z",
-                                "updated_at": "2020-04-03T04:40:29.000Z",
-                                "note": null,
-                                "link": null,
-                                "task": {
-                                  "from": null,
-                                  "until": null,
-                                  "resource": null,
-                                  "effort": null,
-                                  "notify": 1
-                                },
-                                "attachments": [],
-                                "image": null,
-                                "children": [],
-                                "boundary": null,
-                                "video": null
-                              },
-                              {
-                                "id": 1448461265,
-                                "title": "malnutrition",
-                                "rank": 3,
                                 "pos": [
                                   null,
                                   null
@@ -1559,8 +1644,8 @@
                                 "image": null,
                                 "children": [
                                   {
-                                    "id": 1448461706,
-                                    "title": "fertilizers",
+                                    "id": 1448463565,
+                                    "title": "harmful chemical-based",
                                     "rank": 1,
                                     "pos": [
                                       null,
@@ -1582,22 +1667,54 @@
                                     },
                                     "attachments": [],
                                     "image": null,
+                                    "children": [],
+                                    "boundary": null,
+                                    "video": null
+                                  },
+                                  {
+                                    "id": 1448463745,
+                                    "title": "chlorella-algae",
+                                    "rank": 2,
+                                    "pos": [
+                                      null,
+                                      null
+                                    ],
+                                    "floating": null,
+                                    "icon": [
+                                      "sign_help"
+                                    ],
+                                    "style": null,
+                                    "created_at": "2020-04-03T04:40:29.000Z",
+                                    "updated_at": "2020-04-03T04:40:29.000Z",
+                                    "note": "Is chlorella-algae better fertilizer than chemical-based",
+                                    "link": null,
+                                    "task": {
+                                      "from": null,
+                                      "until": null,
+                                      "resource": null,
+                                      "effort": null,
+                                      "notify": 1
+                                    },
+                                    "attachments": [],
+                                    "image": null,
                                     "children": [
                                       {
-                                        "id": 1448463565,
-                                        "title": "harmful chemical-based",
+                                        "id": 1448466103,
+                                        "title": "Christina Ek: chlorella-algae",
                                         "rank": 1,
                                         "pos": [
                                           null,
                                           null
                                         ],
                                         "floating": null,
-                                        "icon": null,
+                                        "icon": [
+                                          "emoji/symbols-clock12"
+                                        ],
                                         "style": null,
                                         "created_at": "2020-04-03T04:40:29.000Z",
                                         "updated_at": "2020-04-03T04:40:29.000Z",
                                         "note": null,
-                                        "link": null,
+                                        "link": "https://experiment.com/projects/can-chlorella-algae-be-used-as-soil-amendment-to-improve-crop-production?s=discover",
                                         "task": {
                                           "from": null,
                                           "until": null,
@@ -1608,67 +1725,6 @@
                                         "attachments": [],
                                         "image": null,
                                         "children": [],
-                                        "boundary": null,
-                                        "video": null
-                                      },
-                                      {
-                                        "id": 1448463745,
-                                        "title": "chlorella-algae",
-                                        "rank": 2,
-                                        "pos": [
-                                          null,
-                                          null
-                                        ],
-                                        "floating": null,
-                                        "icon": [
-                                          "sign_help"
-                                        ],
-                                        "style": null,
-                                        "created_at": "2020-04-03T04:40:29.000Z",
-                                        "updated_at": "2020-04-03T04:40:29.000Z",
-                                        "note": "Is chlorella-algae better fertilizer than chemical-based",
-                                        "link": null,
-                                        "task": {
-                                          "from": null,
-                                          "until": null,
-                                          "resource": null,
-                                          "effort": null,
-                                          "notify": 1
-                                        },
-                                        "attachments": [],
-                                        "image": null,
-                                        "children": [
-                                          {
-                                            "id": 1448466103,
-                                            "title": "Christina Ek: chlorella-algae",
-                                            "rank": 1,
-                                            "pos": [
-                                              null,
-                                              null
-                                            ],
-                                            "floating": null,
-                                            "icon": [
-                                              "emoji/symbols-clock12"
-                                            ],
-                                            "style": null,
-                                            "created_at": "2020-04-03T04:40:29.000Z",
-                                            "updated_at": "2020-04-03T04:40:29.000Z",
-                                            "note": null,
-                                            "link": "https://experiment.com/projects/can-chlorella-algae-be-used-as-soil-amendment-to-improve-crop-production?s=discover",
-                                            "task": {
-                                              "from": null,
-                                              "until": null,
-                                              "resource": null,
-                                              "effort": null,
-                                              "notify": 1
-                                            },
-                                            "attachments": [],
-                                            "image": null,
-                                            "children": [],
-                                            "boundary": null,
-                                            "video": null
-                                          }
-                                        ],
                                         "boundary": null,
                                         "video": null
                                       }
@@ -1690,7 +1746,7 @@
                       },
                       {
                         "id": 1444734405,
-                        "title": "productivity",
+                        "title": "Best Practices",
                         "rank": 3,
                         "pos": [
                           null,
@@ -1700,7 +1756,7 @@
                         "icon": null,
                         "style": null,
                         "created_at": "2020-03-21T15:15:09.000Z",
-                        "updated_at": "2020-08-14T05:40:12.000Z",
+                        "updated_at": "2020-09-22T06:58:19.000Z",
                         "note": null,
                         "link": null,
                         "task": {
@@ -1714,9 +1770,94 @@
                         "image": null,
                         "children": [
                           {
-                            "id": 1444734806,
-                            "title": "habits",
+                            "id": 1628825957,
+                            "title": "Healthy Diet",
                             "rank": 1,
+                            "pos": [
+                              null,
+                              null
+                            ],
+                            "floating": false,
+                            "icon": null,
+                            "style": null,
+                            "created_at": "2020-09-22T06:59:48.000Z",
+                            "updated_at": "2020-09-29T07:42:55.000Z",
+                            "note": "[ME][Course][Coursera]Biohacking Your Brain's Health[https://www.coursera.org/learn/biohacking-your-brains-health]\n\n[ME][Course][Coursera]Stanford Introduction to Food and Health[https://www.coursera.org/learn/food-and-health]\n\n[ME][SciPop][Kurzweil]Transcend: Nine Steps to Living Well Forever[https://www.amazon.com/Transcend-Nine-Steps-Living-Forever/dp/1605292079][Ch 11, 12, 13][status:tocheck]\n\n[ITool][App][FoodTracker]Nutritionix Food Tracker[https://www.nutritionix.com/my-recipes]\n\n[ITool][App][FoodTracker]MyFoodData[https://www.myfooddata.com]",
+                            "link": "https://en.wikipedia.org/wiki/Healthy_diet",
+                            "task": {
+                              "from": null,
+                              "until": null,
+                              "resource": null,
+                              "effort": null,
+                              "notify": 1
+                            },
+                            "attachments": [],
+                            "image": null,
+                            "children": [
+                              {
+                                "id": 1631547416,
+                                "title": "Mediaterian diet",
+                                "rank": 1,
+                                "pos": [
+                                  null,
+                                  null
+                                ],
+                                "floating": null,
+                                "icon": null,
+                                "style": null,
+                                "created_at": "2020-09-24T04:32:38.000Z",
+                                "updated_at": "2020-09-27T04:18:16.000Z",
+                                "note": "[ME][Article][Harvard School Of Public Health]Healthy Eating Plate[https://www.hsph.harvard.edu/nutritionsource/healthy-eating-plate/]",
+                                "link": "https://en.wikipedia.org/wiki/Mediterranean_diet",
+                                "task": {
+                                  "from": null,
+                                  "until": null,
+                                  "resource": null,
+                                  "effort": null,
+                                  "notify": 1
+                                },
+                                "attachments": [],
+                                "image": null,
+                                "children": [],
+                                "boundary": null,
+                                "video": null
+                              },
+                              {
+                                "id": 1631618199,
+                                "title": "Intermittent fasting",
+                                "rank": 2,
+                                "pos": [
+                                  null,
+                                  null
+                                ],
+                                "floating": null,
+                                "icon": null,
+                                "style": null,
+                                "created_at": "2020-09-24T06:13:23.000Z",
+                                "updated_at": "2020-09-24T08:27:24.000Z",
+                                "note": null,
+                                "link": "https://en.wikipedia.org/wiki/Intermittent_fasting",
+                                "task": {
+                                  "from": null,
+                                  "until": null,
+                                  "resource": null,
+                                  "effort": null,
+                                  "notify": 1
+                                },
+                                "attachments": [],
+                                "image": null,
+                                "children": [],
+                                "boundary": null,
+                                "video": null
+                              }
+                            ],
+                            "boundary": null,
+                            "video": null
+                          },
+                          {
+                            "id": 1444734806,
+                            "title": "Time Management",
+                            "rank": 2,
                             "pos": [
                               null,
                               null
@@ -1725,7 +1866,7 @@
                             "icon": null,
                             "style": null,
                             "created_at": "2020-03-21T15:15:52.000Z",
-                            "updated_at": "2020-03-21T15:15:52.000Z",
+                            "updated_at": "2020-09-22T07:15:28.000Z",
                             "note": null,
                             "link": null,
                             "task": {
@@ -1743,8 +1884,8 @@
                           },
                           {
                             "id": 1444734879,
-                            "title": "motivation",
-                            "rank": 2,
+                            "title": "Physical Excercise",
+                            "rank": 3,
                             "pos": [
                               null,
                               null
@@ -1753,7 +1894,63 @@
                             "icon": null,
                             "style": null,
                             "created_at": "2020-03-21T15:16:02.000Z",
-                            "updated_at": "2020-03-21T15:16:02.000Z",
+                            "updated_at": "2020-11-05T03:15:22.000Z",
+                            "note": null,
+                            "link": null,
+                            "task": {
+                              "from": null,
+                              "until": null,
+                              "resource": null,
+                              "effort": null,
+                              "notify": 1
+                            },
+                            "attachments": [],
+                            "image": null,
+                            "children": [],
+                            "boundary": null,
+                            "video": null
+                          },
+                          {
+                            "id": 1628840371,
+                            "title": "Sleep",
+                            "rank": 4,
+                            "pos": [
+                              null,
+                              null
+                            ],
+                            "floating": false,
+                            "icon": null,
+                            "style": null,
+                            "created_at": "2020-09-22T07:15:37.000Z",
+                            "updated_at": "2020-09-22T07:19:21.000Z",
+                            "note": null,
+                            "link": null,
+                            "task": {
+                              "from": null,
+                              "until": null,
+                              "resource": null,
+                              "effort": null,
+                              "notify": 1
+                            },
+                            "attachments": [],
+                            "image": null,
+                            "children": [],
+                            "boundary": null,
+                            "video": null
+                          },
+                          {
+                            "id": 1628843489,
+                            "title": "Meditation",
+                            "rank": 5,
+                            "pos": [
+                              null,
+                              null
+                            ],
+                            "floating": false,
+                            "icon": null,
+                            "style": null,
+                            "created_at": "2020-09-22T07:20:11.000Z",
+                            "updated_at": "2020-09-22T16:39:00.000Z",
                             "note": null,
                             "link": null,
                             "task": {
@@ -1771,8 +1968,8 @@
                           },
                           {
                             "id": 1444735017,
-                            "title": "biases",
-                            "rank": 3,
+                            "title": "Decision Making",
+                            "rank": 6,
                             "pos": [
                               null,
                               null
@@ -1781,7 +1978,7 @@
                             "icon": null,
                             "style": null,
                             "created_at": "2020-03-21T15:16:19.000Z",
-                            "updated_at": "2020-03-21T15:16:19.000Z",
+                            "updated_at": "2020-09-22T07:19:49.000Z",
                             "note": null,
                             "link": null,
                             "task": {
@@ -1793,14 +1990,127 @@
                             },
                             "attachments": [],
                             "image": null,
-                            "children": [],
+                            "children": [
+                              {
+                                "id": 1628843317,
+                                "title": "Cognitive Biases",
+                                "rank": 1,
+                                "pos": [
+                                  null,
+                                  null
+                                ],
+                                "floating": null,
+                                "icon": null,
+                                "style": null,
+                                "created_at": "2020-09-22T07:19:56.000Z",
+                                "updated_at": "2020-09-22T16:48:16.000Z",
+                                "note": "[ME][SciPop][Kahneman]Thinking, Fast and Slow[https://www.pdfdrive.com/thinking-fast-and-slow-d184763727.html]",
+                                "link": "https://en.wikipedia.org/wiki/Cognitive_bias",
+                                "task": {
+                                  "from": null,
+                                  "until": null,
+                                  "resource": null,
+                                  "effort": null,
+                                  "notify": 1
+                                },
+                                "attachments": [],
+                                "image": null,
+                                "children": [],
+                                "boundary": null,
+                                "video": null
+                              },
+                              {
+                                "id": 1629453914,
+                                "title": "Antifragile",
+                                "rank": 2,
+                                "pos": [
+                                  null,
+                                  null
+                                ],
+                                "floating": null,
+                                "icon": null,
+                                "style": null,
+                                "created_at": "2020-09-22T16:38:50.000Z",
+                                "updated_at": "2020-09-22T16:47:42.000Z",
+                                "note": "[ME][SciPop][Taleb]Antifragile: Things That Gain From Disorder[]",
+                                "link": "https://en.wikipedia.org/wiki/Antifragile",
+                                "task": {
+                                  "from": null,
+                                  "until": null,
+                                  "resource": null,
+                                  "effort": null,
+                                  "notify": 1
+                                },
+                                "attachments": [],
+                                "image": null,
+                                "children": [],
+                                "boundary": null,
+                                "video": null
+                              },
+                              {
+                                "id": 1629454259,
+                                "title": "Principles",
+                                "rank": 3,
+                                "pos": [
+                                  null,
+                                  null
+                                ],
+                                "floating": null,
+                                "icon": null,
+                                "style": null,
+                                "created_at": "2020-09-22T16:39:10.000Z",
+                                "updated_at": "2020-09-22T16:50:41.000Z",
+                                "note": "[ME][Book][Dalio]Principles[https://www.pdfdrive.com/principles-life-and-work-e59581690.html]",
+                                "link": "https://en.wikipedia.org/wiki/Principles_(book)",
+                                "task": {
+                                  "from": null,
+                                  "until": null,
+                                  "resource": null,
+                                  "effort": null,
+                                  "notify": 1
+                                },
+                                "attachments": [],
+                                "image": null,
+                                "children": [],
+                                "boundary": null,
+                                "video": null
+                              },
+                              {
+                                "id": 1634083023,
+                                "title": "TRIZ",
+                                "rank": 4,
+                                "pos": [
+                                  null,
+                                  null
+                                ],
+                                "floating": null,
+                                "icon": null,
+                                "style": null,
+                                "created_at": "2020-09-26T04:42:46.000Z",
+                                "updated_at": "2020-09-26T04:43:44.000Z",
+                                "note": null,
+                                "link": "https://en.wikipedia.org/wiki/TRIZ",
+                                "task": {
+                                  "from": null,
+                                  "until": null,
+                                  "resource": null,
+                                  "effort": null,
+                                  "notify": 1
+                                },
+                                "attachments": [],
+                                "image": null,
+                                "children": [],
+                                "boundary": null,
+                                "video": null
+                              }
+                            ],
                             "boundary": null,
                             "video": null
                           },
                           {
-                            "id": 1444735233,
-                            "title": "procrastination",
-                            "rank": 4,
+                            "id": 1631508354,
+                            "title": "Purpose of Life",
+                            "rank": 7,
                             "pos": [
                               null,
                               null
@@ -1808,38 +2118,10 @@
                             "floating": null,
                             "icon": null,
                             "style": null,
-                            "created_at": "2020-03-21T15:16:40.000Z",
-                            "updated_at": "2020-03-21T15:17:08.000Z",
-                            "note": null,
-                            "link": null,
-                            "task": {
-                              "from": null,
-                              "until": null,
-                              "resource": null,
-                              "effort": null,
-                              "notify": 1
-                            },
-                            "attachments": [],
-                            "image": null,
-                            "children": [],
-                            "boundary": null,
-                            "video": null
-                          },
-                          {
-                            "id": 1444735629,
-                            "title": "framing",
-                            "rank": 5,
-                            "pos": [
-                              null,
-                              null
-                            ],
-                            "floating": null,
-                            "icon": null,
-                            "style": null,
-                            "created_at": "2020-03-21T15:17:14.000Z",
-                            "updated_at": "2020-03-21T15:17:14.000Z",
-                            "note": null,
-                            "link": null,
+                            "created_at": "2020-09-24T03:37:30.000Z",
+                            "updated_at": "2020-09-29T07:30:00.000Z",
+                            "note": "[ME][Course][Coursera]Finding Purpose and Meaning In Life: Living for What Matters Most[https://www.coursera.org/learn/finding-purpose-and-meaning-in-life][status:tocheck]\u003Cbr\u003E",
+                            "link": "https://en.wikipedia.org/wiki/Meaning_of_life",
                             "task": {
                               "from": null,
                               "until": null,
@@ -1912,7 +2194,7 @@
                           },
                           {
                             "id": 1524336364,
-                            "title": "Future alternatives",
+                            "title": "Possible Future",
                             "rank": 2,
                             "pos": [
                               null,
@@ -1922,7 +2204,7 @@
                             "icon": null,
                             "style": null,
                             "created_at": "2020-05-31T14:04:45.000Z",
-                            "updated_at": "2020-05-31T14:04:45.000Z",
+                            "updated_at": "2020-09-28T05:44:59.000Z",
                             "note": null,
                             "link": null,
                             "task": {
@@ -2081,14 +2363,14 @@
         "title": "Stellar",
         "rank": 5,
         "pos": [
-          132,
-          2933
+          127,
+          3560
         ],
         "floating": null,
         "icon": null,
         "style": null,
         "created_at": "2020-03-21T14:57:52.000Z",
-        "updated_at": "2020-05-08T07:38:23.000Z",
+        "updated_at": "2020-10-11T04:20:45.000Z",
         "note": null,
         "link": null,
         "task": {
@@ -2308,14 +2590,14 @@
         "rank": 5,
         "pos": [
           45,
-          -2215
+          -2296
         ],
         "floating": null,
         "icon": null,
         "style": null,
         "created_at": "2020-05-08T03:11:55.000Z",
-        "updated_at": "2020-08-22T05:50:33.000Z",
-        "note": "[ME][Textbook][]The Feynman Lectures On Physics, Ch 1[https://www.feynmanlectures.caltech.edu/I_01.html]\u003Cbr\u003E  \u003Cbr\u003E[ME][Course][]Khan Academy Electronic Structure Of Atoms [https://www.khanacademy.org/science/chemistry/electronic-structure-of-atoms]\u003Cbr\u003E\u003Cbr\u003E[ME][SciPop][Isaac Asimov]Inside Atom[https://www.amazon.com/Inside-Atom-Isaac-Asimov/dp/0200714449]\u003Cbr\u003E\u003Cbr\u003E[ME][SciPop][0]Atom Visual Tour[https://www.amazon.com/Atom-Visual-Tour-MIT-Press/dp/026203736X]\u003Cbr\u003E",
+        "updated_at": "2020-09-13T04:40:42.000Z",
+        "note": "\u003Cdiv class=\"line\"\u003E[ME][Textbook][Feynman]The Feynman Lectures On Physics[https://www.feynmanlectures.caltech.edu/I_01.html][Ch 1, Ch 2]\n  \n[ME][Course][]Khan Academy Electronic Structure Of Atoms [https://www.khanacademy.org/science/chemistry/electronic-structure-of-atoms]\n\n[ME][SciPop][Isaac Asimov]Inside Atom[https://www.amazon.com/Inside-Atom-Isaac-Asimov/dp/0200714449]\n\n[ME][SciPop][Challoner]Atom Visual Tour[https://www.amazon.com/Atom-Visual-Tour-MIT-Press/dp/026203736X]\n\u003C/div\u003E",
         "link": "https://en.wikipedia.org/wiki/Atom",
         "task": {
           "from": null,
@@ -2328,8 +2610,8 @@
         "image": null,
         "children": [
           {
-            "id": 1544298221,
-            "title": "Quantum laws",
+            "id": 1651562730,
+            "title": "quantum mechanics",
             "rank": 1,
             "pos": [
               null,
@@ -2338,9 +2620,9 @@
             "floating": false,
             "icon": null,
             "style": null,
-            "created_at": "2020-06-20T06:50:19.000Z",
-            "updated_at": "2020-08-07T06:09:21.000Z",
-            "note": "Probabilistic nature of reality\u003Cbr class=\"Apple-interchange-newline\"\u003E\u003Cdiv\u003E\u003Cspan style=\"color: rgb(0, 170, 255);\"\u003Ehttps://www.feynmanlectures.caltech.edu/I_37.html\u003C/span\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Cspan style=\"color: rgb(0, 170, 255);\"\u003E\u003Cbr\u003E\u003C/span\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Cspan style=\"\"\u003EQuantum uncertainty\u003Cbr class=\"Apple-interchange-newline\" style=\"color: rgb(138, 148, 153);\"\u003E\u003Cdiv style=\"color: rgb(138, 148, 153);\"\u003E\u003Cspan style=\"line-height: 21px;color: rgb(0, 170, 255);\"\u003Ehttps://www.feynmanlectures.caltech.edu/I_38.html\u003C/span\u003E\u003C/div\u003E\u003C/span\u003E\u003C/div\u003E",
+            "created_at": "2020-10-11T04:35:10.000Z",
+            "updated_at": "2020-11-05T03:27:07.000Z",
+            "note": null,
             "link": null,
             "task": {
               "from": null,
@@ -2353,8 +2635,8 @@
             "image": null,
             "children": [
               {
-                "id": 1582900775,
-                "title": "Probability Amplitudes",
+                "id": 1680472141,
+                "title": "Schrodinger equation",
                 "rank": 1,
                 "pos": [
                   null,
@@ -2363,9 +2645,519 @@
                 "floating": null,
                 "icon": null,
                 "style": null,
-                "created_at": "2020-08-07T05:48:35.000Z",
-                "updated_at": "2020-08-07T05:48:49.000Z",
-                "note": "https://www.feynmanlectures.caltech.edu/III_03.html",
+                "created_at": "2020-11-05T04:11:11.000Z",
+                "updated_at": "2020-11-05T05:21:37.000Z",
+                "note": "",
+                "link": "https://en.wikipedia.org/wiki/Schr%C3%B6dinger_equation",
+                "task": {
+                  "from": null,
+                  "until": null,
+                  "resource": null,
+                  "effort": null,
+                  "notify": 1
+                },
+                "attachments": [],
+                "image": null,
+                "children": [
+                  {
+                    "id": 1680531595,
+                    "title": "Wave function properties",
+                    "rank": 1,
+                    "pos": [
+                      null,
+                      null
+                    ],
+                    "floating": false,
+                    "icon": null,
+                    "style": null,
+                    "created_at": "2020-11-05T06:03:04.000Z",
+                    "updated_at": "2020-11-05T06:27:48.000Z",
+                    "note": null,
+                    "link": null,
+                    "task": {
+                      "from": null,
+                      "until": null,
+                      "resource": null,
+                      "effort": null,
+                      "notify": 1
+                    },
+                    "attachments": [],
+                    "image": null,
+                    "children": [
+                      {
+                        "id": 1680531873,
+                        "title": "Measurement and Statistical interpretation",
+                        "rank": 1,
+                        "pos": [
+                          null,
+                          null
+                        ],
+                        "floating": false,
+                        "icon": null,
+                        "style": null,
+                        "created_at": "2020-11-05T06:03:42.000Z",
+                        "updated_at": "2020-11-05T06:52:41.000Z",
+                        "note": "[ME][Textbook][Griffiths]Introduction to\u003Cbr\u003EQuantum Mechanics[https://www.academia.edu/43147752/Introduction_to_Quantum_Mechanics_2018_David_J_Griffiths_Darrell_F_Schroeter][Ch 1.2, Afterword][ISBN 0-13-191175-9]",
+                        "link": null,
+                        "task": {
+                          "from": null,
+                          "until": null,
+                          "resource": null,
+                          "effort": null,
+                          "notify": 1
+                        },
+                        "attachments": [],
+                        "image": null,
+                        "children": [],
+                        "boundary": null,
+                        "video": null
+                      },
+                      {
+                        "id": 1582900775,
+                        "title": "Combining Probability Amplitudes",
+                        "rank": 2,
+                        "pos": [
+                          null,
+                          null
+                        ],
+                        "floating": false,
+                        "icon": null,
+                        "style": null,
+                        "created_at": "2020-08-07T05:48:35.000Z",
+                        "updated_at": "2020-11-05T06:05:32.000Z",
+                        "note": "https://www.feynmanlectures.caltech.edu/III_03.html [Ch 3.1, Ch 3.2]",
+                        "link": null,
+                        "task": {
+                          "from": null,
+                          "until": null,
+                          "resource": null,
+                          "effort": null,
+                          "notify": 1
+                        },
+                        "attachments": [],
+                        "image": null,
+                        "children": [],
+                        "boundary": null,
+                        "video": null
+                      }
+                    ],
+                    "boundary": null,
+                    "video": null
+                  },
+                  {
+                    "id": 1680517777,
+                    "title": "Nonrelativistic Schrodinger equation",
+                    "rank": 2,
+                    "pos": [
+                      null,
+                      null
+                    ],
+                    "floating": false,
+                    "icon": null,
+                    "style": null,
+                    "created_at": "2020-11-05T05:33:12.000Z",
+                    "updated_at": "2020-11-05T06:20:52.000Z",
+                    "note": "[ME][Textbook][Griffiths]Introduction to\u003Cbr\u003EQuantum Mechanics[https://www.academia.edu/43147752/Introduction_to_Quantum_Mechanics_2018_David_J_Griffiths_Darrell_F_Schroeter][Ch 1][ISBN 0-13-191175-9]",
+                    "link": "https://en.wikipedia.org/wiki/Schr%C3%B6dinger_equation#Nonrelativistic_quantum_mechanics",
+                    "task": {
+                      "from": null,
+                      "until": null,
+                      "resource": null,
+                      "effort": null,
+                      "notify": 1
+                    },
+                    "attachments": [],
+                    "image": null,
+                    "children": [
+                      {
+                        "id": 1680533742,
+                        "title": "Solutions",
+                        "rank": 1,
+                        "pos": [
+                          null,
+                          null
+                        ],
+                        "floating": null,
+                        "icon": null,
+                        "style": null,
+                        "created_at": "2020-11-05T06:07:43.000Z",
+                        "updated_at": "2020-11-05T06:07:43.000Z",
+                        "note": null,
+                        "link": null,
+                        "task": {
+                          "from": null,
+                          "until": null,
+                          "resource": null,
+                          "effort": null,
+                          "notify": 1
+                        },
+                        "attachments": [],
+                        "image": null,
+                        "children": [
+                          {
+                            "id": 1680526799,
+                            "title": "Time-independent one-particle solutions",
+                            "rank": 1,
+                            "pos": [
+                              null,
+                              null
+                            ],
+                            "floating": false,
+                            "icon": null,
+                            "style": null,
+                            "created_at": "2020-11-05T05:52:35.000Z",
+                            "updated_at": "2020-11-05T06:08:01.000Z",
+                            "note": "[ME][Textbook][Griffiths]Introduction to\u003Cbr\u003EQuantum Mechanics[https://www.academia.edu/43147752/Introduction_to_Quantum_Mechanics_2018_David_J_Griffiths_Darrell_F_Schroeter][Ch 2][ISBN 0-13-191175-9]",
+                            "link": null,
+                            "task": {
+                              "from": null,
+                              "until": null,
+                              "resource": null,
+                              "effort": null,
+                              "notify": 1
+                            },
+                            "attachments": [],
+                            "image": null,
+                            "children": [
+                              {
+                                "id": 1680527677,
+                                "title": "The infinite square well",
+                                "rank": 1,
+                                "pos": [
+                                  null,
+                                  null
+                                ],
+                                "floating": null,
+                                "icon": null,
+                                "style": null,
+                                "created_at": "2020-11-05T05:54:45.000Z",
+                                "updated_at": "2020-11-05T05:55:01.000Z",
+                                "note": "[ME][Textbook][Griffiths]Introduction to\u003Cbr\u003EQuantum Mechanics[https://www.academia.edu/43147752/Introduction_to_Quantum_Mechanics_2018_David_J_Griffiths_Darrell_F_Schroeter][Ch 2.2][ISBN 0-13-191175-9]",
+                                "link": null,
+                                "task": {
+                                  "from": null,
+                                  "until": null,
+                                  "resource": null,
+                                  "effort": null,
+                                  "notify": 1
+                                },
+                                "attachments": [],
+                                "image": null,
+                                "children": [],
+                                "boundary": null,
+                                "video": null
+                              },
+                              {
+                                "id": 1680527903,
+                                "title": "The harmonic oscillator",
+                                "rank": 2,
+                                "pos": [
+                                  null,
+                                  null
+                                ],
+                                "floating": null,
+                                "icon": null,
+                                "style": null,
+                                "created_at": "2020-11-05T05:55:26.000Z",
+                                "updated_at": "2020-11-05T05:55:34.000Z",
+                                "note": "[ME][Textbook][Griffiths]Introduction to\u003Cbr\u003EQuantum Mechanics[https://www.academia.edu/43147752/Introduction_to_Quantum_Mechanics_2018_David_J_Griffiths_Darrell_F_Schroeter][Ch 2.3][ISBN 0-13-191175-9]",
+                                "link": null,
+                                "task": {
+                                  "from": null,
+                                  "until": null,
+                                  "resource": null,
+                                  "effort": null,
+                                  "notify": 1
+                                },
+                                "attachments": [],
+                                "image": null,
+                                "children": [],
+                                "boundary": null,
+                                "video": null
+                              },
+                              {
+                                "id": 1680528161,
+                                "title": "The free particle",
+                                "rank": 3,
+                                "pos": [
+                                  null,
+                                  null
+                                ],
+                                "floating": null,
+                                "icon": null,
+                                "style": null,
+                                "created_at": "2020-11-05T05:56:16.000Z",
+                                "updated_at": "2020-11-05T05:56:28.000Z",
+                                "note": "[ME][Textbook][Griffiths]Introduction to\u003Cbr\u003EQuantum Mechanics[https://www.academia.edu/43147752/Introduction_to_Quantum_Mechanics_2018_David_J_Griffiths_Darrell_F_Schroeter][Ch 2.4][ISBN 0-13-191175-9]",
+                                "link": null,
+                                "task": {
+                                  "from": null,
+                                  "until": null,
+                                  "resource": null,
+                                  "effort": null,
+                                  "notify": 1
+                                },
+                                "attachments": [],
+                                "image": null,
+                                "children": [],
+                                "boundary": null,
+                                "video": null
+                              },
+                              {
+                                "id": 1680528468,
+                                "title": "The delta-function potential",
+                                "rank": 4,
+                                "pos": [
+                                  null,
+                                  null
+                                ],
+                                "floating": null,
+                                "icon": null,
+                                "style": null,
+                                "created_at": "2020-11-05T05:56:53.000Z",
+                                "updated_at": "2020-11-05T05:57:01.000Z",
+                                "note": "[ME][Textbook][Griffiths]Introduction to\u003Cbr\u003EQuantum Mechanics[https://www.academia.edu/43147752/Introduction_to_Quantum_Mechanics_2018_David_J_Griffiths_Darrell_F_Schroeter][Ch 2.5][ISBN 0-13-191175-9]",
+                                "link": null,
+                                "task": {
+                                  "from": null,
+                                  "until": null,
+                                  "resource": null,
+                                  "effort": null,
+                                  "notify": 1
+                                },
+                                "attachments": [],
+                                "image": null,
+                                "children": [],
+                                "boundary": null,
+                                "video": null
+                              },
+                              {
+                                "id": 1680528730,
+                                "title": "The finite square well",
+                                "rank": 5,
+                                "pos": [
+                                  null,
+                                  null
+                                ],
+                                "floating": null,
+                                "icon": null,
+                                "style": null,
+                                "created_at": "2020-11-05T05:57:24.000Z",
+                                "updated_at": "2020-11-05T05:57:33.000Z",
+                                "note": "[ME][Textbook][Griffiths]Introduction to\u003Cbr\u003EQuantum Mechanics[https://www.academia.edu/43147752/Introduction_to_Quantum_Mechanics_2018_David_J_Griffiths_Darrell_F_Schroeter][Ch 2.6][ISBN 0-13-191175-9]",
+                                "link": null,
+                                "task": {
+                                  "from": null,
+                                  "until": null,
+                                  "resource": null,
+                                  "effort": null,
+                                  "notify": 1
+                                },
+                                "attachments": [],
+                                "image": null,
+                                "children": [],
+                                "boundary": null,
+                                "video": null
+                              },
+                              {
+                                "id": 1680528881,
+                                "title": "The scattering matrix",
+                                "rank": 6,
+                                "pos": [
+                                  null,
+                                  null
+                                ],
+                                "floating": null,
+                                "icon": null,
+                                "style": null,
+                                "created_at": "2020-11-05T05:57:53.000Z",
+                                "updated_at": "2020-11-05T05:58:07.000Z",
+                                "note": "[ME][Textbook][Griffiths]Introduction to\u003Cbr\u003EQuantum Mechanics[https://www.academia.edu/43147752/Introduction_to_Quantum_Mechanics_2018_David_J_Griffiths_Darrell_F_Schroeter][Ch 2.7][ISBN 0-13-191175-9]",
+                                "link": null,
+                                "task": {
+                                  "from": null,
+                                  "until": null,
+                                  "resource": null,
+                                  "effort": null,
+                                  "notify": 1
+                                },
+                                "attachments": [],
+                                "image": null,
+                                "children": [],
+                                "boundary": null,
+                                "video": null
+                              }
+                            ],
+                            "boundary": null,
+                            "video": null
+                          },
+                          {
+                            "id": 1680534127,
+                            "title": "Three dimensions",
+                            "rank": 2,
+                            "pos": [
+                              null,
+                              null
+                            ],
+                            "floating": false,
+                            "icon": null,
+                            "style": null,
+                            "created_at": "2020-11-05T06:08:43.000Z",
+                            "updated_at": "2020-11-05T06:11:11.000Z",
+                            "note": "[ME][Textbook][Griffiths]Introduction to\u003Cbr\u003EQuantum Mechanics[https://www.academia.edu/43147752/Introduction_to_Quantum_Mechanics_2018_David_J_Griffiths_Darrell_F_Schroeter][Ch 4][ISBN 0-13-191175-9]",
+                            "link": null,
+                            "task": {
+                              "from": null,
+                              "until": null,
+                              "resource": null,
+                              "effort": null,
+                              "notify": 1
+                            },
+                            "attachments": [],
+                            "image": null,
+                            "children": [],
+                            "boundary": null,
+                            "video": null
+                          },
+                          {
+                            "id": 1680533967,
+                            "title": "Identical particle systems",
+                            "rank": 3,
+                            "pos": [
+                              null,
+                              null
+                            ],
+                            "floating": null,
+                            "icon": null,
+                            "style": null,
+                            "created_at": "2020-11-05T06:08:18.000Z",
+                            "updated_at": "2020-11-05T06:10:22.000Z",
+                            "note": "\u003Cdiv\u003Ehttps://www.feynmanlectures.caltech.edu/III_03.html [Ch 3.4]\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003E[ME][Textbook][Griffiths]Introduction to\u003Cbr\u003EQuantum Mechanics[https://www.academia.edu/43147752/Introduction_to_Quantum_Mechanics_2018_David_J_Griffiths_Darrell_F_Schroeter][Ch 5][ISBN 0-13-191175-9]\u003Cbr\u003E\u003C/div\u003E",
+                            "link": null,
+                            "task": {
+                              "from": null,
+                              "until": null,
+                              "resource": null,
+                              "effort": null,
+                              "notify": 1
+                            },
+                            "attachments": [],
+                            "image": null,
+                            "children": [],
+                            "boundary": null,
+                            "video": null
+                          }
+                        ],
+                        "boundary": null,
+                        "video": null
+                      }
+                    ],
+                    "boundary": null,
+                    "video": null
+                  }
+                ],
+                "boundary": null,
+                "video": null
+              }
+            ],
+            "boundary": null,
+            "video": null
+          },
+          {
+            "id": 1594431054,
+            "title": "Elements",
+            "rank": 2,
+            "pos": [
+              null,
+              null
+            ],
+            "floating": false,
+            "icon": null,
+            "style": null,
+            "created_at": "2020-08-20T07:02:32.000Z",
+            "updated_at": "2020-11-05T04:10:45.000Z",
+            "note": null,
+            "link": null,
+            "task": {
+              "from": null,
+              "until": null,
+              "resource": null,
+              "effort": null,
+              "notify": 1
+            },
+            "attachments": [],
+            "image": null,
+            "children": [
+              {
+                "id": 1594578923,
+                "title": "Helium",
+                "rank": 1,
+                "pos": [
+                  null,
+                  null
+                ],
+                "floating": null,
+                "icon": null,
+                "style": null,
+                "created_at": "2020-08-20T10:55:09.000Z",
+                "updated_at": "2020-08-20T10:55:09.000Z",
+                "note": null,
+                "link": null,
+                "task": {
+                  "from": null,
+                  "until": null,
+                  "resource": null,
+                  "effort": null,
+                  "notify": 1
+                },
+                "attachments": [],
+                "image": null,
+                "children": [],
+                "boundary": null,
+                "video": null
+              },
+              {
+                "id": 1594578966,
+                "title": "Hydrogen",
+                "rank": 2,
+                "pos": [
+                  null,
+                  null
+                ],
+                "floating": null,
+                "icon": null,
+                "style": null,
+                "created_at": "2020-08-20T10:55:16.000Z",
+                "updated_at": "2020-08-20T10:55:16.000Z",
+                "note": null,
+                "link": null,
+                "task": {
+                  "from": null,
+                  "until": null,
+                  "resource": null,
+                  "effort": null,
+                  "notify": 1
+                },
+                "attachments": [],
+                "image": null,
+                "children": [],
+                "boundary": null,
+                "video": null
+              },
+              {
+                "id": 1594579008,
+                "title": "Oxygen",
+                "rank": 3,
+                "pos": [
+                  null,
+                  null
+                ],
+                "floating": null,
+                "icon": null,
+                "style": null,
+                "created_at": "2020-08-20T10:55:23.000Z",
+                "updated_at": "2020-08-20T10:55:23.000Z",
+                "note": null,
                 "link": null,
                 "task": {
                   "from": null,
@@ -2387,7 +3179,7 @@
           {
             "id": 1498480808,
             "title": "electricity and magnetism",
-            "rank": 2,
+            "rank": 3,
             "pos": [
               null,
               null
@@ -3060,119 +3852,6 @@
             ],
             "boundary": null,
             "video": null
-          },
-          {
-            "id": 1594431054,
-            "title": "Elements",
-            "rank": 3,
-            "pos": [
-              null,
-              null
-            ],
-            "floating": null,
-            "icon": null,
-            "style": null,
-            "created_at": "2020-08-20T07:02:32.000Z",
-            "updated_at": "2020-08-20T10:54:57.000Z",
-            "note": null,
-            "link": null,
-            "task": {
-              "from": null,
-              "until": null,
-              "resource": null,
-              "effort": null,
-              "notify": 1
-            },
-            "attachments": [],
-            "image": null,
-            "children": [
-              {
-                "id": 1594578923,
-                "title": "Helium",
-                "rank": 1,
-                "pos": [
-                  null,
-                  null
-                ],
-                "floating": null,
-                "icon": null,
-                "style": null,
-                "created_at": "2020-08-20T10:55:09.000Z",
-                "updated_at": "2020-08-20T10:55:09.000Z",
-                "note": null,
-                "link": null,
-                "task": {
-                  "from": null,
-                  "until": null,
-                  "resource": null,
-                  "effort": null,
-                  "notify": 1
-                },
-                "attachments": [],
-                "image": null,
-                "children": [],
-                "boundary": null,
-                "video": null
-              },
-              {
-                "id": 1594578966,
-                "title": "Hydrogen",
-                "rank": 2,
-                "pos": [
-                  null,
-                  null
-                ],
-                "floating": null,
-                "icon": null,
-                "style": null,
-                "created_at": "2020-08-20T10:55:16.000Z",
-                "updated_at": "2020-08-20T10:55:16.000Z",
-                "note": null,
-                "link": null,
-                "task": {
-                  "from": null,
-                  "until": null,
-                  "resource": null,
-                  "effort": null,
-                  "notify": 1
-                },
-                "attachments": [],
-                "image": null,
-                "children": [],
-                "boundary": null,
-                "video": null
-              },
-              {
-                "id": 1594579008,
-                "title": "Oxygen",
-                "rank": 3,
-                "pos": [
-                  null,
-                  null
-                ],
-                "floating": null,
-                "icon": null,
-                "style": null,
-                "created_at": "2020-08-20T10:55:23.000Z",
-                "updated_at": "2020-08-20T10:55:23.000Z",
-                "note": null,
-                "link": null,
-                "task": {
-                  "from": null,
-                  "until": null,
-                  "resource": null,
-                  "effort": null,
-                  "notify": 1
-                },
-                "attachments": [],
-                "image": null,
-                "children": [],
-                "boundary": null,
-                "video": null
-              }
-            ],
-            "boundary": null,
-            "video": null
           }
         ],
         "boundary": null,
@@ -3183,14 +3862,14 @@
         "title": "cellural",
         "rank": 6,
         "pos": [
-          65,
-          504
+          167,
+          -927
         ],
         "floating": null,
         "icon": null,
         "style": null,
         "created_at": "2020-05-08T03:43:07.000Z",
-        "updated_at": "2020-05-08T07:37:07.000Z",
+        "updated_at": "2020-10-11T04:20:32.000Z",
         "note": null,
         "link": null,
         "task": {
@@ -3269,7 +3948,7 @@
         "rank": 7,
         "pos": [
           10,
-          -3814
+          -4322
         ],
         "floating": null,
         "icon": [
@@ -3352,8 +4031,8 @@
                     "icon": null,
                     "style": null,
                     "created_at": "2020-08-23T15:41:15.000Z",
-                    "updated_at": "2020-08-23T15:53:38.000Z",
-                    "note": "[ME][Textbook][Wolf] A Tour through Mathematical Logic [https://www.scribd.com/document/332668344/R-Wolf-A-Tour-Through-Mathematical-Logic][Ch 1][ISBN9781614440284]",
+                    "updated_at": "2020-11-05T05:41:04.000Z",
+                    "note": "[ME][Textbook][Wolf] A Tour through Mathematical Logic, Chapter 1 [https://www.scribd.com/document/332668344/R-Wolf-A-Tour-Through-Mathematical-Logic][Ch 1][ISBN9781614440284]\u003Cbr\u003E",
                     "link": "https://en.wikipedia.org/wiki/First-order_logic",
                     "task": {
                       "from": null,
@@ -3380,8 +4059,8 @@
                     "icon": null,
                     "style": null,
                     "created_at": "2020-08-20T06:54:07.000Z",
-                    "updated_at": "2020-08-24T07:18:20.000Z",
-                    "note": "[ME][Textbook][Wolf] A Tour through Mathematical Logic [https://www.scribd.com/document/332668344/R-Wolf-A-Tour-Through-Mathematical-Logic][Ch 2, Ch 6][ISBN9781614440284]",
+                    "updated_at": "2020-11-05T03:45:47.000Z",
+                    "note": "[ME][Textbook][Wolf] A Tour through Mathematical Logic [https://www.scribd.com/document/332668344/R-Wolf-A-Tour-Through-Mathematical-Logic][Ch 2, Ch 6][ISBN9781614440284]\u003Cbr\u003E\u003Cbr\u003E",
                     "link": "https://en.wikipedia.org/wiki/Set_theory",
                     "task": {
                       "from": null,
@@ -3408,8 +4087,8 @@
                     "icon": null,
                     "style": null,
                     "created_at": "2020-08-23T15:49:11.000Z",
-                    "updated_at": "2020-08-23T16:00:41.000Z",
-                    "note": "[ME][Textbook][Wolf] A Tour through Mathematical Logic [https://www.scribd.com/document/332668344/R-Wolf-A-Tour-Through-Mathematical-Logic][Ch 3][ISBN9781614440284]\u003Cbr\u003E\u003Cbr\u003E",
+                    "updated_at": "2020-11-05T03:45:03.000Z",
+                    "note": "[ME][Textbook][Wolf] A Tour through Mathematical Logic , Chapter 3[https://www.scribd.com/document/332668344/R-Wolf-A-Tour-Through-Mathematical-Logic][Ch 3][ISBN9781614440284]\u003Cbr\u003E\u003Cbr\u003E",
                     "link": "https://en.wikipedia.org/wiki/Computability_theory",
                     "task": {
                       "from": null,
@@ -4621,8 +5300,8 @@
                     "icon": null,
                     "style": null,
                     "created_at": "2020-09-02T08:20:15.000Z",
-                    "updated_at": "2020-09-02T08:21:17.000Z",
-                    "note": null,
+                    "updated_at": "2020-09-08T05:30:55.000Z",
+                    "note": "[ME][Textbook][Strauss]Partial differential equations an introduction[https://www.academia.edu/32759560/Walter_A_Strauss_Partial_differential_equations_an_introduction_Wiley_2009_][ISBN9780470054567]",
                     "link": "https://en.wikipedia.org/wiki/Partial_differential_equation",
                     "task": {
                       "from": null,
@@ -4653,8 +5332,8 @@
                 "icon": null,
                 "style": null,
                 "created_at": "2020-05-09T05:00:54.000Z",
-                "updated_at": "2020-09-07T05:51:21.000Z",
-                "note": "\u003Cdiv\u003E\u003Cp class=\"p1\" style='margin-bottom:0px;font-size: 12px;line-height: normal;font-family: \"Helvetica Neue\";color: rgb(0, 0, 0);white-space: normal;'\u003ELiterature\u003C/p\u003E\u003Cp class=\"p2\" style='margin-bottom:0px;font-size: 12px;line-height: normal;font-family: \"Helvetica Neue\";color: rgb(0, 0, 0);white-space: normal;'\u003E\u003Cbr\u003E\u003C/p\u003E\u003Cp class=\"p1\" style='margin-bottom:0px;font-size: 12px;line-height: normal;font-family: \"Helvetica Neue\";color: rgb(0, 0, 0);white-space: normal;'\u003E1 The Drunkard's Walk: How Randomness Rules Our Lives\u003C/p\u003E\u003Cp class=\"p2\" style='margin-bottom:0px;font-size: 12px;line-height: normal;font-family: \"Helvetica Neue\";color: rgb(0, 0, 0);white-space: normal;'\u003E\u003Cbr\u003E\u003C/p\u003E\u003Cp class=\"p1\" style='font-size: 12px;line-height: normal;font-family: \"Helvetica Neue\";color: rgb(0, 0, 0);white-space: normal;'\u003E2 The Feynman Lectures on Physics, vol 1, ch 6 https://www.feynmanlectures.caltech.edu/I_06.html\u003C/p\u003E\u003C/div\u003E",
+                "updated_at": "2020-10-13T05:10:44.000Z",
+                "note": "[ME][Textbook][Feynman] The Feynman Lectures on Physics, vol 1, ch 6, Probability [https://www.feynmanlectures.caltech.edu/I_06.html]\n\n[ME][SciPop][Mlodinow]The Drunkard's Walk: How Randomness Rules Our Lives[https://www.amazon.com/Drunkards-Walk-Randomness-Rules-Lives/dp/0307275175]",
                 "link": "https://en.wikipedia.org/wiki/Probability",
                 "task": {
                   "from": null,
@@ -4678,8 +5357,8 @@
                     "icon": null,
                     "style": null,
                     "created_at": "2020-09-07T05:50:40.000Z",
-                    "updated_at": "2020-09-07T06:32:50.000Z",
-                    "note": "[ME][Course][Orloff]Comparison of frequentist and Bayesian inference[https://ocw.mit.edu/courses/mathematics/18-05-introduction-to-probability-and-statistics-spring-2014/readings/MIT18_05S14_Reading20.pdf]",
+                    "updated_at": "2020-09-24T03:42:43.000Z",
+                    "note": "[ME][SciPop][Silver]The Signal and the Noise: Why So Many Predictions Fail-but Some Don't[https://www.pdfdrive.com/the-signal-and-the-noise-why-so-many-predictions-fail-but-some-dont-d156839187.html]\u003Cbr\u003E\u003Cbr\u003E[ME][Course][Orloff]Comparison of frequentist and Bayesian inference[https://ocw.mit.edu/courses/mathematics/18-05-introduction-to-probability-and-statistics-spring-2014/readings/MIT18_05S14_Reading20.pdf]\u003Cbr\u003E",
                     "link": "https://en.wikipedia.org/wiki/Statistics",
                     "task": {
                       "from": null,
@@ -4927,20 +5606,20 @@
             "image": null,
             "children": [
               {
-                "id": 1505737632,
-                "title": "Conservation Laws",
+                "id": 1499657461,
+                "title": "Principle of least action",
                 "rank": 1,
                 "pos": [
                   null,
                   null
                 ],
-                "floating": false,
+                "floating": null,
                 "icon": null,
                 "style": null,
-                "created_at": "2020-05-14T10:13:27.000Z",
-                "updated_at": "2020-06-05T05:56:13.000Z",
-                "note": "\u003Cdiv\u003E\u003Cbr\u003E\u003C/div\u003E\u003Cspan class=\"_cmfzobe\" style='border:0px;font-weight: 700;color: rgb(33, 36, 44);white-space: normal;background-color: rgb(255, 255, 255);font-size: 16px !important;line-height: 20px !important;font-family: Lato, \"Noto Sans\", sans-serif !important;vertical-align: middle !important;display: inline !important;'\u003E\u003C/span\u003E",
-                "link": "https://en.wikipedia.org/wiki/Scientific_law#Conservation_laws",
+                "created_at": "2020-10-11T03:31:34.000Z",
+                "updated_at": "2020-10-13T05:05:59.000Z",
+                "note": "[ME][Textbook][Feynman]The Feynman Lectures on Physics, Part II, Ch 19, The Principle of Least Action[https://www.feynmanlectures.caltech.edu/II_19.html]",
+                "link": "https://en.wikipedia.org/wiki/Principle_of_least_action",
                 "task": {
                   "from": null,
                   "until": null,
@@ -4952,8 +5631,8 @@
                 "image": null,
                 "children": [
                   {
-                    "id": 1529710529,
-                    "title": "Energy conservation",
+                    "id": 1505737632,
+                    "title": "Noether's Theorem",
                     "rank": 1,
                     "pos": [
                       null,
@@ -4962,10 +5641,10 @@
                     "floating": null,
                     "icon": null,
                     "style": null,
-                    "created_at": "2020-06-05T05:55:32.000Z",
-                    "updated_at": "2020-06-11T06:02:14.000Z",
-                    "note": "\u003Cdiv\u003ETextbooks:\u003C/div\u003E\u003Cdiv\u003E- The Feynman Lectures on Physics, vol 1, ch 4 \u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Ca href=\"https://www.feynmanlectures.caltech.edu/I_01.html\" style=\"line-height: 21px;\"\u003Ehttps://www.feynmanlectures.caltech.edu/I_04.html\u003C/a\u003E\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003EOnline Courses:\u003C/div\u003E\u003Cdiv\u003E- khanacademy, Science  Physics AP®︎ Physics 1 Work and energy Conservation of energy, \u003Ca href=\"https://www.khanacademy.org/science/physics/ap-physics-1/ap-work-and-energy/conservation-of-energy-ap/v/law-of-conservation-of-energy\" style=\"line-height: 21px;\"\u003Ehttps://www.khanacademy.org/science/physics/ap-physics-1/ap-work-and-energy/conservation-of-energy-ap/v/law-of-conservation-of-energy\u003C/a\u003E\u003C/div\u003E\u003Cdiv\u003EAlt:\u003Ca href=\"https://www.khanacademy.org/science/physics/work-and-energy\" style=\"line-height: 21px;\"\u003Ehttps://www.khanacademy.org/science/physics/work-and-energy\u003C/a\u003E\u003Cbr\u003E\u003C/div\u003E",
-                    "link": null,
+                    "created_at": "2020-10-11T03:31:37.000Z",
+                    "updated_at": "2020-10-20T07:52:01.000Z",
+                    "note": "https://www.feynmanlectures.caltech.edu/I_52.html\n\n[ME][Blog][Baez]Noether's Theorem in a Nutshell[https://math.ucr.edu/home/baez/noether.html]",
+                    "link": "https://en.wikipedia.org/wiki/Noether%27s_theorem",
                     "task": {
                       "from": null,
                       "until": null,
@@ -4975,35 +5654,64 @@
                     },
                     "attachments": [],
                     "image": null,
-                    "children": [],
-                    "boundary": null,
-                    "video": null
-                  },
-                  {
-                    "id": 1529710614,
-                    "title": "Impulse conservation",
-                    "rank": 2,
-                    "pos": [
-                      null,
-                      null
+                    "children": [
+                      {
+                        "id": 1529710529,
+                        "title": "Energy conservation",
+                        "rank": 1,
+                        "pos": [
+                          null,
+                          null
+                        ],
+                        "floating": null,
+                        "icon": null,
+                        "style": null,
+                        "created_at": "2020-10-11T03:31:37.000Z",
+                        "updated_at": "2020-10-11T03:31:37.000Z",
+                        "note": "\u003Cdiv\u003ETextbooks:\u003C/div\u003E\u003Cdiv\u003E- The Feynman Lectures on Physics, vol 1, ch 4 \u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Ca href=\"https://www.feynmanlectures.caltech.edu/I_01.html\" style=\"line-height: 21px;\"\u003Ehttps://www.feynmanlectures.caltech.edu/I_04.html\u003C/a\u003E\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003EOnline Courses:\u003C/div\u003E\u003Cdiv\u003E- khanacademy, Science  Physics AP®︎ Physics 1 Work and energy Conservation of energy, \u003Ca href=\"https://www.khanacademy.org/science/physics/ap-physics-1/ap-work-and-energy/conservation-of-energy-ap/v/law-of-conservation-of-energy\" style=\"line-height: 21px;\"\u003Ehttps://www.khanacademy.org/science/physics/ap-physics-1/ap-work-and-energy/conservation-of-energy-ap/v/law-of-conservation-of-energy\u003C/a\u003E\u003C/div\u003E\u003Cdiv\u003EAlt:\u003Ca href=\"https://www.khanacademy.org/science/physics/work-and-energy\" style=\"line-height: 21px;\"\u003Ehttps://www.khanacademy.org/science/physics/work-and-energy\u003C/a\u003E\u003Cbr\u003E\u003C/div\u003E",
+                        "link": null,
+                        "task": {
+                          "from": null,
+                          "until": null,
+                          "resource": null,
+                          "effort": null,
+                          "notify": 1
+                        },
+                        "attachments": [],
+                        "image": null,
+                        "children": [],
+                        "boundary": null,
+                        "video": null
+                      },
+                      {
+                        "id": 1529710614,
+                        "title": "Impulse conservation",
+                        "rank": 2,
+                        "pos": [
+                          null,
+                          null
+                        ],
+                        "floating": null,
+                        "icon": null,
+                        "style": null,
+                        "created_at": "2020-10-11T03:31:37.000Z",
+                        "updated_at": "2020-10-11T03:31:37.000Z",
+                        "note": "\u003Ca href=\"https://www.feynmanlectures.caltech.edu/I_01.html\" style=\"line-height: 21px;\"\u003Ehttps://www.feynmanlectures.caltech.edu/I_10.html\u003C/a\u003E",
+                        "link": null,
+                        "task": {
+                          "from": null,
+                          "until": null,
+                          "resource": null,
+                          "effort": null,
+                          "notify": 1
+                        },
+                        "attachments": [],
+                        "image": null,
+                        "children": [],
+                        "boundary": null,
+                        "video": null
+                      }
                     ],
-                    "floating": null,
-                    "icon": null,
-                    "style": null,
-                    "created_at": "2020-06-05T05:55:43.000Z",
-                    "updated_at": "2020-06-05T05:56:49.000Z",
-                    "note": "\u003Ca href=\"https://www.feynmanlectures.caltech.edu/I_01.html\" style=\"line-height: 21px;\"\u003Ehttps://www.feynmanlectures.caltech.edu/I_10.html\u003C/a\u003E",
-                    "link": null,
-                    "task": {
-                      "from": null,
-                      "until": null,
-                      "resource": null,
-                      "effort": null,
-                      "notify": 1
-                    },
-                    "attachments": [],
-                    "image": null,
-                    "children": [],
                     "boundary": null,
                     "video": null
                   }
@@ -5012,8 +5720,8 @@
                 "video": null
               },
               {
-                "id": 1551787035,
-                "title": "Symmetries",
+                "id": 1531451860,
+                "title": "Space-time  dependancy",
                 "rank": 2,
                 "pos": [
                   null,
@@ -5022,66 +5730,10 @@
                 "floating": false,
                 "icon": null,
                 "style": null,
-                "created_at": "2020-06-29T08:58:58.000Z",
-                "updated_at": "2020-06-29T08:59:36.000Z",
-                "note": "\u003Ca href=\"https://www.feynmanlectures.caltech.edu/I_01.html\" style=\"line-height: 21px;\"\u003Ehttps://www.feynmanlectures.caltech.edu/I_52.html\u003C/a\u003E",
-                "link": null,
-                "task": {
-                  "from": null,
-                  "until": null,
-                  "resource": null,
-                  "effort": null,
-                  "notify": 1
-                },
-                "attachments": [],
-                "image": null,
-                "children": [],
-                "boundary": null,
-                "video": null
-              },
-              {
-                "id": 1499657461,
-                "title": "Principle of least action",
-                "rank": 3,
-                "pos": [
-                  null,
-                  null
-                ],
-                "floating": false,
-                "icon": null,
-                "style": null,
-                "created_at": "2020-05-09T04:55:50.000Z",
-                "updated_at": "2020-07-09T07:14:18.000Z",
-                "note": "\u003Ca href=\"https://www.feynmanlectures.caltech.edu/II_17.html\" style=\"line-height: 21px;\"\u003Ehttps://www.feynmanlectures.caltech.edu/II_17.html\u003C/a\u003E",
-                "link": "https://en.wikipedia.org/wiki/Principle_of_least_action",
-                "task": {
-                  "from": null,
-                  "until": null,
-                  "resource": null,
-                  "effort": null,
-                  "notify": 1
-                },
-                "attachments": [],
-                "image": null,
-                "children": [],
-                "boundary": null,
-                "video": null
-              },
-              {
-                "id": 1531451860,
-                "title": "Space, time and gravity",
-                "rank": 4,
-                "pos": [
-                  null,
-                  null
-                ],
-                "floating": false,
-                "icon": null,
-                "style": null,
                 "created_at": "2020-06-07T06:38:34.000Z",
-                "updated_at": "2020-07-09T05:56:11.000Z",
-                "note": "Time \u003Ca href=\"https://www.feynmanlectures.caltech.edu/I_01.html\" style=\"line-height: 21px;\"\u003Ehttps://www.feynmanlectures.caltech.edu/I_05.html\u003C/a\u003E paragraph 5\u003Cdiv\u003E\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003EGravity \u003Ca href=\"https://www.feynmanlectures.caltech.edu/I_01.html\" style=\"line-height: 21px;\"\u003Ehttps://www.feynmanlectures.caltech.edu/I_07.html\u003C/a\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003EGravity as pseudo force\u003C/div\u003E\u003Cdiv\u003E\u003Ca href=\"https://www.feynmanlectures.caltech.edu/I_01.html\" style=\"line-height: 21px;\"\u003Ehttps://www.feynmanlectures.caltech.edu/I_12.html\u003C/a\u003E par 5\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003EProperties of gravity field, definition of work and energy and its conservation\u003C/div\u003E\u003Cdiv\u003E\u003Ca href=\"https://www.feynmanlectures.caltech.edu/I_13.html\" style=\"line-height: 21px;\"\u003Ehttps://www.feynmanlectures.caltech.edu/I_13.html\u003C/a\u003E\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Ca href=\"https://www.feynmanlectures.caltech.edu/I_13.html\" style=\"line-height: 21px;\"\u003Ehttps://www.feynmanlectures.caltech.edu/I_14.html\u003C/a\u003E\u003C/div\u003E",
-                "link": null,
+                "updated_at": "2020-10-11T03:49:44.000Z",
+                "note": "",
+                "link": "https://en.wikipedia.org/wiki/Spacetime",
                 "task": {
                   "from": null,
                   "until": null,
@@ -5116,7 +5768,36 @@
                     },
                     "attachments": [],
                     "image": null,
-                    "children": [],
+                    "children": [
+                      {
+                        "id": 1618272936,
+                        "title": "gravity",
+                        "rank": 1,
+                        "pos": [
+                          null,
+                          null
+                        ],
+                        "floating": null,
+                        "icon": null,
+                        "style": null,
+                        "created_at": "2020-09-13T05:18:28.000Z",
+                        "updated_at": "2020-09-13T05:18:39.000Z",
+                        "note": "Time \u003Ca href=\"https://www.feynmanlectures.caltech.edu/I_01.html\" style=\"line-height: 21px;\"\u003Ehttps://www.feynmanlectures.caltech.edu/I_05.html\u003C/a\u003E paragraph 5\u003Cdiv\u003E\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003EGravity \u003Ca href=\"https://www.feynmanlectures.caltech.edu/I_01.html\" style=\"line-height: 21px;\"\u003Ehttps://www.feynmanlectures.caltech.edu/I_07.html\u003C/a\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003EGravity as pseudo force\u003C/div\u003E\u003Cdiv\u003E\u003Ca href=\"https://www.feynmanlectures.caltech.edu/I_01.html\" style=\"line-height: 21px;\"\u003Ehttps://www.feynmanlectures.caltech.edu/I_12.html\u003C/a\u003E par 5\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003EProperties of gravity field, definition of work and energy and its conservation\u003C/div\u003E\u003Cdiv\u003E\u003Ca href=\"https://www.feynmanlectures.caltech.edu/I_13.html\" style=\"line-height: 21px;\"\u003Ehttps://www.feynmanlectures.caltech.edu/I_13.html\u003C/a\u003E\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Ca href=\"https://www.feynmanlectures.caltech.edu/I_13.html\" style=\"line-height: 21px;\"\u003Ehttps://www.feynmanlectures.caltech.edu/I_14.html\u003C/a\u003E\u003C/div\u003E",
+                        "link": null,
+                        "task": {
+                          "from": null,
+                          "until": null,
+                          "resource": null,
+                          "effort": null,
+                          "notify": 1
+                        },
+                        "attachments": [],
+                        "image": null,
+                        "children": [],
+                        "boundary": null,
+                        "video": null
+                      }
+                    ],
                     "boundary": null,
                     "video": null
                   },
@@ -5132,9 +5813,9 @@
                     "icon": null,
                     "style": null,
                     "created_at": "2020-06-11T08:35:00.000Z",
-                    "updated_at": "2020-07-09T05:49:05.000Z",
+                    "updated_at": "2020-10-11T03:49:10.000Z",
                     "note": "\u003Cdiv\u003E\u003Cdiv\u003E\u003Ca href=\"https://www.feynmanlectures.caltech.edu/I_01.html\" style=\"line-height: 21px;\"\u003Ehttps://www.feynmanlectures.caltech.edu/I_15.html\u003C/a\u003E - central ideas:\u003C/div\u003E\u003Cdiv\u003E- equivalence of “inertial frames” is violated in Maxwell equations\u003C/div\u003E\u003Cdiv\u003E- m=m_0/sqrt(1-v^2/c^2) (m_0 is mass of rest)\u003C/div\u003E\u003Cdiv\u003E\u003Ca href=\"https://www.feynmanlectures.caltech.edu/I_01.html\" style=\"line-height: 21px;\"\u003Ehttps://www.feynmanlectures.caltech.edu/I_16.html\u003C/a\u003E\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Ca href=\"https://www.feynmanlectures.caltech.edu/I_01.html\" style=\"line-height: 21px;\"\u003Ehttps://www.feynmanlectures.caltech.edu/I_17.html\u003C/a\u003E\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Cbr\u003E\u003C/div\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Cbr\u003E\u003C/div\u003E",
-                    "link": null,
+                    "link": "https://en.wikipedia.org/wiki/Special_relativity",
                     "task": {
                       "from": null,
                       "until": null,
@@ -5153,20 +5834,20 @@
                 "video": null
               },
               {
-                "id": 1582903371,
-                "title": "Atomic theory",
-                "rank": 5,
+                "id": 1544298221,
+                "title": "Probabilistic nature of reality",
+                "rank": 3,
                 "pos": [
                   null,
                   null
                 ],
-                "floating": null,
+                "floating": false,
                 "icon": null,
                 "style": null,
-                "created_at": "2020-08-07T05:56:15.000Z",
-                "updated_at": "2020-08-07T06:08:49.000Z",
-                "note": "\u003Ca href=\"https://www.feynmanlectures.caltech.edu/I_01.html\" style=\"line-height: 21px;\"\u003Ehttps://www.feynmanlectures.caltech.edu/I_01.html\u003C/a\u003E\u003Cdiv\u003E\u003Cbr\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Ca href=\"https://www.feynmanlectures.caltech.edu/I_01.html\" style=\"line-height: 21px;\"\u003Ehttps://www.feynmanlectures.caltech.edu/I_02.html\u003C/a\u003E\u003Cbr\u003E\u003C/div\u003E",
-                "link": null,
+                "created_at": "2020-06-20T06:50:19.000Z",
+                "updated_at": "2020-10-11T04:14:51.000Z",
+                "note": "\u003Cdiv\u003E\u003Cspan style=\"color: rgb(0, 170, 255);\"\u003Ehttps://www.feynmanlectures.caltech.edu/I_37.html\u003C/span\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Cspan style=\"color: rgb(0, 170, 255);\"\u003E\u003Cbr\u003E\u003C/span\u003E\u003C/div\u003E\u003Cdiv\u003E\u003Cspan style=\"\"\u003EQuantum uncertainty\u003Cbr class=\"Apple-interchange-newline\" style=\"color: rgb(138, 148, 153);\"\u003E\u003Cdiv style=\"color: rgb(138, 148, 153);\"\u003E\u003Cspan style=\"line-height: 21px;color: rgb(0, 170, 255);\"\u003Ehttps://www.feynmanlectures.caltech.edu/I_38.html\u003C/span\u003E\u003C/div\u003E\u003C/span\u003E\u003C/div\u003E",
+                "link": "https://en.wikipedia.org/wiki/Double-slit_experiment",
                 "task": {
                   "from": null,
                   "until": null,
@@ -5177,6 +5858,91 @@
                 "attachments": [],
                 "image": null,
                 "children": [],
+                "boundary": null,
+                "video": null
+              },
+              {
+                "id": 1682958306,
+                "title": "Unpredictability",
+                "rank": 4,
+                "pos": [
+                  null,
+                  null
+                ],
+                "floating": null,
+                "icon": null,
+                "style": null,
+                "created_at": "2020-11-07T03:54:36.000Z",
+                "updated_at": "2020-11-07T07:54:51.000Z",
+                "note": null,
+                "link": "https://en.wikipedia.org/wiki/Chaos_theory",
+                "task": {
+                  "from": null,
+                  "until": null,
+                  "resource": null,
+                  "effort": null,
+                  "notify": 1
+                },
+                "attachments": [],
+                "image": null,
+                "children": [
+                  {
+                    "id": 1682966089,
+                    "title": "Quantum Chaos",
+                    "rank": 1,
+                    "pos": [
+                      null,
+                      null
+                    ],
+                    "floating": null,
+                    "icon": null,
+                    "style": null,
+                    "created_at": "2020-11-07T04:12:40.000Z",
+                    "updated_at": "2020-11-07T07:54:59.000Z",
+                    "note": null,
+                    "link": "https://en.wikipedia.org/wiki/Quantum_chaos",
+                    "task": {
+                      "from": null,
+                      "until": null,
+                      "resource": null,
+                      "effort": null,
+                      "notify": 1
+                    },
+                    "attachments": [],
+                    "image": null,
+                    "children": [],
+                    "boundary": null,
+                    "video": null
+                  },
+                  {
+                    "id": 1682966138,
+                    "title": "Classical Chaos",
+                    "rank": 2,
+                    "pos": [
+                      null,
+                      null
+                    ],
+                    "floating": null,
+                    "icon": null,
+                    "style": null,
+                    "created_at": "2020-11-07T04:12:49.000Z",
+                    "updated_at": "2020-11-07T07:55:31.000Z",
+                    "note": null,
+                    "link": "https://en.wikipedia.org/wiki/Chaos_theory",
+                    "task": {
+                      "from": null,
+                      "until": null,
+                      "resource": null,
+                      "effort": null,
+                      "notify": 1
+                    },
+                    "attachments": [],
+                    "image": null,
+                    "children": [],
+                    "boundary": null,
+                    "video": null
+                  }
+                ],
                 "boundary": null,
                 "video": null
               }
@@ -5221,14 +5987,14 @@
         "title": "organism groups",
         "rank": 8,
         "pos": [
-          49,
-          1675
+          54,
+          1973
         ],
         "floating": null,
         "icon": null,
         "style": null,
         "created_at": "2020-05-08T04:14:58.000Z",
-        "updated_at": "2020-07-18T05:53:01.000Z",
+        "updated_at": "2020-10-11T04:20:41.000Z",
         "note": null,
         "link": null,
         "task": {
@@ -5354,37 +6120,9 @@
                 "video": null
               },
               {
-                "id": 1444718775,
-                "title": "family",
-                "rank": 2,
-                "pos": [
-                  null,
-                  null
-                ],
-                "floating": null,
-                "icon": null,
-                "style": null,
-                "created_at": "2020-03-21T14:50:10.000Z",
-                "updated_at": "2020-03-21T15:17:33.000Z",
-                "note": null,
-                "link": null,
-                "task": {
-                  "from": null,
-                  "until": null,
-                  "resource": null,
-                  "effort": null,
-                  "notify": 1
-                },
-                "attachments": [],
-                "image": null,
-                "children": [],
-                "boundary": null,
-                "video": null
-              },
-              {
                 "id": 1444735902,
                 "title": "companies",
-                "rank": 3,
+                "rank": 2,
                 "pos": [
                   null,
                   null
@@ -5497,7 +6235,7 @@
               {
                 "id": 1444736032,
                 "title": "national",
-                "rank": 4,
+                "rank": 3,
                 "pos": [
                   null,
                   null
@@ -5922,7 +6660,7 @@
               {
                 "id": 1588924739,
                 "title": "international",
-                "rank": 5,
+                "rank": 4,
                 "pos": [
                   null,
                   null
@@ -7367,37 +8105,9 @@
                     "image": null,
                     "children": [
                       {
-                        "id": 1444837160,
-                        "title": "black swan",
-                        "rank": 1,
-                        "pos": [
-                          null,
-                          null
-                        ],
-                        "floating": null,
-                        "icon": null,
-                        "style": null,
-                        "created_at": "2020-03-21T17:55:17.000Z",
-                        "updated_at": "2020-03-21T17:55:17.000Z",
-                        "note": null,
-                        "link": null,
-                        "task": {
-                          "from": null,
-                          "until": null,
-                          "resource": null,
-                          "effort": null,
-                          "notify": 1
-                        },
-                        "attachments": [],
-                        "image": null,
-                        "children": [],
-                        "boundary": null,
-                        "video": null
-                      },
-                      {
                         "id": 1444837453,
                         "title": "singularity",
-                        "rank": 2,
+                        "rank": 1,
                         "pos": [
                           null,
                           null
@@ -7425,7 +8135,7 @@
                       {
                         "id": 1444837800,
                         "title": "global projects in progress",
-                        "rank": 3,
+                        "rank": 2,
                         "pos": [
                           null,
                           null
@@ -7559,7 +8269,6 @@
   ],
   "images": [],
   "theme": {
-    "id": 798257,
     "name": "racetrack",
     "root_style": {
       "id": 555765018,
@@ -7696,6 +8405,7 @@
       "color": "8A9499",
       "style": 1
     },
+    "id": 798257,
     "styles": [
       {
         "id": 555765018,
