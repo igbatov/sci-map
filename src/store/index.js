@@ -1,7 +1,3 @@
-/**
- * Main store that maintain flat tree and set zoom and position
- */
-import Vue from "vue";
 import Vuex from "vuex";
 
 const map = require("../assets/map.json");
@@ -28,9 +24,8 @@ map.root.children = map.root.children.sort((a, b) =>
 //   }
 // }
 console.log(map);
-Vue.use(Vuex);
 
-export default new Vuex.Store({
+export default Vuex.createStore({
   state: {},
   getters: {},
   mutations: {},
