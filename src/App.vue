@@ -1,109 +1,47 @@
 <template>
-  <div class="wrapper">
-    <InfoBox :content="content" :sections="sections" />
-    <svg height="100%" width="100%" id="rootSVG">
-      <Map :nodeId="GetRoot.id" />
-    </svg>
-    <BreadCrumbs />
-  </div>
+  <svg xmlns="http://www.w3.org/2000/svg" :viewBox="`0 0 ${width} ${height}`">
+    <polygon
+      v-for="(path, i) of polygons"
+      :key="i"
+      stroke="green"
+      fill="transparent"
+      stroke-width="1"
+      :points="path"
+    />
+    <circle
+      v-for="({ x, y }, i) of points"
+      :key="i"
+      :cx="x"
+      :cy="y"
+      r="1"
+      stroke="red"
+      fill="red"
+      stroke-width="1"
+    />
+  </svg>
 </template>
 
 <script>
-import Map from "./components/Map";
-import BreadCrumbs from "./components/BreadCrumbs";
-import InfoBox from "./components/InfoBox";
-import { SET_ROOT_WH, SET_ROOT_XY, InitFlatMap, GetRoot } from "./store";
-import { Init, UpdateCurrentLevel } from "./store/level";
-import { mapGetters } from "vuex";
-import { Zoom } from "@/store/zoomPan";
-import { processNodeSelect } from "@/store/utils";
-
 export default {
   name: "App",
 
-  components: {
-    Map,
-    BreadCrumbs,
-    InfoBox
-  },
+  components: {},
 
   data: () => ({
-    mouseDown: false
+    polygons: ["10 10, 100 10, 100 100"],
+    points: [
+      { x: 70, y: 50 },
+      { x: 90, y: 50 },
+      { x: 30, y: 20 }
+    ],
+    width: window.innerWidth,
+    height: window.innerHeight
   }),
 
-  computed: {
-    ...mapGetters([GetRoot]),
-    ...mapGetters("infoBox", ["GetContent", "GetSections"]),
-    content() {
-      return this.GetContent(this.$route.params.id);
-    },
-    sections() {
-      return this.GetSections(this.$route.params.id);
-    }
-  },
+  computed: {},
 
-  methods: {
-    mouseDownHandler() {
-      this.mouseDown = true;
-    },
-    mouseUpHandler() {
-      this.mouseDown = false;
-    },
-    mouseMoveHandler(event) {
-      if (this.mouseDown === false) {
-        return;
-      }
-      const newX = this.GetRoot.GetXY().x + event.movementX;
-      const newY = this.GetRoot.GetXY().y + event.movementY;
-      // Stop pan if area out of borders
-      if (
-        // newX > 0 ||
-        newY > 0 ||
-        // newX + this.GetRoot.GetWH().width < window.innerWidth ||
-        newY + this.GetRoot.GetWH().height < window.innerHeight
-      ) {
-        return;
-      }
-      this.$store.commit(SET_ROOT_XY, { x: newX, y: newY });
-      this.$store.dispatch("level/" + UpdateCurrentLevel);
-    },
-    mouseWheelHandler(event) {
-      this.$store.dispatch("zoomPan/" + Zoom, event);
-    }
-  },
-
-  beforeMount() {
-    this.$store.dispatch(InitFlatMap);
-    this.$store.commit(SET_ROOT_WH, {
-      width: window.innerWidth,
-      height: window.innerHeight
-    });
-    this.$store.commit(SET_ROOT_XY, { x: 0, y: 0 });
-    this.$store.dispatch("level/" + Init);
-  },
-
-  async mounted() {
-    const root = document.getElementById("rootSVG");
-    root.addEventListener("wheel", this.mouseWheelHandler);
-    root.addEventListener("mousedown", this.mouseDownHandler);
-    root.addEventListener("mouseup", this.mouseUpHandler);
-    root.addEventListener("mousemove", this.mouseMoveHandler);
-    await processNodeSelect(this.$route.params.id);
-  },
-
-  destroyed() {
-    const root = document.getElementById("rootSVG");
-    root.removeEventListener("wheel", this.mouseWheelHandler);
-    root.removeEventListener("mousedown", this.mouseDownHandler);
-    root.removeEventListener("mouseup", this.mouseUpHandler);
-    root.removeEventListener("mousemove", this.mouseMoveHandler);
-  }
+  methods: {}
 };
 </script>
 
-<style scoped>
-.wrapper {
-  width: 100%;
-  height: 100%;
-}
-</style>
+<style scoped></style>

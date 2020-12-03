@@ -1,9 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import App from "../App";
-import store from "@/store";
-import { GetRoot } from "@/store";
-import { processNodeSelect } from "@/store/utils";
 
 Vue.use(VueRouter);
 
@@ -14,11 +11,7 @@ const router = new VueRouter({
 });
 
 router.afterEach(async to => {
-  if (!store.getters[GetRoot]) {
-    return;
-  }
-  let nodeId = to.params.id;
-  await processNodeSelect(nodeId);
+  console.log(to.params.id);
 });
 
 export default router;
