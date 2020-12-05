@@ -1,10 +1,9 @@
 <template>
   <DotsAndBorders
-      :width="width"
-      :height="height"
-
-      :polygons="polygons"
-      :points="points"
+    :width="width"
+    :height="height"
+    :polygons="polygons"
+    :points="points"
   />
 </template>
 
@@ -19,7 +18,13 @@ export default defineComponent({
   },
 
   data: () => ({
-    polygons: [[{x:10, y:10}, {x:100, y:10}, {x:100, y:100}]],
+    polygons: [
+      [
+        { x: 10, y: 10 },
+        { x: 100, y: 10 },
+        { x: 100, y: 100 }
+      ]
+    ],
     points: [
       { x: 70, y: 50 },
       { x: 90, y: 50 },

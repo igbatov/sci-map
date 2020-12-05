@@ -30,7 +30,7 @@ export default defineComponent({
   props: {
     polygons: {
       type: Object as PropType<Array<Array<Point>>>,
-      required: true,
+      required: true
     },
     points: Object as PropType<Array<Point>>,
 
@@ -41,10 +41,10 @@ export default defineComponent({
   computed: {
     paths(): Array<string> {
       return this.polygons.map((points: Array<Point>) => {
-        return points.map((point: Point)=>(`${point.x} ${point.y}`)).join(',')
-      })
-    },
-  },
+        return points.map((point: Point) => `${point.x} ${point.y}`).join(",");
+      });
+    }
+  }
 });
 </script>
 
