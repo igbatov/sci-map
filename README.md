@@ -43,6 +43,12 @@ docker run -d -p 80:80 --rm --name sci-map sci-map
 https://blog.logrocket.com/how-to-auto-deploy-a-vue-application-using-gitlab-ci-cd-on-ubuntu/
 Don't forget to disable shared runners in your gitlab.com account (section Ruuners in https://gitlab.com/<username>/sci-map/-/settings/ci_cd)
 
+### If deploy job fails with "no space left on device"
+Just ssh to your host and do
+```shell
+docker system prune --all
+```
+
 ## Rules of classification
 General rule of classification is somewhat similar to Barbara Minto pyramid ([summary](https://medium.com/lessons-from-mckinsey/the-pyramid-principle-f0885dd3c5c7)):
  - parent node gives a summary of its children nodes and contains a mental picture of context, situation or complication
