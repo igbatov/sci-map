@@ -1,4 +1,6 @@
-export default interface Point {
+export interface Point {
   x: number;
   y: number;
 }
+
+export type Polygon = Array<Point>;

@@ -23,13 +23,13 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-import Point from "@/types";
+import { Point, Polygon } from "@/types";
 
 export default defineComponent({
   name: "DotsAndBorders",
   props: {
     polygons: {
-      type: Object as PropType<Array<Array<Point>>>,
+      type: Object as PropType<Array<Polygon>>,
       required: true
     },
     points: Object as PropType<Array<Point>>,
