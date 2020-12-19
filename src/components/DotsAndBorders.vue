@@ -23,7 +23,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-import { Point, Polygon } from "@/types";
+import { Point, Polygon } from "@/types/graphics";
 
 export default defineComponent({
   name: "DotsAndBorders",
