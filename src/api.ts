@@ -1,4 +1,8 @@
 import firebase from "firebase";
+import axios from "axios";
+import { Tree } from "@/types/graphics";
+import { ErrorKV } from "@/types/errorkv";
+import NewErrorKV from "@/tools/errorkv";
 
 export default {
   init() {
@@ -17,6 +21,28 @@ export default {
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     firebase.analytics();
+  },
+
+  async getMap(): Promise<[Tree | null, ErrorKV]> {
+    const storage = firebase.storage().ref();
+    const mapRef = storage.child(`/map.json`);
+    const url = await mapRef.getDownloadURL();
+    try {
+      const response = await axios.get(url);
+      return [
+        {
+          id: 0,
+          title: "",
+          position: { x: window.innerWidth / 2, y: window.innerHeight / 2 },
+          wikipedia: "",
+          resources: [],
+          children: response.data
+        },
+        null
+      ];
+    } catch (e) {
+      return [null, NewErrorKV(e.response, [{ code: e.code }])];
+    }
   },
 
   async getCurrentUser(): Promise<firebase.User> {

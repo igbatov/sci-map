@@ -1,41 +1,36 @@
 <template>
-  <DotsAndBorders
-    :width="width"
-    :height="height"
-    :polygons="polygons"
-    :points="points"
-  />
+  <Map :tree="tree" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import DotsAndBorders from "@/components/DotsAndBorders.vue";
+import Map from "@/components/Map.vue";
+import api from "@/api.ts";
+import { ref, onMounted } from "vue";
+
 export default defineComponent({
   name: "Home",
 
   components: {
-    DotsAndBorders
+    Map
   },
 
-  data: () => ({
-    polygons: [
-      [
-        { x: 10, y: 10 },
-        { x: 100, y: 10 },
-        { x: 100, y: 100 }
-      ]
-    ],
-    points: [
-      { x: 70, y: 50 },
-      { x: 90, y: 50 },
-      { x: 30, y: 20 }
-    ],
-    width: window.innerWidth,
-    height: window.innerHeight
-  }),
+  setup() {
+    const tree = ref({});
+    const getMap = async () => {
+      const [apiTree, err] = await api.getMap();
+      if (apiTree == null || err) {
+        console.log(err);
+        return;
+      }
+      tree.value = apiTree;
+    };
 
-  computed: {},
+    onMounted(getMap);
 
-  methods: {}
+    return {
+      tree
+    };
+  }
 });
 </script>

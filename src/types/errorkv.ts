@@ -1,5 +1,4 @@
 export type ErrorKV = {
-    message: string;
-    kv: Record<string, any>[];
-} | null
-
+  message: string;
+  kv: Record<string, any>[];
+} | null;
