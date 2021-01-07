@@ -8,5 +8,6 @@ step-deploy-prod:
   script:
     - docker ps
     - docker stop sci-map || true
+    - docker system prune --all --force
     - docker build -t sci-map .
     - docker run -d -p 80:80 --rm --name sci-map sci-map
