@@ -2,7 +2,7 @@
   <polygon
     v-for="(mapNode, i) of mapNodes"
     :key="i"
-    stroke="green"
+    :stroke="borderColor"
     fill="transparent"
     stroke-width="1"
     :points="polygonToPath(mapNode.border)"
@@ -12,6 +12,8 @@
     :key="i"
     :x="mapNode.center.x"
     :y="mapNode.center.y"
+    :font-family="font"
+    :font-size="fontSize"
   >
     {{ mapNode.title }}
   </text>
@@ -34,7 +36,7 @@ export default defineComponent({
       required: true
     },
     font: {
-      type: Number,
+      type: String,
       required: true
     },
     fontSize: {

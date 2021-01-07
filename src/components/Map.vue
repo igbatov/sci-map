@@ -1,6 +1,12 @@
 <template>
   <svg xmlns="http://www.w3.org/2000/svg" :viewBox="viewBox">
-    <MapLayer v-for="(layer, i) of layers" :key="i" :map-nodes="layer" />
+    <MapLayer
+        v-for="(layer, i) of layers"
+        :key="i"
+        :map-nodes="layer"
+        :border-color="`rgb(${(200-100*i)},${(200-100*i)},${(200-100*i)})`"
+        :font-size="10*(i+1)"
+    />
   </svg>
 </template>
 
@@ -29,13 +35,13 @@ export default defineComponent({
      * treeToLayers processor
      */
     const treeToLayers = () => {
-      const [l, err] = mapToLayers(tree.value);
-      if (l == null || err != null) {
+      const [ls, err] = mapToLayers(tree.value);
+      if (ls == null || err != null) {
         console.error(err);
         return;
       }
-      l.reverse();
-      layers.value = l;
+      ls.reverse()
+      layers.value = ls;
     };
     watch(tree, treeToLayers);
 
