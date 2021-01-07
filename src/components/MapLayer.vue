@@ -12,7 +12,7 @@
     :key="i"
     :x="mapNode.center.x"
     :y="mapNode.center.y"
-    :font-family="font"
+    font-family="Roboto"
     :font-size="fontSize"
   >
     {{ mapNode.title }}
@@ -32,10 +32,6 @@ export default defineComponent({
       required: true
     },
     borderColor: {
-      type: String,
-      required: true
-    },
-    font: {
       type: String,
       required: true
     },
