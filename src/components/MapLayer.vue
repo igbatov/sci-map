@@ -4,7 +4,7 @@
     :key="i"
     :stroke="borderColor"
     fill="transparent"
-    stroke-width="1"
+    stroke-width="2"
     :points="polygonToPath(mapNode.border)"
   />
   <text
@@ -14,6 +14,7 @@
     :y="mapNode.center.y"
     font-family="Roboto"
     :font-size="fontSize"
+    :fill="borderColor"
   >
     {{ mapNode.title }}
   </text>
