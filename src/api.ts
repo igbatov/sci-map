@@ -41,7 +41,7 @@ export default {
         null
       ];
     } catch (e) {
-      return [null, NewErrorKV(e.response, [{ code: e.code }])];
+      return [null, NewErrorKV(e.response, { code: e.code })];
     }
   },
 

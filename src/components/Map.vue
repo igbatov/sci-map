@@ -1,11 +1,11 @@
 <template>
   <svg xmlns="http://www.w3.org/2000/svg" :viewBox="viewBox">
     <MapLayer
-        v-for="(layer, i) of layers"
-        :key="i"
-        :map-nodes="layer"
-        :border-color="`rgb(${(200-100*i)},${(200-100*i)},${(200-100*i)})`"
-        :font-size="10*(i+1)"
+      v-for="(layer, i) of layers"
+      :key="i"
+      :map-nodes="layer"
+      :border-color="`rgb(${200 - 100 * i},${200 - 100 * i},${200 - 100 * i})`"
+      :font-size="10 * (i + 1)"
     />
   </svg>
 </template>
@@ -40,7 +40,7 @@ export default defineComponent({
         console.error(err);
         return;
       }
-      ls.reverse()
+      ls.reverse();
       layers.value = ls;
     };
     watch(tree, treeToLayers);

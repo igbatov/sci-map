@@ -4,7 +4,14 @@ export interface Point {
 }
 
 export type Polygon = Array<Point>;
-export type Square = [Point, Point, Point, Point];
+export type Rectangle = {
+  leftBottom: Point;
+  rightTop: Point;
+};
+export type Vector = {
+  from: Point;
+  to: Point;
+};
 export type VoronoiCell = {
   border: Polygon;
   center: Point;
