@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, watch, toRefs, ref, computed } from "vue";
+import { defineComponent, PropType, watch, watchEffect, toRefs, ref, computed } from "vue";
 import { Tree } from "@/types/graphics";
 import MapLayer from "@/components/MapLayer.vue";
 import { mapToLayers } from "@/tools/graphics";
@@ -31,19 +31,29 @@ export default defineComponent({
     const { tree } = toRefs(props);
     const layers = ref({});
 
+    // setTimeout(()=>{
+    //   tree.value.children[0].title = "HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH"
+    //   console.log(tree.value.children[0].title)
+    // }, 7000);
+
     /**
      * treeToLayers processor
      */
-    const treeToLayers = () => {
-      const [ls, err] = mapToLayers(tree.value);
+    const treeToLayers = (tree: Tree) => {
+      const [ls, err] = mapToLayers(tree);
       if (ls == null || err != null) {
         console.error(err);
         return;
       }
-      ls.reverse();
+
+      ls.reverse()
+
       layers.value = ls;
     };
-    watch(tree, treeToLayers);
+    watch(tree, treeToLayers, {
+      immediate: true,
+      deep: true,
+    });
 
     /**
      * svg viewBox processor
