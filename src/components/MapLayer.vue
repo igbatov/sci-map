@@ -8,14 +8,14 @@
     :points="polygonToPath(mapNode.border)"
   />
   <circle
-      v-for="mapNode of mapNodes"
-      :key="mapNode.id"
-      :cx="mapNode.center.x"
-      :cy="mapNode.center.y"
-      r="10"
-      stroke="black"
-      stroke-width="1"
-      fill="red"
+    v-for="mapNode of mapNodes"
+    :key="mapNode.id"
+    :cx="mapNode.center.x"
+    :cy="mapNode.center.y"
+    r="10"
+    stroke="black"
+    stroke-width="1"
+    fill="red"
   />
   <text
     v-for="mapNode of mapNodes"
@@ -32,13 +32,22 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType, toRefs, onMounted, onUpdated, nextTick, ref, watch, Ref} from "vue";
-import {MapNode, Point} from "@/types/graphics";
+import {
+  defineComponent,
+  PropType,
+  toRefs,
+  onMounted,
+  nextTick,
+  ref,
+  watch
+} from "vue";
+import { MapNode, Point } from "@/types/graphics";
 import { polygonToPath } from "@/tools/graphics";
-import {nodeToTitleBox} from "@/components/MapLayer";
+import { nodeToTitleBox } from "@/components/MapLayer";
 
 export default defineComponent({
   name: "MapLayer",
+  emits: ["click", "drop", "dragging", "node-mouse-down"],
   props: {
     mapNodes: {
       type: Object as PropType<Array<MapNode>>,
@@ -54,49 +63,107 @@ export default defineComponent({
     }
   },
 
-  setup(props, ctx){
+  setup(props, ctx) {
     const { mapNodes } = toRefs(props);
 
     /**
-     * Update titleBox on evenry prop change after DOM rerender
+     * Update titleBox on every prop change after DOM rerender
      */
-    const titleBox = ref(nodeToTitleBox(mapNodes))
+    const titleBox = ref(nodeToTitleBox(mapNodes));
     const titleXYUpdate = (mapNodes: Array<MapNode>) => {
       // Code that will run only after the entire view has been rendered
       nextTick(() => {
         for (const i in mapNodes) {
-          const node = mapNodes[i]
-          const dom = document.getElementById(`title_${node.id}`)
+          const node = mapNodes[i];
+          const dom = document.getElementById(`title_${node.id}`);
           if (dom == null) {
-            continue
+            continue;
           }
           titleBox.value[node.id] = {
             position: {
-              x:node.center.x - dom.getBoundingClientRect().width/2,
-              y:node.center.y + dom.getBoundingClientRect().height/4,
+              x: node.center.x - dom.getBoundingClientRect().width / 2,
+              y: node.center.y + dom.getBoundingClientRect().height / 4
             },
             bbox: {
               width: dom.getBoundingClientRect().width,
-              height: dom.getBoundingClientRect().height,
+              height: dom.getBoundingClientRect().height
             }
-          }
+          };
         }
-      })
-    }
+      });
+    };
     watch(
       () => props.mapNodes,
-      (mapNodes) => titleXYUpdate(mapNodes),
+      mapNodes => titleXYUpdate(mapNodes),
       {
-        immediate: true,
-      },
-    )
+        immediate: true
+      }
+    );
 
     /**
      * Send event on titleBox click, drag and drop
      */
+    let mouseDownInfo: {
+      nodeId: number;
+      pointer: Point;
+      nodeCenter: Point;
+    } | null = null;
+    let dragStart = false;
+    onMounted(() => {
+      window.addEventListener("mousedown", event => {
+        for (const id in titleBox.value) {
+          const { x, y } = titleBox.value[id].position;
+          const { width, height } = titleBox.value[id].bbox;
+          if (
+            event.clientX >= x &&
+            event.clientX <= x + width &&
+            event.clientY >= y - height &&
+            event.clientY <= y
+          ) {
+            ctx.emit("node-mouse-down", { id: Number(id) });
+            mouseDownInfo = {
+              nodeId: Number(id),
+              pointer: { x: event.clientX, y: event.clientY },
+              nodeCenter: mapNodes.value[id].center
+            };
+            break;
+          }
+        }
+      });
+      window.addEventListener("mousemove", event => {
+        if (mouseDownInfo) {
+          dragStart = true;
+          ctx.emit("dragging", {
+            nodeId: mouseDownInfo.nodeId,
+            newCenter: {
+              x:
+                mouseDownInfo.nodeCenter.x +
+                event.clientX -
+                mouseDownInfo.pointer.x,
+              y:
+                mouseDownInfo.nodeCenter.y +
+                event.clientY -
+                mouseDownInfo.pointer.y
+            }
+          });
+        }
+      });
+      window.addEventListener("mouseup", () => {
+        if (mouseDownInfo) {
+          if (dragStart) {
+            ctx.emit("drop", { id: mouseDownInfo.nodeId });
+          } else {
+            ctx.emit("click", { id: mouseDownInfo.nodeId });
+          }
+          dragStart = false;
+          mouseDownInfo = null;
+        }
+      });
+    });
+
     return {
       titleBox
-    }
+    };
   },
 
   methods: {

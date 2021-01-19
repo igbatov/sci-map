@@ -6,18 +6,26 @@
       :map-nodes="layer"
       :border-color="`rgb(${200 - 100 * i},${200 - 100 * i},${200 - 100 * i})`"
       :font-size="10 * (i + 1)"
+      @dragging="
+        $emit('dragging', {
+          level: layers.length - i,
+          id: $event.nodeId,
+          newCenter: $event.newCenter
+        })
+      "
     />
   </svg>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, watch, watchEffect, toRefs, ref, computed } from "vue";
+import { defineComponent, PropType, watch, toRefs, ref, computed } from "vue";
 import { Tree } from "@/types/graphics";
 import MapLayer from "@/components/MapLayer.vue";
-import { mapToLayers } from "@/tools/graphics";
+import { treeToMapNodeLayers } from "@/tools/graphics";
 
 export default defineComponent({
   name: "Map",
+  emits: ["dragging"],
   components: {
     MapLayer
   },
@@ -40,19 +48,19 @@ export default defineComponent({
      * treeToLayers processor
      */
     const treeToLayers = (tree: Tree) => {
-      const [ls, err] = mapToLayers(tree);
+      const [ls, err] = treeToMapNodeLayers(tree);
       if (ls == null || err != null) {
         console.error(err);
         return;
       }
 
-      ls.reverse()
+      ls.reverse();
 
       layers.value = ls;
     };
     watch(tree, treeToLayers, {
       immediate: true,
-      deep: true,
+      deep: true
     });
 
     /**

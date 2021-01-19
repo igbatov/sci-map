@@ -130,7 +130,7 @@ export function polygonToPath(polygon: Polygon): string {
   return polygon.map((point: Point) => `${point.x} ${point.y}`).join(",");
 }
 
-export function mapToLayers(
+export function treeToMapNodeLayers(
   tree: Tree
 ): [Array<Record<number, MapNode>> | null, ErrorKV] {
   if (Object.keys(tree).length == 0) {
@@ -162,7 +162,9 @@ export function mapToLayers(
       if (!treeNode.children) {
         return [
           null,
-          NewErrorKV("mapToLayers: treeNode without children", { treeNode })
+          NewErrorKV("treeToMapNodeLayers: treeNode without children", {
+            treeNode
+          })
         ];
       }
       if (!treeNode.children.length) {

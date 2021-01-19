@@ -1,12 +1,14 @@
 <template>
-  <Map :tree="tree" />
+  <Map :tree="tree" @dragging="nodeDragging" />
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent } from "vue";
 import Map from "@/components/Map.vue";
+import { EventDragging } from "@/components/Map";
 import api from "@/api.ts";
-import { ref, onMounted } from "vue";
+import { onMounted } from "vue";
+import { useStore } from "@/store/tree";
 
 export default defineComponent({
   name: "Home",
@@ -16,20 +18,24 @@ export default defineComponent({
   },
 
   setup() {
-    const tree = ref({});
+    const store = useStore();
+
     const getMap = async () => {
       const [apiTree, err] = await api.getMap();
       if (apiTree == null || err) {
-        console.log(err);
+        console.error(err);
         return;
       }
-      tree.value = apiTree;
+      store.commit("init", apiTree);
     };
 
     onMounted(getMap);
 
     return {
-      tree
+      tree: computed(() => store.getters.getTree),
+      nodeDragging: (e: EventDragging) => {
+        store.commit("updateNodePosition", {nodeId: e.id, position: e.newCenter});
+      }
     };
   }
 });

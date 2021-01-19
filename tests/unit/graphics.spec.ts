@@ -1,7 +1,7 @@
 import {
   getVoronoiCells,
   intersect,
-  mapToLayers,
+  treeToMapNodeLayers,
   addVector,
   subtractVector,
   transferToPoint,
@@ -38,7 +38,7 @@ describe("subtractVector", () => {
   });
 });
 
-describe("mapToLayers", () => {
+describe("treeToMapNodeLayers", () => {
   it("", () => {
     const tree = {
       id: 0,
@@ -290,7 +290,7 @@ describe("mapToLayers", () => {
       }
     ];
 
-    const [res, err] = mapToLayers(tree);
+    const [res, err] = treeToMapNodeLayers(tree);
 
     expect(err).toEqual(null);
     expect(res).toEqual(exp);
