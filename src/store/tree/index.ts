@@ -25,16 +25,9 @@ export const store = createStore<State>({
     nodeRecord: {}, // id => NodeRecordItem
     mapNodeLayers: []
   },
-  getters: {
-    getTree(state: State): Tree | null {
-      return state.tree;
-    },
-    getMapNodeLayers(state: State): Array<Record<number, MapNode>> {
-      return state.mapNodeLayers;
-    }
-  },
+  getters: {},
   mutations: {
-    init(state: State, tree: Tree) {
+    INIT(state: State, tree: Tree) {
       state.tree = tree;
 
       // traverse tree and fill in nodeRecord
@@ -62,13 +55,10 @@ export const store = createStore<State>({
       state.mapNodeLayers = ls;
     },
 
-    updateNodePosition(state: State, v: { nodeId: number; position: Point }) {
+    UPDATE_NODE_POSITION(state: State, v: { nodeId: number; position: Point }) {
       if (state.tree == null) {
         return;
       }
-
-      // Если мы меняем один узел, то могут меняются границы всех соседей
-      // так что надо действовать так как будто поменялись границы всех подузлов родителя v.nodeId
 
       const item = state.nodeRecord[v.nodeId];
       if (!item) {
@@ -91,6 +81,9 @@ export const store = createStore<State>({
       }
 
       item.node.position = v.position;
+
+      // Если мы меняем один узел, то могут поменяться границы всех соседей
+      // так что надо действовать так как будто поменялись границы всех подузлов родителя узла
 
       let inProcess = [...item.parent.children];
       let newLayers: Array<Record<number, MapNode>> | null = null;

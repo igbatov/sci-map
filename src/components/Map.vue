@@ -18,10 +18,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, watch, toRefs, ref, computed } from "vue";
-import { Tree } from "@/types/graphics";
+import { defineComponent, PropType} from "vue";
+import {MapNode} from "@/types/graphics";
 import MapLayer from "@/components/MapLayer.vue";
-import { useStore } from "@/store/tree";
 
 export default defineComponent({
   name: "Map",
@@ -29,32 +28,10 @@ export default defineComponent({
   components: {
     MapLayer
   },
-  props: {},
-  setup() {
-    const store = useStore();
-
-    // setTimeout(()=>{
-    //   tree.value.children[0].title = "HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH"
-    //   console.log(tree.value.children[0].title)
-    // }, 7000);
-
-    /**
-     * svg viewBox processor
-     */
-    const viewBox = computed(() => {
-      if (store.getters.getTree && store.getters.getTree.position) {
-        return `0 0 ${2 * store.getters.getTree.position.x} ${2 *
-          store.getters.getTree.position.y}`;
-      } else {
-        return `0 0 1000 600`;
-      }
-    });
-
-    return {
-      layers: computed(() => store.getters.getMapNodeLayers),
-      viewBox
-    };
-  }
+  props: {
+    viewBox: String,
+    layers: Object as PropType<Array<Record<number, MapNode>>>,
+  },
 });
 </script>
 
