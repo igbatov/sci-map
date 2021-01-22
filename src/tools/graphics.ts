@@ -15,7 +15,7 @@ import NewErrorKV from "@/tools/errorkv";
 export function polygonToTurf(
   p: Polygon
 ): turf.Feature<turf.Polygon, turf.Properties> {
-  const pp = p.map(p => [p.x, p.y]);
+  const pp = p.map(point => [point.x, point.y]);
   pp.push([p[0].x, p[0].y]);
   return turf.polygon([pp]);
 }
@@ -93,6 +93,17 @@ export function getVoronoiCells(
 
   const res = [];
   for (const index in centers) {
+    if (!cellMap[index]) {
+      return [
+        [],
+        NewErrorKV("Cannot find index in cellMap", {
+          index: index,
+          centers: centers,
+          cellMap: cellMap,
+          BoundingBorders: bb
+        })
+      ];
+    }
     const cellBorder = cellMap[index].map(p => ({ x: p[0], y: p[1] }));
     cellBorder.pop(); // удаляем последную точку полигона потому что она всегда совпадает с первой
     const [intersections, err] = intersect(cellBorder, outerBorder); // мы хотим чтобы граница всех cell совпадала с outerBorder
@@ -210,7 +221,7 @@ export function treeToMapNodeLayers(
       treeLayers.push(newTreeLayer);
       mapNodeLayers.push(newMapNodeLayer);
     } else {
-      return [mapNodeLayers, null];
+      return [mapNodeLayers.reverse(), null];
     }
   }
 }

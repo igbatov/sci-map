@@ -21,7 +21,7 @@
 import { defineComponent, PropType, watch, toRefs, ref, computed } from "vue";
 import { Tree } from "@/types/graphics";
 import MapLayer from "@/components/MapLayer.vue";
-import { treeToMapNodeLayers } from "@/tools/graphics";
+import { useStore } from "@/store/tree";
 
 export default defineComponent({
   name: "Map",
@@ -29,15 +29,9 @@ export default defineComponent({
   components: {
     MapLayer
   },
-  props: {
-    tree: {
-      type: Object as PropType<Tree>,
-      required: true
-    }
-  },
-  setup(props) {
-    const { tree } = toRefs(props);
-    const layers = ref({});
+  props: {},
+  setup() {
+    const store = useStore();
 
     // setTimeout(()=>{
     //   tree.value.children[0].title = "HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH"
@@ -45,37 +39,19 @@ export default defineComponent({
     // }, 7000);
 
     /**
-     * treeToLayers processor
-     */
-    const treeToLayers = (tree: Tree) => {
-      const [ls, err] = treeToMapNodeLayers(tree);
-      if (ls == null || err != null) {
-        console.error(err);
-        return;
-      }
-
-      ls.reverse();
-
-      layers.value = ls;
-    };
-    watch(tree, treeToLayers, {
-      immediate: true,
-      deep: true
-    });
-
-    /**
      * svg viewBox processor
      */
     const viewBox = computed(() => {
-      if (tree.value.position) {
-        return `0 0 ${2 * tree.value.position.x} ${2 * tree.value.position.y}`;
+      if (store.getters.getTree && store.getters.getTree.position) {
+        return `0 0 ${2 * store.getters.getTree.position.x} ${2 *
+          store.getters.getTree.position.y}`;
       } else {
         return `0 0 1000 600`;
       }
     });
 
     return {
-      layers,
+      layers: computed(() => store.getters.getMapNodeLayers),
       viewBox
     };
   }

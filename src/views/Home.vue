@@ -1,5 +1,5 @@
 <template>
-  <Map :tree="tree" @dragging="nodeDragging" />
+  <Map @dragging="nodeDragging" />
 </template>
 
 <script lang="ts">
@@ -32,9 +32,11 @@ export default defineComponent({
     onMounted(getMap);
 
     return {
-      tree: computed(() => store.getters.getTree),
       nodeDragging: (e: EventDragging) => {
-        store.commit("updateNodePosition", {nodeId: e.id, position: e.newCenter});
+        store.commit("updateNodePosition", {
+          nodeId: e.id,
+          position: e.newCenter
+        });
       }
     };
   }
