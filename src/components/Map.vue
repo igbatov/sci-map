@@ -18,8 +18,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType} from "vue";
-import {MapNode} from "@/types/graphics";
+import { defineComponent, PropType } from "vue";
+import { MapNode } from "@/types/graphics";
 import MapLayer from "@/components/MapLayer.vue";
 
 export default defineComponent({
@@ -30,8 +30,8 @@ export default defineComponent({
   },
   props: {
     viewBox: String,
-    layers: Object as PropType<Array<Record<number, MapNode>>>,
-  },
+    layers: Object as PropType<Array<Record<number, MapNode>>>
+  }
 });
 </script>
 

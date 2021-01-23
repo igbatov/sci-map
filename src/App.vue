@@ -4,14 +4,12 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import api from "@/api.ts";
-export default defineComponent({});
-
-api.init();
-
-api.getCurrentUser().then(user => {
-  console.log(user);
+import { useStore } from "@/store";
+import { actions } from "@/store/user";
+export default defineComponent({
+  setup() {
+    const store = useStore();
+    store.dispatch(`user/${actions.init}`);
+  }
 });
-
-//api.saveMap("hahaha")
 </script>

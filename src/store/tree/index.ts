@@ -1,6 +1,4 @@
 import { MapNode, Point, Tree } from "@/types/graphics";
-import { InjectionKey } from "vue";
-import { createStore, useStore as baseUseStore, Store } from "vuex";
 import { treeToMapNodeLayers, morphChildrenPoints } from "@/tools/graphics";
 import { findMapNode } from "@/store/tree/helpers";
 import { cloneDeep } from "lodash";
@@ -17,9 +15,13 @@ export interface State {
   mapNodeLayers: Array<Record<number, MapNode>>;
 }
 
-export const key: InjectionKey<Store<State>> = Symbol();
+export const actions = {
+  INIT: "INIT",
+  UPDATE_NODE_POSITION: "UPDATE_NODE_POSITION"
+};
 
-export const store = createStore<State>({
+export const store = {
+  namespaced: true,
   state: {
     tree: null,
     nodeRecord: {}, // id => NodeRecordItem
@@ -27,7 +29,7 @@ export const store = createStore<State>({
   },
   getters: {},
   mutations: {
-    INIT(state: State, tree: Tree) {
+    [actions.INIT](state: State, tree: Tree) {
       state.tree = tree;
 
       // traverse tree and fill in nodeRecord
@@ -55,7 +57,10 @@ export const store = createStore<State>({
       state.mapNodeLayers = ls;
     },
 
-    UPDATE_NODE_POSITION(state: State, v: { nodeId: number; position: Point }) {
+    [actions.UPDATE_NODE_POSITION](
+      state: State,
+      v: { nodeId: number; position: Point }
+    ) {
       if (state.tree == null) {
         return;
       }
@@ -184,9 +189,4 @@ export const store = createStore<State>({
       state.mapNodeLayers = newLayers;
     }
   }
-});
-
-// define your own `useStore` composition function
-export function useStore() {
-  return baseUseStore(key);
-}
+};
