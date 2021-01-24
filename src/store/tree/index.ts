@@ -15,8 +15,8 @@ export interface State {
   mapNodeLayers: Array<Record<number, MapNode>>;
 }
 
-export const actions = {
-  INIT: "INIT",
+export const mutations = {
+  SET_TREE: "SET_TREE",
   UPDATE_NODE_POSITION: "UPDATE_NODE_POSITION"
 };
 
@@ -29,7 +29,13 @@ export const store = {
   },
   getters: {},
   mutations: {
-    [actions.INIT](state: State, tree: Tree) {
+    [mutations.SET_TREE](state: State, tree: Tree | null) {
+      if (tree == null) {
+        state.tree = null;
+        state.nodeRecord = {};
+        state.mapNodeLayers = [];
+        return;
+      }
       state.tree = tree;
 
       // traverse tree and fill in nodeRecord
@@ -57,7 +63,7 @@ export const store = {
       state.mapNodeLayers = ls;
     },
 
-    [actions.UPDATE_NODE_POSITION](
+    [mutations.UPDATE_NODE_POSITION](
       state: State,
       v: { nodeId: number; position: Point }
     ) {

@@ -10,7 +10,6 @@ export const mutations = {
   SET_USER: "SET_USER"
 };
 export const actions = {
-  init: "init",
   signIn: "signIn",
   signOut: "signOut"
 };
@@ -27,12 +26,6 @@ export const store = {
     }
   },
   actions: {
-    async [actions.init]({ commit }: { commit: Commit }) {
-      api.initFirebase();
-      const user = await api.getCurrentUser();
-      commit(mutations.SET_USER, user);
-    },
-
     async [actions.signIn]({ commit }: { commit: Commit }) {
       await firebase
         .auth()

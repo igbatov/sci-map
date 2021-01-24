@@ -24,11 +24,15 @@ export default {
     firebase.analytics();
   },
 
-  async getMap(): Promise<[Tree | null, ErrorKV]> {
-    const storage = firebase.storage().ref();
-    const mapRef = storage.child(`/map.json`);
-    const url = await mapRef.getDownloadURL();
+  async getMap(user: firebase.User | null): Promise<[Tree | null, ErrorKV]> {
     try {
+      const storage = firebase.storage().ref();
+      let mapRef = storage.child(`/map.json`);
+      if (user) {
+        mapRef = storage.child(`/user/${user.uid}/map.json`);
+      }
+      const url = await mapRef.getDownloadURL();
+
       const response = await axios.get(url);
       return [
         {
@@ -43,27 +47,29 @@ export default {
         null
       ];
     } catch (e) {
-      return [null, NewErrorKV(e.response, { code: e.code })];
+      return [null, NewErrorKV(e.message, { e: e })];
     }
   },
 
-  async getCurrentUser(): Promise<firebase.User> {
+  async getCurrentUser(): Promise<firebase.User | null> {
     return new Promise(resolve =>
       firebase.auth().onAuthStateChanged(user => {
         if (user && !user.isAnonymous) {
           resolve(user);
+        } else {
+          resolve(null);
         }
       })
     );
   },
 
-  async saveMap(map: string) {
-    const user = await this.getCurrentUser();
-    if (user) {
-      const storage = firebase.storage().ref();
-      const mapRef = storage.child(`/user/${user.uid}/map.json`);
-      const snapshot = await mapRef.putString(btoa(map), "base64");
-      console.log(snapshot);
+  async saveMap(user: firebase.User, map: Tree) {
+    if (!user) {
+      return;
     }
+
+    const storage = firebase.storage().ref();
+    const mapRef = storage.child(`/user/${user.uid}/map.json`);
+    await mapRef.putString(btoa(JSON.stringify(map.children)), "base64");
   }
 };

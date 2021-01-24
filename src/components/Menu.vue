@@ -2,12 +2,11 @@
   <div :class="$style.wrapper">
     <div v-if="email">
       {{ email }}
+      <button @click="signOut">Sign Out</button>
+      <button @click="save">Save</button>
     </div>
-    <button v-if="!email" @click="signIn">
+    <button v-else @click="signIn">
       Sign In
-    </button>
-    <button v-else @click="signOut">
-      Sign Out
     </button>
   </div>
 </template>
@@ -16,6 +15,7 @@
 import { useStore } from "@/store";
 import { computed } from "vue";
 import { actions } from "@/store/user";
+import api from "@/api/api";
 
 export default {
   name: "Menu",
@@ -27,7 +27,8 @@ export default {
     return {
       email,
       signIn: () => store.dispatch(`user/${actions.signIn}`),
-      signOut: () => store.dispatch(`user/${actions.signOut}`)
+      signOut: () => store.dispatch(`user/${actions.signOut}`),
+      save: () => api.saveMap(user.user, store.state.tree.tree)
     };
   }
 };

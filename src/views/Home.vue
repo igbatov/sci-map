@@ -8,10 +8,8 @@ import { computed, defineComponent } from "vue";
 import Map from "@/components/Map.vue";
 import { EventDragging } from "@/components/Map";
 import Menu from "@/components/Menu.vue";
-import api from "@/api/api";
-import { onMounted } from "vue";
 import { useStore } from "@/store";
-import { actions } from "@/store/tree";
+import { mutations as treeMutations } from "@/store/tree";
 
 export default defineComponent({
   name: "Home",
@@ -26,19 +24,6 @@ export default defineComponent({
     const treeState = store.state.tree;
 
     /**
-     * Fetch map
-     */
-    const getMap = async () => {
-      const [apiTree, err] = await api.getMap();
-      if (apiTree == null || err) {
-        console.error(err);
-        return;
-      }
-      store.commit(`tree/${actions.INIT}`, apiTree);
-    };
-    onMounted(getMap);
-
-    /**
      * compute svg viewBox
      */
     const viewBox = computed(() => {
@@ -50,16 +35,11 @@ export default defineComponent({
       }
     });
 
-    // setTimeout(()=>{
-    //   treeStore.state.tree.value.children[0].title = "HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH"
-    //   console.log(tree.value.children[0].title)
-    // }, 7000);
-
     return {
       layers: computed(() => treeState.mapNodeLayers),
       viewBox,
       nodeDragging: (e: EventDragging) => {
-        store.commit(`tree/${actions.UPDATE_NODE_POSITION}`, {
+        store.commit(`tree/${treeMutations.UPDATE_NODE_POSITION}`, {
           nodeId: e.id,
           position: e.newCenter
         });

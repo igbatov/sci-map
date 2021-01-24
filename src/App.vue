@@ -5,11 +5,11 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { useStore } from "@/store";
-import { actions } from "@/store/user";
+import { actions } from "@/store";
 export default defineComponent({
   setup() {
     const store = useStore();
-    store.dispatch(`user/${actions.init}`);
+    store.dispatch(actions.init);
   }
 });
 </script>
