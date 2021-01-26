@@ -13,7 +13,7 @@
           newCenter: $event.newCenter
         })
       "
-      @click="$emit('click', {id: $event.nodeId})"
+      @click="$emit('click', {id: $event.id})"
     />
   </svg>
 </template>

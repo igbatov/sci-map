@@ -3,7 +3,6 @@ import { InjectionKey } from "vue";
 import {
   store as treeStore,
   State as TreeState,
-  mutations as treeMutations
 } from "./tree";
 import {
   store as userStore,

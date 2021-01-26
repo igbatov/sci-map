@@ -9,11 +9,12 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "vue";
+import {computed, defineComponent, watch} from "vue";
 import Map from "@/components/Map.vue";
 import { EventClick, EventDragging } from "@/components/Map.ts";
 import Menu from "@/components/Menu.vue";
 import { useStore } from "@/store";
+import { useRouter, useRoute } from "vue-router";
 import { mutations as treeMutations } from "@/store/tree";
 
 export default defineComponent({
@@ -26,7 +27,13 @@ export default defineComponent({
 
   setup() {
     const store = useStore();
+    const router = useRouter();
+    const route = useRoute();
     const treeState = store.state.tree;
+
+    watch(() => route.params, () => {
+      store.commit(`tree/${treeMutations.SET_SELECTED_NODE_ID}`, route.params.id);
+    }, {immediate: true})
 
     /**
      * compute svg viewBox
@@ -50,7 +57,7 @@ export default defineComponent({
         });
       },
       nodeClick: (e: EventClick) => {
-        store.commit(`tree/${treeMutations.SET_SELECTED_NODE_ID}`, e.id);
+        router.push({ name: 'node', params: { id: e.id} })
       }
     };
   }
