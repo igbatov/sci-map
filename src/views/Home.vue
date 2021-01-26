@@ -1,12 +1,17 @@
 <template>
   <Menu />
-  <Map :layers="layers" :viewBox="viewBox" @dragging="nodeDragging" />
+  <Map
+      :layers="layers"
+      :viewBox="viewBox"
+      @dragging="nodeDragging"
+      @click="nodeClick"
+  />
 </template>
 
 <script lang="ts">
 import { computed, defineComponent } from "vue";
 import Map from "@/components/Map.vue";
-import { EventDragging } from "@/components/Map";
+import { EventClick, EventDragging } from "@/components/Map.ts";
 import Menu from "@/components/Menu.vue";
 import { useStore } from "@/store";
 import { mutations as treeMutations } from "@/store/tree";
@@ -43,6 +48,9 @@ export default defineComponent({
           nodeId: e.id,
           position: e.newCenter
         });
+      },
+      nodeClick: (e: EventClick) => {
+        store.commit(`tree/${treeMutations.SET_SELECTED_NODE_ID}`, e.id);
       }
     };
   }

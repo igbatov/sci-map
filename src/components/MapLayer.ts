@@ -1,12 +1,7 @@
 import { MapNode, Point } from "@/types/graphics";
 import { Ref } from "vue";
 
-export type EventDragging = {
-  nodeId: number;
-  newCenter: Point;
-};
-
-export type TitleBox = {
+type TitleBox = {
   position: Point;
   bbox: {
     width: number;

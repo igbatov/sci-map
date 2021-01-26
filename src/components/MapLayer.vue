@@ -6,17 +6,18 @@
     fill="transparent"
     stroke-width="2"
     :points="polygonToPath(mapNode.border)"
+    pointer-events="none"
   />
-  <circle
-    v-for="mapNode of mapNodes"
-    :key="mapNode.id"
-    :cx="mapNode.center.x"
-    :cy="mapNode.center.y"
-    r="10"
-    stroke="black"
-    stroke-width="1"
-    fill="red"
-  />
+<!--  <circle-->
+<!--    v-for="mapNode of mapNodes"-->
+<!--    :key="mapNode.id"-->
+<!--    :cx="mapNode.center.x"-->
+<!--    :cy="mapNode.center.y"-->
+<!--    r="10"-->
+<!--    stroke="black"-->
+<!--    stroke-width="1"-->
+<!--    fill="red"-->
+<!--  />-->
   <text
     v-for="mapNode of mapNodes"
     :id="`title_${mapNode.id}`"
@@ -29,6 +30,18 @@
   >
     {{ mapNode.title }}
   </text>
+  <!-- Add rectangle to change cursor to pointer when hover on text -->
+  <rect
+      v-for="mapNode of mapNodes"
+      :key="mapNode.id"
+      :x="titleBox[mapNode.id].position.x"
+      :y="titleBox[mapNode.id].position.y - titleBox[mapNode.id].bbox.height"
+      :width="titleBox[mapNode.id].bbox.width"
+      :height="1.2*titleBox[mapNode.id].bbox.height"
+      fill="transparent"
+      cursor="pointer"
+  />
+
 </template>
 
 <script lang="ts">

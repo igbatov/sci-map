@@ -13,9 +13,11 @@ export interface State {
   tree: Tree | null;
   nodeRecord: Record<number, NodeRecordItem>;
   mapNodeLayers: Array<Record<number, MapNode>>;
+  selectedNodeId: number | null;
 }
 
 export const mutations = {
+  SET_SELECTED_NODE_ID: "SET_SELECTED_NODE_ID",
   SET_TREE: "SET_TREE",
   UPDATE_NODE_POSITION: "UPDATE_NODE_POSITION"
 };
@@ -25,10 +27,14 @@ export const store = {
   state: {
     tree: null,
     nodeRecord: {}, // id => NodeRecordItem
-    mapNodeLayers: []
+    mapNodeLayers: [],
+    selectedNodeId: null,
   },
   getters: {},
   mutations: {
+    [mutations.SET_SELECTED_NODE_ID](state: State, id: number | null) {
+      state.selectedNodeId = id
+    },
     [mutations.SET_TREE](state: State, tree: Tree | null) {
       if (tree == null) {
         state.tree = null;

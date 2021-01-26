@@ -13,6 +13,7 @@
           newCenter: $event.newCenter
         })
       "
+      @click="$emit('click', {id: $event.nodeId})"
     />
   </svg>
 </template>
@@ -24,7 +25,7 @@ import MapLayer from "@/components/MapLayer.vue";
 
 export default defineComponent({
   name: "Map",
-  emits: ["dragging"],
+  emits: ["dragging", "click"],
   components: {
     MapLayer
   },
