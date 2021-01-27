@@ -9,4 +9,3 @@ export type EventDragging = {
   id: number;
   newCenter: Point;
 };
-

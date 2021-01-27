@@ -28,12 +28,12 @@ export const store = {
     tree: null,
     nodeRecord: {}, // id => NodeRecordItem
     mapNodeLayers: [],
-    selectedNodeId: null,
+    selectedNodeId: null
   },
   getters: {},
   mutations: {
     [mutations.SET_SELECTED_NODE_ID](state: State, id: number | null) {
-      state.selectedNodeId = id
+      state.selectedNodeId = id;
     },
     [mutations.SET_TREE](state: State, tree: Tree | null) {
       if (tree == null) {

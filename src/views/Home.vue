@@ -1,15 +1,16 @@
 <template>
   <Menu />
   <Map
-      :layers="layers"
-      :viewBox="viewBox"
-      @dragging="nodeDragging"
-      @click="nodeClick"
+    :layers="layers"
+    :viewBox="viewBox"
+    :selectedNodeId="selectedNodeId"
+    @dragging="nodeDragging"
+    @click="nodeClick"
   />
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, watch} from "vue";
+import { computed, defineComponent, watch } from "vue";
 import Map from "@/components/Map.vue";
 import { EventClick, EventDragging } from "@/components/Map.ts";
 import Menu from "@/components/Menu.vue";
@@ -31,9 +32,16 @@ export default defineComponent({
     const route = useRoute();
     const treeState = store.state.tree;
 
-    watch(() => route.params, () => {
-      store.commit(`tree/${treeMutations.SET_SELECTED_NODE_ID}`, route.params.id);
-    }, {immediate: true})
+    watch(
+      () => route.params,
+      () => {
+        store.commit(
+          `tree/${treeMutations.SET_SELECTED_NODE_ID}`,
+          Number(route.params.id),
+        );
+      },
+      { immediate: true }
+    );
 
     /**
      * compute svg viewBox
@@ -50,6 +58,7 @@ export default defineComponent({
     return {
       layers: computed(() => treeState.mapNodeLayers),
       viewBox,
+      selectedNodeId: computed(() => treeState.selectedNodeId),
       nodeDragging: (e: EventDragging) => {
         store.commit(`tree/${treeMutations.UPDATE_NODE_POSITION}`, {
           nodeId: e.id,
@@ -57,7 +66,7 @@ export default defineComponent({
         });
       },
       nodeClick: (e: EventClick) => {
-        router.push({ name: 'node', params: { id: e.id} })
+        router.push({ name: "node", params: { id: e.id } });
       }
     };
   }

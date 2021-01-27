@@ -6,6 +6,7 @@
       :map-nodes="layer"
       :border-color="`rgb(${200 - 100 * i},${200 - 100 * i},${200 - 100 * i})`"
       :font-size="10 * (i + 1)"
+      :selectedNodeId="selectedNodeId"
       @dragging="
         $emit('dragging', {
           level: layers.length - i,
@@ -13,7 +14,7 @@
           newCenter: $event.newCenter
         })
       "
-      @click="$emit('click', {id: $event.id})"
+      @click="$emit('click', { id: $event.id })"
     />
   </svg>
 </template>
@@ -30,8 +31,17 @@ export default defineComponent({
     MapLayer
   },
   props: {
-    viewBox: String,
-    layers: Object as PropType<Array<Record<number, MapNode>>>
+    viewBox: {
+      type: String,
+      required: true
+    },
+    layers: Object as PropType<Array<Record<number, MapNode>>>,
+    selectedNodeId: {
+      type: Number,
+      validator: (prop: number | null) =>
+        typeof prop === "number" || prop === null,
+      required: true
+    }
   }
 });
 </script>

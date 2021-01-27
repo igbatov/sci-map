@@ -1,9 +1,6 @@
 import { Commit, createStore, Store, useStore as baseUseStore } from "vuex";
 import { InjectionKey } from "vue";
-import {
-  store as treeStore,
-  State as TreeState,
-} from "./tree";
+import { store as treeStore, State as TreeState } from "./tree";
 import {
   store as userStore,
   State as UserState,

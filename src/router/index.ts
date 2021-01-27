@@ -10,7 +10,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: "/:catchAll(.*)",
-    component: NotFound,
+    component: NotFound
   }
 ];
 
