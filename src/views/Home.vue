@@ -37,7 +37,7 @@ export default defineComponent({
       () => {
         store.commit(
           `tree/${treeMutations.SET_SELECTED_NODE_ID}`,
-          Number(route.params.id),
+          Number(route.params.id)
         );
       },
       { immediate: true }

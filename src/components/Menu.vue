@@ -2,8 +2,9 @@
   <div :class="$style.wrapper">
     <div v-if="email">
       {{ email }}
-      <button @click="signOut">Sign Out</button>
+      <button @click="add">+</button>
       <button @click="save">Save</button>
+      <button @click="signOut">Sign Out</button>
     </div>
     <button v-else @click="signIn">
       Sign In
@@ -14,7 +15,8 @@
 <script>
 import { useStore } from "@/store";
 import { computed } from "vue";
-import { actions } from "@/store/user";
+import { actions as userActions } from "@/store/user";
+import { mutations as treeMutations } from "@/store/tree";
 import api from "@/api/api";
 
 export default {
@@ -26,9 +28,10 @@ export default {
 
     return {
       email,
-      signIn: () => store.dispatch(`user/${actions.signIn}`),
-      signOut: () => store.dispatch(`user/${actions.signOut}`),
-      save: () => api.saveMap(user.user, store.state.tree.tree)
+      signIn: () => store.dispatch(`user/${userActions.signIn}`),
+      signOut: () => store.dispatch(`user/${userActions.signOut}`),
+      save: () => api.saveMap(user.user, store.state.tree.tree),
+      add: () => store.dispatch(`tree/${treeMutations.ADD_NODE}`)
     };
   }
 };

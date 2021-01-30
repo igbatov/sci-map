@@ -107,7 +107,7 @@ export default defineComponent({
             },
             bbox: {
               width: dom.getBoundingClientRect().width,
-              height: 1.2*dom.getBoundingClientRect().height // 1.2 to make title box a little bit taller
+              height: 1.2 * dom.getBoundingClientRect().height // 1.2 to make title box a little bit taller
             }
           };
         }

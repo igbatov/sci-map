@@ -269,7 +269,7 @@ export function vectorOnNumber(a: Vector, c: number): Vector {
   );
 }
 
-function getVectorLength(v: Vector): number {
+export function getVectorLength(v: Vector): number {
   return Math.sqrt(
     Math.pow(v.from.x - v.to.x, 2) + Math.pow(v.from.y - v.to.y, 2)
   );
@@ -455,4 +455,20 @@ export function morphChildrenPoints(
   }
 
   return [newPoints, null];
+}
+
+export function getMaxDiagonal(polygon: Polygon): Vector {
+  const diagonals = polygon.reduce((res, p) => {
+    res.push(...polygon.map(v => ({ from: p, to: v })));
+    return res;
+  }, [] as Array<Vector>);
+
+  let maxDiagonal = diagonals[0];
+  for (const diag of diagonals) {
+    if (getVectorLength(diag) > getVectorLength(maxDiagonal)) {
+      maxDiagonal = diag;
+    }
+  }
+
+  return maxDiagonal;
 }
