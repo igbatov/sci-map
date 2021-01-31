@@ -19,6 +19,9 @@
     "d3-delaunay": "^5.3.0",
     "firebase": "^8.1.2",
     "lodash": "^4.17.20",
+    "mitt": "^2.1.0",
+    "primeicons": "^4.1.0",
+    "primevue": "^3.2.0-rc.1",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
     "vuex": "^4.0.0-0"

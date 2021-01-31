@@ -183,7 +183,6 @@ export function treeToMapNodeLayers(
       }
       newTreeLayer.push(...treeNode.children);
       if (!lastMapNodeLayer[treeNode.id]) {
-        console.log(mapNodeLayers[mapNodeLayers.length - 1], treeNode);
         return [
           null,
           NewErrorKV("Cannot find node in mapNodeLayers", {

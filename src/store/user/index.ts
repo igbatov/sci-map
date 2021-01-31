@@ -21,7 +21,6 @@ export const store = {
   },
   mutations: {
     [mutations.SET_USER](state: State, user: firebase.User) {
-      console.log(user);
       state.user = user;
     }
   },

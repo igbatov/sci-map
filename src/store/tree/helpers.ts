@@ -74,7 +74,7 @@ export function updatePosition(
         console.error(
           "Cannot find oldMapNode",
           "nodeId",
-          v.nodeId,
+          node.id,
           "layers",
           state.mapNodeLayers
         );

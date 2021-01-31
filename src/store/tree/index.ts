@@ -32,7 +32,14 @@ export const store = {
     mapNodeLayers: [],
     selectedNodeId: null
   },
-  getters: {},
+  getters: {
+    selectedNode: (state: State) => {
+      if (!state.selectedNodeId) {
+        return null
+      }
+      return state.nodeRecord[state.selectedNodeId].node
+    }
+  },
   mutations: {
     /**
      * ADD_NODE
@@ -81,6 +88,13 @@ export const store = {
         parent: parentRecord.node,
         node: newNode
       };
+      // update state.mapNodeLayers
+      const [ls, err2] = treeToMapNodeLayers(state.tree);
+      if (ls == null || err2 != null) {
+        console.error(err2);
+        return;
+      }
+      state.mapNodeLayers = ls;
       if (nodeToModify != null) {
         updatePosition(state, {
           nodeId: nodeToModify.id,
