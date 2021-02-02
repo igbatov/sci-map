@@ -1,9 +1,6 @@
 import { MapNode, Point, Tree } from "@/types/graphics";
 import { treeToMapNodeLayers } from "@/tools/graphics";
-import {
-  getNewNodeCenter,
-  updatePosition
-} from "@/store/tree/helpers";
+import { getNewNodeCenter, updatePosition } from "@/store/tree/helpers";
 
 export interface NodeRecordItem {
   node: Tree;
@@ -35,9 +32,9 @@ export const store = {
   getters: {
     selectedNode: (state: State) => {
       if (!state.selectedNodeId) {
-        return null
+        return null;
       }
-      return state.nodeRecord[state.selectedNodeId].node
+      return state.nodeRecord[state.selectedNodeId].node;
     }
   },
   mutations: {

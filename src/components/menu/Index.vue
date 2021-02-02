@@ -2,29 +2,28 @@
   <div :class="$style.wrapper">
     <div v-if="email">
       {{ email }}
-      <AddNode/>
-      <Save/>
+      <AddNode />
+      <Save />
       <button @click="signOut">Sign Out</button>
     </div>
     <button v-else @click="signIn">
       Sign In
     </button>
   </div>
-
 </template>
 
 <script>
 import { useStore } from "@/store";
 import { computed } from "vue";
 import { actions as userActions } from "@/store/user";
-import AddNode from './AddNode';
-import Save from './Save';
+import AddNode from "./AddNode";
+import Save from "./Save";
 
 export default {
   name: "Menu",
   components: {
     AddNode,
-    Save,
+    Save
   },
   setup() {
     const store = useStore();
@@ -37,7 +36,7 @@ export default {
       email,
       // SignIn SignOut
       signIn: () => store.dispatch(`user/${userActions.signIn}`),
-      signOut: () => store.dispatch(`user/${userActions.signOut}`),
+      signOut: () => store.dispatch(`user/${userActions.signOut}`)
     };
   }
 };

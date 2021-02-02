@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import {useStore} from "@/store";
+import { useStore } from "@/store";
 import api from "@/api/api";
 
 export default {
@@ -13,8 +13,8 @@ export default {
     const user = store.state.user;
 
     return {
-      save: () => api.saveMap(user.user, store.state.tree.tree),
-    }
+      save: () => api.saveMap(user.user, store.state.tree.tree)
+    };
   }
-}
+};
 </script>

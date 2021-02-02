@@ -38,7 +38,11 @@
     v-for="mapNode of mapNodes"
     :key="mapNode.id"
     :x="titleBox[mapNode.id] ? titleBox[mapNode.id].position.x : 0"
-    :y="titleBox[mapNode.id] ? titleBox[mapNode.id].position.y - titleBox[mapNode.id].bbox.height : 0"
+    :y="
+      titleBox[mapNode.id]
+        ? titleBox[mapNode.id].position.y - titleBox[mapNode.id].bbox.height
+        : 0
+    "
     :width="titleBox[mapNode.id] ? titleBox[mapNode.id].bbox.width : 0"
     :height="titleBox[mapNode.id] ? titleBox[mapNode.id].bbox.height : 0"
     fill="transparent"
