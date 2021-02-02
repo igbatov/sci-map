@@ -13,7 +13,7 @@
 import { computed, defineComponent, watch } from "vue";
 import Map from "@/components/Map.vue";
 import { EventClick, EventDragging } from "@/components/Map.ts";
-import Menu from "@/components/Menu.vue";
+import Menu from "@/components/menu/Index.vue";
 import { useStore } from "@/store";
 import { useRouter, useRoute } from "vue-router";
 import { mutations as treeMutations } from "@/store/tree";
