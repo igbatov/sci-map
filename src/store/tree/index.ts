@@ -1,6 +1,6 @@
 import { MapNode, Point, Tree } from "@/types/graphics";
-import { treeToMapNodeLayers } from "@/tools/graphics";
-import { getNewNodeCenter, updatePosition } from "@/store/tree/helpers";
+import {isInside, treeToMapNodeLayers} from "@/tools/graphics";
+import {findMapNode, getNewNodeCenter, updatePosition} from "@/store/tree/helpers";
 
 export interface NodeRecordItem {
   node: Tree;
@@ -157,6 +157,18 @@ export const store = {
       state: State,
       v: { nodeId: number; position: Point }
     ) {
+      // check that new position is inside parent borders
+      const parent = state.nodeRecord[v.nodeId].parent
+      if (parent !== null) {
+        const [parentMapNode, layerId] = findMapNode(parent.id, state.mapNodeLayers)
+        if (!parentMapNode) {
+          console.error("UPDATE_NODE_POSITION: cannot find parent mapNode", "parent.id", parent.id, "state.mapNodeLayers", state.mapNodeLayers)
+          return
+        }
+        if (!isInside(v.position, parentMapNode.border)) {
+          return
+        }
+      }
       updatePosition(state, v);
     }
   }

@@ -471,3 +471,7 @@ export function getMaxDiagonal(polygon: Polygon): Vector {
 
   return maxDiagonal;
 }
+
+export function isInside(point: Point, polygon: Polygon): boolean {
+  return turf.booleanPointInPolygon(turf.point([point.x, point.y]), polygonToTurf(polygon));
+}

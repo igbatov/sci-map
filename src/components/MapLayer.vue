@@ -30,6 +30,7 @@
       selectedNodeId && selectedNodeId === mapNode.id ? 'bold' : 'normal'
     "
     :fill="borderColor"
+    class="text"
   >
     {{ mapNode.title }}
   </text>
@@ -197,4 +198,12 @@ export default defineComponent({
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.text {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  pointer-events: none;
+}
+</style>
