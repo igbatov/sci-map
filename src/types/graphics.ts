@@ -41,3 +41,18 @@ export type Tree = {
   resources: Array<TreeNodeResource>;
   children: Array<Tree>;
 };
+
+export type TreeSkeleton = {
+  id: number;
+  title?: string;
+  position?: Point;
+  wikipedia?: string;
+  // список книг, статей, курсов по этой теме
+  resources?: Array<TreeNodeResource>;
+  children?: Array<TreeSkeleton>;
+};
+
+export type Viewport = {
+  width: number;
+  height: number;
+};

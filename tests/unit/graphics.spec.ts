@@ -6,7 +6,8 @@ import {
   subtractVector,
   transferToPoint,
   getVectorIntersection,
-  morphChildrenPoints
+  morphChildrenPoints,
+  area
 } from "@/tools/graphics";
 
 describe("transferToPoint", () => {
@@ -460,6 +461,26 @@ describe("intersect", () => {
     ]);
   });
 
+  it("returns [] is there is no intersection", () => {
+    const [is, err] = intersect(
+      [
+        { x: 0, y: 0 },
+        { x: 0, y: 10 },
+        { x: 10, y: 10 },
+        { x: 10, y: 0 }
+      ],
+      [
+        { x: 20, y: 0 },
+        { x: 20, y: 10 },
+        { x: 30, y: 10 },
+        { x: 30, y: 0 }
+      ]
+    );
+
+    expect(err).toBeNull();
+    expect(is).toHaveLength(0);
+  });
+
   it("return Polygon that is fully contains inside second one", () => {
     const [is, err] = intersect(
       [
@@ -519,5 +540,39 @@ describe("morphChildrenPoints", () => {
       "2": { x: -60, y: 0 },
       "3": { x: 40, y: 40 }
     });
+  });
+});
+
+describe("area", () => {
+  it("works for square counterclockwise", () => {
+    const a = area([
+      { x: 0, y: 0 },
+      { x: 0, y: 100 },
+      { x: 100, y: 100 },
+      { x: 100, y: 0 }
+    ]);
+
+    expect(a).toEqual(10000);
+  });
+  it("works for square clockwise", () => {
+    const a = area(
+      [
+        { x: 0, y: 0 },
+        { x: 0, y: 100 },
+        { x: 100, y: 100 },
+        { x: 100, y: 0 }
+      ].reverse()
+    );
+
+    expect(a).toEqual(10000);
+  });
+  it("works for triangle", () => {
+    const a = area([
+      { x: 0, y: 0 },
+      { x: 0, y: 100 },
+      { x: 100, y: 100 }
+    ]);
+
+    expect(a).toEqual(10000 / 2);
   });
 });

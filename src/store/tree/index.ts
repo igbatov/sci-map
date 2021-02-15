@@ -1,6 +1,14 @@
 import { MapNode, Point, Tree } from "@/types/graphics";
-import {isInside, treeToMapNodeLayers} from "@/tools/graphics";
-import {findMapNode, getNewNodeCenter, updatePosition} from "@/store/tree/helpers";
+import {
+  isInside,
+  treeToMapNodeLayers,
+  treeToNodeRecord
+} from "@/tools/graphics";
+import {
+  findMapNode,
+  getNewNodeCenter,
+  updatePosition
+} from "@/store/tree/helpers";
 
 export interface NodeRecordItem {
   node: Tree;
@@ -124,20 +132,7 @@ export const store = {
       state.tree = tree;
 
       // traverse tree and fill in nodeRecord
-      const stack: NodeRecordItem[] = [{ node: tree, parent: null }];
-      while (stack.length) {
-        const item = stack.pop();
-        if (!item) {
-          break;
-        }
-        state.nodeRecord[item.node.id] = item;
-        stack.push(
-          ...item.node.children.map(child => ({
-            node: child,
-            parent: item.node
-          }))
-        );
-      }
+      state.nodeRecord = treeToNodeRecord(tree);
 
       // fill state.mapNodeLayers
       const [ls, err] = treeToMapNodeLayers(tree);
@@ -158,15 +153,24 @@ export const store = {
       v: { nodeId: number; position: Point }
     ) {
       // check that new position is inside parent borders
-      const parent = state.nodeRecord[v.nodeId].parent
+      const parent = state.nodeRecord[v.nodeId].parent;
       if (parent !== null) {
-        const [parentMapNode, layerId] = findMapNode(parent.id, state.mapNodeLayers)
+        const [parentMapNode, layerId] = findMapNode(
+          parent.id,
+          state.mapNodeLayers
+        );
         if (!parentMapNode) {
-          console.error("UPDATE_NODE_POSITION: cannot find parent mapNode", "parent.id", parent.id, "state.mapNodeLayers", state.mapNodeLayers)
-          return
+          console.error(
+            "UPDATE_NODE_POSITION: cannot find parent mapNode",
+            "parent.id",
+            parent.id,
+            "state.mapNodeLayers",
+            state.mapNodeLayers
+          );
+          return;
         }
         if (!isInside(v.position, parentMapNode.border)) {
-          return
+          return;
         }
       }
       updatePosition(state, v);

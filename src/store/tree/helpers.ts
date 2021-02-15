@@ -16,10 +16,12 @@ export function findMapNode(
   id: number,
   mapNodeLayers: Array<Record<number, MapNode>>
 ): [MapNode | null, number | null] {
+  let level = 0;
   for (const layer of mapNodeLayers) {
-    if (layer[id]) {
-      return [layer[id], id];
+    if (layer && layer[id]) {
+      return [layer[id], level];
     }
+    level++;
   }
 
   return [null, null];

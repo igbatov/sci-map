@@ -11,6 +11,8 @@ import { Delaunay } from "d3-delaunay";
 import * as turf from "@turf/turf";
 import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "@/tools/errorkv";
+import { NodeRecordItem } from "@/store/tree";
+import { polygonArea } from "d3-polygon";
 
 export function polygonToTurf(
   p: Polygon
@@ -18,6 +20,10 @@ export function polygonToTurf(
   const pp = p.map(point => [point.x, point.y]);
   pp.push([p[0].x, p[0].y]);
   return turf.polygon([pp]);
+}
+
+export function area(p: Polygon): number {
+  return Math.abs(polygonArea(p.map(point => [point.x, point.y])));
 }
 
 export function intersect(
@@ -37,7 +43,11 @@ export function intersect(
   >;
 
   const resultPolys = [];
-  if (polygonIntersect == null || polygonIntersect.geometry == null) {
+  if (polygonIntersect == null) {
+    return [[], null];
+  }
+
+  if (polygonIntersect.geometry == null) {
     return [
       null,
       NewErrorKV("intersect: error in turf.intersect", { p1: p1, p2: p2 })
@@ -141,6 +151,25 @@ export function polygonToPath(polygon: Polygon): string {
   return polygon.map((point: Point) => `${point.x} ${point.y}`).join(",");
 }
 
+export function treeToNodeRecord(tree: Tree): Record<number, NodeRecordItem> {
+  const nodeRecord: Record<number, NodeRecordItem> = {};
+  const stack: NodeRecordItem[] = [{ node: tree, parent: null }];
+  while (stack.length) {
+    const item = stack.pop();
+    if (!item) {
+      break;
+    }
+    nodeRecord[item.node.id] = item;
+    stack.push(
+      ...item.node.children.map(child => ({
+        node: child,
+        parent: item.node
+      }))
+    );
+  }
+
+  return nodeRecord;
+}
 export function treeToMapNodeLayers(
   tree: Tree
 ): [Array<Record<number, MapNode>> | null, ErrorKV] {
@@ -473,5 +502,8 @@ export function getMaxDiagonal(polygon: Polygon): Vector {
 }
 
 export function isInside(point: Point, polygon: Polygon): boolean {
-  return turf.booleanPointInPolygon(turf.point([point.x, point.y]), polygonToTurf(polygon));
+  return turf.booleanPointInPolygon(
+    turf.point([point.x, point.y]),
+    polygonToTurf(polygon)
+  );
 }
