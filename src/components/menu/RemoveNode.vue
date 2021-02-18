@@ -1,5 +1,5 @@
 <template>
-  <button @click="toggleAddDialog">+</button>
+  <button @click="toggleDialog" :disabled="!selectedNodeTitle">-</button>
   <Dialog
     v-model:visible="addDialogVisible"
     :dismissableMask="true"
@@ -9,24 +9,18 @@
   >
     <template #header>
       <h3>
-        {{
-          selectedNodeTitle
-            ? `Add subsection to ${selectedNodeTitle}`
-            : `Add section`
-        }}
+        {{ `Remove ${selectedNodeTitle} and all its descendants?` }}
       </h3>
     </template>
-
-    <Input type="text" v-model="newNodeTitle" />
 
     <template #footer>
       <Button
         label="No"
         icon="pi pi-times"
         class="p-button-text"
-        @click="cancelAdd"
+        @click="cancel"
       />
-      <Button label="Yes" icon="pi pi-check" @click="add" />
+      <Button label="Yes" icon="pi pi-check" @click="remove" />
     </template>
   </Dialog>
 </template>
@@ -34,7 +28,6 @@
 <script>
 import Dialog from "primevue/dialog";
 import Button from "primevue/button";
-import Input from "primevue/inputtext";
 import { useStore } from "@/store";
 import { computed, ref } from "vue";
 import { mutations as treeMutations } from "@/store/tree";
@@ -43,34 +36,29 @@ export default {
   name: "AddNode",
   components: {
     Dialog,
-    Button,
-    Input
+    Button
   },
   setup() {
     const store = useStore();
     const addDialogVisible = ref(false);
     const selectedNode = computed(() => store.getters["tree/selectedNode"]);
-    const newNodeTitle = ref("");
 
     return {
       selectedNodeTitle: computed(() =>
         selectedNode.value ? selectedNode.value.title : ""
       ),
-      toggleAddDialog: () => (addDialogVisible.value = !addDialogVisible.value),
-      add: () => {
-        newNodeTitle.value = "";
+      toggleDialog: () => (addDialogVisible.value = !addDialogVisible.value),
+      remove: () => {
         addDialogVisible.value = false;
-        store.commit(`tree/${treeMutations.ADD_NODE}`, {
-          parentId: selectedNode.value ? selectedNode.value.id : null,
-          title: newNodeTitle.value
-        });
+        store.commit(
+          `tree/${treeMutations.REMOVE_NODE}`,
+          selectedNode.value.id
+        );
       },
-      cancelAdd: () => {
-        newNodeTitle.value = "";
+      cancel: () => {
         addDialogVisible.value = false;
       },
-      addDialogVisible,
-      newNodeTitle
+      addDialogVisible
     };
   }
 };

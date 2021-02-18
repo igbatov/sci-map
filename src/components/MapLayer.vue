@@ -99,6 +99,11 @@ export default defineComponent({
     const titleXYUpdate = (mapNodes: Array<MapNode>) => {
       // Code that will run only after the entire view has been rendered
       nextTick(() => {
+        // clean previous version
+        for (const i in titleBox.value) {
+          delete titleBox.value[i];
+        }
+        // fill new ones
         for (const i in mapNodes) {
           const node = mapNodes[i];
           const dom = document.getElementById(`title_${node.id}`);

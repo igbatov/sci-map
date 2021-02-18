@@ -26,7 +26,8 @@ export const mutations = {
   SET_SELECTED_NODE_ID: "SET_SELECTED_NODE_ID",
   SET_TREE: "SET_TREE",
   UPDATE_NODE_POSITION: "UPDATE_NODE_POSITION",
-  ADD_NODE: "ADD_NODE"
+  ADD_NODE: "ADD_NODE",
+  REMOVE_NODE: "REMOVE_NODE"
 };
 
 export const store = {
@@ -42,10 +43,58 @@ export const store = {
       if (!state.selectedNodeId) {
         return null;
       }
+      if (!state.nodeRecord[state.selectedNodeId]) {
+        return null;
+      }
       return state.nodeRecord[state.selectedNodeId].node;
     }
   },
   mutations: {
+    /**
+     * REMOVE_NODE
+     * @param state
+     * @param nodeId
+     */
+    [mutations.REMOVE_NODE](state: State, nodeId: number) {
+      if (state.tree === null) {
+        return;
+      }
+
+      if (!state.nodeRecord[nodeId]) {
+        console.error(
+          "REMOVE_NODE: cannot find nodeId in nodeRecord",
+          nodeId,
+          state.nodeRecord
+        );
+        return;
+      }
+      const parent = state.nodeRecord[nodeId].parent;
+      if (!parent) {
+        console.error("REMOVE_NODE: cannot remove root node", nodeId);
+        return;
+      }
+
+      // recursively remove node and its descendants from nodeRecord
+      const stack = [nodeId];
+      while (stack.length) {
+        const id = stack.pop();
+        stack.push(...state.nodeRecord[id!].node.children.map(node => node.id));
+        delete state.nodeRecord[id!];
+      }
+
+      // remove from parents children
+      const ind = parent.children.findIndex(node => node.id === nodeId);
+      parent.children.splice(ind, 1);
+
+      // update layers
+      const [ls, err2] = treeToMapNodeLayers(state.tree);
+      if (ls == null || err2 != null) {
+        console.error(err2);
+        return;
+      }
+      state.mapNodeLayers = ls;
+    },
+
     /**
      * ADD_NODE
      * @param state
@@ -71,6 +120,7 @@ export const store = {
         return;
       }
 
+      // calculate position for new node
       const [newCenter, nodeToModify, err] = getNewNodeCenter(
         parentRecord.node,
         state.mapNodeLayers
@@ -80,6 +130,7 @@ export const store = {
         return;
       }
 
+      // create new node
       const newNode = {
         id: Math.max(...Object.keys(state.nodeRecord).map(k => Number(k))) + 1,
         title: v.title,
@@ -88,11 +139,16 @@ export const store = {
         resources: [],
         children: []
       };
+
+      // update tree
       parentRecord.node.children.push(newNode);
+
+      // update nodeRecord
       state.nodeRecord[newNode.id] = {
         parent: parentRecord.node,
         node: newNode
       };
+
       // update state.mapNodeLayers
       const [ls, err2] = treeToMapNodeLayers(state.tree);
       if (ls == null || err2 != null) {
@@ -100,6 +156,8 @@ export const store = {
         return;
       }
       state.mapNodeLayers = ls;
+
+      // there is a node that changed position, update it
       if (nodeToModify != null) {
         updatePosition(state, {
           nodeId: nodeToModify.id,

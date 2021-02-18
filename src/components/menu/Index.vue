@@ -3,6 +3,7 @@
     <div v-if="email">
       {{ email }}
       <AddNode />
+      <RemoveNode />
       <Save />
       <button @click="signOut">Sign Out</button>
     </div>
@@ -17,12 +18,14 @@ import { useStore } from "@/store";
 import { computed } from "vue";
 import { actions as userActions } from "@/store/user";
 import AddNode from "./AddNode";
+import RemoveNode from "./RemoveNode";
 import Save from "./Save";
 
 export default {
   name: "Menu",
   components: {
     AddNode,
+    RemoveNode,
     Save
   },
   setup() {
