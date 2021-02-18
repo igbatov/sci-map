@@ -143,3 +143,28 @@ export function fillTreePositions(
 
   return null;
 }
+
+export function printError(msg: string, kv: any) {
+  if (!kv) {
+    console.error(msg)
+  }
+
+  // const callback = function(stackframes: StackFrame[]) {
+  //   const stringifiedStack = stackframes.map(function(sf) {
+  //     return sf.toString();
+  //   }).join('\n');
+  //   console.error(msg, stringifiedStack);
+  // };
+  //
+  // const errBack = function(e: Error) { console.log(e.message); };
+  //
+  const kvArr = []
+  for (const i in kv) {
+    kvArr.push(i, kv[i])
+    // if (kv[i] instanceof Error) {
+    //   StackTrace.get({offline: true}).then(callback).catch(errBack);
+    // }
+  }
+
+  console.error(msg, ...kvArr)
+}

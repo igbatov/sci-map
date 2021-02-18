@@ -1,9 +1,11 @@
 /* eslint-disable  @typescript-eslint/no-explicit-any */
-export default (message: string, kv: Record<string, any>) => {
-  const err = new Error();
+import {ErrorKV} from "@/types/errorkv";
+
+export default (message: string, kv: Record<string, any>): ErrorKV => {
+  const err = new Error(message);
+
   return {
-    message: message,
+    error: err,
     kv: kv,
-    stack: err.stack
   };
 };

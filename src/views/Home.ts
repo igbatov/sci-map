@@ -128,10 +128,18 @@ export function findCurrentNode(
  * @param viewport
  */
 export function filterNodesAndLayers(
-  layers: Array<Record<number, MapNode>>,
+  layersInput: Array<Record<number, MapNode>>,
   nodeRecord: Record<number, NodeRecordItem>,
   viewport: Viewport
 ): [Array<Record<number, MapNode>>, ErrorKV] {
+  if (!layersInput || !layersInput.length) {
+    return [[], null]
+  }
+  let layers = layersInput
+  if (Object.keys(layersInput[0]) !== ["0"]) {
+    layers = clone(layersInput)
+    layers.reverse()
+  }
   const resultLayers = [];
 
   // вычисляем currentNodeId
@@ -148,7 +156,7 @@ export function filterNodesAndLayers(
   if (currentNode == null || level == null) {
     return [
       [],
-      NewErrorKV("filterNodesAndLayers: error in findMapNode", {
+      NewErrorKV("filterNodesAndLayers-currentNode: error in findMapNode", {
         currentNodeId,
         layers
       })
@@ -165,7 +173,7 @@ export function filterNodesAndLayers(
       if (mapNode == null || _ == null) {
         return [
           [],
-          NewErrorKV("filterNodesAndLayers: error in findMapNode", {
+          NewErrorKV("filterNodesAndLayers-upperLayer: error in findMapNode", {
             "child.id": child.id,
             level,
             layers: [layers[level]]
@@ -186,7 +194,7 @@ export function filterNodesAndLayers(
       if (mapNode == null || _ == null) {
         return [
           [],
-          NewErrorKV("filterNodesAndLayers: error in findMapNode", {
+          NewErrorKV("filterNodesAndLayers-firstLayer: error in findMapNode", {
             "child.id": child.id,
             layers: [layers[level]]
           })
@@ -213,7 +221,7 @@ export function filterNodesAndLayers(
       if (mapNode == null || _ == null) {
         return [
           [],
-          NewErrorKV("filterNodesAndLayers: error in findMapNode", {
+          NewErrorKV("filterNodesAndLayers-secondLayer: error in findMapNode", {
             "child.id": child.id,
             layers: [layers[level]]
           })
@@ -235,7 +243,7 @@ export function filterNodesAndLayers(
       if (mapNode == null || _ == null) {
         return [
           [],
-          NewErrorKV("filterNodesAndLayers: error in findMapNode", {
+          NewErrorKV("filterNodesAndLayers-thirdLayer: error in findMapNode", {
             "child.id": child.id,
             layers: [layers[level]]
           })

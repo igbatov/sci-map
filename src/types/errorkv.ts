@@ -1,5 +1,5 @@
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 export type ErrorKV = {
-  message: string;
+  error: Error;
   kv: Record<string, any>;
 } | null;
