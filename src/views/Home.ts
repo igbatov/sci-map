@@ -24,6 +24,9 @@ export function findCurrentNode(
   nodeRecord: Record<number, NodeRecordItem>,
   viewport: Viewport
 ): [number, ErrorKV] {
+  if (!layers || layers.length == 0) {
+    return [0, null]
+  }
   const viewportPolygon = [
     { x: 0, y: 0 },
     { x: viewport.width, y: 0 },
@@ -125,26 +128,17 @@ export function findCurrentNode(
  * currentNode. Плюс подузлы НЕ ИЗ currentNode мы отображаем только одного следующего слоя и без названий.
  * @param layers
  * @param nodeRecord
- * @param viewport
+ * @param currentNodeId
  */
 export function filterNodesAndLayers(
   layers: Array<Record<number, MapNode>>,
   nodeRecord: Record<number, NodeRecordItem>,
-  viewport: Viewport
+  currentNodeId: number
 ): [Array<Record<number, MapNode>>, ErrorKV] {
   if (!layers || !layers.length) {
     return [[], null];
   }
   const resultLayers = [];
-
-  // вычисляем currentNodeId
-  const [currentNodeId, err] = findCurrentNode(layers, nodeRecord, viewport);
-  if (err != null) {
-    return [
-      [],
-      NewErrorKV("filterNodesAndLayers: error in findCurrentNode", { err })
-    ];
-  }
 
   // узнаем какой слой у currentNode
   const [currentNode, level] = findMapNode(currentNodeId, layers);

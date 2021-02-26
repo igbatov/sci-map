@@ -17,8 +17,9 @@ import Menu from "@/components/menu/Index.vue";
 import { useStore } from "@/store";
 import { useRouter, useRoute } from "vue-router";
 import { mutations as treeMutations } from "@/store/tree";
-import { filterNodesAndLayers } from "@/views/Home";
+import {filterNodesAndLayers, findCurrentNode} from "@/views/Home";
 import { printError } from "@/tools/utils";
+import NewErrorKV from "@/tools/errorkv";
 
 export default defineComponent({
   name: "Home",
@@ -57,12 +58,28 @@ export default defineComponent({
       }
     });
 
+
+    /**
+     * Вычисляем currentNodeId
+     * Этот метод надо будет вызывать после каждого zoom и pan после того как будет сделана SM-25 и SM-24
+     */
+    const [currentNodeId, err] = findCurrentNode(
+        treeState.mapNodeLayers,
+        treeState.nodeRecord,
+        { width: window.innerWidth, height: window.innerHeight });
+    if (err != null) {
+      return [
+        [],
+        NewErrorKV("filterNodesAndLayers: error in findCurrentNode", { err })
+      ];
+    }
+
     return {
       layers: computed(() => {
         const [layers, err] = filterNodesAndLayers(
           treeState.mapNodeLayers,
           treeState.nodeRecord,
-          { width: window.innerWidth, height: window.innerHeight }
+          currentNodeId
         );
         if (err) {
           printError("Home.vue: error in filterNodesAndLayers:", { err });
