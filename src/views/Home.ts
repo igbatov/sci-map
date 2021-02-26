@@ -128,17 +128,12 @@ export function findCurrentNode(
  * @param viewport
  */
 export function filterNodesAndLayers(
-  layersInput: Array<Record<number, MapNode>>,
+  layers: Array<Record<number, MapNode>>,
   nodeRecord: Record<number, NodeRecordItem>,
   viewport: Viewport
 ): [Array<Record<number, MapNode>>, ErrorKV] {
-  if (!layersInput || !layersInput.length) {
+  if (!layers || !layers.length) {
     return [[], null]
-  }
-  let layers = layersInput
-  if (Object.keys(layersInput[0]) !== ["0"]) {
-    layers = clone(layersInput)
-    layers.reverse()
   }
   const resultLayers = [];
 

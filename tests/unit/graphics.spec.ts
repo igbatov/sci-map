@@ -7,7 +7,7 @@ import {
   transferToPoint,
   getVectorIntersection,
   morphChildrenPoints,
-  area
+  area, getVoronoiCellsInSquare
 } from "@/tools/graphics";
 
 describe("transferToPoint", () => {
@@ -298,7 +298,54 @@ describe("treeToMapNodeLayers", () => {
   });
 });
 
+describe("getVoronoiCellsInSquare", () => {
+  it("1", () => {
+    const square = {leftBottom: {x: 288, y: 94}, rightTop: {x: 360, y: 188}}
+    const centers = [
+      {x: 324, y: 103.4},
+      {x: 324, y: 122.2},
+      {x: 324, y: 141},
+      {x: 324, y: 159.8},
+      {x: 324, y: 178.60000000000002},
+    ]
+    const cells = getVoronoiCellsInSquare(centers, square.leftBottom, square.rightTop)
+    console.log(cells)
+  });
+
+  it("2", () => {
+    const square = {leftBottom: {x: 0, y: 0}, rightTop: {x: 1440, y: 376}}
+    const centers = [
+      {x: 144, y: 188},
+      {x: 432, y: 188},
+      {x: 720, y: 188},
+      {x: 1008, y: 188},
+      {x: 1296, y: 188},
+    ]
+    const cells = getVoronoiCellsInSquare(centers, square.leftBottom, square.rightTop)
+    console.log(cells)
+  })
+
+  it("weird results", () => {
+    const square = {leftBottom: {x: 768, y: 0}, rightTop: {x: 864, y: 160}}
+    const centers = [
+      {x: 816, y: 16},
+      {x: 816, y: 48},
+      {x: 816, y: 80},
+      {x: 816, y: 112},
+      {x: 816, y: 144},
+    ]
+    const cells = getVoronoiCellsInSquare(centers, square.leftBottom, square.rightTop)
+    console.log(cells)
+  })
+})
 describe("getVoronoiCells", () => {
+  it("1", () => {
+    const outerBorder = [{x: 768, y: 0}, {x: 864, y: 0}, {x: 864, y: 160}, {x: 768, y: 160}]
+    const centers = [{x: 816, y: 16}, {x: 816, y: 48}, {x: 816, y: 80}, {x: 816, y: 112}, {x: 816, y: 144}]
+    const [cells, error] = getVoronoiCells(outerBorder, centers)
+    console.log("result", cells)
+  });
+
   it("return VoronoiCells with each center in the cell", () => {
     const [cells, error] = getVoronoiCells(
       [
@@ -435,30 +482,13 @@ describe("intersect", () => {
     );
 
     expect(err).toEqual(null);
-    expect(is).toEqual([
-      [
-        {
-          x: -50,
-          y: -50
-        },
-        {
-          x: -25,
-          y: -25
-        },
-        {
-          x: 25,
-          y: -25
-        },
-        {
-          x: 50,
-          y: -50
-        },
-        {
-          x: 0,
-          y: -100
-        }
-      ]
-    ]);
+    expect(is!.length).toEqual(1);
+    expect(is![0]).toHaveLength(5);
+    expect(is![0]).toContainEqual({ x: -50, y: -50 });
+    expect(is![0]).toContainEqual({ x: 0, y: -100 });
+    expect(is![0]).toContainEqual({ x: 50, y: -50 });
+    expect(is![0]).toContainEqual({ x: 25, y: -25 });
+    expect(is![0]).toContainEqual({ x: -25, y: -25 });
   });
 
   it("returns [] is there is no intersection", () => {
@@ -498,15 +528,12 @@ describe("intersect", () => {
     );
 
     expect(err).toBeNull();
-    if (is == null) {
-      throw new Error("intersection is null");
-    }
     expect(is).toHaveLength(1);
-    expect(is[0]).toHaveLength(4);
-    expect(is[0]).toContainEqual({ x: 0, y: -50 });
-    expect(is[0]).toContainEqual({ x: -50, y: 0 });
-    expect(is[0]).toContainEqual({ x: 0, y: 50 });
-    expect(is[0]).toContainEqual({ x: 50, y: 0 });
+    expect(is![0]).toHaveLength(4);
+    expect(is![0]).toContainEqual({ x: 0, y: -50 });
+    expect(is![0]).toContainEqual({ x: -50, y: 0 });
+    expect(is![0]).toContainEqual({ x: 0, y: 50 });
+    expect(is![0]).toContainEqual({ x: 50, y: 0 });
   });
 });
 

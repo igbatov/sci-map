@@ -13,6 +13,14 @@ import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "@/tools/errorkv";
 import { NodeRecordItem } from "@/store/tree";
 import { polygonArea } from "d3-polygon";
+import polygonClipping from "polygon-clipping";
+import {clone, printError, round, ROUND_EPSILON} from "@/tools/utils";
+
+export function getVectorLength(v: Vector): number {
+  return Math.sqrt(
+    Math.pow(v.from.x - v.to.x, 2) + Math.pow(v.from.y - v.to.y, 2)
+  );
+}
 
 export function polygonToTurf(
   p: Polygon
@@ -20,6 +28,21 @@ export function polygonToTurf(
   const pp = p.map(point => [point.x, point.y]);
   pp.push([p[0].x, p[0].y]);
   return turf.polygon([pp]);
+}
+
+export function isInside(point: Point, polygon: Polygon): boolean {
+  return turf.booleanPointInPolygon(
+    turf.point([point.x, point.y]),
+    polygonToTurf(polygon)
+  );
+}
+
+export function polygonToPCPolygon(
+  p: Polygon
+): polygonClipping.Polygon {
+  const pp = p.map(point => [point.x, point.y] as polygonClipping.Pair);
+  pp.push([p[0].x, p[0].y]);
+  return [pp];
 }
 
 export function area(p: Polygon): number {
@@ -30,34 +53,41 @@ export function intersect(
   p1: Polygon,
   p2: Polygon
 ): [Polygon[] | null, ErrorKV] {
-  const tp1 = polygonToTurf(p1);
-  const tp2 = polygonToTurf(p2);
+  // polygonClipping.intersection does not like digits after point
+  // so we find the least multiplier that gives area > 1000 for polygon
+  // and then round coordinates
+  let np1: Polygon = clone(p1)
+  let np2: Polygon = clone(p2)
+  let cf = 1
+  while(area(np1)<1000 && area(np2)<1000) {
+    cf = cf*10
+    np1 = p1.map(p=>({x:p.x*cf, y:p.y*cf}))
+    np2 = p2.map(p=>({x:p.x*cf, y:p.y*cf}))
+  }
+  np1 = np1.map(p=>({x:round(p.x), y:round(p.y)}))
+  np2 = np2.map(p=>({x:round(p.x), y:round(p.y)}))
+
+  const tp1 = polygonToPCPolygon(np1);
+  const tp2 = polygonToPCPolygon(np2);
   if (tp1 == null || tp2 == null) {
     return [
       null,
-      NewErrorKV("intersect: error in polygonToTurf", { p1: p1, p2: p2 })
+      NewErrorKV("intersect: error in polygonToPCPolygon", { p1: p1, p2: p2 })
     ];
   }
-  const polygonIntersect = turf.intersect(tp1, tp2) as turf.Feature<
-    turf.Polygon
-  >;
 
-  const resultPolys = [];
-  if (polygonIntersect == null) {
+  // polygonClipping.intersection
+  const polygonIntersect = polygonClipping.intersection(tp1, tp2);
+  if (polygonIntersect == null || !polygonIntersect.length) {
     return [[], null];
   }
 
-  if (polygonIntersect.geometry == null) {
-    return [
-      null,
-      NewErrorKV("intersect: error in turf.intersect", { p1: p1, p2: p2 })
-    ];
-  }
+  const resultPolys = [];
 
-  for (const poly of polygonIntersect.geometry.coordinates) {
+  for (const poly of polygonIntersect[0]) {
     const resultPoly = [];
     for (const p of poly) {
-      resultPoly.push({ x: p[0], y: p[1] });
+      resultPoly.push({ x: p[0]/cf, y: p[1]/cf });
     }
     // удаляем послднюю точку полигона потому что она всегда совпадает с первой
     resultPoly.pop();
@@ -69,6 +99,9 @@ export function intersect(
 
 // Возвращает левый нижний и правый верхний углы описанного вокруг Polygon квадрата
 export function getBoundingBorders(border: Polygon): Rectangle {
+  if (!border) {
+    console.error("bad border", border)
+  }
   const minX = border.reduce((previousValue, currentValue) =>
     previousValue.x > currentValue.x ? currentValue : previousValue
   ).x;
@@ -87,18 +120,37 @@ export function getBoundingBorders(border: Polygon): Rectangle {
   };
 }
 
+export function getVoronoiCellsInSquare(centers: Point[], leftBottom: Point, rightTop: Point): [Record<number, Polygon>, ErrorKV] {
+  const turfPoints = centers.map(p => turf.point([p.x, p.y]))
+  const collection = turf.featureCollection(turfPoints)
+  const cells = turf.voronoi(collection,{bbox: [leftBottom.x, leftBottom.y, rightTop.x, rightTop.y]});
+  const cellMap: Record<number, Polygon> = {};
+  let index = 0;
+  for (const cell of cells.features) {
+    if (!cell) {
+      return [{}, NewErrorKV("getVoronoiCellsInSquare: undefined cell", {centers, leftBottom, rightTop})]
+    }
+    const cellBorder = cell.geometry!.coordinates[0].map(p => ({ x: p[0], y: p[1] }));
+    cellBorder.pop(); // удаляем последную точку полигона потому что она всегда совпадает с первой
+    cellMap[index] = cellBorder;
+    index++
+  }
+
+  return [cellMap, null]
+}
+
 export function getVoronoiCells(
   outerBorder: Polygon, //(граница массива точек)
   centers: Point[] //(точки внутри этой границы)
 ): [VoronoiCell[], ErrorKV] {
+  if (!outerBorder) {
+    throw new Error("getVoronoiCells: bad outerBorder")
+    return [[], NewErrorKV("getVoronoiCells: bad outerBorder", {outerBorder, centers})]
+  }
   const bb = getBoundingBorders(outerBorder);
-  const cells = Delaunay.from(centers.map(p => [p.x, p.y]))
-    .voronoi([bb.leftBottom.x, bb.leftBottom.y, bb.rightTop.x, bb.rightTop.y])
-    .cellPolygons();
-
-  const cellMap: { [key: number]: Delaunay.Polygon } = {};
-  for (const cell of cells) {
-    cellMap[cell.index] = cell;
+  const [cellMap, err] = getVoronoiCellsInSquare(centers, bb.leftBottom, bb.rightTop)
+  if (err) {
+    return [[], NewErrorKV("getVoronoiCells: error in getVoronoiCellsInSquare", {bb, centers})]
   }
 
   const res = [];
@@ -110,15 +162,15 @@ export function getVoronoiCells(
           index: index,
           centers: centers,
           cellMap: cellMap,
-          BoundingBorders: bb
+          BoundingBorders: bb,
+          outerBorder
         })
       ];
     }
-    const cellBorder = cellMap[index].map(p => ({ x: p[0], y: p[1] }));
-    cellBorder.pop(); // удаляем последную точку полигона потому что она всегда совпадает с первой
-    const [intersections, err] = intersect(cellBorder, outerBorder); // мы хотим чтобы граница всех cell совпадала с outerBorder
+
+    const [intersections, err] = intersect(cellMap[index], outerBorder); // мы хотим чтобы граница всех cell совпадала с outerBorder
     if (intersections == null || err != null) {
-      return [[], NewErrorKV("getVoronoiCells error", { err: err })];
+      return [[], NewErrorKV("getVoronoiCells error", { err, cellBorder:cellMap[index], outerBorder })];
     }
 
     if (intersections == []) {
@@ -202,7 +254,7 @@ export function treeToMapNodeLayers(
       if (!treeNode.children) {
         return [
           null,
-          NewErrorKV("treeToMapNodeLayers: treeNode without children", {
+          NewErrorKV("treeToMapNodeLayers: treeNode with children undefined", {
             treeNode
           })
         ];
@@ -219,6 +271,19 @@ export function treeToMapNodeLayers(
             treeNode: treeNode
           })
         ];
+      }
+
+      // check that node's children positions lay inside node's border
+      for (const child of treeNode.children) {
+        if (!isInside(child.position, lastMapNodeLayer[treeNode.id].border)) {
+          return [
+            null,
+            NewErrorKV(
+            "treeToMapNodeLayers: children position outside parent's border",
+            {"treeNode.id": treeNode.id, "border":lastMapNodeLayer[treeNode.id].border, "child.position":child.position}
+            )
+          ]
+        }
       }
       const [cells, error] = getVoronoiCells(
         lastMapNodeLayer[treeNode.id].border,
@@ -249,7 +314,7 @@ export function treeToMapNodeLayers(
       treeLayers.push(newTreeLayer);
       mapNodeLayers.push(newMapNodeLayer);
     } else {
-      return [mapNodeLayers.reverse(), null];
+      return [mapNodeLayers, null];
     }
   }
 }
@@ -294,12 +359,6 @@ export function vectorOnNumber(a: Vector, c: number): Vector {
   return transferToPoint(
     { from: { x: 0, y: 0 }, to: { x: aTr.to.x * c, y: aTr.to.y * c } },
     a.from
-  );
-}
-
-export function getVectorLength(v: Vector): number {
-  return Math.sqrt(
-    Math.pow(v.from.x - v.to.x, 2) + Math.pow(v.from.y - v.to.y, 2)
   );
 }
 
@@ -499,11 +558,4 @@ export function getMaxDiagonal(polygon: Polygon): Vector {
   }
 
   return maxDiagonal;
-}
-
-export function isInside(point: Point, polygon: Polygon): boolean {
-  return turf.booleanPointInPolygon(
-    turf.point([point.x, point.y]),
-    polygonToTurf(polygon)
-  );
 }

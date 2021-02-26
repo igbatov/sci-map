@@ -68,7 +68,7 @@ export default defineComponent({
           printError("Home.vue: error in filterNodesAndLayers:", {err})
           return {}
         }
-        return layers
+        return layers.reverse()
       }),
       viewBox,
       selectedNodeId: computed(() => treeState.selectedNodeId),

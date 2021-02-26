@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@flatten-js/core": "^1.2.17",
-    "@turf/turf": "^5.1.6",
+    "@turf/turf": "^6.3.0",
     "@types/d3-delaunay": "^5.3.0",
     "@types/d3-polygon": "^2.0.0",
     "@types/lodash": "^4.14.168",
@@ -22,6 +22,7 @@
     "firebase": "^8.1.2",
     "lodash": "^4.17.20",
     "mitt": "^2.1.0",
+    "polygon-clipping": "^0.15.2",
     "primeicons": "^4.1.0",
     "primevue": "^3.2.0-rc.1",
     "stacktrace-js": "^2.0.2",

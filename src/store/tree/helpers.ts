@@ -2,8 +2,8 @@ import { MapNode, Point, Tree } from "@/types/graphics";
 import {
   getMaxDiagonal,
   getVectorLength,
+  getVoronoiCells,
   morphChildrenPoints,
-  treeToMapNodeLayers,
   vectorOnNumber
 } from "@/tools/graphics";
 import { ErrorKV } from "@/types/errorkv";
@@ -64,96 +64,71 @@ export function updatePosition(
   // Если мы меняем один узел, то могут поменяться границы всех соседей
   // так что надо действовать так как будто поменялись границы всех подузлов родителя узла
 
-  let inProcess = [...item.parent.children];
-  let newLayers: Array<Record<number, MapNode>> | null = null;
-  let err: ErrorKV = null;
+  let inProcess = [item.parent];
+  let newInProcess = [];
   while (inProcess.length) {
-    // save old borders of nodes
-    const oldMapNodes: Record<number, MapNode> = {};
+    newInProcess = [];
+    const childMapNodes: Record<number, MapNode> = {};
+    const childOldMapNodes: Record<number, MapNode> = {};
     for (const node of inProcess) {
-      const [oldMapNode] = cloneDeep(findMapNode(node.id, state.mapNodeLayers));
-      if (oldMapNode == null) {
-        console.error(
-          "Cannot find oldMapNode",
-          "nodeId",
-          node.id,
-          "layers",
-          state.mapNodeLayers
-        );
-        return;
+      if (node.children.length == 0) {
+        continue
       }
-      oldMapNodes[oldMapNode.id] = oldMapNode;
-    }
+      newInProcess.push(...node.children)
+      const [nodeMapNode] = findMapNode(node.id, state.mapNodeLayers);
+      // get borders of node children
+      for (const child of node.children) {
+        const [childMapNode] = findMapNode(child.id, state.mapNodeLayers)
+        if (childMapNode == null) {
+          console.error(
+            "Cannot find oldMapNode",
+            "child.id",
+            child.id,
+            "layers",
+            state.mapNodeLayers
+          );
+          return;
+        }
+        childMapNodes[child.id] = childMapNode
+        childMapNodes[child.id].center = state.nodeRecord[child.id].node.position
+        childOldMapNodes[child.id] = clone(childMapNode);
+      }
 
-    // recalculate new borders for nodes in inProcess
-    [newLayers, err] = treeToMapNodeLayers(state.tree);
-    if (newLayers == null || err != null) {
-      console.error(
-        "updateNodePosition: cannot treeToMapNodeLayers",
-        "err",
-        err,
-        "state.tree",
-        state.tree
+      // recalculate new borders for children
+      const [cells, error] = getVoronoiCells(
+        nodeMapNode!.border,
+        node.children.map(ch => ({ x: ch.position.x, y: ch.position.y }))
       );
-      return;
+      if (error != null) {
+        return [null, error];
+      }
+
+      let cellIndex = 0
+      for (const child of node.children) {
+        // update borders in state.mapNodeLayers
+        childMapNodes[child.id].border = cells[cellIndex].border
+
+        // calculate new position for each child of child (because its border was changed)
+        const [newChildrenPositions] = morphChildrenPoints(
+          childOldMapNodes[child.id].border,
+          cells[cellIndex].border,
+          state.nodeRecord[child.id].node.children.reduce((prev, curr) => {
+            prev[curr.id] = curr.position;
+            return prev;
+          }, {} as Record<number, Point>)
+        );
+
+        // update positions in state
+        for (const id in newChildrenPositions) {
+          state.nodeRecord[Number(id)].node.position =
+            newChildrenPositions[Number(id)];
+        }
+        cellIndex++
+      }
     }
 
-    // calculate children positions for nodes in inProcess
-    const newInProcess = [];
-    for (const node of inProcess) {
-      const [newMapNode] = findMapNode(node.id, newLayers);
-      if (newMapNode == null) {
-        console.error(
-          "Cannot find newMapNode",
-          "nodeId",
-          v.nodeId,
-          "layers",
-          state.mapNodeLayers
-        );
-        return;
-      }
-
-      if (state.nodeRecord[node.id].node.children.length == 0) {
-        continue;
-      }
-
-      const [newChildrenPositions, err] = morphChildrenPoints(
-        oldMapNodes[newMapNode.id].border,
-        newMapNode.border,
-        state.nodeRecord[newMapNode.id].node.children.reduce((prev, curr) => {
-          prev[curr.id] = curr.position;
-          return prev;
-        }, {} as Record<number, Point>)
-      );
-      if (err != null) {
-        console.error(
-          "updateNodePosition: cannot morphChildrenPoints",
-          "err",
-          err,
-          "oldMapNodes[newMapNode.id].border",
-          oldMapNodes[newMapNode.id].border,
-          "newMapNode.border",
-          newMapNode.border,
-          "children positions",
-          state.nodeRecord[newMapNode.id].node.children.map(ch => ch.position)
-        );
-        return;
-      }
-
-      for (const id in newChildrenPositions) {
-        state.nodeRecord[Number(id)].node.position =
-          newChildrenPositions[Number(id)];
-        newInProcess.push(state.nodeRecord[Number(id)].node);
-      }
-    }
     inProcess = newInProcess;
   }
-
-  if (newLayers == null) {
-    console.error("updateNodePosition: newLayers is null");
-    return;
-  }
-  state.mapNodeLayers = newLayers;
 }
 
 /**

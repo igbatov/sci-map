@@ -3,7 +3,10 @@ import { Tree } from "@/types/graphics";
 import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "@/tools/errorkv";
 // import { apiTree } from "./mocks";
+import apiTree from "./mindmeister";
 import axios from "axios";
+
+const IS_OFFLINE = true // to write code even without wi-fi set this to true
 
 export default {
   initFirebase() {
@@ -20,11 +23,25 @@ export default {
       measurementId: "G-TV74Q61H9P"
     };
     // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    firebase.analytics();
+    if (!IS_OFFLINE) {
+      firebase.initializeApp(firebaseConfig);
+      firebase.analytics();
+    }
   },
 
   async getMap(user: firebase.User | null): Promise<[Tree | null, ErrorKV]> {
+    if (IS_OFFLINE) {
+      return [
+        {
+          id: 0,
+          title: "",
+          position: { x: window.innerWidth / 2, y: window.innerHeight / 2 },
+          wikipedia: "",
+          resources: [],
+          children: apiTree.children
+        }, null]
+    }
+
     try {
       const storage = firebase.storage().ref();
       let mapRef = storage.child(`/map.json`);
@@ -41,7 +58,7 @@ export default {
           position: { x: window.innerWidth / 2, y: window.innerHeight / 2 },
           wikipedia: "",
           resources: [],
-          // children: apiTree
+          // children: apiTree.children
           children: response.data
         },
         null
@@ -52,6 +69,12 @@ export default {
   },
 
   async getCurrentUser(): Promise<firebase.User | null> {
+    if (IS_OFFLINE) {
+      return new Promise(resolve => {
+        resolve(null);
+      })
+    }
+
     return new Promise(resolve =>
       firebase.auth().onAuthStateChanged(user => {
         if (user && !user.isAnonymous) {
@@ -64,6 +87,10 @@ export default {
   },
 
   async saveMap(user: firebase.User, map: Tree) {
+    if (IS_OFFLINE) {
+      return
+    }
+
     if (!user) {
       return;
     }
