@@ -9,8 +9,7 @@ import {
 import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "@/tools/errorkv";
 import { clone } from "@/tools/utils";
-import { NodeRecordItem, State } from "@/store/tree/index";
-import { cloneDeep } from "lodash";
+import { NodeRecordItem } from "@/store/tree/index";
 
 export function findMapNode(
   id: number,
@@ -72,13 +71,13 @@ export function updatePosition(
     const childOldMapNodes: Record<number, MapNode> = {};
     for (const node of inProcess) {
       if (node.children.length == 0) {
-        continue
+        continue;
       }
-      newInProcess.push(...node.children)
+      newInProcess.push(...node.children);
       const [nodeMapNode] = findMapNode(node.id, state.mapNodeLayers);
       // get borders of node children
       for (const child of node.children) {
-        const [childMapNode] = findMapNode(child.id, state.mapNodeLayers)
+        const [childMapNode] = findMapNode(child.id, state.mapNodeLayers);
         if (childMapNode == null) {
           console.error(
             "Cannot find oldMapNode",
@@ -89,8 +88,9 @@ export function updatePosition(
           );
           return;
         }
-        childMapNodes[child.id] = childMapNode
-        childMapNodes[child.id].center = state.nodeRecord[child.id].node.position
+        childMapNodes[child.id] = childMapNode;
+        childMapNodes[child.id].center =
+          state.nodeRecord[child.id].node.position;
         childOldMapNodes[child.id] = clone(childMapNode);
       }
 
@@ -103,10 +103,10 @@ export function updatePosition(
         return [null, error];
       }
 
-      let cellIndex = 0
+      let cellIndex = 0;
       for (const child of node.children) {
         // update borders in state.mapNodeLayers
-        childMapNodes[child.id].border = cells[cellIndex].border
+        childMapNodes[child.id].border = cells[cellIndex].border;
 
         // calculate new position for each child of child (because its border was changed)
         const [newChildrenPositions] = morphChildrenPoints(
@@ -123,7 +123,7 @@ export function updatePosition(
           state.nodeRecord[Number(id)].node.position =
             newChildrenPositions[Number(id)];
         }
-        cellIndex++
+        cellIndex++;
       }
     }
 
@@ -154,7 +154,7 @@ export function getNewNodeCenter(
   Tree | null, // existing node with corrected center (if any)
   ErrorKV // error (if any)
 ] {
-  const [parentMapNode, _] = findMapNode(parent.id, mapNodeLayers);
+  const [parentMapNode] = findMapNode(parent.id, mapNodeLayers);
   if (parentMapNode === null) {
     return [
       null,
@@ -202,7 +202,7 @@ export function getNewNodeCenter(
       ];
     }
     for (const child of parent.children) {
-      const [childMapNode, _] = findMapNode(child.id, mapNodeLayers);
+      const [childMapNode] = findMapNode(child.id, mapNodeLayers);
       if (childMapNode === null) {
         return [
           null,

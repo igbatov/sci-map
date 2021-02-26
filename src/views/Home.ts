@@ -96,7 +96,7 @@ export function findCurrentNode(
         ];
       }
       for (const child of nodeRecord[maxIntersectNodeId].node.children) {
-        const [mapNode, _] = findMapNode(child.id, layers);
+        const [mapNode] = findMapNode(child.id, layers);
         if (mapNode == null) {
           return [
             0,
@@ -133,7 +133,7 @@ export function filterNodesAndLayers(
   viewport: Viewport
 ): [Array<Record<number, MapNode>>, ErrorKV] {
   if (!layers || !layers.length) {
-    return [[], null]
+    return [[], null];
   }
   const resultLayers = [];
 

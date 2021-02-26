@@ -6,7 +6,7 @@ import NewErrorKV from "@/tools/errorkv";
 import apiTree from "./mindmeister";
 import axios from "axios";
 
-const IS_OFFLINE = true // to write code even without wi-fi set this to true
+const IS_OFFLINE = true; // to write code even without wi-fi set this to true
 
 export default {
   initFirebase() {
@@ -39,7 +39,9 @@ export default {
           wikipedia: "",
           resources: [],
           children: apiTree.children
-        }, null]
+        },
+        null
+      ];
     }
 
     try {
@@ -72,7 +74,7 @@ export default {
     if (IS_OFFLINE) {
       return new Promise(resolve => {
         resolve(null);
-      })
+      });
     }
 
     return new Promise(resolve =>
@@ -88,7 +90,7 @@ export default {
 
   async saveMap(user: firebase.User, map: Tree) {
     if (IS_OFFLINE) {
-      return
+      return;
     }
 
     if (!user) {

@@ -213,10 +213,7 @@ export const store = {
       // check that new position is inside parent borders
       const parent = state.nodeRecord[v.nodeId].parent;
       if (parent !== null) {
-        const [parentMapNode, layerId] = findMapNode(
-          parent.id,
-          state.mapNodeLayers
-        );
+        const [parentMapNode] = findMapNode(parent.id, state.mapNodeLayers);
         if (!parentMapNode) {
           console.error(
             "UPDATE_NODE_POSITION: cannot find parent mapNode",

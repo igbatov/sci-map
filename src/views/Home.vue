@@ -17,8 +17,8 @@ import Menu from "@/components/menu/Index.vue";
 import { useStore } from "@/store";
 import { useRouter, useRoute } from "vue-router";
 import { mutations as treeMutations } from "@/store/tree";
-import {filterNodesAndLayers} from "@/views/Home";
-import {printError} from "@/tools/utils";
+import { filterNodesAndLayers } from "@/views/Home";
+import { printError } from "@/tools/utils";
 
 export default defineComponent({
   name: "Home",
@@ -60,15 +60,15 @@ export default defineComponent({
     return {
       layers: computed(() => {
         const [layers, err] = filterNodesAndLayers(
-            treeState.mapNodeLayers,
-            treeState.nodeRecord,
-            {width: window.innerWidth, height: window.innerHeight}
-          )
+          treeState.mapNodeLayers,
+          treeState.nodeRecord,
+          { width: window.innerWidth, height: window.innerHeight }
+        );
         if (err) {
-          printError("Home.vue: error in filterNodesAndLayers:", {err})
-          return {}
+          printError("Home.vue: error in filterNodesAndLayers:", { err });
+          return {};
         }
-        return layers.reverse()
+        return layers.reverse();
       }),
       viewBox,
       selectedNodeId: computed(() => treeState.selectedNodeId),

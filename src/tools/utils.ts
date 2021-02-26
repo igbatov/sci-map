@@ -1,20 +1,27 @@
 import { cloneDeep } from "lodash";
-import {Point, Polygon, Tree, TreeNodeResource, TreeSkeleton, Viewport} from "@/types/graphics";
+import {
+  Point,
+  Tree,
+  TreeNodeResource,
+  TreeSkeleton,
+  Viewport
+} from "@/types/graphics";
 import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "@/tools/errorkv";
-import {getBoundingBorders, getVoronoiCells} from "@/tools/graphics";
+import { getBoundingBorders, getVoronoiCells } from "@/tools/graphics";
 
 export const ROUND_EPSILON = 0;
 
 export function round(num: number): number {
-  const t =  Math.pow(10, ROUND_EPSILON)
-  return Math.round(num * t) / t
+  const t = Math.pow(10, ROUND_EPSILON);
+  return Math.round(num * t) / t;
 }
 
 export function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 export function clone(v: any): any {
   return cloneDeep(v);
 }
@@ -107,13 +114,16 @@ export function fillTreePositions(
       for (const i in node.children) {
         node.children[i].position = {
           x: node.position!.x,
-          y: borderBox.topLeft.y + (Number(i) + 1 / 2) * (height / node.children.length)
+          y:
+            borderBox.topLeft.y +
+            (Number(i) + 1 / 2) * (height / node.children.length)
         };
       }
     } else {
       for (const i in node.children) {
         node.children[i].position = {
-          x: borderBox.topLeft.x +
+          x:
+            borderBox.topLeft.x +
             ((Number(i) + 1 / 2) * width) / node.children.length,
           y: node.position!.y
         };
@@ -121,17 +131,20 @@ export function fillTreePositions(
     }
 
     // compute children borders as voronoi cells bounding boxes
-    const [cells, err] = getVoronoiCells([
-      {x:borderBox.topLeft.x, y:borderBox.topLeft.y},
-      {x:borderBox.bottomRight.x, y:borderBox.topLeft.y},
-      {x:borderBox.bottomRight.x, y:borderBox.bottomRight.y},
-      {x:borderBox.topLeft.x, y:borderBox.bottomRight.y},
-    ], node.children.map(ch => ch.position))
+    const [cells, err] = getVoronoiCells(
+      [
+        { x: borderBox.topLeft.x, y: borderBox.topLeft.y },
+        { x: borderBox.bottomRight.x, y: borderBox.topLeft.y },
+        { x: borderBox.bottomRight.x, y: borderBox.bottomRight.y },
+        { x: borderBox.topLeft.x, y: borderBox.bottomRight.y }
+      ],
+      node.children.map(ch => ch.position)
+    );
     if (err) {
       return NewErrorKV("fillTreePositions: error in getVoronoiCells", { err });
     }
     for (const i in cells) {
-      const cellBBox = getBoundingBorders(cells[i].border)
+      const cellBBox = getBoundingBorders(cells[i].border);
       nodeBorders[node.children[i].id] = {
         topLeft: cellBBox.leftBottom,
         bottomRight: cellBBox.rightTop
@@ -146,7 +159,7 @@ export function fillTreePositions(
 
 export function printError(msg: string, kv: any) {
   if (!kv) {
-    console.error(msg)
+    console.error(msg);
   }
 
   // const callback = function(stackframes: StackFrame[]) {
@@ -158,15 +171,15 @@ export function printError(msg: string, kv: any) {
   //
   // const errBack = function(e: Error) { console.log(e.message); };
   //
-  const kvArr = []
+  const kvArr = [];
   for (const i in kv) {
-    kvArr.push(i, kv[i])
+    kvArr.push(i, kv[i]);
     // if (kv[i] instanceof Error) {
     //   StackTrace.get({offline: true}).then(callback).catch(errBack);
     // }
   }
 
-  console.error(msg, ...kvArr)
+  console.error(msg, ...kvArr);
 }
 
 type MindMeisterNode = {
@@ -174,21 +187,23 @@ type MindMeisterNode = {
   title: string;
   link: string | null;
   note: string | null;
-  children: MindMeisterNode[]
-}
+  children: MindMeisterNode[];
+};
 
-function mindMeisterNoteToResources(note: string | null):Array<TreeNodeResource> {
-  return []
+function mindMeisterNoteToResources(
+  note: string | null
+): Array<TreeNodeResource> {
+  return [];
 }
 
 export function mindMeisterToTree(mm: MindMeisterNode): TreeSkeleton | null {
-  let tree = null
-  const parents: Record<number, TreeSkeleton> = {} // key id, value - parent
+  let tree = null;
+  const parents: Record<number, TreeSkeleton> = {}; // key id, value - parent
   const stack = [mm];
   while (stack.length) {
-    const mmNode = stack.pop()
+    const mmNode = stack.pop();
     if (!mmNode) {
-      return null
+      return null;
     }
     const treeNode: TreeSkeleton = {
       id: mmNode.id,
@@ -196,17 +211,17 @@ export function mindMeisterToTree(mm: MindMeisterNode): TreeSkeleton | null {
       wikipedia: mmNode.link ? mmNode.link : "",
       resources: mindMeisterNoteToResources(mmNode.note),
       children: []
-    }
+    };
     if (parents[mmNode.id]) {
-      parents[mmNode.id].children!.push(treeNode)
+      parents[mmNode.id].children!.push(treeNode);
     } else {
-      tree = treeNode
+      tree = treeNode;
     }
     for (const child of mmNode.children) {
-      stack.push(child)
-      parents[child.id] = treeNode
+      stack.push(child);
+      parents[child.id] = treeNode;
     }
   }
 
-  return tree
+  return tree;
 }

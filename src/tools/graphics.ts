@@ -7,14 +7,13 @@ import {
   Vector,
   Rectangle
 } from "@/types/graphics";
-import { Delaunay } from "d3-delaunay";
 import * as turf from "@turf/turf";
 import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "@/tools/errorkv";
 import { NodeRecordItem } from "@/store/tree";
 import { polygonArea } from "d3-polygon";
 import polygonClipping from "polygon-clipping";
-import {clone, printError, round, ROUND_EPSILON} from "@/tools/utils";
+import { clone, round } from "@/tools/utils";
 
 export function getVectorLength(v: Vector): number {
   return Math.sqrt(
@@ -37,9 +36,7 @@ export function isInside(point: Point, polygon: Polygon): boolean {
   );
 }
 
-export function polygonToPCPolygon(
-  p: Polygon
-): polygonClipping.Polygon {
+export function polygonToPCPolygon(p: Polygon): polygonClipping.Polygon {
   const pp = p.map(point => [point.x, point.y] as polygonClipping.Pair);
   pp.push([p[0].x, p[0].y]);
   return [pp];
@@ -56,16 +53,16 @@ export function intersect(
   // polygonClipping.intersection does not like digits after point
   // so we find the least multiplier that gives area > 1000 for polygon
   // and then round coordinates
-  let np1: Polygon = clone(p1)
-  let np2: Polygon = clone(p2)
-  let cf = 1
-  while(area(np1)<1000 && area(np2)<1000) {
-    cf = cf*10
-    np1 = p1.map(p=>({x:p.x*cf, y:p.y*cf}))
-    np2 = p2.map(p=>({x:p.x*cf, y:p.y*cf}))
+  let np1: Polygon = clone(p1);
+  let np2: Polygon = clone(p2);
+  let cf = 1;
+  while (area(np1) < 1000 && area(np2) < 1000) {
+    cf = cf * 10;
+    np1 = p1.map(p => ({ x: p.x * cf, y: p.y * cf }));
+    np2 = p2.map(p => ({ x: p.x * cf, y: p.y * cf }));
   }
-  np1 = np1.map(p=>({x:round(p.x), y:round(p.y)}))
-  np2 = np2.map(p=>({x:round(p.x), y:round(p.y)}))
+  np1 = np1.map(p => ({ x: round(p.x), y: round(p.y) }));
+  np2 = np2.map(p => ({ x: round(p.x), y: round(p.y) }));
 
   const tp1 = polygonToPCPolygon(np1);
   const tp2 = polygonToPCPolygon(np2);
@@ -87,7 +84,7 @@ export function intersect(
   for (const poly of polygonIntersect[0]) {
     const resultPoly = [];
     for (const p of poly) {
-      resultPoly.push({ x: p[0]/cf, y: p[1]/cf });
+      resultPoly.push({ x: p[0] / cf, y: p[1] / cf });
     }
     // удаляем послднюю точку полигона потому что она всегда совпадает с первой
     resultPoly.pop();
@@ -100,7 +97,7 @@ export function intersect(
 // Возвращает левый нижний и правый верхний углы описанного вокруг Polygon квадрата
 export function getBoundingBorders(border: Polygon): Rectangle {
   if (!border) {
-    console.error("bad border", border)
+    console.error("bad border", border);
   }
   const minX = border.reduce((previousValue, currentValue) =>
     previousValue.x > currentValue.x ? currentValue : previousValue
@@ -120,23 +117,39 @@ export function getBoundingBorders(border: Polygon): Rectangle {
   };
 }
 
-export function getVoronoiCellsInSquare(centers: Point[], leftBottom: Point, rightTop: Point): [Record<number, Polygon>, ErrorKV] {
-  const turfPoints = centers.map(p => turf.point([p.x, p.y]))
-  const collection = turf.featureCollection(turfPoints)
-  const cells = turf.voronoi(collection,{bbox: [leftBottom.x, leftBottom.y, rightTop.x, rightTop.y]});
+export function getVoronoiCellsInSquare(
+  centers: Point[],
+  leftBottom: Point,
+  rightTop: Point
+): [Record<number, Polygon>, ErrorKV] {
+  const turfPoints = centers.map(p => turf.point([p.x, p.y]));
+  const collection = turf.featureCollection(turfPoints);
+  const cells = turf.voronoi(collection, {
+    bbox: [leftBottom.x, leftBottom.y, rightTop.x, rightTop.y]
+  });
   const cellMap: Record<number, Polygon> = {};
   let index = 0;
   for (const cell of cells.features) {
     if (!cell) {
-      return [{}, NewErrorKV("getVoronoiCellsInSquare: undefined cell", {centers, leftBottom, rightTop})]
+      return [
+        {},
+        NewErrorKV("getVoronoiCellsInSquare: undefined cell", {
+          centers,
+          leftBottom,
+          rightTop
+        })
+      ];
     }
-    const cellBorder = cell.geometry!.coordinates[0].map(p => ({ x: p[0], y: p[1] }));
+    const cellBorder = cell.geometry!.coordinates[0].map(p => ({
+      x: p[0],
+      y: p[1]
+    }));
     cellBorder.pop(); // удаляем последную точку полигона потому что она всегда совпадает с первой
     cellMap[index] = cellBorder;
-    index++
+    index++;
   }
 
-  return [cellMap, null]
+  return [cellMap, null];
 }
 
 export function getVoronoiCells(
@@ -144,13 +157,26 @@ export function getVoronoiCells(
   centers: Point[] //(точки внутри этой границы)
 ): [VoronoiCell[], ErrorKV] {
   if (!outerBorder) {
-    throw new Error("getVoronoiCells: bad outerBorder")
-    return [[], NewErrorKV("getVoronoiCells: bad outerBorder", {outerBorder, centers})]
+    throw new Error("getVoronoiCells: bad outerBorder");
+    return [
+      [],
+      NewErrorKV("getVoronoiCells: bad outerBorder", { outerBorder, centers })
+    ];
   }
   const bb = getBoundingBorders(outerBorder);
-  const [cellMap, err] = getVoronoiCellsInSquare(centers, bb.leftBottom, bb.rightTop)
+  const [cellMap, err] = getVoronoiCellsInSquare(
+    centers,
+    bb.leftBottom,
+    bb.rightTop
+  );
   if (err) {
-    return [[], NewErrorKV("getVoronoiCells: error in getVoronoiCellsInSquare", {bb, centers})]
+    return [
+      [],
+      NewErrorKV("getVoronoiCells: error in getVoronoiCellsInSquare", {
+        bb,
+        centers
+      })
+    ];
   }
 
   const res = [];
@@ -170,7 +196,14 @@ export function getVoronoiCells(
 
     const [intersections, err] = intersect(cellMap[index], outerBorder); // мы хотим чтобы граница всех cell совпадала с outerBorder
     if (intersections == null || err != null) {
-      return [[], NewErrorKV("getVoronoiCells error", { err, cellBorder:cellMap[index], outerBorder })];
+      return [
+        [],
+        NewErrorKV("getVoronoiCells error", {
+          err,
+          cellBorder: cellMap[index],
+          outerBorder
+        })
+      ];
     }
 
     if (intersections == []) {
@@ -279,10 +312,14 @@ export function treeToMapNodeLayers(
           return [
             null,
             NewErrorKV(
-            "treeToMapNodeLayers: children position outside parent's border",
-            {"treeNode.id": treeNode.id, "border":lastMapNodeLayer[treeNode.id].border, "child.position":child.position}
+              "treeToMapNodeLayers: children position outside parent's border",
+              {
+                "treeNode.id": treeNode.id,
+                border: lastMapNodeLayer[treeNode.id].border,
+                "child.position": child.position
+              }
             )
-          ]
+          ];
         }
       }
       const [cells, error] = getVoronoiCells(
