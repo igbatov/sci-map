@@ -49,7 +49,7 @@ export default {
 .wrapper {
   position: fixed;
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
   padding: 8px;
   background-color: rgba(255, 255, 255, 0.2);
 }

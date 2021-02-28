@@ -6,7 +6,7 @@ import NewErrorKV from "@/tools/errorkv";
 import apiTree from "./mindmeister";
 import axios from "axios";
 
-const IS_OFFLINE = true; // to write code even without wi-fi set this to true
+const IS_OFFLINE = false; // to write code even without wi-fi set this to true
 
 export default {
   initFirebase() {
@@ -99,6 +99,6 @@ export default {
 
     const storage = firebase.storage().ref();
     const mapRef = storage.child(`/user/${user.uid}/map.json`);
-    await mapRef.putString(btoa(JSON.stringify(map.children)), "base64");
+    await mapRef.putString(btoa(unescape(encodeURIComponent(JSON.stringify(map.children)))), "base64");
   }
 };
