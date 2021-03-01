@@ -498,7 +498,7 @@ describe("getVectorIntersection", () => {
 });
 
 describe("intersect", () => {
-  it("return Polygon", () => {
+  it("returns Polygon", () => {
     const [is, err] = intersect(
       [
         { x: 100, y: -100 },
@@ -544,13 +544,38 @@ describe("intersect", () => {
     expect(is).toHaveLength(0);
   });
 
-  it("return Polygon that is fully contains inside second one", () => {
+  it("returns Polygon that is fully contains inside second one", () => {
     const [is, err] = intersect(
       [
         { x: 0, y: -100 },
         { x: -100, y: 0 },
         { x: 0, y: 100 },
         { x: 100, y: 0 }
+      ],
+      [
+        { x: 0, y: -50 },
+        { x: -50, y: 0 },
+        { x: 0, y: 50 },
+        { x: 50, y: 0 }
+      ]
+    );
+
+    expect(err).toBeNull();
+    expect(is).toHaveLength(1);
+    expect(is![0]).toHaveLength(4);
+    expect(is![0]).toContainEqual({ x: 0, y: -50 });
+    expect(is![0]).toContainEqual({ x: -50, y: 0 });
+    expect(is![0]).toContainEqual({ x: 0, y: 50 });
+    expect(is![0]).toContainEqual({ x: 50, y: 0 });
+  });
+
+  it("returns Polygon that is fully contains inside second one even for abnormally big numbers", () => {
+    const [is, err] = intersect(
+      [
+        { x: 0, y: -Math.pow(Number.MAX_SAFE_INTEGER, 10) },
+        { x: -Math.pow(Number.MAX_SAFE_INTEGER, 10), y: 0 },
+        { x: 0, y: Math.pow(Number.MAX_SAFE_INTEGER, 10) },
+        { x: Math.pow(Number.MAX_SAFE_INTEGER, 10), y: 0 }
       ],
       [
         { x: 0, y: -50 },
