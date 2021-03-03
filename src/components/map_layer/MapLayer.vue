@@ -63,11 +63,11 @@ import {
 } from "vue";
 import { MapNode, Point } from "@/types/graphics";
 import { polygonToPath } from "@/tools/graphics";
-import { nodeToTitleBox } from "@/components/MapLayer";
+import { nodeToTitleBox } from "@/components/map_layer/MapLayer";
 
 export default defineComponent({
   name: "MapLayer",
-  emits: ["click", "drop", "dragging", "node-mouse-down"],
+  emits: ["click", "drop", "dragging", "node-mouse-down", "background-mouse-down"],
   props: {
     mapNodes: {
       type: Object as PropType<Array<MapNode>>,
@@ -142,6 +142,7 @@ export default defineComponent({
     let dragStart = false;
     onMounted(() => {
       window.addEventListener("mousedown", event => {
+        let nodeFound = false
         for (const id in titleBox.value) {
           const { x, y } = titleBox.value[id].position;
           const { width, height } = titleBox.value[id].bbox;
@@ -157,8 +158,12 @@ export default defineComponent({
               pointer: { x: event.clientX, y: event.clientY },
               nodeCenter: mapNodes.value[id].center
             };
+            nodeFound = true;
             break;
           }
+        }
+        if (!nodeFound) {
+          ctx.emit("background-mouse-down", {});
         }
       });
       window.addEventListener("mousemove", event => {

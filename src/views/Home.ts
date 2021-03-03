@@ -1,4 +1,4 @@
-import { MapNode, Viewport } from "@/types/graphics";
+import {MapNode, Point, Viewport} from "@/types/graphics";
 import { area, intersect } from "@/tools/graphics";
 import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "@/tools/errorkv";
@@ -11,7 +11,7 @@ const MIN_VISIBLE_NUM_IN_LAYER = 3;
 /**
  * CurrentNode вычисляется следующим образом.
  * Начинаем смотреть с самого верхнего слоя.
- * Для каждого узла слоя вычисляем площадь пересечения этого узла с прямоугольником экрана (= видимой областью)
+ * Для каждого узла слоя прменяем zoomFactor, потом pan, потом вычисляем площадь пересечения этого узла с прямоугольником экрана (= видимой областью)
  * Берем узел N с наибольшей площадью пересечения. Берем его полную площадь и умножаем на 3.
  * Если получившееся значение ≤ площади экрана, то мы считаем что currentNode это parent узла N
  * Если больше то считаем N за currentNode и повторяем итерацию но только с детьми N.
@@ -22,7 +22,9 @@ const MIN_VISIBLE_NUM_IN_LAYER = 3;
 export function findCurrentNode(
   layers: Array<Record<number, MapNode>>,
   nodeRecord: Record<number, NodeRecordItem>,
-  viewport: Viewport
+  viewport: Viewport,
+  // zoomFactor: number,
+  // pan: Point
 ): [number, ErrorKV] {
   if (!layers || layers.length == 0) {
     return [0, null]

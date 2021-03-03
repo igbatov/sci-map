@@ -4,15 +4,17 @@
     :layers="layers"
     :viewBox="viewBox"
     :selectedNodeId="selectedNodeId"
-    @dragging="nodeDragging"
-    @click="nodeClick"
+    @dragging-node="nodeDragging"
+    @click-node="nodeClick"
+    @dragging-background="mapDragging"
+    @wheel="zoom"
   />
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, watch } from "vue";
-import Map from "@/components/Map.vue";
-import { EventClick, EventDragging } from "@/components/Map.ts";
+import Map from "@/components/map/Map.vue";
+import {EventClickNode, EventDraggingBackground, EventDraggingNode, EventWheel} from "@/components/map/Map.ts";
 import Menu from "@/components/menu/Index.vue";
 import { useStore } from "@/store";
 import { useRouter, useRoute } from "vue-router";
@@ -89,14 +91,20 @@ export default defineComponent({
       }),
       viewBox,
       selectedNodeId: computed(() => treeState.selectedNodeId),
-      nodeDragging: (e: EventDragging) => {
+      nodeDragging: (e: EventDraggingNode) => {
         store.commit(`tree/${treeMutations.UPDATE_NODE_POSITION}`, {
           nodeId: e.id,
           position: e.newCenter
         });
       },
-      nodeClick: (e: EventClick) => {
+      nodeClick: (e: EventClickNode) => {
         router.push({ name: "node", params: { id: e.id } });
+      },
+      mapDragging: (e: EventDraggingBackground) => {
+        console.log("dragging bg", e)
+      },
+      zoom: (e: EventWheel) => {
+        console.log("wheel", e)
       }
     };
   }

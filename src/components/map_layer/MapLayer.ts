@@ -26,3 +26,12 @@ export const nodeToTitleBox = (
 
   return titleBox;
 };
+
+export type EventClickNode = {
+  id: number;
+};
+
+export type EventDraggingNode = {
+  nodeId: number;
+  newCenter: Point;
+};
