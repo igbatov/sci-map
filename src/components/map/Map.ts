@@ -16,4 +16,5 @@ export type EventDraggingBackground = {
 
 export type EventWheel = {
   delta: number;
+  center: Point;
 };

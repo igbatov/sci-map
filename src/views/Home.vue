@@ -19,6 +19,7 @@ import Menu from "@/components/menu/Index.vue";
 import { useStore } from "@/store";
 import { useRouter, useRoute } from "vue-router";
 import { mutations as treeMutations } from "@/store/tree";
+import { mutations as zoomPanMutations } from "@/store/zoom_pan";
 import {filterNodesAndLayers, findCurrentNode} from "@/views/Home";
 import { printError } from "@/tools/utils";
 import NewErrorKV from "@/tools/errorkv";
@@ -46,6 +47,14 @@ export default defineComponent({
         );
       },
       { immediate: true }
+    );
+
+    watch(
+        () => store.state.zoomPan.debouncedZoom,
+        () => {
+          console.log("store.state.zoomPan.debouncedZoom", store.state.zoomPan.debouncedZoom)
+        },
+        { immediate: true }
     );
 
     /**
@@ -101,10 +110,16 @@ export default defineComponent({
         router.push({ name: "node", params: { id: e.id } });
       },
       mapDragging: (e: EventDraggingBackground) => {
-        console.log("dragging bg", e)
+        store.commit(
+            `zoomPan/${zoomPanMutations.ADD_PAN}`,
+            e
+        );
       },
       zoom: (e: EventWheel) => {
-        console.log("wheel", e)
+        store.commit(
+            `zoomPan/${zoomPanMutations.ADD_ZOOM}`,
+            e.delta
+        );
       }
     };
   }

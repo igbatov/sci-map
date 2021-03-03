@@ -59,7 +59,7 @@ export default defineComponent({
         pan.mouseMove(ctx.emit, event)
       })
       window.addEventListener("wheel", (event) => {
-        ctx.emit("wheel", {delta: event.deltaY})
+        ctx.emit("wheel", {delta: event.deltaY, point: {x: event.clientX, y:event.clientY}})
       })
     })
 

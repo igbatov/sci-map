@@ -1,6 +1,7 @@
 import { Commit, createStore, Store, useStore as baseUseStore } from "vuex";
 import { InjectionKey } from "vue";
 import { store as treeStore, State as TreeState } from "./tree";
+import { store as zoomPanStore, State as ZoomPanState } from "./zoom_pan";
 import {
   store as userStore,
   State as UserState,
@@ -12,6 +13,7 @@ import { fetchMap } from "./helpers";
 export type State = {
   tree: TreeState;
   user: UserState;
+  zoomPan: ZoomPanState;
 };
 
 export const actions = {
@@ -31,7 +33,8 @@ export const store = createStore<State>({
   },
   modules: {
     tree: treeStore,
-    user: userStore
+    user: userStore,
+    zoomPan: zoomPanStore
   }
 });
 
