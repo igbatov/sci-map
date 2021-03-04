@@ -1,5 +1,5 @@
 import {MapNode, Point, Viewport} from "@/types/graphics";
-import { area, intersect } from "@/tools/graphics";
+import {area, intersect, vectorOnNumber} from "@/tools/graphics";
 import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "@/tools/errorkv";
 import { NodeRecordItem } from "@/store/tree";
@@ -250,4 +250,22 @@ export function filterNodesAndLayers(
   }
 
   return [resultLayers, null];
+}
+
+export function zoomAnPanLayers(inLayers: Array<Record<number, MapNode>>, zoom: number, pan: Point): Array<Record<number, MapNode>> {
+  const layers = clone(inLayers)
+  if (!layers || layers.length == 0) {
+    return []
+  }
+  for (const layer of layers) {
+    for (const id in layer) {
+      const node = layer[id]
+      node.center = {x: node.center.x*zoom + pan.x, y: node.center.y*zoom + pan.y}
+      for (const i in node.border) {
+        node.border[Number(i)] = {x: node.border[Number(i)].x*zoom + pan.x, y: node.border[Number(i)].y*zoom + pan.y}
+      }
+    }
+  }
+
+  return layers
 }

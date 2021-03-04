@@ -39,7 +39,7 @@ const mouseMove = (emit: (name: "dragging-background" | "dragging-node" | "click
     return
   }
   emit('dragging-background', {
-    from: mouseDownBg.startPoint,
+    from: {x:event.clientX - event.movementX, y:event.clientY - event.movementY},
     to: {x:event.clientX, y:event.clientY}
   })
 }

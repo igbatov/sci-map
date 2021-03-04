@@ -1,7 +1,7 @@
 <template>
   <Menu />
   <Map
-    :layers="layers"
+    :layers="zoomPanLayers"
     :viewBox="viewBox"
     :selectedNodeId="selectedNodeId"
     @dragging-node="nodeDragging"
@@ -20,9 +20,10 @@ import { useStore } from "@/store";
 import { useRouter, useRoute } from "vue-router";
 import { mutations as treeMutations } from "@/store/tree";
 import { mutations as zoomPanMutations } from "@/store/zoom_pan";
-import {filterNodesAndLayers, findCurrentNode} from "@/views/Home";
+import {filterNodesAndLayers, findCurrentNode, zoomAnPanLayers} from "@/views/Home";
 import { printError } from "@/tools/utils";
 import NewErrorKV from "@/tools/errorkv";
+import {MapNode} from "@/types/graphics";
 
 export default defineComponent({
   name: "Home",
@@ -37,6 +38,7 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
     const treeState = store.state.tree;
+    const zoomPanState = store.state.zoomPan;
 
     watch(
       () => route.params,
@@ -85,18 +87,22 @@ export default defineComponent({
       ];
     }
 
-    return {
-      layers: computed(() => {
-        const [layers, err] = filterNodesAndLayers(
+    const layers = computed<Record<number, MapNode>[]>(() => {
+      const [layers, err] = filterNodesAndLayers(
           treeState.mapNodeLayers,
           treeState.nodeRecord,
           currentNodeId
-        );
-        if (err) {
-          printError("Home.vue: error in filterNodesAndLayers:", { err });
-          return {};
-        }
-        return layers.reverse();
+      );
+      if (err) {
+        printError("Home.vue: error in filterNodesAndLayers:", { err });
+        return [];
+      }
+      return layers.reverse();
+    })
+
+    return {
+      zoomPanLayers: computed(() => {
+        return zoomAnPanLayers(layers.value, zoomPanState.zoom, zoomPanState.pan);
       }),
       viewBox,
       selectedNodeId: computed(() => treeState.selectedNodeId),
