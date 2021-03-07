@@ -14,16 +14,25 @@
 <script lang="ts">
 import { computed, defineComponent, watch } from "vue";
 import Map from "@/components/map/Map.vue";
-import {EventClickNode, EventDraggingBackground, EventDraggingNode, EventWheel} from "@/components/map/Map.ts";
+import {
+  EventClickNode,
+  EventDraggingBackground,
+  EventDraggingNode,
+  EventWheel
+} from "@/components/map/Map.ts";
 import Menu from "@/components/menu/Index.vue";
 import { useStore } from "@/store";
 import { useRouter, useRoute } from "vue-router";
 import { mutations as treeMutations } from "@/store/tree";
 import { mutations as zoomPanMutations } from "@/store/zoom_pan";
-import {filterNodesAndLayers, findCurrentNode, zoomAnPanLayers} from "@/views/Home";
+import {
+  filterNodesAndLayers,
+  findCurrentNode,
+  zoomAnPanLayers
+} from "@/views/Home";
 import { printError } from "@/tools/utils";
 import NewErrorKV from "@/tools/errorkv";
-import {MapNode} from "@/types/graphics";
+import { MapNode } from "@/types/graphics";
 
 export default defineComponent({
   name: "Home",
@@ -52,11 +61,14 @@ export default defineComponent({
     );
 
     watch(
-        () => store.state.zoomPan.debouncedZoom,
-        () => {
-          console.log("store.state.zoomPan.debouncedZoom", store.state.zoomPan.debouncedZoom)
-        },
-        { immediate: true }
+      () => store.state.zoomPan.debouncedZoom,
+      () => {
+        console.log(
+          "store.state.zoomPan.debouncedZoom",
+          store.state.zoomPan.debouncedZoom
+        );
+      },
+      { immediate: true }
     );
 
     /**
@@ -71,15 +83,15 @@ export default defineComponent({
       }
     });
 
-
     /**
      * Вычисляем currentNodeId
      * Этот метод надо будет вызывать после каждого zoom и pan после того как будет сделана SM-25 и SM-24
      */
     const [currentNodeId, err] = findCurrentNode(
-        treeState.mapNodeLayers,
-        treeState.nodeRecord,
-        { width: window.innerWidth, height: window.innerHeight });
+      treeState.mapNodeLayers,
+      treeState.nodeRecord,
+      { width: window.innerWidth, height: window.innerHeight }
+    );
     if (err != null) {
       return [
         [],
@@ -89,20 +101,24 @@ export default defineComponent({
 
     const layers = computed<Record<number, MapNode>[]>(() => {
       const [layers, err] = filterNodesAndLayers(
-          treeState.mapNodeLayers,
-          treeState.nodeRecord,
-          currentNodeId
+        treeState.mapNodeLayers,
+        treeState.nodeRecord,
+        currentNodeId
       );
       if (err) {
         printError("Home.vue: error in filterNodesAndLayers:", { err });
         return [];
       }
       return layers.reverse();
-    })
+    });
 
     return {
       zoomPanLayers: computed(() => {
-        return zoomAnPanLayers(layers.value, zoomPanState.zoom, zoomPanState.pan);
+        return zoomAnPanLayers(
+          layers.value,
+          zoomPanState.zoom,
+          zoomPanState.pan
+        );
       }),
       viewBox,
       selectedNodeId: computed(() => treeState.selectedNodeId),
@@ -116,29 +132,23 @@ export default defineComponent({
         router.push({ name: "node", params: { id: e.id } });
       },
       mapDragging: (event: EventDraggingBackground) => {
-        store.commit(
-            `zoomPan/${zoomPanMutations.ADD_PAN}`,
-            event
-        );
+        store.commit(`zoomPan/${zoomPanMutations.ADD_PAN}`, event);
       },
       zoom: (event: EventWheel) => {
         // initial value of center (when root.border == viewport)
-        const before = {
+        const initial = {
           x: (event.center.x - zoomPanState.pan.x) / zoomPanState.zoom,
-          y: (event.center.y - zoomPanState.pan.y) / zoomPanState.zoom,
-        }
-        store.commit(
-            `zoomPan/${zoomPanMutations.ADD_ZOOM}`,
-            event.delta
-        );
+          y: (event.center.y - zoomPanState.pan.y) / zoomPanState.zoom
+        };
+        store.commit(`zoomPan/${zoomPanMutations.ADD_ZOOM}`, event.delta);
         const after = {
-          x: before.x*zoomPanState.zoom + zoomPanState.pan.x,
-          y: before.y*zoomPanState.zoom + zoomPanState.pan.y
-        }
-        store.commit(
-            `zoomPan/${zoomPanMutations.ADD_PAN}`,
-            {from:after, to:event.center}
-        );
+          x: initial.x * zoomPanState.zoom + zoomPanState.pan.x,
+          y: initial.y * zoomPanState.zoom + zoomPanState.pan.y
+        };
+        store.commit(`zoomPan/${zoomPanMutations.ADD_PAN}`, {
+          from: after,
+          to: event.center
+        });
       }
     };
   }

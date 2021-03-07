@@ -16,11 +16,14 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, onMounted, PropType, reactive, watch} from "vue";
+import { defineComponent, onMounted, PropType, reactive, watch } from "vue";
 import { MapNode } from "@/types/graphics";
 import MapLayer from "@/components/map_layer/MapLayer.vue";
-import {EventClickNode, EventDraggingNode} from "@/components/map_layer/MapLayer";
-import pan from "./MapPan"
+import {
+  EventClickNode,
+  EventDraggingNode
+} from "@/components/map_layer/MapLayer";
+import pan from "./MapPan";
 
 export default defineComponent({
   name: "Map",
@@ -39,47 +42,50 @@ export default defineComponent({
       validator: (prop: number | null) =>
         typeof prop === "number" || prop === null,
       required: true
-    },
+    }
   },
   setup(props, ctx) {
     watch(
-        () => props.layers,
-        () => pan.initLayerMouseDownResolvers(props.layers),
-        { immediate: true }
+      () => props.layers,
+      () => pan.initLayerMouseDownResolvers(props.layers),
+      { immediate: true }
     );
 
     onMounted(() => {
-      window.addEventListener("mousedown", async (event) => {
-        await pan.mouseDown(event, props.layers)
-      })
+      window.addEventListener("mousedown", async event => {
+        await pan.mouseDown(event, props.layers);
+      });
       window.addEventListener("mouseup", () => {
-        pan.mouseUp()
-      })
-      window.addEventListener("mousemove", (event) => {
-        pan.mouseMove(ctx.emit, event)
-      })
-      window.addEventListener("wheel", (event) => {
-        ctx.emit("wheel", {delta: event.deltaY, center: {x: event.clientX, y:event.clientY}})
-      })
-    })
+        pan.mouseUp();
+      });
+      window.addEventListener("mousemove", event => {
+        pan.mouseMove(ctx.emit, event);
+      });
+      window.addEventListener("wheel", event => {
+        ctx.emit("wheel", {
+          delta: event.deltaY,
+          center: { x: event.clientX, y: event.clientY }
+        });
+      });
+    });
 
     return {
       nodeMouseDown: (layerId: number) => {
-        pan.bgMouseDownReject(layerId)
+        pan.bgMouseDownReject(layerId);
       },
       backgroundMouseDown: (layerId: number) => {
-        pan.bgMouseDownResolve(layerId)
+        pan.bgMouseDownResolve(layerId);
       },
       draggingNode: (e: EventDraggingNode) => {
-        ctx.emit('dragging-node', {
+        ctx.emit("dragging-node", {
           id: e.nodeId,
           newCenter: e.newCenter
-        })
+        });
       },
       clickNode: (e: EventClickNode) => {
-        ctx.emit('click-node', { id: e.id })
+        ctx.emit("click-node", { id: e.id });
       }
-    }
+    };
   }
 });
 </script>

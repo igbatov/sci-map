@@ -99,6 +99,9 @@ export default {
 
     const storage = firebase.storage().ref();
     const mapRef = storage.child(`/user/${user.uid}/map.json`);
-    await mapRef.putString(btoa(unescape(encodeURIComponent(JSON.stringify(map.children)))), "base64");
+    await mapRef.putString(
+      btoa(unescape(encodeURIComponent(JSON.stringify(map.children)))),
+      "base64"
+    );
   }
 };

@@ -67,7 +67,13 @@ import { nodeToTitleBox } from "@/components/map_layer/MapLayer";
 
 export default defineComponent({
   name: "MapLayer",
-  emits: ["click", "drop", "dragging", "node-mouse-down", "background-mouse-down"],
+  emits: [
+    "click",
+    "drop",
+    "dragging",
+    "node-mouse-down",
+    "background-mouse-down"
+  ],
   props: {
     mapNodes: {
       type: Object as PropType<Array<MapNode>>,
@@ -142,7 +148,7 @@ export default defineComponent({
     let dragStart = false;
     onMounted(() => {
       window.addEventListener("mousedown", event => {
-        let nodeFound = false
+        let nodeFound = false;
         for (const id in titleBox.value) {
           const { x, y } = titleBox.value[id].position;
           const { width, height } = titleBox.value[id].bbox;
