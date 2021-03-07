@@ -23,7 +23,7 @@ const panDebounce = debounce((state, value: Point)=>{
 }, 1000)
 
 const ZOOM_SENSITIVITY = 1/100
-const PAN_SENSITIVITY = 1/1
+const PAN_SENSITIVITY = 1
 
 
 export const store = {
@@ -40,7 +40,6 @@ export const store = {
       zoomDebounce(state, state.zoom)
     },
     [mutations.ADD_PAN](state: State, delta: Vector) {
-      console.log("delta", delta.to.y-delta.from.y)
       state.pan = addVector({from: {x:0, y:0}, to: state.pan}, vectorOnNumber(delta, PAN_SENSITIVITY)).to;
       panDebounce(state, state.pan)
     }

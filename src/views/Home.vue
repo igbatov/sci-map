@@ -115,16 +115,29 @@ export default defineComponent({
       nodeClick: (e: EventClickNode) => {
         router.push({ name: "node", params: { id: e.id } });
       },
-      mapDragging: (e: EventDraggingBackground) => {
+      mapDragging: (event: EventDraggingBackground) => {
         store.commit(
             `zoomPan/${zoomPanMutations.ADD_PAN}`,
-            e
+            event
         );
       },
-      zoom: (e: EventWheel) => {
+      zoom: (event: EventWheel) => {
+        // initial value of center (when root.border == viewport)
+        const before = {
+          x: (event.center.x - zoomPanState.pan.x) / zoomPanState.zoom,
+          y: (event.center.y - zoomPanState.pan.y) / zoomPanState.zoom,
+        }
         store.commit(
             `zoomPan/${zoomPanMutations.ADD_ZOOM}`,
-            e.delta
+            event.delta
+        );
+        const after = {
+          x: before.x*zoomPanState.zoom + zoomPanState.pan.x,
+          y: before.y*zoomPanState.zoom + zoomPanState.pan.y
+        }
+        store.commit(
+            `zoomPan/${zoomPanMutations.ADD_PAN}`,
+            {from:after, to:event.center}
         );
       }
     };
