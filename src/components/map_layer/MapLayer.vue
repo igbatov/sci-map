@@ -57,6 +57,7 @@ import {
   PropType,
   toRefs,
   onMounted,
+  onUnmounted,
   nextTick,
   ref,
   watch
@@ -142,65 +143,67 @@ export default defineComponent({
      */
     let mouseDownInfo: {
       nodeId: number;
-      pointer: Point;
-      nodeCenter: Point;
     } | null = null;
     let dragStart = false;
-    onMounted(() => {
-      window.addEventListener("mousedown", event => {
-        let nodeFound = false;
-        for (const id in titleBox.value) {
-          const { x, y } = titleBox.value[id].position;
-          const { width, height } = titleBox.value[id].bbox;
-          if (
+
+    const mouseDownListener = (event: MouseEvent) => {
+      let nodeFound = false;
+      for (const id in titleBox.value) {
+        const { x, y } = titleBox.value[id].position;
+        const { width, height } = titleBox.value[id].bbox;
+        if (
             event.clientX >= x &&
             event.clientX <= x + width &&
             event.clientY >= y - height &&
             event.clientY <= y
-          ) {
-            ctx.emit("node-mouse-down", { id: Number(id) });
-            mouseDownInfo = {
-              nodeId: Number(id),
-              pointer: { x: event.clientX, y: event.clientY },
-              nodeCenter: mapNodes.value[id].center
-            };
-            nodeFound = true;
-            break;
+        ) {
+          ctx.emit("node-mouse-down", { id: Number(id) });
+          mouseDownInfo = {
+            nodeId: Number(id),
+          };
+          nodeFound = true;
+          break;
+        }
+      }
+
+      if (!nodeFound) {
+        ctx.emit("background-mouse-down", {});
+      }
+    }
+
+    const mouseMoveListener = (event: MouseEvent) => {
+      if (mouseDownInfo) {
+        dragStart = true;
+        ctx.emit("dragging", {
+          nodeId: mouseDownInfo.nodeId,
+          delta: {
+            x: event.movementX,
+            y: event.movementY
           }
+        });
+      }
+    }
+
+    const mouseUpListener = () => {
+      if (mouseDownInfo) {
+        if (dragStart) {
+          ctx.emit("drop", { id: mouseDownInfo.nodeId });
+        } else {
+          ctx.emit("click", { id: mouseDownInfo.nodeId });
         }
-        if (!nodeFound) {
-          ctx.emit("background-mouse-down", {});
-        }
-      });
-      window.addEventListener("mousemove", event => {
-        if (mouseDownInfo) {
-          dragStart = true;
-          ctx.emit("dragging", {
-            nodeId: mouseDownInfo.nodeId,
-            newCenter: {
-              x:
-                mouseDownInfo.nodeCenter.x +
-                event.clientX -
-                mouseDownInfo.pointer.x,
-              y:
-                mouseDownInfo.nodeCenter.y +
-                event.clientY -
-                mouseDownInfo.pointer.y
-            }
-          });
-        }
-      });
-      window.addEventListener("mouseup", () => {
-        if (mouseDownInfo) {
-          if (dragStart) {
-            ctx.emit("drop", { id: mouseDownInfo.nodeId });
-          } else {
-            ctx.emit("click", { id: mouseDownInfo.nodeId });
-          }
-          dragStart = false;
-          mouseDownInfo = null;
-        }
-      });
+        dragStart = false;
+        mouseDownInfo = null;
+      }
+    }
+    onMounted(() => {
+      window.addEventListener("mousedown", mouseDownListener);
+      window.addEventListener("mousemove", mouseMoveListener);
+      window.addEventListener("mouseup", mouseUpListener);
+    });
+    onUnmounted(() => {
+      window.removeEventListener("mousedown", mouseDownListener);
+      window.removeEventListener("mousemove", mouseMoveListener);
+      window.removeEventListener("mouseup", mouseUpListener);
     });
 
     return {

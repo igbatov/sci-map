@@ -86,7 +86,7 @@ export function intersect(
     for (const p of poly) {
       resultPoly.push({ x: p[0] / cf, y: p[1] / cf });
     }
-    // удаляем послднюю точку полигона потому что она всегда совпадает с первой
+    // удаляем последнюю точку полигона потому что она всегда совпадает с первой
     resultPoly.pop();
     resultPolys.push(resultPoly);
   }

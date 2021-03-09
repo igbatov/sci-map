@@ -1,7 +1,7 @@
 <template>
   <Menu />
   <Map
-    :layers="zoomPanLayers"
+    :layers="zoomedPanedLayers"
     :viewBox="viewBox"
     :selectedNodeId="selectedNodeId"
     @dragging-node="nodeDragging"
@@ -31,7 +31,6 @@ import {
   zoomAnPanLayers
 } from "@/views/Home";
 import { printError } from "@/tools/utils";
-import NewErrorKV from "@/tools/errorkv";
 import { MapNode } from "@/types/graphics";
 
 export default defineComponent({
@@ -83,37 +82,42 @@ export default defineComponent({
       }
     });
 
-    /**
-     * Вычисляем currentNodeId
-     * Этот метод надо будет вызывать после каждого zoom и pan после того как будет сделана SM-25 и SM-24
-     */
-    const [currentNodeId, err] = findCurrentNode(
-      treeState.mapNodeLayers,
-      treeState.nodeRecord,
-      { width: window.innerWidth, height: window.innerHeight }
-    );
-    if (err != null) {
-      return [
-        [],
-        NewErrorKV("filterNodesAndLayers: error in findCurrentNode", { err })
-      ];
-    }
-
     const layers = computed<Record<number, MapNode>[]>(() => {
-      const [layers, err] = filterNodesAndLayers(
+      /**
+       * Вычисляем currentNodeId
+       * Этот метод надо будет вызывать после каждого zoom и pan после того как будет сделана SM-25 и SM-24
+       */
+      const [currentNodeId, err1] = findCurrentNode(
+          treeState.mapNodeLayers,
+          treeState.nodeRecord,
+          { width: window.innerWidth, height: window.innerHeight },
+          zoomPanState.debouncedZoom,
+          zoomPanState.debouncedPan,
+      );
+      if (err1 != null) {
+        printError("filterNodesAndLayers: error in findCurrentNode", { err: err1 })
+        return [];
+      }
+
+      if (treeState.nodeRecord && treeState.nodeRecord[currentNodeId]) {
+        console.log("currentNodeId", currentNodeId, treeState.nodeRecord[currentNodeId].node.title)
+      }
+
+      // Вычленяем слои и узлы которые мы хотим показывать у читывая что текущий узел это currentNodeId
+      const [layers, err2] = filterNodesAndLayers(
         treeState.mapNodeLayers,
         treeState.nodeRecord,
         currentNodeId
       );
-      if (err) {
-        printError("Home.vue: error in filterNodesAndLayers:", { err });
+      if (err2) {
+        printError("Home.vue: error in filterNodesAndLayers:", { err: err2 });
         return [];
       }
       return layers.reverse();
     });
 
     return {
-      zoomPanLayers: computed(() => {
+      zoomedPanedLayers: computed(() => {
         return zoomAnPanLayers(
           layers.value,
           zoomPanState.zoom,
@@ -125,7 +129,7 @@ export default defineComponent({
       nodeDragging: (e: EventDraggingNode) => {
         store.commit(`tree/${treeMutations.UPDATE_NODE_POSITION}`, {
           nodeId: e.id,
-          position: e.newCenter
+          delta: e.delta
         });
       },
       nodeClick: (e: EventClickNode) => {
@@ -140,7 +144,7 @@ export default defineComponent({
           x: (event.center.x - zoomPanState.pan.x) / zoomPanState.zoom,
           y: (event.center.y - zoomPanState.pan.y) / zoomPanState.zoom
         };
-        store.commit(`zoomPan/${zoomPanMutations.ADD_ZOOM}`, event.delta);
+        store.commit(`zoomPan/${zoomPanMutations.ADD_ZOOM}`, -1*event.delta);
         const after = {
           x: initial.x * zoomPanState.zoom + zoomPanState.pan.x,
           y: initial.y * zoomPanState.zoom + zoomPanState.pan.y

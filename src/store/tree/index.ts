@@ -1,5 +1,6 @@
 import { MapNode, Point, Tree } from "@/types/graphics";
 import {
+  addVector,
   isInside,
   treeToMapNodeLayers,
   treeToNodeRecord
@@ -208,8 +209,25 @@ export const store = {
      */
     [mutations.UPDATE_NODE_POSITION](
       state: State,
-      v: { nodeId: number; position: Point }
+      v: { nodeId: number; delta: Point }
     ) {
+      const [mapNode] = findMapNode(v.nodeId, state.mapNodeLayers);
+      if (!mapNode) {
+        console.error(
+          "UPDATE_NODE_POSITION: cannot find mapNode",
+          "v.nodeId",
+          v.nodeId,
+          "state.mapNodeLayers",
+          state.mapNodeLayers
+        );
+        return;
+      }
+
+      const newCenter = addVector(
+        {from:{x:0, y:0}, to:mapNode.center},
+        {from:{x:0, y:0}, to:v.delta}
+      ).to
+
       // check that new position is inside parent borders
       const parent = state.nodeRecord[v.nodeId].parent;
       if (parent !== null) {
@@ -224,11 +242,13 @@ export const store = {
           );
           return;
         }
-        if (!isInside(v.position, parentMapNode.border)) {
+
+        if (!isInside(newCenter, parentMapNode.border)) {
           return;
         }
       }
-      updatePosition(state, v);
+
+      updatePosition(state, {nodeId: v.nodeId, position:newCenter});
     }
   }
 };

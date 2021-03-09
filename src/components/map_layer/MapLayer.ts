@@ -33,5 +33,5 @@ export type EventClickNode = {
 
 export type EventDraggingNode = {
   nodeId: number;
-  newCenter: Point;
+  delta: Point;
 };

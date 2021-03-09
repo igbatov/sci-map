@@ -6,7 +6,7 @@ export type EventClickNode = {
 
 export type EventDraggingNode = {
   id: number;
-  newCenter: Point;
+  delta: Point;
 };
 
 export type EventDraggingBackground = {

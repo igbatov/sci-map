@@ -1,22 +1,22 @@
 <template>
   <svg xmlns="http://www.w3.org/2000/svg" :viewBox="viewBox">
     <MapLayer
-      v-for="(layer, i) of layers"
-      :key="i"
+      v-for="(layer, index) of layers"
+      :key="index"
       :map-nodes="layer"
-      :border-color="`rgb(${200 - 100 * i},${200 - 100 * i},${200 - 100 * i})`"
-      :font-size="10 * (i + 1)"
+      :border-color="`rgb(${200 - 100 * index},${200 - 100 * index},${200 - 100 * index})`"
+      :font-size="10 * (index + 1)"
       :selectedNodeId="selectedNodeId"
       @dragging="draggingNode"
       @click="clickNode"
-      @background-mouse-down="backgroundMouseDown(i)"
-      @node-mouse-down="nodeMouseDown(i)"
+      @background-mouse-down="backgroundMouseDown(index)"
+      @node-mouse-down="nodeMouseDown(index)"
     />
   </svg>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, PropType, reactive, watch } from "vue";
+import { defineComponent, onMounted, PropType, watch } from "vue";
 import { MapNode } from "@/types/graphics";
 import MapLayer from "@/components/map_layer/MapLayer.vue";
 import {
@@ -47,13 +47,13 @@ export default defineComponent({
   setup(props, ctx) {
     watch(
       () => props.layers,
-      () => pan.initLayerMouseDownResolvers(props.layers),
+      () => pan.setLayers(props.layers),
       { immediate: true }
     );
 
     onMounted(() => {
       window.addEventListener("mousedown", async event => {
-        await pan.mouseDown(event, props.layers);
+        await pan.mouseDown(event);
       });
       window.addEventListener("mouseup", () => {
         pan.mouseUp();
@@ -79,7 +79,7 @@ export default defineComponent({
       draggingNode: (e: EventDraggingNode) => {
         ctx.emit("dragging-node", {
           id: e.nodeId,
-          newCenter: e.newCenter
+          delta: e.delta
         });
       },
       clickNode: (e: EventClickNode) => {

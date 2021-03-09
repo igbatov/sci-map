@@ -16,11 +16,11 @@ export const mutations = {
 
 const zoomDebounce = debounce((state, value: number) => {
   state.debouncedZoom = value;
-}, 1000);
+}, 200);
 
 const panDebounce = debounce((state, value: Point) => {
   state.debouncedPan = value;
-}, 1000);
+}, 200);
 
 const ZOOM_SENSITIVITY = 1 / 100;
 const PAN_SENSITIVITY = 1;

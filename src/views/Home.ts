@@ -1,4 +1,4 @@
-import { MapNode, Point, Viewport } from "@/types/graphics";
+import {MapNode, Point, Polygon, Viewport} from "@/types/graphics";
 import { area, intersect, vectorOnNumber } from "@/tools/graphics";
 import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "@/tools/errorkv";
@@ -6,13 +6,20 @@ import { NodeRecordItem } from "@/store/tree";
 import { findMapNode } from "@/store/tree/helpers";
 import { clone } from "@/tools/utils";
 
-const MIN_VISIBLE_NUM_IN_LAYER = 3;
+const MIN_VISIBLE_NUM_IN_LAYER = 2;
 
+export function zoomAndPanPoint(p: Point, zoom: number, pan: Point): Point {
+  return {x: p.x * zoom + pan.x, y: p.y * zoom + pan.y}
+}
+export function zoomAndPanPolygon(p: Polygon, zoom: number, pan: Point): Polygon {
+  return p.map(point => zoomAndPanPoint(point, zoom, pan))
+}
 /**
  * CurrentNode вычисляется следующим образом.
  * Начинаем смотреть с самого верхнего слоя.
- * Для каждого узла слоя прменяем zoomFactor, потом pan, потом вычисляем площадь пересечения этого узла с прямоугольником экрана (= видимой областью)
- * Берем узел N с наибольшей площадью пересечения. Берем его полную площадь и умножаем на 3.
+ * Для каждого узла слоя прменяем zoomFactor, потом pan, потом вычисляем площадь пересечения этого узла
+ * с прямоугольником экрана (= видимой областью)
+ * Берем узел N с наибольшей площадью пересечения. Берем его полную площадь и умножаем на 2.
  * Если получившееся значение ≤ площади экрана, то мы считаем что currentNode это parent узла N
  * Если больше то считаем N за currentNode и повторяем итерацию но только с детьми N.
  * @param layers
@@ -22,9 +29,9 @@ const MIN_VISIBLE_NUM_IN_LAYER = 3;
 export function findCurrentNode(
   layers: Array<Record<number, MapNode>>,
   nodeRecord: Record<number, NodeRecordItem>,
-  viewport: Viewport
-  // zoomFactor: number,
-  // pan: Point
+  viewport: Viewport,
+  zoomFactor: number,
+  pan: Point
 ): [number, ErrorKV] {
   if (!layers || layers.length == 0) {
     return [0, null];
@@ -45,7 +52,7 @@ export function findCurrentNode(
 
     for (const nodeId in nodesToCheck) {
       const [intersectPoly, err] = intersect(
-        nodesToCheck[nodeId].border,
+        zoomAndPanPolygon(nodesToCheck[nodeId].border, zoomFactor, pan),
         viewportPolygon
       );
       if (err !== null || intersectPoly === null) {
@@ -53,7 +60,7 @@ export function findCurrentNode(
           0,
           NewErrorKV("filterLayer: error intersecting", {
             nodeId: nodeId,
-            nodeBorder: nodesToCheck[nodeId].border,
+            nodeBorder: zoomAndPanPolygon(nodesToCheck[nodeId].border, zoomFactor, pan),
             err: err
           })
         ];
@@ -80,7 +87,7 @@ export function findCurrentNode(
       ];
     }
 
-    const maxIntersectNodeArea = area(nodesToCheck[maxIntersectNodeId].border);
+    const maxIntersectNodeArea = area(zoomAndPanPolygon(nodesToCheck[maxIntersectNodeId].border, zoomFactor, pan));
     if (
       Math.floor(maxIntersectNodeArea) <=
       Math.floor(viewportArea / MIN_VISIBLE_NUM_IN_LAYER)
@@ -127,7 +134,7 @@ export function findCurrentNode(
  * Мы показываем слой в котором находится currentNode (без названий) плюс еще 3.
  * Причем полноценно мы показываем только подузлы currentNode.
  * Узлы слоя currentNode отображаются только если у них тот же parent что и у
- * currentNode. Плюс подузлы НЕ ИЗ currentNode мы отображаем только одного следующего слоя и без названий.
+ * currentNode. Плюс подузлы НЕ ИЗ currentNode мы отображаем только одного следующего слоя.
  * @param layers
  * @param nodeRecord
  * @param currentNodeId
@@ -193,7 +200,7 @@ export function filterNodesAndLayers(
       }
       if (Number(nodeId) != Number(currentNodeId)) {
         firstLayer[child.id] = clone(mapNode);
-        firstLayer[child.id].title = "";
+        // firstLayer[child.id].title = "";
       } else {
         firstLayer[child.id] = clone(mapNode);
       }
@@ -264,16 +271,8 @@ export function zoomAnPanLayers(
   for (const layer of layers) {
     for (const id in layer) {
       const node = layer[id];
-      node.center = {
-        x: node.center.x * zoom + pan.x,
-        y: node.center.y * zoom + pan.y
-      };
-      for (const i in node.border) {
-        node.border[Number(i)] = {
-          x: node.border[Number(i)].x * zoom + pan.x,
-          y: node.border[Number(i)].y * zoom + pan.y
-        };
-      }
+      node.center = zoomAndPanPoint(node.center, zoom, pan);
+      node.border = zoomAndPanPolygon(node.border, zoom, pan)
     }
   }
 
