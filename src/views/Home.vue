@@ -59,17 +59,6 @@ export default defineComponent({
       { immediate: true }
     );
 
-    watch(
-      () => store.state.zoomPan.debouncedZoom,
-      () => {
-        console.log(
-          "store.state.zoomPan.debouncedZoom",
-          store.state.zoomPan.debouncedZoom
-        );
-      },
-      { immediate: true }
-    );
-
     /**
      * compute svg viewBox
      */
@@ -99,10 +88,6 @@ export default defineComponent({
         return [];
       }
 
-      if (treeState.nodeRecord && treeState.nodeRecord[currentNodeId]) {
-        console.log("currentNodeId", currentNodeId, treeState.nodeRecord[currentNodeId].node.title)
-      }
-
       // Вычленяем слои и узлы которые мы хотим показывать у читывая что текущий узел это currentNodeId
       const [layers, err2] = filterNodesAndLayers(
         treeState.mapNodeLayers,
@@ -129,7 +114,7 @@ export default defineComponent({
       nodeDragging: (e: EventDraggingNode) => {
         store.commit(`tree/${treeMutations.UPDATE_NODE_POSITION}`, {
           nodeId: e.id,
-          delta: e.delta
+          delta: {x:e.delta.x/zoomPanState.zoom, y:e.delta.y/zoomPanState.zoom}
         });
       },
       nodeClick: (e: EventClickNode) => {
