@@ -110,12 +110,12 @@ export default defineComponent({
 
     const layers = ref<Array<Record<number, MapNode>>>([]);
     watch(
-        () => [treeState.mapNodeLayers, treeState.nodeRecord, zoomPanState.debouncedZoom],
-        (newValues) => {
+        () => [treeState.mapNodeLayers, zoomPanState.debouncedZoom],
+        () => {
           layers.value = updateLayers(
-            newValues[0] as Array<Record<number, MapNode>>,
-            newValues[1] as Record<number, NodeRecordItem>,
-            newValues[2] as number,
+            treeState.mapNodeLayers,
+            treeState.nodeRecord,
+            zoomPanState.debouncedZoom,
             zoomPanState.pan,
             zoomPanState.zoomCenter,
           );
