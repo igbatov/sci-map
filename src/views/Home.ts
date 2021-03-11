@@ -14,17 +14,21 @@ export function zoomAndPanPoint(p: Point, zoom: number, pan: Point): Point {
 export function zoomAndPanPolygon(p: Polygon, zoom: number, pan: Point): Polygon {
   return p.map(point => zoomAndPanPoint(point, zoom, pan))
 }
+
 /**
  * CurrentNode вычисляется следующим образом.
  * Начинаем смотреть с самого верхнего слоя.
- * Для каждого узла слоя прменяем zoomFactor, потом pan, потом вычисляем площадь пересечения этого узла
- * с прямоугольником экрана (= видимой областью)
- * Берем узел N с наибольшей площадью пересечения. Берем его полную площадь и умножаем на 2.
+ * Для каждого узла слоя прменяем zoomFactor, потом pan, потом
+ * смотрим находится ли zoomCenter внутри него. Если да, то это претендент на currentNode (назовем его N).
+ * Мы берем его полную площадь и умножаем на 2.
  * Если получившееся значение ≤ площади экрана, то мы считаем что currentNode это parent узла N
- * Если больше то считаем N за currentNode и повторяем итерацию но только с детьми N.
+ * Если больше то повторяем итерацию но только с детьми N.
  * @param layers
  * @param nodeRecord
  * @param viewport
+ * @param zoomFactor
+ * @param pan
+ * @param zoomCenter
  */
 export function findCurrentNode(
   layers: Array<Record<number, MapNode>>,
@@ -37,12 +41,7 @@ export function findCurrentNode(
   if (!layers || layers.length == 0) {
     return [0, null];
   }
-  const viewportPolygon = [
-    { x: 0, y: 0 },
-    { x: viewport.width, y: 0 },
-    { x: viewport.width, y: viewport.height },
-    { x: 0, y: viewport.height }
-  ];
+
   let underCursorNodeId = null;
   const viewportArea = viewport.width * viewport.height;
   let nodesToCheck = layers[0];

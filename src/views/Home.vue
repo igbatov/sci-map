@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, reactive, watch} from "vue";
+import {computed, defineComponent, reactive, ref, watch} from "vue";
 import Map from "@/components/map/Map.vue";
 import {
   EventClickNode,
@@ -23,7 +23,7 @@ import {
 import Menu from "@/components/menu/Index.vue";
 import { useStore } from "@/store";
 import { useRouter, useRoute } from "vue-router";
-import { mutations as treeMutations } from "@/store/tree";
+import {mutations as treeMutations, NodeRecordItem} from "@/store/tree";
 import { mutations as zoomPanMutations } from "@/store/zoom_pan";
 import {
   filterNodesAndLayers,
@@ -31,7 +31,7 @@ import {
   zoomAnPanLayers
 } from "@/views/Home";
 import { printError } from "@/tools/utils";
-import { MapNode } from "@/types/graphics";
+import {MapNode, Point, Viewport} from "@/types/graphics";
 
 export default defineComponent({
   name: "Home",
@@ -70,18 +70,25 @@ export default defineComponent({
       }
     });
 
-    const layers = computed<Record<number, MapNode>[]>(() => {
+    const updateLayers =
+        (
+            mapNodeLayers: Array<Record<number, MapNode>>,
+            nodeRecord: Record<number, NodeRecordItem>,
+            debouncedZoom: number,
+            debouncedPan: Point,
+          zoomCenter: Point
+        ) => {
       /**
        * Вычисляем currentNodeId
        * Этот метод надо будет вызывать после каждого zoom и pan после того как будет сделана SM-25 и SM-24
        */
       const [currentNodeId, err1] = findCurrentNode(
-          treeState.mapNodeLayers,
-          treeState.nodeRecord,
+          mapNodeLayers,
+          nodeRecord,
           { width: window.innerWidth, height: window.innerHeight },
-          zoomPanState.debouncedZoom,
-          zoomPanState.debouncedPan,
-          zoomPanState.zoomCenter
+          debouncedZoom,
+          debouncedPan,
+          zoomCenter
       );
       if (err1 != null) {
         printError("filterNodesAndLayers: error in findCurrentNode", { err: err1 })
@@ -90,16 +97,32 @@ export default defineComponent({
 
       // Вычленяем слои и узлы которые мы хотим показывать у читывая что текущий узел это currentNodeId
       const [layers, err2] = filterNodesAndLayers(
-        treeState.mapNodeLayers,
-        treeState.nodeRecord,
-        currentNodeId
+          mapNodeLayers,
+          nodeRecord,
+          currentNodeId
       );
       if (err2) {
         printError("Home.vue: error in filterNodesAndLayers:", { err: err2 });
         return [];
       }
       return layers.reverse();
-    });
+    }
+
+    const layers = ref<Array<Record<number, MapNode>>>([]);
+    watch(
+        () => [treeState.mapNodeLayers, treeState.nodeRecord, zoomPanState.debouncedZoom],
+        (newValues) => {
+          layers.value = updateLayers(
+            newValues[0] as Array<Record<number, MapNode>>,
+            newValues[1] as Record<number, NodeRecordItem>,
+            newValues[2] as number,
+            zoomPanState.pan,
+            zoomPanState.zoomCenter,
+          );
+        },
+        { immediate: true, deep: true }
+    );
+
 
     return {
       zoomedPanedLayers: computed(() => {
