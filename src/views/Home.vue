@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, watch } from "vue";
+import {computed, defineComponent, reactive, watch} from "vue";
 import Map from "@/components/map/Map.vue";
 import {
   EventClickNode,
@@ -64,8 +64,7 @@ export default defineComponent({
      */
     const viewBox = computed(() => {
       if (treeState.tree && treeState.tree.position) {
-        return `0 0 ${2 * treeState.tree.position.x} ${2 *
-          treeState.tree.position.y}`;
+        return `0 0 ${2 * treeState.tree.position.x} ${2 * treeState.tree.position.y}`;
       } else {
         return `0 0 1000 600`;
       }
@@ -82,6 +81,7 @@ export default defineComponent({
           { width: window.innerWidth, height: window.innerHeight },
           zoomPanState.debouncedZoom,
           zoomPanState.debouncedPan,
+          zoomPanState.zoomCenter
       );
       if (err1 != null) {
         printError("filterNodesAndLayers: error in findCurrentNode", { err: err1 })
@@ -138,6 +138,7 @@ export default defineComponent({
           from: after,
           to: event.center
         });
+        store.commit(`zoomPan/${zoomPanMutations.SET_ZOOM_CENTER}`, event.center);
       }
     };
   }

@@ -1,5 +1,5 @@
 import {MapNode, Point, Polygon, Viewport} from "@/types/graphics";
-import { area, intersect, vectorOnNumber } from "@/tools/graphics";
+import {area, intersect, isInside, vectorOnNumber} from "@/tools/graphics";
 import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "@/tools/errorkv";
 import { NodeRecordItem } from "@/store/tree";
@@ -31,7 +31,8 @@ export function findCurrentNode(
   nodeRecord: Record<number, NodeRecordItem>,
   viewport: Viewport,
   zoomFactor: number,
-  pan: Point
+  pan: Point,
+  zoomCenter: Point
 ): [number, ErrorKV] {
   if (!layers || layers.length == 0) {
     return [0, null];
@@ -42,42 +43,21 @@ export function findCurrentNode(
     { x: viewport.width, y: viewport.height },
     { x: 0, y: viewport.height }
   ];
-  let maxIntersectNodeId = null;
-  let maxIntersectArea = 0;
+  let underCursorNodeId = null;
   const viewportArea = viewport.width * viewport.height;
   let nodesToCheck = layers[0];
   while (Object.keys(nodesToCheck).length) {
-    maxIntersectNodeId = null;
-    maxIntersectArea = 0;
+    underCursorNodeId = -1;
 
     for (const nodeId in nodesToCheck) {
-      const [intersectPoly, err] = intersect(
-        zoomAndPanPolygon(nodesToCheck[nodeId].border, zoomFactor, pan),
-        viewportPolygon
-      );
-      if (err !== null || intersectPoly === null) {
-        return [
-          0,
-          NewErrorKV("filterLayer: error intersecting", {
-            nodeId: nodeId,
-            nodeBorder: zoomAndPanPolygon(nodesToCheck[nodeId].border, zoomFactor, pan),
-            err: err
-          })
-        ];
-      }
-
-      if (intersectPoly.length === 0) {
-        continue;
-      }
-
-      const intersectArea = area(intersectPoly[0]);
-      if (intersectArea > maxIntersectArea) {
-        maxIntersectNodeId = Number(nodeId);
-        maxIntersectArea = intersectArea;
+      const borderToCheck = zoomAndPanPolygon(nodesToCheck[nodeId].border, zoomFactor, pan)
+      if (isInside(zoomCenter, borderToCheck)) {
+        underCursorNodeId = Number(nodeId)
+        break
       }
     }
 
-    if (maxIntersectNodeId === null) {
+    if (underCursorNodeId === -1) {
       return [
         0,
         NewErrorKV(
@@ -87,27 +67,27 @@ export function findCurrentNode(
       ];
     }
 
-    const maxIntersectNodeArea = area(zoomAndPanPolygon(nodesToCheck[maxIntersectNodeId].border, zoomFactor, pan));
+    const underCursorNodeArea = area(zoomAndPanPolygon(nodesToCheck[underCursorNodeId].border, zoomFactor, pan));
     if (
-      Math.floor(maxIntersectNodeArea) <=
+      Math.floor(underCursorNodeArea) <=
       Math.floor(viewportArea / MIN_VISIBLE_NUM_IN_LAYER)
     ) {
-      if (nodeRecord[maxIntersectNodeId].parent == null) {
-        return [maxIntersectNodeId, null];
+      if (nodeRecord[underCursorNodeId].parent == null) {
+        return [underCursorNodeId, null];
       }
-      return [nodeRecord[maxIntersectNodeId].parent!.id, null];
+      return [nodeRecord[underCursorNodeId].parent!.id, null];
     } else {
       nodesToCheck = {};
-      if (!nodeRecord[maxIntersectNodeId]) {
+      if (!nodeRecord[underCursorNodeId]) {
         return [
           0,
           NewErrorKV(
-            "findCurrentNode: cannot find maxIntersectNodeId in nodeRecord",
-            { maxIntersectNodeId, nodeRecord }
+            "findCurrentNode: cannot find underCursorNodeId in nodeRecord",
+            { maxIntersectNodeId: underCursorNodeId, nodeRecord }
           )
         ];
       }
-      for (const child of nodeRecord[maxIntersectNodeId].node.children) {
+      for (const child of nodeRecord[underCursorNodeId].node.children) {
         const [mapNode] = findMapNode(child.id, layers);
         if (mapNode == null) {
           return [
@@ -122,7 +102,7 @@ export function findCurrentNode(
       }
 
       if (Object.keys(nodesToCheck).length === 0) {
-        return [maxIntersectNodeId, null];
+        return [underCursorNodeId, null];
       }
     }
   }
@@ -200,7 +180,7 @@ export function filterNodesAndLayers(
       }
       if (Number(nodeId) != Number(currentNodeId)) {
         firstLayer[child.id] = clone(mapNode);
-        // firstLayer[child.id].title = "";
+        firstLayer[child.id].title = "";
       } else {
         firstLayer[child.id] = clone(mapNode);
       }
@@ -213,6 +193,7 @@ export function filterNodesAndLayers(
 
   // следующий слой это дети детей currentNode
   const secondLayer: Record<number, MapNode> = {};
+  //for (const childId in firstLayer) {
   for (const child of nodeRecord[currentNodeId].node.children) {
     for (const childOfChild of nodeRecord[child.id].node.children) {
       const [mapNode, _] = findMapNode(childOfChild.id, [layers[level + 2]]);
@@ -233,7 +214,7 @@ export function filterNodesAndLayers(
     resultLayers.push(secondLayer);
   }
 
-  // следующий это дети детей детей currentNode и у них нет названий
+  // следующий это дети узлов из secondLayer и у них нет названий
   const thirdLayer: Record<number, MapNode> = {};
   for (const nodeId in secondLayer) {
     for (const child of nodeRecord[nodeId].node.children) {
