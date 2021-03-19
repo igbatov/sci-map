@@ -224,9 +224,9 @@ export const store = {
       }
 
       const newCenter = addVector(
-        {from:{x:0, y:0}, to:mapNode.center},
-        {from:{x:0, y:0}, to:v.delta}
-      ).to
+        { from: { x: 0, y: 0 }, to: mapNode.center },
+        { from: { x: 0, y: 0 }, to: v.delta }
+      ).to;
 
       // check that new position is inside parent borders
       const parent = state.nodeRecord[v.nodeId].parent;
@@ -248,7 +248,7 @@ export const store = {
         }
       }
 
-      updatePosition(state, {nodeId: v.nodeId, position:newCenter});
+      updatePosition(state, { nodeId: v.nodeId, position: newCenter });
     }
   }
 };

@@ -1,6 +1,6 @@
 import { reactive } from "vue";
 import { MapNode } from "@/types/graphics";
-import {printError} from "@/tools/utils";
+import { printError } from "@/tools/utils";
 
 let bgMouseDownResolvers: Record<
   any,
@@ -12,7 +12,7 @@ const mouseDownBg = reactive({
   startPoint: { x: 0, y: 0 }
 });
 
-let layers: Array<Record<number, MapNode>> | undefined = []
+let layers: Array<Record<number, MapNode>> | undefined = [];
 
 const updateMouseDownResolvers = () => {
   bgMouseDownResolvers = {};
@@ -25,13 +25,11 @@ const updateMouseDownResolvers = () => {
 };
 
 const setLayers = (ls: Array<Record<number, MapNode>> | undefined) => {
-  layers = ls
-  updateMouseDownResolvers()
-}
+  layers = ls;
+  updateMouseDownResolvers();
+};
 
-const mouseDown = async (
-  event: MouseEvent,
-) => {
+const mouseDown = async (event: MouseEvent) => {
   const values = await Promise.allSettled<Promise<number>[]>(
     Object.values(bgMouseDownResolvers).map(v => v.promise)
   );
@@ -81,8 +79,8 @@ const bgMouseDownResolve = (layerId: number) => {
   if (!bgMouseDownResolvers[layerId]) {
     printError(
       "bgMouseDownResolve: cannot find bgMouseDownResolvers[layerId]",
-      {"requested layerId":layerId, "has": Object.keys(bgMouseDownResolvers)},
-    )
+      { "requested layerId": layerId, has: Object.keys(bgMouseDownResolvers) }
+    );
   }
   bgMouseDownResolvers[layerId].resolve(0);
 };

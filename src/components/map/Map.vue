@@ -4,7 +4,9 @@
       v-for="(layer, index) of layers"
       :key="index"
       :map-nodes="layer"
-      :border-color="`rgb(${200 - 100 * index},${200 - 100 * index},${200 - 100 * index})`"
+      :border-color="
+        `rgb(${200 - 100 * index},${200 - 100 * index},${200 - 100 * index})`
+      "
       :font-size="10 * (index + 1)"
       :selectedNodeId="selectedNodeId"
       @dragging="draggingNode"

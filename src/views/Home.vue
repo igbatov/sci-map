@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, reactive, ref, watch} from "vue";
+import { computed, defineComponent, ref, watch } from "vue";
 import Map from "@/components/map/Map.vue";
 import {
   EventClickNode,
@@ -23,7 +23,7 @@ import {
 import Menu from "@/components/menu/Index.vue";
 import { useStore } from "@/store";
 import { useRouter, useRoute } from "vue-router";
-import {mutations as treeMutations, NodeRecordItem} from "@/store/tree";
+import { mutations as treeMutations, NodeRecordItem } from "@/store/tree";
 import { mutations as zoomPanMutations } from "@/store/zoom_pan";
 import {
   filterNodesAndLayers,
@@ -31,7 +31,7 @@ import {
   zoomAnPanLayers
 } from "@/views/Home";
 import { printError } from "@/tools/utils";
-import {MapNode, Point, Viewport} from "@/types/graphics";
+import { MapNode, Point } from "@/types/graphics";
 
 export default defineComponent({
   name: "Home",
@@ -64,65 +64,66 @@ export default defineComponent({
      */
     const viewBox = computed(() => {
       if (treeState.tree && treeState.tree.position) {
-        return `0 0 ${2 * treeState.tree.position.x} ${2 * treeState.tree.position.y}`;
+        return `0 0 ${2 * treeState.tree.position.x} ${2 *
+          treeState.tree.position.y}`;
       } else {
         return `0 0 1000 600`;
       }
     });
 
-    const updateLayers =
-        (
-            mapNodeLayers: Array<Record<number, MapNode>>,
-            nodeRecord: Record<number, NodeRecordItem>,
-            debouncedZoom: number,
-            debouncedPan: Point,
-          zoomCenter: Point
-        ) => {
+    const updateLayers = (
+      mapNodeLayers: Array<Record<number, MapNode>>,
+      nodeRecord: Record<number, NodeRecordItem>,
+      debouncedZoom: number,
+      debouncedPan: Point,
+      zoomCenter: Point
+    ) => {
       /**
        * Вычисляем currentNodeId
        * Этот метод надо будет вызывать после каждого zoom и pan после того как будет сделана SM-25 и SM-24
        */
       const [currentNodeId, err1] = findCurrentNode(
-          mapNodeLayers,
-          nodeRecord,
-          { width: window.innerWidth, height: window.innerHeight },
-          debouncedZoom,
-          debouncedPan,
-          zoomCenter
+        mapNodeLayers,
+        nodeRecord,
+        { width: window.innerWidth, height: window.innerHeight },
+        debouncedZoom,
+        debouncedPan,
+        zoomCenter
       );
       if (err1 != null) {
-        printError("filterNodesAndLayers: error in findCurrentNode", { err: err1 })
+        printError("filterNodesAndLayers: error in findCurrentNode", {
+          err: err1
+        });
         return [];
       }
 
       // Вычленяем слои и узлы которые мы хотим показывать у читывая что текущий узел это currentNodeId
       const [layers, err2] = filterNodesAndLayers(
-          mapNodeLayers,
-          nodeRecord,
-          currentNodeId
+        mapNodeLayers,
+        nodeRecord,
+        currentNodeId
       );
       if (err2) {
         printError("Home.vue: error in filterNodesAndLayers:", { err: err2 });
         return [];
       }
       return layers.reverse();
-    }
+    };
 
     const layers = ref<Array<Record<number, MapNode>>>([]);
     watch(
-        () => [treeState.mapNodeLayers, zoomPanState.debouncedZoom],
-        () => {
-          layers.value = updateLayers(
-            treeState.mapNodeLayers,
-            treeState.nodeRecord,
-            zoomPanState.debouncedZoom,
-            zoomPanState.pan,
-            zoomPanState.zoomCenter,
-          );
-        },
-        { immediate: true, deep: true }
+      () => [treeState.mapNodeLayers, zoomPanState.debouncedZoom],
+      () => {
+        layers.value = updateLayers(
+          treeState.mapNodeLayers,
+          treeState.nodeRecord,
+          zoomPanState.debouncedZoom,
+          zoomPanState.pan,
+          zoomPanState.zoomCenter
+        );
+      },
+      { immediate: true, deep: true }
     );
-
 
     return {
       zoomedPanedLayers: computed(() => {
@@ -137,7 +138,10 @@ export default defineComponent({
       nodeDragging: (e: EventDraggingNode) => {
         store.commit(`tree/${treeMutations.UPDATE_NODE_POSITION}`, {
           nodeId: e.id,
-          delta: {x:e.delta.x/zoomPanState.zoom, y:e.delta.y/zoomPanState.zoom}
+          delta: {
+            x: e.delta.x / zoomPanState.zoom,
+            y: e.delta.y / zoomPanState.zoom
+          }
         });
       },
       nodeClick: (e: EventClickNode) => {
@@ -152,7 +156,7 @@ export default defineComponent({
           x: (event.center.x - zoomPanState.pan.x) / zoomPanState.zoom,
           y: (event.center.y - zoomPanState.pan.y) / zoomPanState.zoom
         };
-        store.commit(`zoomPan/${zoomPanMutations.ADD_ZOOM}`, -1*event.delta);
+        store.commit(`zoomPan/${zoomPanMutations.ADD_ZOOM}`, -1 * event.delta);
         const after = {
           x: initial.x * zoomPanState.zoom + zoomPanState.pan.x,
           y: initial.y * zoomPanState.zoom + zoomPanState.pan.y
@@ -161,7 +165,10 @@ export default defineComponent({
           from: after,
           to: event.center
         });
-        store.commit(`zoomPan/${zoomPanMutations.SET_ZOOM_CENTER}`, event.center);
+        store.commit(
+          `zoomPan/${zoomPanMutations.SET_ZOOM_CENTER}`,
+          event.center
+        );
       }
     };
   }

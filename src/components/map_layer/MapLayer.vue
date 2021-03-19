@@ -152,14 +152,14 @@ export default defineComponent({
         const { x, y } = titleBox.value[id].position;
         const { width, height } = titleBox.value[id].bbox;
         if (
-            event.clientX >= x &&
-            event.clientX <= x + width &&
-            event.clientY >= y - height &&
-            event.clientY <= y
+          event.clientX >= x &&
+          event.clientX <= x + width &&
+          event.clientY >= y - height &&
+          event.clientY <= y
         ) {
           ctx.emit("node-mouse-down", { id: Number(id) });
           mouseDownInfo = {
-            nodeId: Number(id),
+            nodeId: Number(id)
           };
           nodeFound = true;
           break;
@@ -169,7 +169,7 @@ export default defineComponent({
       if (!nodeFound) {
         ctx.emit("background-mouse-down", {});
       }
-    }
+    };
 
     const mouseMoveListener = (event: MouseEvent) => {
       if (mouseDownInfo) {
@@ -182,7 +182,7 @@ export default defineComponent({
           }
         });
       }
-    }
+    };
 
     const mouseUpListener = () => {
       if (mouseDownInfo) {
@@ -194,7 +194,7 @@ export default defineComponent({
         dragStart = false;
         mouseDownInfo = null;
       }
-    }
+    };
     onMounted(() => {
       window.addEventListener("mousedown", mouseDownListener);
       window.addEventListener("mousemove", mouseMoveListener);

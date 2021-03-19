@@ -1,5 +1,5 @@
-import {MapNode, Point, Polygon, Viewport} from "@/types/graphics";
-import {area, intersect, isInside, vectorOnNumber} from "@/tools/graphics";
+import { MapNode, Point, Polygon, Viewport } from "@/types/graphics";
+import { area, isInside } from "@/tools/graphics";
 import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "@/tools/errorkv";
 import { NodeRecordItem } from "@/store/tree";
@@ -9,10 +9,14 @@ import { clone } from "@/tools/utils";
 const MIN_VISIBLE_NUM_IN_LAYER = 2;
 
 export function zoomAndPanPoint(p: Point, zoom: number, pan: Point): Point {
-  return {x: p.x * zoom + pan.x, y: p.y * zoom + pan.y}
+  return { x: p.x * zoom + pan.x, y: p.y * zoom + pan.y };
 }
-export function zoomAndPanPolygon(p: Polygon, zoom: number, pan: Point): Polygon {
-  return p.map(point => zoomAndPanPoint(point, zoom, pan))
+export function zoomAndPanPolygon(
+  p: Polygon,
+  zoom: number,
+  pan: Point
+): Polygon {
+  return p.map(point => zoomAndPanPoint(point, zoom, pan));
 }
 
 /**
@@ -49,10 +53,14 @@ export function findCurrentNode(
     underCursorNodeId = -1;
 
     for (const nodeId in nodesToCheck) {
-      const borderToCheck = zoomAndPanPolygon(nodesToCheck[nodeId].border, zoomFactor, pan)
+      const borderToCheck = zoomAndPanPolygon(
+        nodesToCheck[nodeId].border,
+        zoomFactor,
+        pan
+      );
       if (isInside(zoomCenter, borderToCheck)) {
-        underCursorNodeId = Number(nodeId)
-        break
+        underCursorNodeId = Number(nodeId);
+        break;
       }
     }
 
@@ -66,7 +74,9 @@ export function findCurrentNode(
       ];
     }
 
-    const underCursorNodeArea = area(zoomAndPanPolygon(nodesToCheck[underCursorNodeId].border, zoomFactor, pan));
+    const underCursorNodeArea = area(
+      zoomAndPanPolygon(nodesToCheck[underCursorNodeId].border, zoomFactor, pan)
+    );
     if (
       Math.floor(underCursorNodeArea) <=
       Math.floor(viewportArea / MIN_VISIBLE_NUM_IN_LAYER)
@@ -252,7 +262,7 @@ export function zoomAnPanLayers(
     for (const id in layer) {
       const node = layer[id];
       node.center = zoomAndPanPoint(node.center, zoom, pan);
-      node.border = zoomAndPanPolygon(node.border, zoom, pan)
+      node.border = zoomAndPanPolygon(node.border, zoom, pan);
     }
   }
 
