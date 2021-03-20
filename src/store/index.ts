@@ -3,9 +3,13 @@ import { InjectionKey } from "vue";
 import { store as pinStore, State as PinState } from "./pin";
 import { store as treeStore, State as TreeState } from "./tree";
 import { store as zoomPanStore, State as ZoomPanState } from "./zoom_pan";
-import { store as userStore, State as UserState, mutations as userMutations } from "./user";
+import {
+  store as userStore,
+  State as UserState,
+  mutations as userMutations
+} from "./user";
 import api from "@/api/api";
-import {fetchMap, fetchPins} from "./helpers";
+import { fetchMap, fetchPins } from "./helpers";
 
 export type State = {
   pin: PinState;

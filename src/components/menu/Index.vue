@@ -2,10 +2,10 @@
   <div :class="$style.wrapper">
     <div v-if="email">
       {{ email }}
-      <PinNode v-if="isNodeSelected"/>
-      <UnpinNode v-if="isNodeSelected && isPinned"/>
+      <PinNode v-if="isNodeSelected" />
+      <UnpinNode v-if="isNodeSelected && isPinned" />
       <AddNode />
-      <RemoveNode v-if="isNodeSelected"/>
+      <RemoveNode v-if="isNodeSelected" />
       <Save />
       <button @click="signOut">Sign Out</button>
     </div>
@@ -44,7 +44,10 @@ export default {
     return {
       email,
       isNodeSelected: computed(() => store.state.tree.selectedNodeId),
-      isPinned: computed(() => store.state.pin.pins[store.state.tree.selectedNodeId] !== undefined),
+      isPinned: computed(
+        () =>
+          store.state.pin.pins[store.state.tree.selectedNodeId] !== undefined
+      ),
       // SignIn SignOut
       signIn: () => store.dispatch(`user/${userActions.signIn}`),
       signOut: () => store.dispatch(`user/${userActions.signOut}`)

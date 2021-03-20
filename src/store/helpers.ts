@@ -30,7 +30,7 @@ export async function fetchPins(user: firebase.User | null) {
     [pins, err] = await api.getPins(null);
     if (pins == null || err) {
       console.error(err);
-      pins = {}
+      pins = {};
     }
   }
 

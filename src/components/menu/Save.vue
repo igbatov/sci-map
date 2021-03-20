@@ -14,8 +14,8 @@ export default {
 
     return {
       save: () => {
-        api.saveMap(user.user, store.state.tree.tree)
-        api.savePins(user.user, store.state.pin.pins)
+        api.saveMap(user.user, store.state.tree.tree);
+        api.savePins(user.user, store.state.pin.pins);
       }
     };
   }

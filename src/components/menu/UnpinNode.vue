@@ -13,8 +13,11 @@ export default {
 
     return {
       unpin: () => {
-        store.dispatch(`pin/${pinActions.RemovePin}`, store.state.tree.selectedNodeId);
-      },
+        store.dispatch(
+          `pin/${pinActions.RemovePin}`,
+          store.state.tree.selectedNodeId
+        );
+      }
     };
   }
 };

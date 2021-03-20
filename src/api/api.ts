@@ -5,7 +5,7 @@ import NewErrorKV from "@/tools/errorkv";
 // import { apiTree } from "./mocks";
 import apiTree from "./mindmeister";
 import axios from "axios";
-import {Pins} from "@/store/pin";
+import { Pins } from "@/store/pin";
 
 const IS_OFFLINE = false; // to write code even without wi-fi set this to true
 
@@ -73,10 +73,7 @@ export default {
 
   async getPins(user: firebase.User | null): Promise<[Pins | null, ErrorKV]> {
     if (IS_OFFLINE) {
-      return [
-        {},
-        null
-      ];
+      return [{}, null];
     }
 
     try {
@@ -88,10 +85,7 @@ export default {
       const url = await ref.getDownloadURL();
 
       const response = await axios.get(url);
-      return [
-        response.data,
-        null
-      ];
+      return [response.data, null];
     } catch (e) {
       return [null, NewErrorKV(e.message, { e: e })];
     }
