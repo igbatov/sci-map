@@ -2,8 +2,10 @@
   <div :class="$style.wrapper">
     <div v-if="email">
       {{ email }}
+      <PinNode v-if="isNodeSelected"/>
+      <UnpinNode v-if="isNodeSelected && isPinned"/>
       <AddNode />
-      <RemoveNode />
+      <RemoveNode v-if="isNodeSelected"/>
       <Save />
       <button @click="signOut">Sign Out</button>
     </div>
@@ -17,13 +19,17 @@
 import { useStore } from "@/store";
 import { computed } from "vue";
 import { actions as userActions } from "@/store/user";
+import PinNode from "./PinNode";
 import AddNode from "./AddNode";
 import RemoveNode from "./RemoveNode";
 import Save from "./Save";
+import UnpinNode from "@/components/menu/UnpinNode";
 
 export default {
   name: "Menu",
   components: {
+    UnpinNode,
+    PinNode,
     AddNode,
     RemoveNode,
     Save
@@ -37,6 +43,8 @@ export default {
 
     return {
       email,
+      isNodeSelected: computed(() => store.state.tree.selectedNodeId),
+      isPinned: computed(() => store.state.pin.pins[store.state.tree.selectedNodeId] !== undefined),
       // SignIn SignOut
       signIn: () => store.dispatch(`user/${userActions.signIn}`),
       signOut: () => store.dispatch(`user/${userActions.signOut}`)

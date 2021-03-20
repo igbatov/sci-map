@@ -5,6 +5,7 @@ import NewErrorKV from "@/tools/errorkv";
 // import { apiTree } from "./mocks";
 import apiTree from "./mindmeister";
 import axios from "axios";
+import {Pins} from "@/store/pin";
 
 const IS_OFFLINE = false; // to write code even without wi-fi set this to true
 
@@ -46,11 +47,11 @@ export default {
 
     try {
       const storage = firebase.storage().ref();
-      let mapRef = storage.child(`/map.json`);
+      let ref = storage.child(`/map.json`);
       if (user) {
-        mapRef = storage.child(`/user/${user.uid}/map.json`);
+        ref = storage.child(`/user/${user.uid}/map.json`);
       }
-      const url = await mapRef.getDownloadURL();
+      const url = await ref.getDownloadURL();
 
       const response = await axios.get(url);
       return [
@@ -63,6 +64,32 @@ export default {
           // children: apiTree.children
           children: response.data
         },
+        null
+      ];
+    } catch (e) {
+      return [null, NewErrorKV(e.message, { e: e })];
+    }
+  },
+
+  async getPins(user: firebase.User | null): Promise<[Pins | null, ErrorKV]> {
+    if (IS_OFFLINE) {
+      return [
+        {},
+        null
+      ];
+    }
+
+    try {
+      const storage = firebase.storage().ref();
+      let ref = storage.child(`/pins.json`);
+      if (user) {
+        ref = storage.child(`/user/${user.uid}/pins.json`);
+      }
+      const url = await ref.getDownloadURL();
+
+      const response = await axios.get(url);
+      return [
+        response.data,
         null
       ];
     } catch (e) {
@@ -98,9 +125,26 @@ export default {
     }
 
     const storage = firebase.storage().ref();
-    const mapRef = storage.child(`/user/${user.uid}/map.json`);
-    await mapRef.putString(
+    const ref = storage.child(`/user/${user.uid}/map.json`);
+    await ref.putString(
       btoa(unescape(encodeURIComponent(JSON.stringify(map.children)))),
+      "base64"
+    );
+  },
+
+  async savePins(user: firebase.User, pins: Pins) {
+    if (IS_OFFLINE) {
+      return;
+    }
+
+    if (!user) {
+      return;
+    }
+
+    const storage = firebase.storage().ref();
+    const ref = storage.child(`/user/${user.uid}/pins.json`);
+    await ref.putString(
+      btoa(unescape(encodeURIComponent(JSON.stringify(pins)))),
       "base64"
     );
   }

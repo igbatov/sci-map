@@ -13,7 +13,10 @@ export default {
     const user = store.state.user;
 
     return {
-      save: () => api.saveMap(user.user, store.state.tree.tree)
+      save: () => {
+        api.saveMap(user.user, store.state.tree.tree)
+        api.savePins(user.user, store.state.pin.pins)
+      }
     };
   }
 };
