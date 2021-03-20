@@ -55,16 +55,18 @@
 import {
   defineComponent,
   PropType,
-  toRefs,
+  toRef,
   onMounted,
   onUnmounted,
-  nextTick,
-  ref,
-  watch
 } from "vue";
 import { MapNode, Point } from "@/types/graphics";
 import { polygonToPath } from "@/tools/graphics";
-import { nodeToTitleBox } from "@/components/map_layer/MapLayer";
+import {
+  getTitleBoxes, MouseDownInfo,
+  mouseDownListener,
+  mouseMoveListener,
+  mouseUpListener,
+} from "@/components/map_layer/MapLayer";
 
 export default defineComponent({
   name: "MapLayer",
@@ -97,113 +99,26 @@ export default defineComponent({
   },
 
   setup(props, ctx) {
-    const { mapNodes } = toRefs(props);
+    const mapNodes  = toRef(props, "mapNodes");
 
-    /**
-     * Update titleBox on every prop change after DOM rerender
-     */
-    const titleBox = ref(nodeToTitleBox(mapNodes));
-    const titleXYUpdate = (mapNodes: Array<MapNode>) => {
-      // Code that will run only after the entire view has been rendered
-      nextTick(() => {
-        // clean previous version
-        for (const i in titleBox.value) {
-          delete titleBox.value[i];
-        }
-        // fill new ones
-        for (const i in mapNodes) {
-          const node = mapNodes[i];
-          const dom = document.getElementById(`title_${node.id}`);
-          if (dom == null) {
-            continue;
-          }
-          titleBox.value[node.id] = {
-            position: {
-              x: node.center.x - dom.getBoundingClientRect().width / 2,
-              y: node.center.y + dom.getBoundingClientRect().height / 4
-            },
-            bbox: {
-              width: dom.getBoundingClientRect().width,
-              height: 1.2 * dom.getBoundingClientRect().height // 1.2 to make title box a little bit taller
-            }
-          };
-        }
-      });
-    };
-    watch(
-      () => props.mapNodes,
-      mapNodes => titleXYUpdate(mapNodes),
-      {
-        immediate: true
-      }
-    );
+    const titleBox = getTitleBoxes(mapNodes)
 
     /**
      * Send event on titleBox click, drag and drop
      */
-    let mouseDownInfo: {
-      nodeId: number;
-    } | null = null;
-    let dragStart = false;
-
-    const mouseDownListener = (event: MouseEvent) => {
-      let nodeFound = false;
-      for (const id in titleBox.value) {
-        const { x, y } = titleBox.value[id].position;
-        const { width, height } = titleBox.value[id].bbox;
-        if (
-          event.clientX >= x &&
-          event.clientX <= x + width &&
-          event.clientY >= y - height &&
-          event.clientY <= y
-        ) {
-          ctx.emit("node-mouse-down", { id: Number(id) });
-          mouseDownInfo = {
-            nodeId: Number(id)
-          };
-          nodeFound = true;
-          break;
-        }
-      }
-
-      if (!nodeFound) {
-        ctx.emit("background-mouse-down", {});
-      }
-    };
-
-    const mouseMoveListener = (event: MouseEvent) => {
-      if (mouseDownInfo) {
-        dragStart = true;
-        ctx.emit("dragging", {
-          nodeId: mouseDownInfo.nodeId,
-          delta: {
-            x: event.movementX,
-            y: event.movementY
-          }
-        });
-      }
-    };
-
-    const mouseUpListener = () => {
-      if (mouseDownInfo) {
-        if (dragStart) {
-          ctx.emit("drop", { id: mouseDownInfo.nodeId });
-        } else {
-          ctx.emit("click", { id: mouseDownInfo.nodeId });
-        }
-        dragStart = false;
-        mouseDownInfo = null;
-      }
-    };
+    const mouseDownInfo: MouseDownInfo = {nodeId: null, dragStart: false};
+    const mouseDown = (event: MouseEvent) => mouseDownListener(ctx.emit, event, titleBox, mouseDownInfo)
+    const mouseMove = (event: MouseEvent) => mouseMoveListener(ctx.emit, event, mouseDownInfo)
+    const mouseUp = () => mouseUpListener(ctx.emit, mouseDownInfo)
     onMounted(() => {
-      window.addEventListener("mousedown", mouseDownListener);
-      window.addEventListener("mousemove", mouseMoveListener);
-      window.addEventListener("mouseup", mouseUpListener);
+      window.addEventListener("mousedown", mouseDown);
+      window.addEventListener("mousemove", mouseMove);
+      window.addEventListener("mouseup", mouseUp);
     });
     onUnmounted(() => {
-      window.removeEventListener("mousedown", mouseDownListener);
-      window.removeEventListener("mousemove", mouseMoveListener);
-      window.removeEventListener("mouseup", mouseUpListener);
+      window.removeEventListener("mousedown", mouseDown);
+      window.removeEventListener("mousemove", mouseMove);
+      window.removeEventListener("mouseup", mouseUp);
     });
 
     return {

@@ -44,6 +44,8 @@ export const store = createStore<State>({
 
 // reactively change tree based on user change
 store.watch(state => state.user.user, fetchMap);
+// reactively change pins based on user change
+store.watch(state => state.user.user, fetchPins);
 
 // define your own `useStore` composition function
 export function useStore() {
