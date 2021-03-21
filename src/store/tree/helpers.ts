@@ -26,6 +26,25 @@ export function findMapNode(
   return [null, null];
 }
 
+export function findMapNodes(
+  ids: number[],
+  mapNodeLayers: Array<Record<number, MapNode>>
+): MapNode[] {
+  const result: MapNode[] = []
+  for (const layer of mapNodeLayers) {
+    if (!layer) {
+      continue
+    }
+    for (const id of ids) {
+      if (layer[id]) {
+        result.push(layer[id])
+      }
+    }
+  }
+
+  return result;
+}
+
 export function updatePosition(
   state: {
     tree: Tree | null;

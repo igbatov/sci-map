@@ -4,6 +4,7 @@
     :layers="zoomedPanedLayers"
     :viewBox="viewBox"
     :selectedNodeId="selectedNodeId"
+    :pin-nodes="pinNodes"
     @dragging-node="nodeDragging"
     @click-node="nodeClick"
     @dragging-background="mapDragging"
@@ -27,11 +28,12 @@ import { mutations as treeMutations, NodeRecordItem } from "@/store/tree";
 import { mutations as zoomPanMutations } from "@/store/zoom_pan";
 import {
   filterNodesAndLayers,
-  findCurrentNode,
+  findCurrentNode, zoomAndPanPoint,
   zoomAnPanLayers
 } from "@/views/Home";
-import { printError } from "@/tools/utils";
-import { MapNode, Point } from "@/types/graphics";
+import {clone, printError} from "@/tools/utils";
+import { MapNode } from "@/types/graphics";
+import {findMapNodes} from "@/store/tree/helpers";
 
 export default defineComponent({
   name: "Home",
@@ -47,6 +49,7 @@ export default defineComponent({
     const route = useRoute();
     const treeState = store.state.tree;
     const zoomPanState = store.state.zoomPan;
+    const pinState = store.state.pin;
 
     watch(
       () => route.params,
@@ -72,60 +75,66 @@ export default defineComponent({
     });
 
     const updateLayers = (
+      currNodeId: number,
       mapNodeLayers: Array<Record<number, MapNode>>,
       nodeRecord: Record<number, NodeRecordItem>,
-      debouncedZoom: number,
-      debouncedPan: Point,
-      zoomCenter: Point
     ) => {
-      /**
-       * Вычисляем currentNodeId
-       * Этот метод надо будет вызывать после каждого zoom и pan после того как будет сделана SM-25 и SM-24
-       */
-      const [currentNodeId, err1] = findCurrentNode(
-        mapNodeLayers,
-        nodeRecord,
-        { width: window.innerWidth, height: window.innerHeight },
-        debouncedZoom,
-        debouncedPan,
-        zoomCenter
-      );
-      if (err1 != null) {
-        printError("filterNodesAndLayers: error in findCurrentNode", {
-          err: err1
-        });
-        return [];
-      }
-
       // Вычленяем слои и узлы которые мы хотим показывать у читывая что текущий узел это currentNodeId
-      const [layers, err2] = filterNodesAndLayers(
+      const [layers, err] = filterNodesAndLayers(
         mapNodeLayers,
         nodeRecord,
-        currentNodeId
+        currNodeId
       );
-      if (err2) {
-        printError("Home.vue: error in filterNodesAndLayers:", { err: err2 });
+      if (err) {
+        printError("Home.vue: error in filterNodesAndLayers:", { err });
         return [];
       }
       return layers.reverse();
     };
 
+    const currentNodeId = ref<number | null>(null);
     const layers = ref<Array<Record<number, MapNode>>>([]);
     watch(
       () => [treeState.mapNodeLayers, zoomPanState.debouncedZoom],
       () => {
+        const [currNodeId, err] = findCurrentNode(
+            treeState.mapNodeLayers,
+            treeState.nodeRecord,
+            { width: window.innerWidth, height: window.innerHeight },
+            zoomPanState.debouncedZoom,
+            zoomPanState.pan,
+            zoomPanState.zoomCenter
+        );
+        if (err != null) {
+          printError("filterNodesAndLayers: error in findCurrentNode", { err });
+        }
+
+        currentNodeId.value = currNodeId
         layers.value = updateLayers(
+          currNodeId,
           treeState.mapNodeLayers,
           treeState.nodeRecord,
-          zoomPanState.debouncedZoom,
-          zoomPanState.pan,
-          zoomPanState.zoomCenter
         );
       },
       { immediate: true, deep: true }
     );
 
     return {
+      pinNodes: computed(() => {
+        if (currentNodeId.value == null) {
+          return []
+        }
+        const pinNodeIDs = pinState.pinsReverse[currentNodeId.value]
+        const pinMapNodes = findMapNodes(pinNodeIDs, treeState.mapNodeLayers)
+        const result = []
+        for (const pinMapNode of pinMapNodes) {
+          const cl = clone(pinMapNode)
+          cl.center = zoomAndPanPoint(pinMapNode.center, zoomPanState.zoom, zoomPanState.pan)
+          result.push(cl)
+        }
+
+        return result;
+      }),
       zoomedPanedLayers: computed(() => {
         return zoomAnPanLayers(
           layers.value,

@@ -14,11 +14,15 @@
       @background-mouse-down="backgroundMouseDown(index)"
       @node-mouse-down="nodeMouseDown(index)"
     />
+    <PinLayer
+        :pinNodes="pinNodes"
+        :selectedNodeId="selectedNodeId"
+    />
   </svg>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, PropType, watch } from "vue";
+import {defineComponent, onMounted, PropType, watch} from "vue";
 import { MapNode } from "@/types/graphics";
 import MapLayer from "@/components/map_layer/MapLayer.vue";
 import {
@@ -26,11 +30,13 @@ import {
   EventDraggingNode
 } from "@/components/map_layer/MapLayer";
 import pan from "./MapPan";
+import PinLayer from "@/components/pin_layer/PinLayer.vue";
 
 export default defineComponent({
   name: "Map",
   emits: ["dragging-node", "click-node", "dragging-background", "wheel"],
   components: {
+    PinLayer,
     MapLayer
   },
   props: {
@@ -44,7 +50,8 @@ export default defineComponent({
       validator: (prop: number | null) =>
         typeof prop === "number" || prop === null,
       required: true
-    }
+    },
+    pinNodes: Object as PropType<MapNode[]>,
   },
   setup(props, ctx) {
     watch(
