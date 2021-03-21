@@ -125,6 +125,9 @@ export default defineComponent({
           return []
         }
         const pinNodeIDs = pinState.pinsReverse[currentNodeId.value]
+        if (!pinNodeIDs) {
+          return []
+        }
         const pinMapNodes = findMapNodes(pinNodeIDs, treeState.mapNodeLayers)
         const result = []
         for (const pinMapNode of pinMapNodes) {
