@@ -17,6 +17,7 @@
     <PinLayer
         :pinNodes="pinNodes"
         :selectedNodeId="selectedNodeId"
+        @click="clickNode"
     />
   </svg>
 </template>

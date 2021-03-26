@@ -97,7 +97,12 @@ export const nodeToTitleBox = (
   return titleBox;
 };
 
-const updateTitleBox = (mapNodes: Array<MapNode>, titleBox: Record<number, TitleBox>) => {
+const updateTitleBox = (
+  titleIdPrefix: string,
+  position: "top" | "left",
+  mapNodes: Array<MapNode>,
+  titleBox: Record<number, TitleBox>
+) => {
   // Code that will run only after the entire view has been rendered
   nextTick(() => {
     // clean previous version
@@ -107,32 +112,45 @@ const updateTitleBox = (mapNodes: Array<MapNode>, titleBox: Record<number, Title
     // fill new ones
     for (const i in mapNodes) {
       const node = mapNodes[i];
-      const dom = document.getElementById(`title_${node.id}`);
+      const dom = document.getElementById(`${titleIdPrefix}${node.id}`);
       if (dom == null) {
         continue;
       }
-      titleBox[node.id] = {
-        position: {
-          x: node.center.x - dom.getBoundingClientRect().width / 2,
-          y: node.center.y + dom.getBoundingClientRect().height / 4
-        },
-        bbox: {
-          width: dom.getBoundingClientRect().width,
-          height: 1.2 * dom.getBoundingClientRect().height // 1.2 to make title box a little bit taller
-        }
-      };
+      if (position == "top") {
+        titleBox[node.id] = {
+          position: {
+            x: node.center.x - dom.getBoundingClientRect().width / 2,
+            y: node.center.y + dom.getBoundingClientRect().height / 4
+          },
+          bbox: {
+            width: dom.getBoundingClientRect().width,
+            height: dom.getBoundingClientRect().height // 1.2 to make title box a little bit taller
+          }
+        };
+      } else  if (position == "left") {
+        titleBox[node.id] = {
+          position: {
+            x: node.center.x - dom.getBoundingClientRect().width,
+            y: node.center.y + dom.getBoundingClientRect().height / 4
+          },
+          bbox: {
+            width: dom.getBoundingClientRect().width,
+            height: dom.getBoundingClientRect().height // 1.2 to make title box a little bit taller
+          }
+        };
+      }
     }
   });
 };
 
-export const getTitleBoxes = (mapNodes: Ref<Array<MapNode>>): Ref<Record<number, TitleBox>> => {
+export const getTitleBoxes = (titleIdPrefix: string, position: "top" | "left", mapNodes: Ref<Array<MapNode>>): Ref<Record<number, TitleBox>> => {
   const titleBox = ref(nodeToTitleBox(mapNodes.value));
   /**
    * Update titleBox on every prop change after DOM rerender
    */
   watch(
     mapNodes,
-    mps => updateTitleBox(mps, titleBox.value),
+    mps => updateTitleBox(titleIdPrefix, position, mps, titleBox.value),
     {
       immediate: true
     }

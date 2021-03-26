@@ -20,7 +20,7 @@
   <!--  />-->
   <text
     v-for="mapNode of mapNodes"
-    :id="`title_${mapNode.id}`"
+    :id="`${TITLE_PREFIX}${mapNode.id}`"
     :key="mapNode.id"
     :x="titleBox[mapNode.id] ? titleBox[mapNode.id].position.x : 0"
     :y="titleBox[mapNode.id] ? titleBox[mapNode.id].position.y : 0"
@@ -59,7 +59,7 @@ import {
   onMounted,
   onUnmounted,
 } from "vue";
-import { MapNode, Point } from "@/types/graphics";
+import { MapNode } from "@/types/graphics";
 import { polygonToPath } from "@/tools/graphics";
 import {
   getTitleBoxes, MouseDownInfo,
@@ -67,6 +67,8 @@ import {
   mouseMoveListener,
   mouseUpListener,
 } from "@/components/map_layer/MapLayer";
+
+const TITLE_PREFIX = 'title_';
 
 export default defineComponent({
   name: "MapLayer",
@@ -101,7 +103,7 @@ export default defineComponent({
   setup(props, ctx) {
     const mapNodes  = toRef(props, "mapNodes");
 
-    const titleBox = getTitleBoxes(mapNodes)
+    const titleBox = getTitleBoxes(TITLE_PREFIX, "top", mapNodes)
 
     /**
      * Send event on titleBox click, drag and drop
@@ -122,6 +124,7 @@ export default defineComponent({
     });
 
     return {
+      TITLE_PREFIX,
       titleBox
     };
   },
