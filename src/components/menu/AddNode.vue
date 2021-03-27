@@ -58,12 +58,12 @@ export default {
       ),
       toggleAddDialog: () => (addDialogVisible.value = !addDialogVisible.value),
       add: () => {
-        newNodeTitle.value = "";
-        addDialogVisible.value = false;
         store.commit(`tree/${treeMutations.ADD_NODE}`, {
           parentId: selectedNode.value ? selectedNode.value.id : null,
           title: newNodeTitle.value
         });
+        newNodeTitle.value = "";
+        addDialogVisible.value = false;
       },
       cancelAdd: () => {
         newNodeTitle.value = "";

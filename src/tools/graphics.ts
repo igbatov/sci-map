@@ -314,6 +314,7 @@ export function treeToMapNodeLayers(
             NewErrorKV(
               "treeToMapNodeLayers: children position outside parent's border",
               {
+                "treeNode.title": treeNode.title,
                 "treeNode.id": treeNode.id,
                 border: lastMapNodeLayer[treeNode.id].border,
                 "child.position": child.position

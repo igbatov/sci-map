@@ -152,8 +152,8 @@ export function updatePosition(
 
 /**
  * Вычисляет где можно поставить центр для нового подузла узла parent
- * Логика добавления следующая.
  *
+ * Логика добавления следующая.
  * Обозначим координаты центра узла (Xc, Yc)
  * Если в узле нет ни одного подузла, то находим наибольшее расстояние между (Xc, Yc)
  * и вершинами границы, делим вектор соединяющий (Xc, Yc) и эту вершину пополам
@@ -208,7 +208,7 @@ export function getNewNodeCenter(
       null
     ];
   } else {
-    let maxDiagChild = parent.children[0];
+    const maxDiagChild = parent.children[0];
     let [maxDiagChildMapNode] = findMapNode(maxDiagChild.id, mapNodeLayers);
     if (maxDiagChildMapNode === null) {
       return [
@@ -237,22 +237,7 @@ export function getNewNodeCenter(
         getVectorLength(getMaxDiagonal(childMapNode.border)) >
         getVectorLength(getMaxDiagonal(maxDiagChildMapNode.border))
       ) {
-        maxDiagChild = child;
-        const [newMaxDiagChildMapNode] = findMapNode(
-          maxDiagChild.id,
-          mapNodeLayers
-        );
-        if (newMaxDiagChildMapNode === null) {
-          return [
-            null,
-            null,
-            NewErrorKV("getNewNodeCenter: cannot find maxDiagChild in layers", {
-              maxDiagChildId: maxDiagChild.id,
-              mapNodeLayers: mapNodeLayers
-            })
-          ];
-        }
-        maxDiagChildMapNode = newMaxDiagChildMapNode;
+        maxDiagChildMapNode = childMapNode;
       }
     }
 

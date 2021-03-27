@@ -8,7 +8,7 @@ import {
   getVectorIntersection,
   morphChildrenPoints,
   area,
-  getVoronoiCellsInSquare
+  getVoronoiCellsInSquare, getMaxDiagonal
 } from "@/tools/graphics";
 
 describe("transferToPoint", () => {
@@ -593,6 +593,13 @@ describe("intersect", () => {
     expect(is![0]).toContainEqual({ x: 0, y: 50 });
     expect(is![0]).toContainEqual({ x: 50, y: 0 });
   });
+});
+
+describe("morphChildrenPoints", () => {
+  it("works for square", () => {
+    const v = getMaxDiagonal([{x:100, y:100}, {x:100, y:200}, {x:200, y:200}, {x:200, y:100}])
+    expect(v).toEqual({ from: { x: 100, y: 100 }, to: { x: 200, y: 200 } })
+  })
 });
 
 describe("morphChildrenPoints", () => {

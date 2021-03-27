@@ -1,4 +1,4 @@
-import { MapNode, Point, Tree } from "@/types/graphics";
+import {MapNode, Point, Tree} from "@/types/graphics";
 import {
   addVector,
   isInside,
@@ -150,6 +150,22 @@ export const store = {
         node: newNode
       };
 
+      // there is a node that changed position, update it
+      if (nodeToModify != null) {
+        // add to state.mapNodeLayers
+        const [_, layerIndex] = findMapNode(parentRecord.node.id, state.mapNodeLayers)
+        state.mapNodeLayers[layerIndex! + 1][newNode.id] = {
+          id: newNode.id,
+          title: v.title,
+          center: newCenter!,
+          border: [{x:0, y:0}, {x:0, y:100}, {x:100, y:100}, {x:100, y:0}] // this will be updated later in treeToMapNodeLayers
+        }
+        updatePosition(state, {
+          nodeId: nodeToModify.id,
+          position: nodeToModify.position
+        });
+      }
+
       // update state.mapNodeLayers
       const [ls, err2] = treeToMapNodeLayers(state.tree);
       if (ls == null || err2 != null) {
@@ -157,14 +173,6 @@ export const store = {
         return;
       }
       state.mapNodeLayers = ls;
-
-      // there is a node that changed position, update it
-      if (nodeToModify != null) {
-        updatePosition(state, {
-          nodeId: nodeToModify.id,
-          position: nodeToModify.position
-        });
-      }
     },
 
     /**
