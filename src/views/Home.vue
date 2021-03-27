@@ -79,7 +79,7 @@ export default defineComponent({
       mapNodeLayers: Array<Record<number, MapNode>>,
       nodeRecord: Record<number, NodeRecordItem>,
     ) => {
-      // Вычленяем слои и узлы которые мы хотим показывать у читывая что текущий узел это currentNodeId
+      // Вычленяем слои и узлы которые мы хотим показывать учитывая что текущий узел это currentNodeId
       const [layers, err] = filterNodesAndLayers(
         mapNodeLayers,
         nodeRecord,
@@ -128,6 +128,20 @@ export default defineComponent({
         if (!pinNodeIDs) {
           return []
         }
+
+        // remove pins that already exists on layers
+        for (const layer of layers.value) {
+          for (const nodeID in layer) {
+            const node = layer[nodeID]
+            if (node.title != "") {
+              const ind = pinNodeIDs.indexOf(node.id)
+              if (ind != -1) {
+                pinNodeIDs.splice(ind, 1)
+              }
+            }
+          }
+        }
+
         const pinMapNodes = findMapNodes(pinNodeIDs, treeState.mapNodeLayers)
         const result = []
         for (const pinMapNode of pinMapNodes) {
