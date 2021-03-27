@@ -12,7 +12,6 @@
         :x="x"
         :y="y + i*lineHeight"
         alignment-baseline="hanging"
-        text-anchor="start"
     >
       {{line}}
     </tspan>
@@ -63,14 +62,6 @@ export default defineComponent({
       required: true
     },
     color: {
-      type: String,
-      required: true
-    },
-    width: {
-      type: String,
-      required: true
-    },
-    height: {
       type: String,
       required: true
     }

@@ -14,42 +14,44 @@
       :key="node.id"
       :x="node.center.x"
       :y="node.center.y"
+      color="#ffa500"
   />
   <SVGTextBox
       v-for="node of pinNodes"
       :text="node.title"
       :id="`${TITLE_PREFIX}${node.id}`"
       :key="node.id"
-      :x="titleBox[node.id] ? titleBox[node.id].position.x : 0"
-      :y="titleBox[node.id] ? titleBox[node.id].position.y - titleBox[node.id].bbox.height : 0"
-      line-height="6"
-      max-char-per-line=10
+      :x="titleXY[node.id].x"
+      :y="titleXY[node.id].y"
+      line-height="8"
+      :max-char-per-line="10"
       font-family="Roboto"
       :font-size="8"
       :font-weight="selectedNodeId && selectedNodeId === node.id ? 'bold' : 'normal'"
       color="#ffa500"
-      :width="titleBox[node.id] ? titleBox[node.id].bbox.width : 0"
-      :height="titleBox[node.id] ? titleBox[node.id].bbox.height : 0"
   />
   <rect
       v-for="node of pinNodes"
       :key="node.id"
-      :x="titleBox[node.id] ? titleBox[node.id].position.x : 0"
-      :y="titleBox[node.id] ? titleBox[node.id].position.y - titleBox[node.id].bbox.height : 0"
+      :x="titleXY[node.id].x"
+      :y="titleXY[node.id].y"
       :width="titleBox[node.id] ? titleBox[node.id].bbox.width : 0"
       :height="titleBox[node.id] ? titleBox[node.id].bbox.height : 0"
-      fill="transparent"
       cursor="pointer"
+      fill="transparent"
       @click="titleBoxClick(node.id)"
+      stroke-width=0
+      stroke="pink"
   />
 </template>
 
 <script lang="ts">
 
-import {defineComponent, PropType, toRef} from "vue";
-import {MapNode} from "@/types/graphics";
+import {computed, defineComponent, PropType, toRef} from "vue";
+import {MapNode, Point} from "@/types/graphics";
 import {getTitleBoxes} from "@/components/map_layer/MapLayer";
 import PinMarker from "@/components/pin_layer/PinMarker.vue";
+import {WIDTH as PIN_MARKER_WIDTH, HEIGHT as PIN_MARKER_HEIGHT} from "@/components/pin_layer/PinMarker.vue";
 import SVGTextBox from "@/components/SVGTextBox.vue";
 
 const TITLE_PREFIX = 'pin_title_';
@@ -73,13 +75,25 @@ export default defineComponent({
     }
   },
   setup(props, ctx) {
-    const mapNodes = toRef(props, "pinNodes");
+    const pinNodes = toRef(props, "pinNodes");
 
-    const titleBox = getTitleBoxes(TITLE_PREFIX, "left", mapNodes)
+    const titleBox = getTitleBoxes(TITLE_PREFIX, "left", pinNodes)
 
     return {
       TITLE_PREFIX,
+      PIN_MARKER_HEIGHT,
+      PIN_MARKER_WIDTH,
       titleBox,
+      titleXY: computed(() => {
+        const alignedXY: Record<number, Point> = {}
+        for (const node of pinNodes.value) {
+          alignedXY[node.id] = {
+            x: titleBox.value[node.id] ? titleBox.value[node.id].position.x - PIN_MARKER_WIDTH / 2 - 1: 0,
+            y: titleBox.value[node.id] ? titleBox.value[node.id].position.y - PIN_MARKER_HEIGHT / 2 : 0
+          }
+        }
+        return alignedXY;
+      }),
       titleBoxClick: (nodeId: number) => {
         ctx.emit("click", { id: nodeId });
       }

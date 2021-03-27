@@ -8,22 +8,20 @@
     :points="polygonToPath(mapNode.border)"
     pointer-events="none"
   />
-  <!--  <circle-->
-  <!--    v-for="mapNode of mapNodes"-->
-  <!--    :key="mapNode.id"-->
-  <!--    :cx="mapNode.center.x"-->
-  <!--    :cy="mapNode.center.y"-->
-  <!--    r="10"-->
-  <!--    stroke="black"-->
-  <!--    stroke-width="1"-->
-  <!--    fill="red"-->
-  <!--  />-->
+<!--    <circle-->
+<!--      v-for="mapNode of mapNodes"-->
+<!--      :key="mapNode.id"-->
+<!--      :cx="mapNode.center.x"-->
+<!--      :cy="mapNode.center.y"-->
+<!--      r="10"-->
+<!--      stroke="black"-->
+<!--      stroke-width="1"-->
+<!--      fill="red"-->
+<!--    />-->
   <text
     v-for="mapNode of mapNodes"
     :id="`${TITLE_PREFIX}${mapNode.id}`"
     :key="mapNode.id"
-    :x="titleBox[mapNode.id] ? titleBox[mapNode.id].position.x : 0"
-    :y="titleBox[mapNode.id] ? titleBox[mapNode.id].position.y : 0"
     font-family="Roboto"
     :font-size="fontSize"
     :font-weight="
@@ -32,21 +30,25 @@
     :fill="borderColor"
     class="text"
   >
-    {{ mapNode.title }}
+    <tspan
+        :x="titleBox[mapNode.id] ? titleBox[mapNode.id].position.x : 0"
+        :y="titleBox[mapNode.id] ? titleBox[mapNode.id].position.y : 0"
+        alignment-baseline="hanging"
+    >
+      {{ mapNode.title }}
+    </tspan>
   </text>
   <!-- Add rectangle to change cursor to pointer when hover on text -->
   <rect
     v-for="mapNode of mapNodes"
     :key="mapNode.id"
     :x="titleBox[mapNode.id] ? titleBox[mapNode.id].position.x : 0"
-    :y="
-      titleBox[mapNode.id]
-        ? titleBox[mapNode.id].position.y - titleBox[mapNode.id].bbox.height
-        : 0
-    "
+    :y=" titleBox[mapNode.id] ? titleBox[mapNode.id].position.y : 0"
     :width="titleBox[mapNode.id] ? titleBox[mapNode.id].bbox.width : 0"
     :height="titleBox[mapNode.id] ? titleBox[mapNode.id].bbox.height : 0"
     fill="transparent"
+    stroke-width=0
+    stroke="pink"
     cursor="pointer"
   />
 </template>
@@ -103,7 +105,7 @@ export default defineComponent({
   setup(props, ctx) {
     const mapNodes  = toRef(props, "mapNodes");
 
-    const titleBox = getTitleBoxes(TITLE_PREFIX, "top", mapNodes)
+    const titleBox = getTitleBoxes(TITLE_PREFIX, "center", mapNodes)
 
     /**
      * Send event on titleBox click, drag and drop

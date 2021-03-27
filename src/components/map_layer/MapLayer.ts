@@ -38,8 +38,8 @@ export const mouseDownListener = (
     if (
       event.clientX >= x &&
       event.clientX <= x + width &&
-      event.clientY >= y - height &&
-      event.clientY <= y
+      event.clientY >= y  &&
+      event.clientY <= y + height
     ) {
       emit("node-mouse-down", { id: Number(id) });
       mouseDownInfo.nodeId = Number(id)
@@ -99,7 +99,7 @@ export const nodeToTitleBox = (
 
 const updateTitleBox = (
   titleIdPrefix: string,
-  position: "top" | "left",
+  position: "center" | "left",
   mapNodes: Array<MapNode>,
   titleBox: Record<number, TitleBox>
 ) => {
@@ -116,26 +116,26 @@ const updateTitleBox = (
       if (dom == null) {
         continue;
       }
-      if (position == "top") {
+      if (position == "center") {
         titleBox[node.id] = {
           position: {
             x: node.center.x - dom.getBoundingClientRect().width / 2,
-            y: node.center.y + dom.getBoundingClientRect().height / 4
+            y: node.center.y - dom.getBoundingClientRect().height / 2
           },
           bbox: {
             width: dom.getBoundingClientRect().width,
-            height: dom.getBoundingClientRect().height // 1.2 to make title box a little bit taller
+            height: dom.getBoundingClientRect().height
           }
         };
-      } else  if (position == "left") {
+      } else if (position == "left") {
         titleBox[node.id] = {
           position: {
             x: node.center.x - dom.getBoundingClientRect().width,
-            y: node.center.y + dom.getBoundingClientRect().height / 4
+            y: node.center.y - dom.getBoundingClientRect().height / 2
           },
           bbox: {
             width: dom.getBoundingClientRect().width,
-            height: dom.getBoundingClientRect().height // 1.2 to make title box a little bit taller
+            height: dom.getBoundingClientRect().height
           }
         };
       }
@@ -143,7 +143,7 @@ const updateTitleBox = (
   });
 };
 
-export const getTitleBoxes = (titleIdPrefix: string, position: "top" | "left", mapNodes: Ref<Array<MapNode>>): Ref<Record<number, TitleBox>> => {
+export const getTitleBoxes = (titleIdPrefix: string, position: "center" | "left", mapNodes: Ref<Array<MapNode>>): Ref<Record<number, TitleBox>> => {
   const titleBox = ref(nodeToTitleBox(mapNodes.value));
   /**
    * Update titleBox on every prop change after DOM rerender
