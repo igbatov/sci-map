@@ -8,7 +8,7 @@ import {
 } from "@/tools/graphics";
 import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "@/tools/errorkv";
-import { clone } from "@/tools/utils";
+import {clone, printError} from "@/tools/utils";
 import { NodeRecordItem } from "@/store/tree/index";
 
 export function findMapNode(
@@ -45,44 +45,32 @@ export function findMapNodes(
   return result;
 }
 
-export function updatePosition(
-  state: {
-    tree: Tree | null;
-    nodeRecord: Record<number, NodeRecordItem>;
-    mapNodeLayers: Array<Record<number, MapNode>>;
-  },
-  v: { nodeId: number; position: Point }
-) {
+/**
+ * Если у узла parentID поменялся состав или расположение детей,
+ * то надо вызвать этот метод для пересчета
+ * positions у всего поддерева во главе с parentID
+ * @param state
+ * @param parentID
+ */
+export function calcSubtreesPositions(state: {
+  tree: Tree | null;
+  nodeRecord: Record<number, NodeRecordItem>;
+  mapNodeLayers: Record<number, MapNode>[];
+}, parentID: number) {
   if (state.tree == null) {
     return;
   }
 
-  const item = state.nodeRecord[v.nodeId];
-  if (!item) {
-    console.error(
+  const parent = state.nodeRecord[parentID];
+  if (!parent) {
+    printError(
       "updateNodePosition: cannot find node in nodeRecord",
-      "v.nodeId",
-      v.nodeId,
-      "state.nodeRecord",
-      state.nodeRecord
-    );
-    return;
-  }
-  if (!item.parent) {
-    console.error(
-      "updateNodePosition: cannot move root of tree",
-      "v.nodeId",
-      v.nodeId
+      {parentID, "state.nodeRecord": state.nodeRecord}
     );
     return;
   }
 
-  item.node.position = v.position;
-
-  // Если мы меняем один узел, то могут поменяться границы всех соседей
-  // так что надо действовать так как будто поменялись границы всех подузлов родителя узла
-
-  let inProcess = [item.parent];
+  let inProcess = [parent.node];
   let newInProcess = [];
   while (inProcess.length) {
     newInProcess = [];
@@ -98,18 +86,14 @@ export function updatePosition(
       for (const child of node.children) {
         const [childMapNode] = findMapNode(child.id, state.mapNodeLayers);
         if (childMapNode == null) {
-          console.error(
+          printError(
             "Cannot find oldMapNode",
-            "child.id",
-            child.id,
-            "layers",
-            state.mapNodeLayers
+            {"child.id":child.id, "layers":state.mapNodeLayers}
           );
           return;
         }
         childMapNodes[child.id] = childMapNode;
-        childMapNodes[child.id].center =
-          state.nodeRecord[child.id].node.position;
+        childMapNodes[child.id].center = state.nodeRecord[child.id].node.position;
         childOldMapNodes[child.id] = clone(childMapNode);
       }
 
@@ -148,6 +132,42 @@ export function updatePosition(
 
     inProcess = newInProcess;
   }
+}
+
+export function updatePosition(
+  state: {
+    tree: Tree | null;
+    nodeRecord: Record<number, NodeRecordItem>;
+    mapNodeLayers: Array<Record<number, MapNode>>;
+  },
+  v: { nodeId: number; position: Point }
+) {
+  if (state.tree == null) {
+    return;
+  }
+
+  const item = state.nodeRecord[v.nodeId];
+  if (!item) {
+    printError(
+      "updateNodePosition: cannot find node in nodeRecord",
+      {"v.nodeId":v.nodeId, "state.nodeRecord":state.nodeRecord}
+    );
+    return;
+  }
+
+  if (!item.parent) {
+    printError(
+      "updateNodePosition: cannot move root of tree",
+      {"v.nodeId": v.nodeId}
+    );
+    return;
+  }
+
+  item.node.position = v.position;
+
+  // Если мы меняем один узел, то могут поменяться границы всех соседей
+  // так что надо действовать так как будто поменялись границы всех подузлов родителя узла
+  calcSubtreesPositions(state, item.parent.id)
 }
 
 /**
