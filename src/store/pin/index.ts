@@ -44,7 +44,7 @@ export const store = {
       },
       v: { nodeId: number; parentId: number }
     ) {
-      // get all parents of nodeId until parentId
+      // get all parents of nodeId until parentID
       let currentParent = rootState.tree.nodeRecord[v.nodeId].parent;
       if (!currentParent) {
         return;

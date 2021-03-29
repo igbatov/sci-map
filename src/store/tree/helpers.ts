@@ -134,42 +134,6 @@ export function calcSubtreesPositions(state: {
   }
 }
 
-export function updatePosition(
-  state: {
-    tree: Tree | null;
-    nodeRecord: Record<number, NodeRecordItem>;
-    mapNodeLayers: Array<Record<number, MapNode>>;
-  },
-  v: { nodeId: number; position: Point }
-) {
-  if (state.tree == null) {
-    return;
-  }
-
-  const item = state.nodeRecord[v.nodeId];
-  if (!item) {
-    printError(
-      "updateNodePosition: cannot find node in nodeRecord",
-      {"v.nodeId":v.nodeId, "state.nodeRecord":state.nodeRecord}
-    );
-    return;
-  }
-
-  if (!item.parent) {
-    printError(
-      "updateNodePosition: cannot move root of tree",
-      {"v.nodeId": v.nodeId}
-    );
-    return;
-  }
-
-  item.node.position = v.position;
-
-  // Если мы меняем один узел, то могут поменяться границы всех соседей
-  // так что надо действовать так как будто поменялись границы всех подузлов родителя узла
-  calcSubtreesPositions(state, item.parent.id)
-}
-
 /**
  * Вычисляет где можно поставить центр для нового подузла узла parent
  *
@@ -189,8 +153,8 @@ export function getNewNodeCenter(
   parent: Tree,
   mapNodeLayers: Array<Record<number, MapNode>>
 ): [
-  Point | null, // new node center
-  Tree | null, // existing node with corrected center (if any)
+    Point | null, // new node center
+    Tree | null, // existing node with corrected center (if any)
   ErrorKV // error (if any)
 ] {
   const [parentMapNode] = findMapNode(parent.id, mapNodeLayers);
@@ -267,4 +231,93 @@ export function getNewNodeCenter(
     modifiedNode.position = vectorOnNumber(maxDiag, 1 / 4).to;
     return [newNodeCenter, modifiedNode, null];
   }
+}
+
+export function addNode(
+  state: {
+    tree: Tree | null;
+    nodeRecord: Record<number, NodeRecordItem>;
+    mapNodeLayers: Array<Record<number, MapNode>>;
+  },
+  v: { parentID: number; node: Tree, mapNode: MapNode }
+): ErrorKV | null {
+  // sanity check
+  if (state.tree === null) {
+    return NewErrorKV("addNode: Cannot add to empty tree", {state})
+  }
+  if (!v.parentID) {
+    return NewErrorKV("addNode: Cannot add to parent", {parentID: v.parentID})
+  }
+  if (!v.node) {
+    return NewErrorKV("addNode: empty node", {node: v.node})
+  }
+  if (!v.mapNode) {
+    return NewErrorKV("addNode: empty mapNode", {node: v.mapNode})
+  }
+  const parentRecord = state.nodeRecord[v.parentID];
+  if (!parentRecord) {
+    return NewErrorKV("addNode: cannot find parentRecord", {"parentId": v.parentID});
+  }
+
+  // calculate position for new node
+  const [newCenter] = getNewNodeCenter(
+    parentRecord.node,
+    state.mapNodeLayers
+  );
+
+  v.node.position = newCenter!
+  v.mapNode.center = newCenter!
+
+  // update tree
+  parentRecord.node.children.push(v.node);
+
+  // update nodeRecord
+  state.nodeRecord[v.node.id] = {
+    parent: parentRecord.node,
+    node: v.node
+  };
+
+  // update mapLayer
+  const [_, layerIndex] = findMapNode(parentRecord.node.id, state.mapNodeLayers)
+  state.mapNodeLayers[layerIndex! + 1][v.node.id] = v.mapNode
+
+  calcSubtreesPositions(state, v.parentID)
+
+  return null
+}
+
+export function updatePosition(
+  state: {
+    tree: Tree | null;
+    nodeRecord: Record<number, NodeRecordItem>;
+    mapNodeLayers: Array<Record<number, MapNode>>;
+  },
+  v: { nodeId: number; position: Point }
+) {
+  if (state.tree == null) {
+    return;
+  }
+
+  const item = state.nodeRecord[v.nodeId];
+  if (!item) {
+    printError(
+      "updateNodePosition: cannot find node in nodeRecord",
+      {"v.nodeId":v.nodeId, "state.nodeRecord":state.nodeRecord}
+    );
+    return;
+  }
+
+  if (!item.parent) {
+    printError(
+      "updateNodePosition: cannot move root of tree",
+      {"v.nodeId": v.nodeId}
+    );
+    return;
+  }
+
+  item.node.position = v.position;
+
+  // Если мы меняем один узел, то могут поменяться границы всех соседей
+  // так что надо действовать так как будто поменялись границы всех подузлов родителя узла
+  calcSubtreesPositions(state, item.parent.id)
 }

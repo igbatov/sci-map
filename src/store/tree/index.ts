@@ -6,10 +6,13 @@ import {
   treeToNodeRecord
 } from "@/tools/graphics";
 import {
+  addNode,
+  calcSubtreesPositions,
   findMapNode,
   getNewNodeCenter,
   updatePosition
 } from "@/store/tree/helpers";
+import {printError} from "@/tools/utils";
 
 export interface NodeRecordItem {
   node: Tree;
@@ -27,7 +30,8 @@ export const mutations = {
   SET_SELECTED_NODE_ID: "SET_SELECTED_NODE_ID",
   SET_TREE: "SET_TREE",
   UPDATE_NODE_POSITION: "UPDATE_NODE_POSITION",
-  ADD_NODE: "ADD_NODE",
+  ADD_NEW_NODE: "ADD_NEW_NODE",
+  CUT_PASTE_NODE: "CUT_PASTE_NODE",
   REMOVE_NODE: "REMOVE_NODE"
 };
 
@@ -96,83 +100,73 @@ export const store = {
       state.mapNodeLayers = ls;
     },
 
+    [mutations.CUT_PASTE_NODE](
+      state: State,
+      v: {parentID: number, node: Tree}
+    ) {
+      const newParentRecord = state.nodeRecord[v.parentID];
+      if (!newParentRecord) {
+        printError("CUT_PASTE_NODE: cannot find newParentRecord", {"parentID":v.parentID});
+        return;
+      }
+
+      const nodeRecord =  state.nodeRecord[v.node.id]
+      if (!nodeRecord) {
+        printError("CUT_PASTE_NODE: cannot find nodeRecord", {"node.id":v.node.id});
+        return;
+      }
+
+      const oldParent = nodeRecord.parent;
+
+      // remove from tree
+      const ind = oldParent!.children.findIndex(node => node.id === v.node.id);
+      oldParent!.children.splice(ind, 1);
+
+      // remove from mapNodeLayers
+      const [mapNode, layerID] = findMapNode(v.node.id, state.mapNodeLayers)
+      delete state.mapNodeLayers[layerID!][v.node.id]
+
+      addNode(state, {parentID: v.parentID, node: v.node, mapNode: mapNode!})
+
+      // update mapNodes in old parent
+      calcSubtreesPositions(state, oldParent!.id)
+    },
+
     /**
-     * ADD_NODE
+     * Add new node
      * @param state
      * @param v
      */
-    [mutations.ADD_NODE](
+    [mutations.ADD_NEW_NODE](
       state: State,
-      v: { parentId: number | null; title: string }
+      v: { parentID: number | null; title: string }
     ) {
       if (state.tree === null) {
         return;
       }
-      if (v.parentId === null) {
-        v.parentId = state.tree.id; // take root node as parent
-      }
-      const parentRecord = state.nodeRecord[v.parentId];
-      if (!parentRecord) {
-        console.error(
-          "ADD_NODE: cannot find parentRecord",
-          "parentId",
-          v.parentId
-        );
-        return;
-      }
-
-      // calculate position for new node
-      const [newCenter, nodeToModify, err] = getNewNodeCenter(
-        parentRecord.node,
-        state.mapNodeLayers
-      );
-      if (err != null) {
-        console.error("ADD_NODE: cannot getNewNodeCenter", err);
-        return;
+      if (v.parentID === null) {
+        v.parentID = state.tree.id; // take root node as parent
       }
 
       // create new node
       const newNode = {
         id: Math.max(...Object.keys(state.nodeRecord).map(k => Number(k))) + 1,
         title: v.title,
-        position: newCenter!,
+        position: {x:0, y:0},
         wikipedia: "",
         resources: [],
         children: []
       };
 
-      // update tree
-      parentRecord.node.children.push(newNode);
-
-      // update nodeRecord
-      state.nodeRecord[newNode.id] = {
-        parent: parentRecord.node,
-        node: newNode
-      };
-
-      // there is a node that changed position, update it
-      if (nodeToModify != null) {
-        // add to state.mapNodeLayers
-        const [_, layerIndex] = findMapNode(parentRecord.node.id, state.mapNodeLayers)
-        state.mapNodeLayers[layerIndex! + 1][newNode.id] = {
-          id: newNode.id,
-          title: v.title,
-          center: newCenter!,
-          border: [{x:0, y:0}, {x:0, y:100}, {x:100, y:100}, {x:100, y:0}] // this will be updated later in treeToMapNodeLayers
-        }
-        updatePosition(state, {
-          nodeId: nodeToModify.id,
-          position: nodeToModify.position
-        });
+      // create new MapNode
+      const mapNode = {
+        id: newNode.id,
+        title: v.title,
+        center: {x:0, y:0},
+        border: [{x:0, y:0}, {x:0, y:100}, {x:100, y:100}, {x:100, y:0}] // this will be updated later in treeToMapNodeLayers
       }
 
-      // update state.mapNodeLayers
-      const [ls, err2] = treeToMapNodeLayers(state.tree);
-      if (ls == null || err2 != null) {
-        console.error(err2);
-        return;
-      }
-      state.mapNodeLayers = ls;
+      addNode(state, {parentID:v.parentID, node:newNode, mapNode})
     },
 
     /**

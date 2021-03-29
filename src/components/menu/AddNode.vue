@@ -6,6 +6,7 @@
     :closable="true"
     :modal="true"
     :closeOnEscape="true"
+    @mousedown.stop
   >
     <template #header>
       <h3>
@@ -58,8 +59,8 @@ export default {
       ),
       toggleAddDialog: () => (addDialogVisible.value = !addDialogVisible.value),
       add: () => {
-        store.commit(`tree/${treeMutations.ADD_NODE}`, {
-          parentId: selectedNode.value ? selectedNode.value.id : null,
+        store.commit(`tree/${treeMutations.ADD_NEW_NODE}`, {
+          parentID: selectedNode.value ? selectedNode.value.id : null,
           title: newNodeTitle.value
         });
         newNodeTitle.value = "";
