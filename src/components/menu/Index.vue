@@ -2,6 +2,7 @@
   <div :class="$style.wrapper">
     <div v-if="email">
       {{ email }}
+      <CutPaste v-if="isNodeSelected" />
       <PinNode v-if="isNodeSelected" />
       <UnpinNode v-if="isNodeSelected && isPinned" />
       <AddNode />
@@ -24,10 +25,12 @@ import AddNode from "./AddNode";
 import RemoveNode from "./RemoveNode";
 import Save from "./Save";
 import UnpinNode from "@/components/menu/UnpinNode";
+import CutPaste from "@/components/menu/CutPaste";
 
 export default {
   name: "Menu",
   components: {
+    CutPaste,
     UnpinNode,
     PinNode,
     AddNode,

@@ -102,34 +102,43 @@ export const store = {
 
     [mutations.CUT_PASTE_NODE](
       state: State,
-      v: {parentID: number, node: Tree}
+      v: {parentID: number, nodeID: number}
     ) {
+      if (state.tree === null) {
+        return;
+      }
+
       const newParentRecord = state.nodeRecord[v.parentID];
       if (!newParentRecord) {
         printError("CUT_PASTE_NODE: cannot find newParentRecord", {"parentID":v.parentID});
         return;
       }
 
-      const nodeRecord =  state.nodeRecord[v.node.id]
+      const nodeRecord =  state.nodeRecord[v.nodeID]
       if (!nodeRecord) {
-        printError("CUT_PASTE_NODE: cannot find nodeRecord", {"node.id":v.node.id});
+        printError("CUT_PASTE_NODE: cannot find nodeRecord", {"node.id":v.nodeID});
         return;
       }
 
       const oldParent = nodeRecord.parent;
 
       // remove from tree
-      const ind = oldParent!.children.findIndex(node => node.id === v.node.id);
+      const ind = oldParent!.children.findIndex(node => node.id === v.nodeID);
       oldParent!.children.splice(ind, 1);
 
-      // remove from mapNodeLayers
-      const [mapNode, layerID] = findMapNode(v.node.id, state.mapNodeLayers)
-      delete state.mapNodeLayers[layerID!][v.node.id]
-
-      addNode(state, {parentID: v.parentID, node: v.node, mapNode: mapNode!})
+      const [mapNode] = findMapNode(v.nodeID, state.mapNodeLayers)
+      addNode(state, {parentID: v.parentID, node: nodeRecord.node, mapNode: mapNode!})
 
       // update mapNodes in old parent
       calcSubtreesPositions(state, oldParent!.id)
+
+      // update layers
+      const [ls, err2] = treeToMapNodeLayers(state.tree);
+      if (ls == null || err2 != null) {
+        console.error(err2);
+        return;
+      }
+      state.mapNodeLayers = ls;
     },
 
     /**

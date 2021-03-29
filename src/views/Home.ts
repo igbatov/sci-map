@@ -231,9 +231,10 @@ export function filterNodesAndLayers(
       if (mapNode == null || _ == null) {
         return [
           [],
-          NewErrorKV("filterNodesAndLayers-thirdLayer: error in findMapNode", {
+          NewErrorKV("filterNodesAndLayers-thirdLayer:cannot findMapNode", {
             "child.id": child.id,
-            layers: [layers[level]]
+            level: level + 3,
+            layers: [layers[level + 3]]
           })
         ];
       }
