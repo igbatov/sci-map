@@ -237,7 +237,7 @@ export function polygonToPath(polygon: Polygon): string {
 }
 
 export function treeToNodeRecord(tree: Tree): Record<number, NodeRecordItem> {
-  const nodeRecord: Record<number, NodeRecordItem> = {};
+  const nodeRecord: Record<string, NodeRecordItem> = {};
   const stack: NodeRecordItem[] = [{ node: tree, parent: null }];
   while (stack.length) {
     const item = stack.pop();
@@ -257,15 +257,15 @@ export function treeToNodeRecord(tree: Tree): Record<number, NodeRecordItem> {
 }
 export function treeToMapNodeLayers(
   tree: Tree
-): [Array<Record<number, MapNode>> | null, ErrorKV] {
+): [Array<Record<string, MapNode>> | null, ErrorKV] {
   if (Object.keys(tree).length == 0) {
     return [[], null];
   }
   const treeLayers: Array<Array<Tree>> = [[tree]];
-  const mapNodeLayers: Array<Record<number, MapNode>> = [
+  const mapNodeLayers: Array<Record<string, MapNode>> = [
     {
       0: {
-        id: 0,
+        id: "0",
         border: [
           { x: 0, y: 0 },
           { x: 2 * tree.position.x, y: 0 },
@@ -282,7 +282,7 @@ export function treeToMapNodeLayers(
     const lastTreeLayer = treeLayers[treeLayers.length - 1];
     const lastMapNodeLayer = mapNodeLayers[treeLayers.length - 1];
     const newTreeLayer = [];
-    const newMapNodeLayer: Record<number, MapNode> = {};
+    const newMapNodeLayer: Record<string, MapNode> = {};
     for (const treeNode of lastTreeLayer) {
       if (!treeNode.children) {
         return [
@@ -446,8 +446,8 @@ export function getVectorIntersection(v1: Vector, v2: Vector): Point | null {
 export function morphChildrenPoints(
   oldBorder: Polygon,
   newBorder: Polygon,
-  oldPoints: Record<number, Point>
-): [Record<number, Point> | null, ErrorKV] {
+  oldPoints: Record<string, Point>
+): [Record<string, Point> | null, ErrorKV] {
   const oldCenterTf = turf.centerOfMass(polygonToTurf(oldBorder)).geometry;
   if (oldCenterTf == null) {
     return [
@@ -502,7 +502,7 @@ export function morphChildrenPoints(
     })
   );
 
-  const newPoints: Record<number, Point> = {};
+  const newPoints: Record<string, Point> = {};
   for (const id in oldPoints) {
     const oldPoint = oldPoints[id];
     if (newCenter.x == oldPoint.x && newCenter.y == oldPoint.y) {

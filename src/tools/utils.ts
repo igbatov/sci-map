@@ -31,7 +31,7 @@ export function generateTreeSkeleton(
   numOnLevel: number
 ): TreeSkeleton {
   let globalID = 0;
-  const root = { id: globalID, children: [] };
+  const root = { id: String(globalID), children: [] };
   let toProcess: TreeSkeleton[] = [root];
   for (let i = 1; i < levelsNum; i++) {
     const nextToProcess = [];
@@ -40,7 +40,7 @@ export function generateTreeSkeleton(
       node!.children = [];
       for (let j = 0; j < numOnLevel; j++) {
         globalID++;
-        const child = { id: globalID };
+        const child = { id: String(globalID) };
         node!.children.push(child);
         nextToProcess.push(child);
       }
@@ -63,6 +63,7 @@ export function skeletonToTree(sk: TreeSkeleton, idAsTitle: boolean): Tree {
     if (!node) {
       continue;
     }
+    node.id = String(node.id)
     if (!node.title) {
       node.title = idAsTitle ? String(node.id) : "";
     }
@@ -81,7 +82,7 @@ export function skeletonToTree(sk: TreeSkeleton, idAsTitle: boolean): Tree {
 
     stack.push(...node.children);
   }
-  return res as Tree;
+  return res;
 }
 
 /**
@@ -91,11 +92,11 @@ export function fillTreePositions(
   tree: Tree,
   rootWH: Viewport
 ): ErrorKV | null {
-  if (tree.id !== 0) {
-    return NewErrorKV("fillTreePositions: root node id must be 0", { tree });
+  if (tree.id !== "0") {
+    return NewErrorKV("fillTreePositions: root node id must be '0'", { tree });
   }
   tree.position = { x: rootWH.width / 2, y: rootWH.height / 2 };
-  const nodeBorders: Record<number, { topLeft: Point; bottomRight: Point }> = {
+  const nodeBorders: Record<string, { topLeft: Point; bottomRight: Point }> = {
     0: {
       topLeft: { x: 0, y: 0 },
       bottomRight: { x: rootWH.width, y: rootWH.height }
@@ -198,7 +199,7 @@ function mindMeisterNoteToResources(
 
 export function mindMeisterToTree(mm: MindMeisterNode): TreeSkeleton | null {
   let tree = null;
-  const parents: Record<number, TreeSkeleton> = {}; // key id, value - parent
+  const parents: Record<string, TreeSkeleton> = {}; // key id, value - parent
   const stack = [mm];
   while (stack.length) {
     const mmNode = stack.pop();
@@ -206,7 +207,7 @@ export function mindMeisterToTree(mm: MindMeisterNode): TreeSkeleton | null {
       return null;
     }
     const treeNode: TreeSkeleton = {
-      id: mmNode.id,
+      id: String(mmNode.id),
       title: mmNode.title,
       wikipedia: mmNode.link ? mmNode.link : "",
       resources: mindMeisterNoteToResources(mmNode.note),

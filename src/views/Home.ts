@@ -35,22 +35,22 @@ export function zoomAndPanPolygon(
  * @param zoomCenter
  */
 export function findCurrentNode(
-  layers: Array<Record<number, MapNode>>,
-  nodeRecord: Record<number, NodeRecordItem>,
+  layers: Array<Record<string, MapNode>>,
+  nodeRecord: Record<string, NodeRecordItem>,
   viewport: Viewport,
   zoomFactor: number,
   pan: Point,
   zoomCenter: Point
-): [number, ErrorKV] {
+): [string, ErrorKV] {
   if (!layers || layers.length == 0) {
-    return [0, null];
+    return ["", null];
   }
 
   let underCursorNodeId = null;
   const viewportArea = viewport.width * viewport.height;
   let nodesToCheck = layers[0];
   while (Object.keys(nodesToCheck).length) {
-    underCursorNodeId = -1;
+    underCursorNodeId = "";
 
     for (const nodeId in nodesToCheck) {
       const borderToCheck = zoomAndPanPolygon(
@@ -59,14 +59,14 @@ export function findCurrentNode(
         pan
       );
       if (isInside(zoomCenter, borderToCheck)) {
-        underCursorNodeId = Number(nodeId);
+        underCursorNodeId = nodeId;
         break;
       }
     }
 
-    if (underCursorNodeId === -1) {
+    if (underCursorNodeId === "") {
       return [
-        0,
+        "",
         NewErrorKV(
           "findCurrentNode: cannot find intersections with viewport among nodesToCheck",
           { nodesToCheck, viewport }
@@ -89,7 +89,7 @@ export function findCurrentNode(
       nodesToCheck = {};
       if (!nodeRecord[underCursorNodeId]) {
         return [
-          0,
+          "",
           NewErrorKV(
             "findCurrentNode: cannot find underCursorNodeId in nodeRecord",
             { maxIntersectNodeId: underCursorNodeId, nodeRecord }
@@ -100,7 +100,7 @@ export function findCurrentNode(
         const [mapNode] = findMapNode(child.id, layers);
         if (mapNode == null) {
           return [
-            0,
+            "",
             NewErrorKV("filterNodesAndLayers: Cannot find node in layers", {
               "child.id": child.id,
               layers: layers
@@ -116,7 +116,7 @@ export function findCurrentNode(
     }
   }
 
-  return [0, NewErrorKV("filterNodesAndLayers: unknown error", {})];
+  return ["", NewErrorKV("filterNodesAndLayers: unknown error", {})];
 }
 
 /**
@@ -129,9 +129,9 @@ export function findCurrentNode(
  * @param currentNodeId
  */
 export function filterNodesAndLayers(
-  layers: Array<Record<number, MapNode>>,
-  nodeRecord: Record<number, NodeRecordItem>,
-  currentNodeId: number
+  layers: Array<Record<string, MapNode>>,
+  nodeRecord: Record<string, NodeRecordItem>,
+  currentNodeId: string
 ): [Array<Record<number, MapNode>>, ErrorKV] {
   if (!layers || !layers.length) {
     return [[], null];
@@ -151,7 +151,7 @@ export function filterNodesAndLayers(
   }
 
   // убираем из этого слоя все кроме детей currentNode.parent
-  const upperLayer: Record<number, MapNode> = {};
+  const upperLayer: Record<string, MapNode> = {};
   if (nodeRecord[currentNode.id].parent == null) {
     upperLayer[currentNode.id] = clone(currentNode);
   } else {
@@ -174,7 +174,7 @@ export function filterNodesAndLayers(
   resultLayers.push(upperLayer);
 
   // следующий слой это дети всех узлов из upperLayer, но дети всех кроме currentNode не имеют названий
-  const firstLayer: Record<number, MapNode> = {};
+  const firstLayer: Record<string, MapNode> = {};
   for (const nodeId in upperLayer) {
     for (const child of nodeRecord[nodeId].node.children) {
       const [mapNode, _] = findMapNode(child.id, [layers[level + 1]]);
@@ -187,7 +187,7 @@ export function filterNodesAndLayers(
           })
         ];
       }
-      if (Number(nodeId) != Number(currentNodeId)) {
+      if (nodeId != currentNodeId) {
         firstLayer[child.id] = clone(mapNode);
         firstLayer[child.id].title = "";
       } else {
@@ -201,7 +201,7 @@ export function filterNodesAndLayers(
   }
 
   // следующий слой это дети детей currentNode
-  const secondLayer: Record<number, MapNode> = {};
+  const secondLayer: Record<string, MapNode> = {};
   //for (const childId in firstLayer) {
   for (const child of nodeRecord[currentNodeId].node.children) {
     for (const childOfChild of nodeRecord[child.id].node.children) {
@@ -224,7 +224,7 @@ export function filterNodesAndLayers(
   }
 
   // следующий это дети узлов из secondLayer и у них нет названий
-  const thirdLayer: Record<number, MapNode> = {};
+  const thirdLayer: Record<string, MapNode> = {};
   for (const nodeId in secondLayer) {
     for (const child of nodeRecord[nodeId].node.children) {
       const [mapNode, _] = findMapNode(child.id, [layers[level + 3]]);

@@ -56,7 +56,7 @@ export default defineComponent({
       () => {
         store.commit(
           `tree/${treeMutations.SET_SELECTED_NODE_ID}`,
-          Number(route.params.id)
+          route.params.id
         );
       },
       { immediate: true }
@@ -75,9 +75,9 @@ export default defineComponent({
     });
 
     const updateLayers = (
-      currNodeId: number,
-      mapNodeLayers: Array<Record<number, MapNode>>,
-      nodeRecord: Record<number, NodeRecordItem>,
+      currNodeId: string,
+      mapNodeLayers: Array<Record<string, MapNode>>,
+      nodeRecord: Record<string, NodeRecordItem>,
     ) => {
       // Вычленяем слои и узлы которые мы хотим показывать учитывая что текущий узел это currentNodeId
       const [layers, err] = filterNodesAndLayers(
@@ -92,8 +92,8 @@ export default defineComponent({
       return layers.reverse();
     };
 
-    const currentNodeId = ref<number | null>(null);
-    const layers = ref<Array<Record<number, MapNode>>>([]);
+    const currentNodeId = ref<string | null>(null);
+    const layers = ref<Array<Record<string, MapNode>>>([]);
     watch(
       () => [treeState.mapNodeLayers, zoomPanState.debouncedZoom],
       () => {

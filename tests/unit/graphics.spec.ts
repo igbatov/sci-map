@@ -43,21 +43,21 @@ describe("subtractVector", () => {
 describe("treeToMapNodeLayers", () => {
   it("", () => {
     const tree = {
-      id: 0,
+      id: "0",
       title: "",
       position: { x: 600, y: 400 },
       wikipedia: "",
       resources: [],
       children: [
         {
-          id: 1,
+          id: "1",
           title: "1",
           position: { x: 150, y: 400 },
           wikipedia: "",
           resources: [],
           children: [
             {
-              id: 3,
+              id: "3",
               title: "3",
               position: { x: 150, y: 100 },
               wikipedia: "",
@@ -65,7 +65,7 @@ describe("treeToMapNodeLayers", () => {
               children: []
             },
             {
-              id: 4,
+              id: "4",
               title: "4",
               position: { x: 150, y: 300 },
               wikipedia: "",
@@ -75,14 +75,14 @@ describe("treeToMapNodeLayers", () => {
           ]
         },
         {
-          id: 2,
+          id: "2",
           title: "2",
           position: { x: 450, y: 400 },
           wikipedia: "",
           resources: [],
           children: [
             {
-              id: 5,
+              id: "5",
               title: "5",
               position: { x: 450, y: 100 },
               wikipedia: "",
@@ -90,7 +90,7 @@ describe("treeToMapNodeLayers", () => {
               children: []
             },
             {
-              id: 6,
+              id: "6",
               title: "6",
               position: { x: 450, y: 300 },
               wikipedia: "",
@@ -104,7 +104,7 @@ describe("treeToMapNodeLayers", () => {
     const exp = [
       {
         "0": {
-          id: 0,
+          id: "0",
           border: [
             {
               x: 0,
@@ -132,7 +132,7 @@ describe("treeToMapNodeLayers", () => {
       },
       {
         "1": {
-          id: 1,
+          id: "1",
           title: "1",
           center: {
             x: 150,
@@ -158,7 +158,7 @@ describe("treeToMapNodeLayers", () => {
           ]
         },
         "2": {
-          id: 2,
+          id: "2",
           title: "2",
           center: {
             x: 450,
@@ -186,7 +186,7 @@ describe("treeToMapNodeLayers", () => {
       },
       {
         "3": {
-          id: 3,
+          id: "3",
           title: "3",
           center: {
             x: 150,
@@ -212,7 +212,7 @@ describe("treeToMapNodeLayers", () => {
           ]
         },
         "4": {
-          id: 4,
+          id: "4",
           title: "4",
           center: {
             x: 150,
@@ -238,7 +238,7 @@ describe("treeToMapNodeLayers", () => {
           ]
         },
         "5": {
-          id: 5,
+          id: "5",
           title: "5",
           center: {
             x: 450,
@@ -264,7 +264,7 @@ describe("treeToMapNodeLayers", () => {
           ]
         },
         "6": {
-          id: 6,
+          id: "6",
           title: "6",
           center: {
             x: 450,
@@ -317,7 +317,6 @@ describe("getVoronoiCellsInSquare", () => {
       square.leftBottom,
       square.rightTop
     );
-    console.log(cells);
   });
 
   it("2", () => {
@@ -337,7 +336,6 @@ describe("getVoronoiCellsInSquare", () => {
       square.leftBottom,
       square.rightTop
     );
-    console.log(cells);
   });
 
   it("weird results", () => {
@@ -357,7 +355,6 @@ describe("getVoronoiCellsInSquare", () => {
       square.leftBottom,
       square.rightTop
     );
-    console.log(cells);
   });
 });
 describe("getVoronoiCells", () => {
@@ -376,7 +373,6 @@ describe("getVoronoiCells", () => {
       { x: 816, y: 144 }
     ];
     const [cells] = getVoronoiCells(outerBorder, centers);
-    console.log("result", cells);
   });
 
   it("return VoronoiCells with each center in the cell", () => {

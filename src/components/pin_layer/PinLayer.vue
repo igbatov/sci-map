@@ -68,9 +68,9 @@ export default defineComponent({
       required: true
     },
     selectedNodeId: {
-      type: Number,
-      validator: (prop: number | null) =>
-          typeof prop === "number" || prop === null,
+      type: String,
+      validator: (prop: string | null) =>
+          typeof prop === "string" || prop === null,
       required: true
     }
   },
@@ -85,7 +85,7 @@ export default defineComponent({
       PIN_MARKER_WIDTH,
       titleBox,
       titleXY: computed(() => {
-        const alignedXY: Record<number, Point> = {}
+        const alignedXY: Record<string, Point> = {}
         for (const node of pinNodes.value) {
           alignedXY[node.id] = {
             x: titleBox.value[node.id] ? titleBox.value[node.id].position.x - PIN_MARKER_WIDTH / 2 - 1: 0,

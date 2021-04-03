@@ -18,7 +18,7 @@ export type VoronoiCell = {
 };
 
 export type MapNode = {
-  id: number;
+  id: string;
   title: string;
   center: Point;
   border: Polygon;
@@ -33,7 +33,7 @@ export type TreeNodeResource = {
 };
 
 export type Tree = {
-  id: number;
+  id: string;
   title: string;
   position: Point;
   wikipedia: string;
@@ -43,7 +43,7 @@ export type Tree = {
 };
 
 export type TreeSkeleton = {
-  id: number;
+  id: string;
   title?: string;
   position?: Point;
   wikipedia?: string;

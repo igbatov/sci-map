@@ -25,7 +25,7 @@
     font-family="Roboto"
     :font-size="fontSize"
     :font-weight="
-      selectedNodeId && selectedNodeId === mapNode.id ? 'bold' : 'normal'
+      selectedNodeId && selectedNodeId == mapNode.id ? 'bold' : 'normal'
     "
     :fill="borderColor"
     class="text"
@@ -95,9 +95,9 @@ export default defineComponent({
       required: true
     },
     selectedNodeId: {
-      type: Number,
-      validator: (prop: number | null) =>
-        typeof prop === "number" || prop === null,
+      type: String,
+      validator: (prop: string | null) =>
+        typeof prop === "string" || prop === null,
       required: true
     }
   },

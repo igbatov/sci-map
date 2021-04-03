@@ -17,18 +17,26 @@ describe("filterNodesAndLayers", () => {
     const tree = skeletonToTree(treeSk, true);
     fillTreePositions(tree, rootWH);
     let [layers, err] = treeToMapNodeLayers(tree);
-    layers = layers!.reverse();
     expect(layers).not.toBeNull();
     expect(err).toBeNull();
     const nodeRecord = treeToNodeRecord(tree);
 
-    return filterNodesAndLayers(layers, nodeRecord, viewport);
+    const [currNodeId, _] = findCurrentNode(
+      layers!,
+      nodeRecord,
+      viewport,
+      1,
+      {x:0, y:0},
+      {x:0, y:0}
+    );
+
+    return filterNodesAndLayers(layers!, nodeRecord, currNodeId);
   };
 
   it("works for two layers", () => {
     const treeSk = {
-      id: 0,
-      children: [{ id: 1 }, { id: 2 }]
+      id: '0',
+      children: [{ id: '1' }, { id: '2' }]
     };
     const [layers, err] = runTest(
       treeSk,
@@ -38,57 +46,85 @@ describe("filterNodesAndLayers", () => {
     expect(err).toBeNull();
     expect(layers).toEqual([
       {
-        "1": {
-          id: 1,
-          title: "",
-          center: {
-            x: 250,
-            y: 500
-          },
-          border: [
+        "0": {
+          "border": [
             {
-              x: 0,
-              y: 1000
+              "x": 0,
+              "y": 0
             },
             {
-              x: 500,
-              y: 1000
+              "x": 1000,
+              "y": 0
             },
             {
-              x: 500,
-              y: 0
+              "x": 1000,
+              "y": 1000
             },
             {
-              x: 0,
-              y: 0
+              "x": 0,
+              "y": 1000
             }
-          ]
+          ],
+          "center": {
+            "x": 500,
+            "y": 500
+          },
+          "id": "0",
+          "title": ""
+        }
+      },
+      {
+        "1": {
+          "border": [
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 500,
+              "y": 0
+            },
+            {
+              "x": 500,
+              "y": 1000
+            },
+            {
+              "x": 0,
+              "y": 1000
+            }
+          ],
+          "center": {
+            "x": 250,
+            "y": 500
+          },
+          "id": "1",
+          "title": "1"
         },
         "2": {
-          id: 2,
-          title: "",
-          center: {
-            x: 750,
-            y: 500
-          },
-          border: [
+          "border": [
             {
-              x: 500,
-              y: 0
+              "x": 500,
+              "y": 0
             },
             {
-              x: 500,
-              y: 1000
+              "x": 1000,
+              "y": 0
             },
             {
-              x: 1000,
-              y: 1000
+              "x": 1000,
+              "y": 1000
             },
             {
-              x: 1000,
-              y: 0
+              "x": 500,
+              "y": 1000
             }
-          ]
+          ],
+          "center": {
+            "x": 750,
+            "y": 500
+          },
+          "id": "2",
+          "title": "2"
         }
       }
     ]);
@@ -136,22 +172,21 @@ describe("findCurrentNode", () => {
     treeSk: TreeSkeleton,
     rootWH: Viewport,
     viewport: Viewport
-  ): [number, ErrorKV] => {
+  ): [string, ErrorKV] => {
     const tree = skeletonToTree(treeSk, false);
     fillTreePositions(tree, rootWH);
     let [layers, err] = treeToMapNodeLayers(tree);
-    layers = layers!.reverse();
     expect(layers).not.toBeNull();
     expect(err).toBeNull();
     const nodeRecord = treeToNodeRecord(tree);
-    const [nodeId, err2] = findCurrentNode(layers, nodeRecord, viewport);
+    const [nodeId, err2] = findCurrentNode(layers!, nodeRecord, viewport, 1, {x:0, y:0}, {x:0, y:0});
     return [nodeId, err2];
   };
 
   it("works for two layers", () => {
     const treeSk = {
-      id: 0,
-      children: [{ id: 1 }, { id: 2 }]
+      id: '0',
+      children: [{ id: '1' }, { id: '2' }]
     };
     const [nodeId, err] = runTest(
       treeSk,
@@ -159,15 +194,15 @@ describe("findCurrentNode", () => {
       { width: 1000, height: 1000 }
     );
     expect(err).toBeNull();
-    expect(nodeId).toEqual(1);
+    expect(nodeId).toEqual('0');
   });
 
   it("works for 3 layers two nodes on second and third", () => {
     const treeSk = {
-      id: 0,
+      id: '0',
       children: [
-        { id: 1, children: [{ id: 3 }, { id: 4 }] },
-        { id: 2, children: [{ id: 5 }, { id: 6 }] }
+        { id: '1', children: [{ id: '3' }, { id: '4' }] },
+        { id: '2', children: [{ id: '5' }, { id: '6' }] }
       ]
     };
     const [nodeId, err] = runTest(
@@ -176,16 +211,16 @@ describe("findCurrentNode", () => {
       { width: 1000, height: 1000 }
     );
     expect(err).toBeNull();
-    expect(nodeId).toEqual(1);
+    expect(nodeId).toEqual('0');
   });
 
   it("works for 3 layers 3 nodes on second", () => {
     const treeSk = {
-      id: 0,
+      id: '0',
       children: [
-        { id: 1, children: [{ id: 5 }, { id: 6 }] },
-        { id: 2, children: [{ id: 7 }, { id: 8 }] },
-        { id: 3, children: [{ id: 9 }, { id: 10 }] }
+        { id: '1', children: [{ id: '5' }, { id: '6' }] },
+        { id: '2', children: [{ id: '7' }, { id: '8' }] },
+        { id: '3', children: [{ id: '9' }, { id: '10' }] }
       ]
     };
     const [nodeId, err] = runTest(
@@ -194,6 +229,6 @@ describe("findCurrentNode", () => {
       { width: 1000, height: 1000 }
     );
     expect(err).toBeNull();
-    expect(nodeId).toEqual(0);
+    expect(nodeId).toEqual('0');
   });
 });

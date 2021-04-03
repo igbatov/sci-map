@@ -9,9 +9,9 @@ import {
   addNode,
   calcSubtreesPositions,
   findMapNode,
-  getNewNodeCenter,
   updatePosition
 } from "@/store/tree/helpers";
+import { v4 as uuidv4 } from "uuid";
 import {printError} from "@/tools/utils";
 
 export interface NodeRecordItem {
@@ -21,9 +21,9 @@ export interface NodeRecordItem {
 
 export interface State {
   tree: Tree | null;
-  nodeRecord: Record<number, NodeRecordItem>;
-  mapNodeLayers: Array<Record<number, MapNode>>;
-  selectedNodeId: number | null;
+  nodeRecord: Record<string, NodeRecordItem>;
+  mapNodeLayers: Array<Record<string, MapNode>>;
+  selectedNodeId: string | null;
 }
 
 export const mutations = {
@@ -60,7 +60,7 @@ export const store = {
      * @param state
      * @param nodeId
      */
-    [mutations.REMOVE_NODE](state: State, nodeId: number) {
+    [mutations.REMOVE_NODE](state: State, nodeId: string) {
       if (state.tree === null) {
         return;
       }
@@ -102,7 +102,7 @@ export const store = {
 
     [mutations.CUT_PASTE_NODE](
       state: State,
-      v: {parentID: number, nodeID: number}
+      v: {parentID: string, nodeID: string}
     ) {
       if (state.tree === null) {
         return;
@@ -148,7 +148,7 @@ export const store = {
      */
     [mutations.ADD_NEW_NODE](
       state: State,
-      v: { parentID: number | null; title: string }
+      v: { parentID: string | null; title: string }
     ) {
       if (state.tree === null) {
         return;
@@ -159,7 +159,7 @@ export const store = {
 
       // create new node
       const newNode = {
-        id: Math.max(...Object.keys(state.nodeRecord).map(k => Number(k))) + 1,
+        id: uuidv4(),
         title: v.title,
         position: {x:0, y:0},
         wikipedia: "",
@@ -183,7 +183,7 @@ export const store = {
      * @param state
      * @param id
      */
-    [mutations.SET_SELECTED_NODE_ID](state: State, id: number | null) {
+    [mutations.SET_SELECTED_NODE_ID](state: State, id: string | null) {
       state.selectedNodeId = id;
     },
 
@@ -220,7 +220,7 @@ export const store = {
      */
     [mutations.UPDATE_NODE_POSITION](
       state: State,
-      v: { nodeId: number; delta: Point }
+      v: { nodeId: string; delta: Point }
     ) {
       const [mapNode] = findMapNode(v.nodeId, state.mapNodeLayers);
       if (!mapNode) {

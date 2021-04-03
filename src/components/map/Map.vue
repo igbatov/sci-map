@@ -45,11 +45,11 @@ export default defineComponent({
       type: String,
       required: true
     },
-    layers: Object as PropType<Array<Record<number, MapNode>>>,
+    layers: Object as PropType<Array<Record<string, MapNode>>>,
     selectedNodeId: {
-      type: Number,
-      validator: (prop: number | null) =>
-        typeof prop === "number" || prop === null,
+      type: String,
+      validator: (prop: string | null) =>
+        typeof prop === "string" || prop === null,
       required: true
     },
     pinNodes: Object as PropType<MapNode[]>,

@@ -12,8 +12,8 @@ import {clone, printError} from "@/tools/utils";
 import { NodeRecordItem } from "@/store/tree/index";
 
 export function findMapNode(
-  id: number,
-  mapNodeLayers: Array<Record<number, MapNode>>
+  id: string,
+  mapNodeLayers: Array<Record<string, MapNode>>
 ): [MapNode | null, number | null] {
   let level = 0;
   for (const layer of mapNodeLayers) {
@@ -27,8 +27,8 @@ export function findMapNode(
 }
 
 export function findMapNodes(
-  ids: number[],
-  mapNodeLayers: Array<Record<number, MapNode>>
+  ids: string[],
+  mapNodeLayers: Array<Record<string, MapNode>>
 ): MapNode[] {
   const result: MapNode[] = []
   for (const layer of mapNodeLayers) {
@@ -54,9 +54,9 @@ export function findMapNodes(
  */
 export function calcSubtreesPositions(state: {
   tree: Tree | null;
-  nodeRecord: Record<number, NodeRecordItem>;
-  mapNodeLayers: Record<number, MapNode>[];
-}, parentID: number) {
+  nodeRecord: Record<string, NodeRecordItem>;
+  mapNodeLayers: Record<string, MapNode>[];
+}, parentID: string) {
   if (state.tree == null) {
     return;
   }
@@ -74,8 +74,8 @@ export function calcSubtreesPositions(state: {
   let newInProcess = [];
   while (inProcess.length) {
     newInProcess = [];
-    const childMapNodes: Record<number, MapNode> = {};
-    const childOldMapNodes: Record<number, MapNode> = {};
+    const childMapNodes: Record<string, MapNode> = {};
+    const childOldMapNodes: Record<string, MapNode> = {};
     for (const node of inProcess) {
       if (node.children.length == 0) {
         continue;
@@ -118,13 +118,13 @@ export function calcSubtreesPositions(state: {
           state.nodeRecord[child.id].node.children.reduce((prev, curr) => {
             prev[curr.id] = curr.position;
             return prev;
-          }, {} as Record<number, Point>)
+          }, {} as Record<string, Point>)
         );
 
         // update positions in state
         for (const id in newChildrenPositions) {
-          state.nodeRecord[Number(id)].node.position =
-            newChildrenPositions[Number(id)];
+          state.nodeRecord[id].node.position =
+            newChildrenPositions[id];
         }
         cellIndex++;
       }
@@ -236,10 +236,10 @@ export function getNewNodeCenter(
 export function addNode(
   state: {
     tree: Tree | null;
-    nodeRecord: Record<number, NodeRecordItem>;
-    mapNodeLayers: Array<Record<number, MapNode>>;
+    nodeRecord: Record<string, NodeRecordItem>;
+    mapNodeLayers: Array<Record<string, MapNode>>;
   },
-  v: { parentID: number; node: Tree, mapNode: MapNode }
+  v: { parentID: string; node: Tree, mapNode: MapNode }
 ): ErrorKV | null {
   // sanity check
   if (state.tree === null) {
@@ -289,10 +289,10 @@ export function addNode(
 export function updatePosition(
   state: {
     tree: Tree | null;
-    nodeRecord: Record<number, NodeRecordItem>;
-    mapNodeLayers: Array<Record<number, MapNode>>;
+    nodeRecord: Record<string, NodeRecordItem>;
+    mapNodeLayers: Array<Record<string, MapNode>>;
   },
-  v: { nodeId: number; position: Point }
+  v: { nodeId: string; position: Point }
 ) {
   if (state.tree == null) {
     return;

@@ -11,7 +11,7 @@ export type EventDraggingNode = {
 };
 
 export type MouseDownInfo = {
-  nodeId: number | null;
+  nodeId: string | null;
   dragStart: boolean;
 }
 
@@ -41,8 +41,8 @@ export const mouseDownListener = (
       event.clientY >= y  &&
       event.clientY <= y + height
     ) {
-      emit("node-mouse-down", { id: Number(id) });
-      mouseDownInfo.nodeId = Number(id)
+      emit("node-mouse-down", { id: id });
+      mouseDownInfo.nodeId = id
       mouseDownInfo.dragStart = false
       nodeFound = true;
       break;
@@ -81,8 +81,8 @@ export const mouseUpListener = (emit: emitFn, mouseDownInfo: MouseDownInfo) => {
 
 export const nodeToTitleBox = (
   nodes: Array<MapNode>
-): Record<number, TitleBox> => {
-  const titleBox: Record<number, TitleBox> = {};
+): Record<string, TitleBox> => {
+  const titleBox: Record<string, TitleBox> = {};
   for (const i in nodes) {
     const node = nodes[i];
     titleBox[node.id] = {
@@ -101,7 +101,7 @@ const updateTitleBox = (
   titleIdPrefix: string,
   position: "center" | "left",
   mapNodes: Array<MapNode>,
-  titleBox: Record<number, TitleBox>
+  titleBox: Record<string, TitleBox>
 ) => {
   // Code that will run only after the entire view has been rendered
   nextTick(() => {
@@ -143,7 +143,7 @@ const updateTitleBox = (
   });
 };
 
-export const getTitleBoxes = (titleIdPrefix: string, position: "center" | "left", mapNodes: Ref<Array<MapNode>>): Ref<Record<number, TitleBox>> => {
+export const getTitleBoxes = (titleIdPrefix: string, position: "center" | "left", mapNodes: Ref<Array<MapNode>>): Ref<Record<string, TitleBox>> => {
   const titleBox = ref(nodeToTitleBox(mapNodes.value));
   /**
    * Update titleBox on every prop change after DOM rerender

@@ -2,15 +2,15 @@ import { Commit } from "vuex";
 import { NodeRecordItem } from "@/store/tree";
 
 export type Pins = Record<
-  number /* node_id of pinned node */,
-  number[] /* list of parents where this node_id is visible */
+  string /* node_id of pinned node */,
+  string[] /* list of parents where this node_id is visible */
 >;
 
 export interface State {
   pins: Pins;
   pinsReverse: Record<
-    number /* node_id of node where some pinned nodes must be visible */,
-    number[] /* array of pins (= node ids) that is visible in this node_id */
+    string /* node_id of node where some pinned nodes must be visible */,
+    string[] /* array of pins (= node ids) that is visible in this node_id */
   >;
 }
 
@@ -40,9 +40,9 @@ export const store = {
         rootState
       }: {
         commit: Commit;
-        rootState: { tree: { nodeRecord: Record<number, NodeRecordItem> } };
+        rootState: { tree: { nodeRecord: Record<string, NodeRecordItem> } };
       },
-      v: { nodeId: number; parentId: number }
+      v: { nodeId: string; parentId: string }
     ) {
       // get all parents of nodeId until parentID
       let currentParent = rootState.tree.nodeRecord[v.nodeId].parent;
@@ -66,7 +66,7 @@ export const store = {
         });
       }
     },
-    [actions.RemovePin]({ commit }: { commit: Commit }, nodeId: number) {
+    [actions.RemovePin]({ commit }: { commit: Commit }, nodeId: string) {
       commit(mutations.REMOVE_PIN, nodeId);
     }
   },
@@ -79,20 +79,20 @@ export const store = {
           if (!state.pinsReverse[parentId]) {
             state.pinsReverse[parentId] = [];
           }
-          state.pinsReverse[parentId].push(Number(pinId));
+          state.pinsReverse[parentId].push(pinId);
         }
       }
     },
-    ADD_TO_PINS(state: State, v: { nodeId: number; parentIds: number[] }) {
+    ADD_TO_PINS(state: State, v: { nodeId: string; parentIds: string[] }) {
       state.pins[v.nodeId] = v.parentIds;
     },
-    ADD_TO_PINS_REVERSE(state: State, v: { nodeId: number; pinId: number }) {
+    ADD_TO_PINS_REVERSE(state: State, v: { nodeId: string; pinId: string }) {
       if (!state.pinsReverse[v.nodeId]) {
         state.pinsReverse[v.nodeId] = [];
       }
       state.pinsReverse[v.nodeId].push(v.pinId);
     },
-    REMOVE_PIN(state: State, nodeId: number) {
+    REMOVE_PIN(state: State, nodeId: string) {
       for (const parentId of state.pins[nodeId]) {
         const index = state.pinsReverse[parentId].indexOf(nodeId);
         state.pinsReverse[parentId].splice(index, 1);
