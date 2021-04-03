@@ -8,7 +8,7 @@ import {
 } from "@/tools/graphics";
 import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "@/tools/errorkv";
-import {clone, printError} from "@/tools/utils";
+import { clone, printError } from "@/tools/utils";
 import { NodeRecordItem } from "@/store/tree/index";
 
 export function findMapNode(
@@ -30,14 +30,14 @@ export function findMapNodes(
   ids: string[],
   mapNodeLayers: Array<Record<string, MapNode>>
 ): MapNode[] {
-  const result: MapNode[] = []
+  const result: MapNode[] = [];
   for (const layer of mapNodeLayers) {
     if (!layer) {
-      continue
+      continue;
     }
     for (const id of ids) {
       if (layer[id]) {
-        result.push(layer[id])
+        result.push(layer[id]);
       }
     }
   }
@@ -52,21 +52,24 @@ export function findMapNodes(
  * @param state
  * @param parentID
  */
-export function calcSubtreesPositions(state: {
-  tree: Tree | null;
-  nodeRecord: Record<string, NodeRecordItem>;
-  mapNodeLayers: Record<string, MapNode>[];
-}, parentID: string) {
+export function calcSubtreesPositions(
+  state: {
+    tree: Tree | null;
+    nodeRecord: Record<string, NodeRecordItem>;
+    mapNodeLayers: Record<string, MapNode>[];
+  },
+  parentID: string
+) {
   if (state.tree == null) {
     return;
   }
 
   const parent = state.nodeRecord[parentID];
   if (!parent) {
-    printError(
-      "updateNodePosition: cannot find node in nodeRecord",
-      {parentID, "state.nodeRecord": state.nodeRecord}
-    );
+    printError("updateNodePosition: cannot find node in nodeRecord", {
+      parentID,
+      "state.nodeRecord": state.nodeRecord
+    });
     return;
   }
 
@@ -86,14 +89,15 @@ export function calcSubtreesPositions(state: {
       for (const child of node.children) {
         const [childMapNode] = findMapNode(child.id, state.mapNodeLayers);
         if (childMapNode == null) {
-          printError(
-            "Cannot find oldMapNode",
-            {"child.id":child.id, "layers":state.mapNodeLayers}
-          );
+          printError("Cannot find oldMapNode", {
+            "child.id": child.id,
+            layers: state.mapNodeLayers
+          });
           return;
         }
         childMapNodes[child.id] = childMapNode;
-        childMapNodes[child.id].center = state.nodeRecord[child.id].node.position;
+        childMapNodes[child.id].center =
+          state.nodeRecord[child.id].node.position;
         childOldMapNodes[child.id] = clone(childMapNode);
       }
 
@@ -123,8 +127,7 @@ export function calcSubtreesPositions(state: {
 
         // update positions in state
         for (const id in newChildrenPositions) {
-          state.nodeRecord[id].node.position =
-            newChildrenPositions[id];
+          state.nodeRecord[id].node.position = newChildrenPositions[id];
         }
         cellIndex++;
       }
@@ -153,8 +156,8 @@ export function getNewNodeCenter(
   parent: Tree,
   mapNodeLayers: Array<Record<number, MapNode>>
 ): [
-    Point | null, // new node center
-    Tree | null, // existing node with corrected center (if any)
+  Point | null, // new node center
+  Tree | null, // existing node with corrected center (if any)
   ErrorKV // error (if any)
 ] {
   const [parentMapNode] = findMapNode(parent.id, mapNodeLayers);
@@ -239,34 +242,35 @@ export function addNode(
     nodeRecord: Record<string, NodeRecordItem>;
     mapNodeLayers: Array<Record<string, MapNode>>;
   },
-  v: { parentID: string; node: Tree, mapNode: MapNode }
+  v: { parentID: string; node: Tree; mapNode: MapNode }
 ): ErrorKV | null {
   // sanity check
   if (state.tree === null) {
-    return NewErrorKV("addNode: Cannot add to empty tree", {state})
+    return NewErrorKV("addNode: Cannot add to empty tree", { state });
   }
   if (!v.parentID) {
-    return NewErrorKV("addNode: Cannot add to parent", {parentID: v.parentID})
+    return NewErrorKV("addNode: Cannot add to parent", {
+      parentID: v.parentID
+    });
   }
   if (!v.node) {
-    return NewErrorKV("addNode: empty node", {node: v.node})
+    return NewErrorKV("addNode: empty node", { node: v.node });
   }
   if (!v.mapNode) {
-    return NewErrorKV("addNode: empty mapNode", {node: v.mapNode})
+    return NewErrorKV("addNode: empty mapNode", { node: v.mapNode });
   }
   const parentRecord = state.nodeRecord[v.parentID];
   if (!parentRecord) {
-    return NewErrorKV("addNode: cannot find parentRecord", {"parentId": v.parentID});
+    return NewErrorKV("addNode: cannot find parentRecord", {
+      parentId: v.parentID
+    });
   }
 
   // calculate position for new node
-  const [newCenter] = getNewNodeCenter(
-    parentRecord.node,
-    state.mapNodeLayers
-  );
+  const [newCenter] = getNewNodeCenter(parentRecord.node, state.mapNodeLayers);
 
-  v.node.position = newCenter!
-  v.mapNode.center = newCenter!
+  v.node.position = newCenter!;
+  v.mapNode.center = newCenter!;
 
   // update tree
   parentRecord.node.children.push(v.node);
@@ -278,12 +282,15 @@ export function addNode(
   };
 
   // update mapLayer
-  const [_, layerIndex] = findMapNode(parentRecord.node.id, state.mapNodeLayers)
-  state.mapNodeLayers[layerIndex! + 1][v.node.id] = v.mapNode
+  const [_, layerIndex] = findMapNode(
+    parentRecord.node.id,
+    state.mapNodeLayers
+  );
+  state.mapNodeLayers[layerIndex! + 1][v.node.id] = v.mapNode;
 
-  calcSubtreesPositions(state, v.parentID)
+  calcSubtreesPositions(state, v.parentID);
 
-  return null
+  return null;
 }
 
 export function updatePosition(
@@ -300,18 +307,17 @@ export function updatePosition(
 
   const item = state.nodeRecord[v.nodeId];
   if (!item) {
-    printError(
-      "updateNodePosition: cannot find node in nodeRecord",
-      {"v.nodeId":v.nodeId, "state.nodeRecord":state.nodeRecord}
-    );
+    printError("updateNodePosition: cannot find node in nodeRecord", {
+      "v.nodeId": v.nodeId,
+      "state.nodeRecord": state.nodeRecord
+    });
     return;
   }
 
   if (!item.parent) {
-    printError(
-      "updateNodePosition: cannot move root of tree",
-      {"v.nodeId": v.nodeId}
-    );
+    printError("updateNodePosition: cannot move root of tree", {
+      "v.nodeId": v.nodeId
+    });
     return;
   }
 
@@ -319,5 +325,5 @@ export function updatePosition(
 
   // Если мы меняем один узел, то могут поменяться границы всех соседей
   // так что надо действовать так как будто поменялись границы всех подузлов родителя узла
-  calcSubtreesPositions(state, item.parent.id)
+  calcSubtreesPositions(state, item.parent.id);
 }

@@ -1,4 +1,4 @@
-import {MapNode, Point, Tree} from "@/types/graphics";
+import { MapNode, Point, Tree } from "@/types/graphics";
 import {
   addVector,
   isInside,
@@ -12,7 +12,7 @@ import {
   updatePosition
 } from "@/store/tree/helpers";
 import { v4 as uuidv4 } from "uuid";
-import {printError} from "@/tools/utils";
+import { printError } from "@/tools/utils";
 
 export interface NodeRecordItem {
   node: Tree;
@@ -102,7 +102,7 @@ export const store = {
 
     [mutations.CUT_PASTE_NODE](
       state: State,
-      v: {parentID: string, nodeID: string}
+      v: { parentID: string; nodeID: string }
     ) {
       if (state.tree === null) {
         return;
@@ -110,13 +110,17 @@ export const store = {
 
       const newParentRecord = state.nodeRecord[v.parentID];
       if (!newParentRecord) {
-        printError("CUT_PASTE_NODE: cannot find newParentRecord", {"parentID":v.parentID});
+        printError("CUT_PASTE_NODE: cannot find newParentRecord", {
+          parentID: v.parentID
+        });
         return;
       }
 
-      const nodeRecord =  state.nodeRecord[v.nodeID]
+      const nodeRecord = state.nodeRecord[v.nodeID];
       if (!nodeRecord) {
-        printError("CUT_PASTE_NODE: cannot find nodeRecord", {"node.id":v.nodeID});
+        printError("CUT_PASTE_NODE: cannot find nodeRecord", {
+          "node.id": v.nodeID
+        });
         return;
       }
 
@@ -126,11 +130,15 @@ export const store = {
       const ind = oldParent!.children.findIndex(node => node.id === v.nodeID);
       oldParent!.children.splice(ind, 1);
 
-      const [mapNode] = findMapNode(v.nodeID, state.mapNodeLayers)
-      addNode(state, {parentID: v.parentID, node: nodeRecord.node, mapNode: mapNode!})
+      const [mapNode] = findMapNode(v.nodeID, state.mapNodeLayers);
+      addNode(state, {
+        parentID: v.parentID,
+        node: nodeRecord.node,
+        mapNode: mapNode!
+      });
 
       // update mapNodes in old parent
-      calcSubtreesPositions(state, oldParent!.id)
+      calcSubtreesPositions(state, oldParent!.id);
 
       // update layers
       const [ls, err2] = treeToMapNodeLayers(state.tree);
@@ -161,7 +169,7 @@ export const store = {
       const newNode = {
         id: uuidv4(),
         title: v.title,
-        position: {x:0, y:0},
+        position: { x: 0, y: 0 },
         wikipedia: "",
         resources: [],
         children: []
@@ -171,11 +179,16 @@ export const store = {
       const mapNode = {
         id: newNode.id,
         title: v.title,
-        center: {x:0, y:0},
-        border: [{x:0, y:0}, {x:0, y:100}, {x:100, y:100}, {x:100, y:0}] // this will be updated later in treeToMapNodeLayers
-      }
+        center: { x: 0, y: 0 },
+        border: [
+          { x: 0, y: 0 },
+          { x: 0, y: 100 },
+          { x: 100, y: 100 },
+          { x: 100, y: 0 }
+        ] // this will be updated later in treeToMapNodeLayers
+      };
 
-      addNode(state, {parentID:v.parentID, node:newNode, mapNode})
+      addNode(state, { parentID: v.parentID, node: newNode, mapNode });
     },
 
     /**

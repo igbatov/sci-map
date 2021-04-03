@@ -63,7 +63,7 @@ export function skeletonToTree(sk: TreeSkeleton, idAsTitle: boolean): Tree {
     if (!node) {
       continue;
     }
-    node.id = String(node.id)
+    node.id = String(node.id);
     if (!node.title) {
       node.title = idAsTitle ? String(node.id) : "";
     }

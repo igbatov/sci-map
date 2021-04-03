@@ -1,5 +1,5 @@
 import { MapNode, Point } from "@/types/graphics";
-import {nextTick, ref, Ref, watch} from "vue";
+import { nextTick, ref, Ref, watch } from "vue";
 
 export type EventClickNode = {
   id: number;
@@ -13,9 +13,17 @@ export type EventDraggingNode = {
 export type MouseDownInfo = {
   nodeId: string | null;
   dragStart: boolean;
-}
+};
 
-type emitFn = (event: "node-mouse-down" | "background-mouse-down" | "dragging" | "drop" | "click", ...args: any[]) => void
+type emitFn = (
+  event:
+    | "node-mouse-down"
+    | "background-mouse-down"
+    | "dragging"
+    | "drop"
+    | "click",
+  ...args: any[]
+) => void;
 
 type TitleBox = {
   position: Point;
@@ -29,7 +37,7 @@ export const mouseDownListener = (
   emit: emitFn,
   event: MouseEvent,
   titleBox: Ref<Record<number, TitleBox>>,
-  mouseDownInfo: MouseDownInfo,
+  mouseDownInfo: MouseDownInfo
 ) => {
   let nodeFound = false;
   for (const id in titleBox.value) {
@@ -38,12 +46,12 @@ export const mouseDownListener = (
     if (
       event.clientX >= x &&
       event.clientX <= x + width &&
-      event.clientY >= y  &&
+      event.clientY >= y &&
       event.clientY <= y + height
     ) {
       emit("node-mouse-down", { id: id });
-      mouseDownInfo.nodeId = id
-      mouseDownInfo.dragStart = false
+      mouseDownInfo.nodeId = id;
+      mouseDownInfo.dragStart = false;
       nodeFound = true;
       break;
     }
@@ -54,7 +62,11 @@ export const mouseDownListener = (
   }
 };
 
-export const mouseMoveListener = (emit: emitFn, event: MouseEvent, mouseDownInfo: MouseDownInfo) => {
+export const mouseMoveListener = (
+  emit: emitFn,
+  event: MouseEvent,
+  mouseDownInfo: MouseDownInfo
+) => {
   if (mouseDownInfo.nodeId) {
     mouseDownInfo.dragStart = true;
     emit("dragging", {
@@ -143,7 +155,11 @@ const updateTitleBox = (
   });
 };
 
-export const getTitleBoxes = (titleIdPrefix: string, position: "center" | "left", mapNodes: Ref<Array<MapNode>>): Ref<Record<string, TitleBox>> => {
+export const getTitleBoxes = (
+  titleIdPrefix: string,
+  position: "center" | "left",
+  mapNodes: Ref<Array<MapNode>>
+): Ref<Record<string, TitleBox>> => {
   const titleBox = ref(nodeToTitleBox(mapNodes.value));
   /**
    * Update titleBox on every prop change after DOM rerender
@@ -156,5 +172,5 @@ export const getTitleBoxes = (titleIdPrefix: string, position: "center" | "left"
     }
   );
 
-  return titleBox
-}
+  return titleBox;
+};

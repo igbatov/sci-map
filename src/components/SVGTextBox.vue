@@ -1,26 +1,26 @@
 <template>
   <text
-      :id="id"
-      :font-family="fontFamily"
-      :font-size="fontSize"
-      :font-weight="fontWeight"
-      :fill="color"
+    :id="id"
+    :font-family="fontFamily"
+    :font-size="fontSize"
+    :font-weight="fontWeight"
+    :fill="color"
   >
     <tspan
-        v-for="(line, i) of lines"
-        :key="i"
-        :x="x"
-        :y="y + i*lineHeight"
-        alignment-baseline="hanging"
+      v-for="(line, i) of lines"
+      :key="i"
+      :x="x"
+      :y="y + i * lineHeight"
+      alignment-baseline="hanging"
     >
-      {{line}}
+      {{ line }}
     </tspan>
   </text>
 </template>
 
 <script lang="ts">
-import {defineComponent} from "vue";
-import {splitLines} from "@/components/SVGTextBox";
+import { defineComponent } from "vue";
+import { splitLines } from "@/components/SVGTextBox";
 
 export default defineComponent({
   name: "SVGTextBox",
@@ -69,7 +69,7 @@ export default defineComponent({
   setup(props) {
     return {
       lines: splitLines(props.text, props.maxCharPerLine)
-    }
+    };
   }
-})
+});
 </script>

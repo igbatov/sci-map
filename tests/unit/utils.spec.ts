@@ -18,7 +18,7 @@ describe("skeletonToTree", () => {
     };
     const tree = skeletonToTree(treeSkeleton, false);
     expect(tree).toEqual({
-      id: '0',
+      id: "0",
       title: "",
       position: {
         x: 0,
@@ -28,7 +28,7 @@ describe("skeletonToTree", () => {
       resources: [],
       children: [
         {
-          id: '1',
+          id: "1",
           title: "",
           position: {
             x: 0,
@@ -39,7 +39,7 @@ describe("skeletonToTree", () => {
           children: []
         },
         {
-          id: '2',
+          id: "2",
           title: "",
           position: {
             x: 0,
@@ -110,30 +110,35 @@ describe("fillTreePositions", () => {
 describe("generateTreeSkeleton", () => {
   it("", () => {
     const treeSk = generateTreeSkeleton(3, 2);
-    treeSk.children?.map((ch, index) => treeSk.children![index].children = treeSk.children![index].children!.sort((a, b) => (a.id < b.id ? -1 : 1)))
-    treeSk.children = treeSk.children?.sort((a, b) => (a.id < b.id ? -1 : 1))
+    treeSk.children?.map(
+      (ch, index) =>
+        (treeSk.children![index].children = treeSk.children![
+          index
+        ].children!.sort((a, b) => (a.id < b.id ? -1 : 1)))
+    );
+    treeSk.children = treeSk.children?.sort((a, b) => (a.id < b.id ? -1 : 1));
     expect(treeSk).toEqual({
-      id: '0',
+      id: "0",
       children: [
         {
-          id: '1',
+          id: "1",
           children: [
             {
-              id: '3'
+              id: "3"
             },
             {
-              id: '4'
+              id: "4"
             }
           ]
         },
         {
-          id: '2',
+          id: "2",
           children: [
             {
-              id: '5'
+              id: "5"
             },
             {
-              id: '6'
+              id: "6"
             }
           ]
         }

@@ -28,12 +28,13 @@ import { mutations as treeMutations, NodeRecordItem } from "@/store/tree";
 import { mutations as zoomPanMutations } from "@/store/zoom_pan";
 import {
   filterNodesAndLayers,
-  findCurrentNode, zoomAndPanPoint,
+  findCurrentNode,
+  zoomAndPanPoint,
   zoomAnPanLayers
 } from "@/views/Home";
-import {clone, printError} from "@/tools/utils";
+import { clone, printError } from "@/tools/utils";
 import { MapNode } from "@/types/graphics";
-import {findMapNodes} from "@/store/tree/helpers";
+import { findMapNodes } from "@/store/tree/helpers";
 
 export default defineComponent({
   name: "Home",
@@ -77,7 +78,7 @@ export default defineComponent({
     const updateLayers = (
       currNodeId: string,
       mapNodeLayers: Array<Record<string, MapNode>>,
-      nodeRecord: Record<string, NodeRecordItem>,
+      nodeRecord: Record<string, NodeRecordItem>
     ) => {
       // Вычленяем слои и узлы которые мы хотим показывать учитывая что текущий узел это currentNodeId
       const [layers, err] = filterNodesAndLayers(
@@ -98,22 +99,22 @@ export default defineComponent({
       () => [treeState.mapNodeLayers, zoomPanState.debouncedZoom],
       () => {
         const [currNodeId, err] = findCurrentNode(
-            treeState.mapNodeLayers,
-            treeState.nodeRecord,
-            { width: window.innerWidth, height: window.innerHeight },
-            zoomPanState.debouncedZoom,
-            zoomPanState.pan,
-            zoomPanState.zoomCenter
+          treeState.mapNodeLayers,
+          treeState.nodeRecord,
+          { width: window.innerWidth, height: window.innerHeight },
+          zoomPanState.debouncedZoom,
+          zoomPanState.pan,
+          zoomPanState.zoomCenter
         );
         if (err != null) {
           printError("filterNodesAndLayers: error in findCurrentNode", { err });
         }
 
-        currentNodeId.value = currNodeId
+        currentNodeId.value = currNodeId;
         layers.value = updateLayers(
           currNodeId,
           treeState.mapNodeLayers,
-          treeState.nodeRecord,
+          treeState.nodeRecord
         );
       },
       { immediate: true, deep: true }
@@ -122,32 +123,36 @@ export default defineComponent({
     return {
       pinNodes: computed(() => {
         if (currentNodeId.value == null) {
-          return []
+          return [];
         }
-        const pinNodeIDs = pinState.pinsReverse[currentNodeId.value]
+        const pinNodeIDs = pinState.pinsReverse[currentNodeId.value];
         if (!pinNodeIDs) {
-          return []
+          return [];
         }
 
         // remove pins that already exists on layers
         for (const layer of layers.value) {
           for (const nodeID in layer) {
-            const node = layer[nodeID]
+            const node = layer[nodeID];
             if (node.title != "") {
-              const ind = pinNodeIDs.indexOf(node.id)
+              const ind = pinNodeIDs.indexOf(node.id);
               if (ind != -1) {
-                pinNodeIDs.splice(ind, 1)
+                pinNodeIDs.splice(ind, 1);
               }
             }
           }
         }
 
-        const pinMapNodes = findMapNodes(pinNodeIDs, treeState.mapNodeLayers)
-        const result = []
+        const pinMapNodes = findMapNodes(pinNodeIDs, treeState.mapNodeLayers);
+        const result = [];
         for (const pinMapNode of pinMapNodes) {
-          const cl = clone(pinMapNode)
-          cl.center = zoomAndPanPoint(pinMapNode.center, zoomPanState.zoom, zoomPanState.pan)
-          result.push(cl)
+          const cl = clone(pinMapNode);
+          cl.center = zoomAndPanPoint(
+            pinMapNode.center,
+            zoomPanState.zoom,
+            zoomPanState.pan
+          );
+          result.push(cl);
         }
 
         return result;

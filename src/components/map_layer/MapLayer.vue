@@ -8,16 +8,16 @@
     :points="polygonToPath(mapNode.border)"
     pointer-events="none"
   />
-<!--    <circle-->
-<!--      v-for="mapNode of mapNodes"-->
-<!--      :key="mapNode.id"-->
-<!--      :cx="mapNode.center.x"-->
-<!--      :cy="mapNode.center.y"-->
-<!--      r="10"-->
-<!--      stroke="black"-->
-<!--      stroke-width="1"-->
-<!--      fill="red"-->
-<!--    />-->
+  <!--    <circle-->
+  <!--      v-for="mapNode of mapNodes"-->
+  <!--      :key="mapNode.id"-->
+  <!--      :cx="mapNode.center.x"-->
+  <!--      :cy="mapNode.center.y"-->
+  <!--      r="10"-->
+  <!--      stroke="black"-->
+  <!--      stroke-width="1"-->
+  <!--      fill="red"-->
+  <!--    />-->
   <text
     v-for="mapNode of mapNodes"
     :id="`${TITLE_PREFIX}${mapNode.id}`"
@@ -31,9 +31,9 @@
     class="text"
   >
     <tspan
-        :x="titleBox[mapNode.id] ? titleBox[mapNode.id].position.x : 0"
-        :y="titleBox[mapNode.id] ? titleBox[mapNode.id].position.y : 0"
-        alignment-baseline="hanging"
+      :x="titleBox[mapNode.id] ? titleBox[mapNode.id].position.x : 0"
+      :y="titleBox[mapNode.id] ? titleBox[mapNode.id].position.y : 0"
+      alignment-baseline="hanging"
     >
       {{ mapNode.title }}
     </tspan>
@@ -43,34 +43,29 @@
     v-for="mapNode of mapNodes"
     :key="mapNode.id"
     :x="titleBox[mapNode.id] ? titleBox[mapNode.id].position.x : 0"
-    :y=" titleBox[mapNode.id] ? titleBox[mapNode.id].position.y : 0"
+    :y="titleBox[mapNode.id] ? titleBox[mapNode.id].position.y : 0"
     :width="titleBox[mapNode.id] ? titleBox[mapNode.id].bbox.width : 0"
     :height="titleBox[mapNode.id] ? titleBox[mapNode.id].bbox.height : 0"
     fill="transparent"
-    stroke-width=0
+    stroke-width="0"
     stroke="pink"
     cursor="pointer"
   />
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  PropType,
-  toRef,
-  onMounted,
-  onUnmounted,
-} from "vue";
+import { defineComponent, PropType, toRef, onMounted, onUnmounted } from "vue";
 import { MapNode } from "@/types/graphics";
 import { polygonToPath } from "@/tools/graphics";
 import {
-  getTitleBoxes, MouseDownInfo,
+  getTitleBoxes,
+  MouseDownInfo,
   mouseDownListener,
   mouseMoveListener,
-  mouseUpListener,
+  mouseUpListener
 } from "@/components/map_layer/MapLayer";
 
-const TITLE_PREFIX = 'title_';
+const TITLE_PREFIX = "title_";
 
 export default defineComponent({
   name: "MapLayer",
@@ -103,17 +98,19 @@ export default defineComponent({
   },
 
   setup(props, ctx) {
-    const mapNodes  = toRef(props, "mapNodes");
+    const mapNodes = toRef(props, "mapNodes");
 
-    const titleBox = getTitleBoxes(TITLE_PREFIX, "center", mapNodes)
+    const titleBox = getTitleBoxes(TITLE_PREFIX, "center", mapNodes);
 
     /**
      * Send event on titleBox click, drag and drop
      */
-    const mouseDownInfo: MouseDownInfo = {nodeId: null, dragStart: false};
-    const mouseDown = (event: MouseEvent) => mouseDownListener(ctx.emit, event, titleBox, mouseDownInfo)
-    const mouseMove = (event: MouseEvent) => mouseMoveListener(ctx.emit, event, mouseDownInfo)
-    const mouseUp = () => mouseUpListener(ctx.emit, mouseDownInfo)
+    const mouseDownInfo: MouseDownInfo = { nodeId: null, dragStart: false };
+    const mouseDown = (event: MouseEvent) =>
+      mouseDownListener(ctx.emit, event, titleBox, mouseDownInfo);
+    const mouseMove = (event: MouseEvent) =>
+      mouseMoveListener(ctx.emit, event, mouseDownInfo);
+    const mouseUp = () => mouseUpListener(ctx.emit, mouseDownInfo);
     onMounted(() => {
       window.addEventListener("mousedown", mouseDown);
       window.addEventListener("mousemove", mouseMove);

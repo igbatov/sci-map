@@ -34,7 +34,7 @@ export default {
     if (IS_OFFLINE) {
       return [
         {
-          id: '0',
+          id: "0",
           title: "",
           position: { x: window.innerWidth / 2, y: window.innerHeight / 2 },
           wikipedia: "",
@@ -56,7 +56,7 @@ export default {
       const response = await axios.get(url);
       return [
         {
-          id: '0',
+          id: "0",
           title: "",
           position: { x: window.innerWidth / 2, y: window.innerHeight / 2 },
           wikipedia: "",

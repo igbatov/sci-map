@@ -1,36 +1,36 @@
 export function splitLines(text: string, maxCharNum: number): string[] {
   if (maxCharNum <= 0) {
-    return []
+    return [];
   }
   if (text == "") {
-    return []
+    return [];
   }
   const words = text.split(" ");
-  const lines: string[] = []
-  let currLine: string[] = []
-  while(words.length) {
+  const lines: string[] = [];
+  let currLine: string[] = [];
+  while (words.length) {
     if (currLine.join(" ").length > maxCharNum) {
-      const nextLine: string[] = []
+      const nextLine: string[] = [];
       if (currLine.length > 1) {
-        nextLine.push(currLine.pop()!)
+        nextLine.push(currLine.pop()!);
       }
-      lines.push(currLine.join(" "))
-      currLine = nextLine
+      lines.push(currLine.join(" "));
+      currLine = nextLine;
     } else {
-      currLine.push(words.shift()!)
+      currLine.push(words.shift()!);
     }
   }
 
   if (currLine.join(" ").length > maxCharNum) {
-    const nextLine: string[] = []
+    const nextLine: string[] = [];
     if (currLine.length > 1) {
-      nextLine.push(currLine.pop()!)
+      nextLine.push(currLine.pop()!);
     }
-    lines.push(currLine.join(" "))
-    currLine = nextLine
+    lines.push(currLine.join(" "));
+    currLine = nextLine;
   }
   if (currLine.length) {
-    lines.push(currLine.join(" "))
+    lines.push(currLine.join(" "));
   }
-  return lines
+  return lines;
 }

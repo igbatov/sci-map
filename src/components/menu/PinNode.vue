@@ -59,7 +59,7 @@ export default {
         });
         currentParent = treeState.nodeRecord[currentParent.id].parent;
       }
-      selectedNodeParents.push({title:"root", id:0})
+      selectedNodeParents.push({ title: "root", id: 0 });
       return selectedNodeParents;
     });
 

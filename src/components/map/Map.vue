@@ -15,15 +15,15 @@
       @node-mouse-down="nodeMouseDown(index)"
     />
     <PinLayer
-        :pinNodes="pinNodes"
-        :selectedNodeId="selectedNodeId"
-        @click="clickNode"
+      :pinNodes="pinNodes"
+      :selectedNodeId="selectedNodeId"
+      @click="clickNode"
     />
   </svg>
 </template>
 
 <script lang="ts">
-import {defineComponent, onMounted, PropType, watch} from "vue";
+import { defineComponent, onMounted, PropType, watch } from "vue";
 import { MapNode } from "@/types/graphics";
 import MapLayer from "@/components/map_layer/MapLayer.vue";
 import {
@@ -52,7 +52,7 @@ export default defineComponent({
         typeof prop === "string" || prop === null,
       required: true
     },
-    pinNodes: Object as PropType<MapNode[]>,
+    pinNodes: Object as PropType<MapNode[]>
   },
   setup(props, ctx) {
     watch(
