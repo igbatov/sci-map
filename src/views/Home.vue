@@ -26,6 +26,7 @@ import { useStore } from "@/store";
 import { useRouter, useRoute } from "vue-router";
 import { mutations as treeMutations, NodeRecordItem } from "@/store/tree";
 import { mutations as zoomPanMutations } from "@/store/zoom_pan";
+import { actions } from "@/store/";
 import {
   filterNodesAndLayers,
   findCurrentNode,
@@ -167,7 +168,7 @@ export default defineComponent({
       viewBox,
       selectedNodeId: computed(() => treeState.selectedNodeId),
       nodeDragging: (e: EventDraggingNode) => {
-        store.commit(`tree/${treeMutations.UPDATE_NODE_POSITION}`, {
+        store.dispatch(`${actions.updateNodePosition}`, {
           nodeId: e.id,
           delta: {
             x: e.delta.x / zoomPanState.zoom,

@@ -13,6 +13,8 @@ import {
 } from "@/store/tree/helpers";
 import { v4 as uuidv4 } from "uuid";
 import { printError } from "@/tools/utils";
+import {ErrorKV} from "@/types/errorkv";
+import NewErrorKV from "@/tools/errorkv";
 
 export interface NodeRecordItem {
   node: Tree;
@@ -98,6 +100,8 @@ export const store = {
         return;
       }
       state.mapNodeLayers = ls;
+
+
     },
 
     [mutations.CUT_PASTE_NODE](
@@ -233,46 +237,34 @@ export const store = {
      */
     [mutations.UPDATE_NODE_POSITION](
       state: State,
-      v: { nodeId: string; delta: Point }
-    ) {
-      const [mapNode] = findMapNode(v.nodeId, state.mapNodeLayers);
-      if (!mapNode) {
-        console.error(
-          "UPDATE_NODE_POSITION: cannot find mapNode",
-          "v.nodeId",
-          v.nodeId,
-          "state.mapNodeLayers",
-          state.mapNodeLayers
-        );
-        return;
+      v: {
+        nodeId: string,
+        newCenter: Point,
+        result: ErrorKV // still waiting for vuex to implement mutation return values https://github.com/vuejs/vuex/issues/1437
       }
-
-      const newCenter = addVector(
-        { from: { x: 0, y: 0 }, to: mapNode.center },
-        { from: { x: 0, y: 0 }, to: v.delta }
-      ).to;
-
+    ) {
       // check that new position is inside parent borders
       const parent = state.nodeRecord[v.nodeId].parent;
       if (parent !== null) {
         const [parentMapNode] = findMapNode(parent.id, state.mapNodeLayers);
         if (!parentMapNode) {
-          console.error(
+          v.result = NewErrorKV(
             "UPDATE_NODE_POSITION: cannot find parent mapNode",
-            "parent.id",
-            parent.id,
-            "state.mapNodeLayers",
-            state.mapNodeLayers
+            {"parent.id":parent.id, "state.mapNodeLayers": state.mapNodeLayers}
           );
           return;
         }
 
-        if (!isInside(newCenter, parentMapNode.border)) {
+        if (!isInside(v.newCenter, parentMapNode.border)) {
+          v.result = NewErrorKV(
+            "!isInside",
+            {"newCenter":v.newCenter, "parentMapNode.border": parentMapNode.border}
+          );
           return;
         }
       }
 
-      updatePosition(state, { nodeId: v.nodeId, position: newCenter });
+      updatePosition(state, { nodeId: v.nodeId, position: v.newCenter });
     }
   }
 };
