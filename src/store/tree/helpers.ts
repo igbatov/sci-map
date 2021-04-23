@@ -8,7 +8,7 @@ import {
 } from "@/tools/graphics";
 import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "@/tools/errorkv";
-import { clone, printError } from "@/tools/utils";
+import { clone } from "@/tools/utils";
 import { NodeRecordItem } from "@/store/tree/index";
 
 export function findMapNode(
@@ -134,7 +134,7 @@ export function calcSubtreesPositions(
     inProcess = newInProcess;
   }
 
-  return null
+  return null;
 }
 
 /**

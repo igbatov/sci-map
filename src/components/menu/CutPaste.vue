@@ -23,7 +23,7 @@ export default {
       paste: () => {
         store.dispatch(`${actions.cutPasteNode}`, {
           nodeID: cutNodeID.value,
-          parentID: selectedNode.value.id,
+          parentID: selectedNode.value.id
         });
         cutNodeID.value = null;
       }

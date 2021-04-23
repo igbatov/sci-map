@@ -1,6 +1,5 @@
 import { MapNode, Point, Tree } from "@/types/graphics";
 import {
-  addVector,
   isInside,
   treeToMapNodeLayers,
   treeToNodeRecord
@@ -12,8 +11,7 @@ import {
   updatePosition
 } from "@/store/tree/helpers";
 import { v4 as uuidv4 } from "uuid";
-import { printError } from "@/tools/utils";
-import {ErrorKV} from "@/types/errorkv";
+import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "@/tools/errorkv";
 
 export interface NodeRecordItem {
@@ -62,19 +60,27 @@ export const store = {
      * @param state
      * @param v
      */
-    [mutations.REMOVE_NODE](state: State, v: { nodeID: string, returnError: ErrorKV }) {
+    [mutations.REMOVE_NODE](
+      state: State,
+      v: { nodeID: string; returnError: ErrorKV }
+    ) {
       if (state.tree === null) {
-        v.returnError = NewErrorKV("state.tree === null", {})
+        v.returnError = NewErrorKV("state.tree === null", {});
         return;
       }
 
       if (!state.nodeRecord[v.nodeID]) {
-        v.returnError = NewErrorKV("REMOVE_NODE: cannot find nodeId in nodeRecord", {"nodeID":v.nodeID, "nodeRecord": state.nodeRecord});
+        v.returnError = NewErrorKV(
+          "REMOVE_NODE: cannot find nodeId in nodeRecord",
+          { nodeID: v.nodeID, nodeRecord: state.nodeRecord }
+        );
         return;
       }
       const parent = state.nodeRecord[v.nodeID].parent;
       if (!parent) {
-        v.returnError = NewErrorKV("REMOVE_NODE: cannot remove root node", {"nodeId":v.nodeID});
+        v.returnError = NewErrorKV("REMOVE_NODE: cannot remove root node", {
+          nodeId: v.nodeID
+        });
         return;
       }
 
@@ -102,18 +108,21 @@ export const store = {
 
     [mutations.CUT_PASTE_NODE](
       state: State,
-      v: { parentID: string; nodeID: string, returnError: ErrorKV }
+      v: { parentID: string; nodeID: string; returnError: ErrorKV }
     ) {
       if (state.tree === null) {
-        v.returnError = NewErrorKV("state.tree === null", {})
+        v.returnError = NewErrorKV("state.tree === null", {});
         return;
       }
 
       const newParentRecord = state.nodeRecord[v.parentID];
       if (!newParentRecord) {
-        v.returnError = NewErrorKV("CUT_PASTE_NODE: cannot find newParentRecord", {
-          parentID: v.parentID
-        });
+        v.returnError = NewErrorKV(
+          "CUT_PASTE_NODE: cannot find newParentRecord",
+          {
+            parentID: v.parentID
+          }
+        );
         return;
       }
 
@@ -138,13 +147,13 @@ export const store = {
         mapNode: mapNode!
       });
       if (v.returnError) {
-        return
+        return;
       }
 
       // update mapNodes in old parent
       v.returnError = calcSubtreesPositions(state, oldParent!.id);
       if (v.returnError) {
-        return
+        return;
       }
 
       // update layers
@@ -163,10 +172,14 @@ export const store = {
      */
     [mutations.CREATE_NEW_NODE](
       state: State,
-      v: { parentID: string | null; title: string, return: {error: ErrorKV, nodeID: string} }
+      v: {
+        parentID: string | null;
+        title: string;
+        return: { error: ErrorKV; nodeID: string };
+      }
     ) {
       if (state.tree === null) {
-        v.return.error = NewErrorKV("state.tree === null", {})
+        v.return.error = NewErrorKV("state.tree === null", {});
         return;
       }
       if (v.parentID === null) {
@@ -196,8 +209,12 @@ export const store = {
         ] // this will be updated later in treeToMapNodeLayers
       };
 
-      v.return.error = addNode(state, { parentID: v.parentID, node: newNode, mapNode });
-      v.return.nodeID = newNode.id
+      v.return.error = addNode(state, {
+        parentID: v.parentID,
+        node: newNode,
+        mapNode
+      });
+      v.return.nodeID = newNode.id;
     },
 
     /**
@@ -243,9 +260,9 @@ export const store = {
     [mutations.UPDATE_NODE_POSITION](
       state: State,
       v: {
-        nodeId: string,
-        newCenter: Point,
-        returnError: ErrorKV // still waiting for vuex to implement mutation return values https://github.com/vuejs/vuex/issues/1437
+        nodeId: string;
+        newCenter: Point;
+        returnError: ErrorKV; // still waiting for vuex to implement mutation return values https://github.com/vuejs/vuex/issues/1437
       }
     ) {
       // check that new position is inside parent borders
@@ -255,21 +272,27 @@ export const store = {
         if (!parentMapNode) {
           v.returnError = NewErrorKV(
             "UPDATE_NODE_POSITION: cannot find parent mapNode",
-            {"parent.id":parent.id, "state.mapNodeLayers": state.mapNodeLayers}
+            {
+              "parent.id": parent.id,
+              "state.mapNodeLayers": state.mapNodeLayers
+            }
           );
           return;
         }
 
         if (!isInside(v.newCenter, parentMapNode.border)) {
-          v.returnError = NewErrorKV(
-            "!isInside",
-            {"newCenter":v.newCenter, "parentMapNode.border": parentMapNode.border}
-          );
+          v.returnError = NewErrorKV("!isInside", {
+            newCenter: v.newCenter,
+            "parentMapNode.border": parentMapNode.border
+          });
           return;
         }
       }
 
-      v.returnError = updatePosition(state, { nodeId: v.nodeId, position: v.newCenter });
+      v.returnError = updatePosition(state, {
+        nodeId: v.nodeId,
+        position: v.newCenter
+      });
     }
   }
 };

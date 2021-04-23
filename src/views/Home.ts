@@ -1,5 +1,5 @@
 import { MapNode, Point, Polygon, Viewport } from "@/types/graphics";
-import {area, getVectorLength, isInside} from "@/tools/graphics";
+import { area, getVectorLength, isInside } from "@/tools/graphics";
 import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "@/tools/errorkv";
 import { NodeRecordItem } from "@/store/tree";
@@ -66,16 +66,16 @@ export function findCurrentNode(
 
     if (underCursorNodeId === "") {
       // if zoomCenter is outside take the closest node
-      let minDist = Infinity
+      let minDist = Infinity;
       for (const nodeId in nodesToCheck) {
         const nodeCenter = zoomAndPanPoint(
           nodesToCheck[nodeId].center,
           zoomFactor,
           pan
         );
-        const dist = getVectorLength({from: nodeCenter, to: zoomCenter})
+        const dist = getVectorLength({ from: nodeCenter, to: zoomCenter });
         if (dist < minDist) {
-          minDist = dist
+          minDist = dist;
           underCursorNodeId = nodeId;
         }
       }

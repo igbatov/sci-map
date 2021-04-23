@@ -1,25 +1,25 @@
-import {Point} from "@/types/graphics";
+import { Point } from "@/types/graphics";
 
 export const mutations = {
   ADD_CUT_PASTE: "ADD_CUT_PASTE",
   ADD_CREATE: "ADD_CREATE",
   ADD_REMOVE: "ADD_REMOVE",
-  ADD_POSITION_CHANGE: "ADD_POSITION_CHANGE",
+  ADD_POSITION_CHANGE: "ADD_POSITION_CHANGE"
 };
 
 enum changeTypeEnum {
   CUT_PASTE = "CUT_PASTE",
   CREATE = "CREATE",
   REMOVE = "REMOVE",
-  POSITION_CHANGE = "POSITION_CHANGE",
+  POSITION_CHANGE = "POSITION_CHANGE"
 }
 
 const changeTypes = {
   CUT_PASTE: "CUT_PASTE" as changeTypeEnum.CUT_PASTE,
-  CREATE: "CREATE"  as changeTypeEnum.CREATE,
+  CREATE: "CREATE" as changeTypeEnum.CREATE,
   REMOVE: "REMOVE" as changeTypeEnum.REMOVE,
-  POSITION_CHANGE: "POSITION_CHANGE" as changeTypeEnum.POSITION_CHANGE,
-}
+  POSITION_CHANGE: "POSITION_CHANGE" as changeTypeEnum.POSITION_CHANGE
+};
 
 export interface CHCutPaste {
   nodeID: string; // object of change
@@ -38,16 +38,16 @@ export interface CHRemove {
 
 export interface CHPositionChange {
   nodeID: string; // object of change
-  newPosition: Point // new position
+  newPosition: Point; // new position
 }
 
 export type TreeChangeList = Record<
   string,
   {
-    [changeTypeEnum.CUT_PASTE]?: CHCutPaste
-    [changeTypeEnum.CREATE]?: CHCreate
-    [changeTypeEnum.REMOVE]?: CHRemove
-    [changeTypeEnum.POSITION_CHANGE]?: CHPositionChange
+    [changeTypeEnum.CUT_PASTE]?: CHCutPaste;
+    [changeTypeEnum.CREATE]?: CHCreate;
+    [changeTypeEnum.REMOVE]?: CHRemove;
+    [changeTypeEnum.POSITION_CHANGE]?: CHPositionChange;
   }
 >;
 
@@ -68,32 +68,35 @@ export const store = {
   mutations: {
     [mutations.ADD_CUT_PASTE](state: State, change: CHCutPaste) {
       if (!state.localChangeList[change.nodeID]) {
-        state.localChangeList[change.nodeID] = {}
+        state.localChangeList[change.nodeID] = {};
       }
       if (state.localChangeList[change.nodeID][changeTypes.CREATE]) {
         // if user ADDed then MOVEd node then it is simply addition to CUT_PASTE newParentID
-        state.localChangeList[change.nodeID][changeTypes.CREATE]!.parentID = change.newParentID
+        state.localChangeList[change.nodeID][changeTypes.CREATE]!.parentID =
+          change.newParentID;
       } else {
-        state.localChangeList[change.nodeID][changeTypes.CUT_PASTE] = change
+        state.localChangeList[change.nodeID][changeTypes.CUT_PASTE] = change;
       }
     },
     [mutations.ADD_CREATE](state: State, change: CHCreate) {
       if (!state.localChangeList[change.nodeID]) {
-        state.localChangeList[change.nodeID] = {}
+        state.localChangeList[change.nodeID] = {};
       }
-      state.localChangeList[change.nodeID][changeTypes.CREATE] = change
+      state.localChangeList[change.nodeID][changeTypes.CREATE] = change;
     },
     [mutations.ADD_REMOVE](state: State, change: CHRemove) {
       // clear changelist for this node because REMOVE vanishes them anyway
-      state.localChangeList[change.nodeID] = {}
-      state.localChangeList[change.nodeID][changeTypes.REMOVE] = change
+      state.localChangeList[change.nodeID] = {};
+      state.localChangeList[change.nodeID][changeTypes.REMOVE] = change;
     },
     [mutations.ADD_POSITION_CHANGE](state: State, change: CHPositionChange) {
       if (!state.localChangeList[change.nodeID]) {
-        state.localChangeList[change.nodeID] = {}
+        state.localChangeList[change.nodeID] = {};
       }
-      state.localChangeList[change.nodeID][changeTypes.POSITION_CHANGE] = change
-    },
+      state.localChangeList[change.nodeID][
+        changeTypes.POSITION_CHANGE
+      ] = change;
+    }
   },
   actions: {}
-}
+};
