@@ -6,7 +6,7 @@
 <script>
 import { useStore } from "@/store";
 import { computed, ref } from "vue";
-import { mutations as treeMutations } from "@/store/tree";
+import { actions } from "@/store";
 
 export default {
   name: "CutPaste",
@@ -21,9 +21,9 @@ export default {
         cutNodeID.value = selectedNode.value.id;
       },
       paste: () => {
-        store.commit(`tree/${treeMutations.CUT_PASTE_NODE}`, {
+        store.dispatch(`${actions.cutPasteNode}`, {
+          nodeID: cutNodeID.value,
           parentID: selectedNode.value.id,
-          nodeID: cutNodeID.value
         });
         cutNodeID.value = null;
       }

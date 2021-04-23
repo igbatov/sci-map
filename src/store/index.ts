@@ -8,7 +8,7 @@ import {
   State as UserState,
   mutations as userMutations
 } from "./user";
-import {store as historyStore, State as HistoryState, mutations as historyMutations, changeTypes} from "./history";
+import {store as historyStore, State as HistoryState, mutations as historyMutations} from "./history";
 
 import api from "@/api/api";
 import { fetchMap, fetchPins } from "./helpers";
@@ -28,7 +28,7 @@ export type State = {
 export const actions = {
   init: "init",
   updateNodePosition: "updateNodePosition",
-  addNewNode: "addNewNode",
+  createNode: "createNode",
   cutPasteNode: "cutPasteNode",
   removeNode: "removeNode"
 };
@@ -44,6 +44,45 @@ export const store = createStore<State>({
       await fetchMap(user);
       await fetchPins(user);
     },
+
+    [actions.createNode]({ commit, state }: { commit: Commit, state: State }, v: {
+      parentID: string | null,
+      title: string
+    }) {
+      const args = { parentID: v.parentID, title: v.title, return: {error: null, nodeID: ""} }
+      commit(`tree/${treeMutations.CREATE_NEW_NODE}`, args);
+      if (args.return.error === null) {
+        commit(`history/${historyMutations.ADD_CREATE}`, {
+          nodeID: args.return.nodeID,
+          parentID:  v.parentID,
+        })
+      }
+    },
+
+    [actions.cutPasteNode]({ commit, state }: { commit: Commit, state: State }, v: {
+      nodeID: string,
+      parentID: string,
+    }) {
+      const args = { nodeID: v.nodeID, parentID: v.parentID, returnError: null }
+      commit(`tree/${treeMutations.CUT_PASTE_NODE}`, args);
+      if (args.returnError === null) {
+        commit(`history/${historyMutations.ADD_CUT_PASTE}`, {
+          nodeID: v.nodeID,
+          parentID: v.parentID,
+        })
+      }
+    },
+
+    [actions.removeNode]({ commit }: { commit: Commit, state: State }, nodeID: string) {
+      const args = { nodeID: nodeID, returnError: null }
+      commit(`tree/${treeMutations.REMOVE_NODE}`, args);
+      if (args.returnError === null) {
+        commit(`history/${historyMutations.ADD_REMOVE}`, {
+          nodeID,
+        })
+      }
+    },
+
     [actions.updateNodePosition]({ commit, state }: { commit: Commit, state: State }, v: { nodeId: string; delta: Point }) {
       const [mapNode] = findMapNode(v.nodeId, state.tree.mapNodeLayers);
       if (!mapNode) {
@@ -57,14 +96,11 @@ export const store = createStore<State>({
         { from: { x: 0, y: 0 }, to: v.delta }
       ).to;
 
-      const args = { nodeId: v.nodeId, newCenter, result: null }
+      const args = { nodeId: v.nodeId, newCenter, returnError: null }
       commit(`tree/${treeMutations.UPDATE_NODE_POSITION}`, args);
-      if (args.result === null) {
-        commit(`history/${historyMutations.ADD_CHANGE}`, {
-          type: changeTypes.CHILDREN_POSITIONS_CHANGE,
+      if (args.returnError === null) {
+        commit(`history/${historyMutations.ADD_POSITION_CHANGE}`, {
           nodeID: v.nodeId,
-          parentID: null,
-          oldParentID: null,
           newPosition: newCenter,
         });
       }

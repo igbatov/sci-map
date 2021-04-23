@@ -38,7 +38,7 @@ import Button from "primevue/button";
 import Input from "primevue/inputtext";
 import { useStore } from "@/store";
 import { computed, ref } from "vue";
-import { mutations as treeMutations } from "@/store/tree";
+import { actions } from "@/store";
 
 export default {
   name: "AddNode",
@@ -59,7 +59,7 @@ export default {
       ),
       toggleAddDialog: () => (addDialogVisible.value = !addDialogVisible.value),
       add: () => {
-        store.commit(`tree/${treeMutations.ADD_NEW_NODE}`, {
+        store.dispatch(`${actions.createNode}`, {
           parentID: selectedNode.value ? selectedNode.value.id : null,
           title: newNodeTitle.value
         });

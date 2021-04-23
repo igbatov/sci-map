@@ -1,5 +1,5 @@
 import { MapNode, Point, Polygon, Viewport } from "@/types/graphics";
-import { area, isInside } from "@/tools/graphics";
+import {area, getVectorLength, isInside} from "@/tools/graphics";
 import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "@/tools/errorkv";
 import { NodeRecordItem } from "@/store/tree";
@@ -22,8 +22,8 @@ export function zoomAndPanPolygon(
 /**
  * CurrentNode вычисляется следующим образом.
  * Начинаем смотреть с самого верхнего слоя.
- * Для каждого узла слоя прменяем zoomFactor, потом pan, потом
- * смотрим находится ли zoomCenter внутри него. Если да, то это претендент на currentNode (назовем его N).
+ * Для каждого узла слоя применяем zoomFactor, затем pan
+ * Потом смотрим находится ли zoomCenter внутри него. Если да, то это претендент на currentNode (назовем его N).
  * Мы берем его полную площадь и умножаем на 2.
  * Если получившееся значение ≤ площади экрана, то мы считаем что currentNode это parent узла N
  * Если больше то повторяем итерацию но только с детьми N.
@@ -65,13 +65,20 @@ export function findCurrentNode(
     }
 
     if (underCursorNodeId === "") {
-      return [
-        "",
-        NewErrorKV(
-          "findCurrentNode: cannot find intersections with viewport among nodesToCheck",
-          { nodesToCheck, viewport }
-        )
-      ];
+      // if zoomCenter is outside take the closest node
+      let minDist = Infinity
+      for (const nodeId in nodesToCheck) {
+        const nodeCenter = zoomAndPanPoint(
+          nodesToCheck[nodeId].center,
+          zoomFactor,
+          pan
+        );
+        const dist = getVectorLength({from: nodeCenter, to: zoomCenter})
+        if (dist < minDist) {
+          minDist = dist
+          underCursorNodeId = nodeId;
+        }
+      }
     }
 
     const underCursorNodeArea = area(

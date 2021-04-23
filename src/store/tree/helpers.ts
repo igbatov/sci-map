@@ -243,7 +243,7 @@ export function addNode(
     mapNodeLayers: Array<Record<string, MapNode>>;
   },
   v: { parentID: string; node: Tree; mapNode: MapNode }
-): ErrorKV | null {
+): ErrorKV {
   // sanity check
   if (state.tree === null) {
     return NewErrorKV("addNode: Cannot add to empty tree", { state });
@@ -288,9 +288,7 @@ export function addNode(
   );
   state.mapNodeLayers[layerIndex! + 1][v.node.id] = v.mapNode;
 
-  calcSubtreesPositions(state, v.parentID);
-
-  return null;
+  return calcSubtreesPositions(state, v.parentID);
 }
 
 export function updatePosition(

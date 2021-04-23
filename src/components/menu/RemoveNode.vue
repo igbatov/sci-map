@@ -30,7 +30,7 @@ import Dialog from "primevue/dialog";
 import Button from "primevue/button";
 import { useStore } from "@/store";
 import { computed, ref } from "vue";
-import { mutations as treeMutations } from "@/store/tree";
+import { actions } from "@/store";
 
 export default {
   name: "AddNode",
@@ -50,10 +50,7 @@ export default {
       toggleDialog: () => (addDialogVisible.value = !addDialogVisible.value),
       remove: () => {
         addDialogVisible.value = false;
-        store.commit(
-          `tree/${treeMutations.REMOVE_NODE}`,
-          selectedNode.value.id
-        );
+        store.dispatch(`${actions.removeNode}`, selectedNode.value.id);
       },
       cancel: () => {
         addDialogVisible.value = false;

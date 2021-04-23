@@ -32,7 +32,7 @@ export const mutations = {
   SET_SELECTED_NODE_ID: "SET_SELECTED_NODE_ID",
   SET_TREE: "SET_TREE",
   UPDATE_NODE_POSITION: "UPDATE_NODE_POSITION",
-  ADD_NEW_NODE: "ADD_NEW_NODE",
+  CREATE_NEW_NODE: "CREATE_NEW_NODE",
   CUT_PASTE_NODE: "CUT_PASTE_NODE",
   REMOVE_NODE: "REMOVE_NODE"
 };
@@ -60,29 +60,26 @@ export const store = {
     /**
      * REMOVE_NODE
      * @param state
-     * @param nodeId
+     * @param v
      */
-    [mutations.REMOVE_NODE](state: State, nodeId: string) {
+    [mutations.REMOVE_NODE](state: State, v: { nodeID: string, returnError: ErrorKV }) {
       if (state.tree === null) {
+        v.returnError = NewErrorKV("state.tree === null", {})
         return;
       }
 
-      if (!state.nodeRecord[nodeId]) {
-        console.error(
-          "REMOVE_NODE: cannot find nodeId in nodeRecord",
-          nodeId,
-          state.nodeRecord
-        );
+      if (!state.nodeRecord[v.nodeID]) {
+        v.returnError = NewErrorKV("REMOVE_NODE: cannot find nodeId in nodeRecord", {"nodeID":v.nodeID, "nodeRecord": state.nodeRecord});
         return;
       }
-      const parent = state.nodeRecord[nodeId].parent;
+      const parent = state.nodeRecord[v.nodeID].parent;
       if (!parent) {
-        console.error("REMOVE_NODE: cannot remove root node", nodeId);
+        v.returnError = NewErrorKV("REMOVE_NODE: cannot remove root node", {"nodeId":v.nodeID});
         return;
       }
 
       // recursively remove node and its descendants from nodeRecord
-      const stack = [nodeId];
+      const stack = [v.nodeID];
       while (stack.length) {
         const id = stack.pop();
         stack.push(...state.nodeRecord[id!].node.children.map(node => node.id));
@@ -90,31 +87,31 @@ export const store = {
       }
 
       // remove from parents children
-      const ind = parent.children.findIndex(node => node.id === nodeId);
+      const ind = parent.children.findIndex(node => node.id === v.nodeID);
       parent.children.splice(ind, 1);
 
       // update layers
       const [ls, err2] = treeToMapNodeLayers(state.tree);
       if (ls == null || err2 != null) {
-        console.error(err2);
+        v.returnError = err2;
         return;
       }
+
       state.mapNodeLayers = ls;
-
-
     },
 
     [mutations.CUT_PASTE_NODE](
       state: State,
-      v: { parentID: string; nodeID: string }
+      v: { parentID: string; nodeID: string, returnError: ErrorKV }
     ) {
       if (state.tree === null) {
+        v.returnError = NewErrorKV("state.tree === null", {})
         return;
       }
 
       const newParentRecord = state.nodeRecord[v.parentID];
       if (!newParentRecord) {
-        printError("CUT_PASTE_NODE: cannot find newParentRecord", {
+        v.returnError = NewErrorKV("CUT_PASTE_NODE: cannot find newParentRecord", {
           parentID: v.parentID
         });
         return;
@@ -122,7 +119,7 @@ export const store = {
 
       const nodeRecord = state.nodeRecord[v.nodeID];
       if (!nodeRecord) {
-        printError("CUT_PASTE_NODE: cannot find nodeRecord", {
+        v.returnError = NewErrorKV("CUT_PASTE_NODE: cannot find nodeRecord", {
           "node.id": v.nodeID
         });
         return;
@@ -135,19 +132,25 @@ export const store = {
       oldParent!.children.splice(ind, 1);
 
       const [mapNode] = findMapNode(v.nodeID, state.mapNodeLayers);
-      addNode(state, {
+      v.returnError = addNode(state, {
         parentID: v.parentID,
         node: nodeRecord.node,
         mapNode: mapNode!
       });
+      if (v.returnError) {
+        return
+      }
 
       // update mapNodes in old parent
-      calcSubtreesPositions(state, oldParent!.id);
+      v.returnError = calcSubtreesPositions(state, oldParent!.id);
+      if (v.returnError) {
+        return
+      }
 
       // update layers
       const [ls, err2] = treeToMapNodeLayers(state.tree);
       if (ls == null || err2 != null) {
-        console.error(err2);
+        v.returnError = err2;
         return;
       }
       state.mapNodeLayers = ls;
@@ -158,11 +161,12 @@ export const store = {
      * @param state
      * @param v
      */
-    [mutations.ADD_NEW_NODE](
+    [mutations.CREATE_NEW_NODE](
       state: State,
-      v: { parentID: string | null; title: string }
+      v: { parentID: string | null; title: string, return: {error: ErrorKV, nodeID: string} }
     ) {
       if (state.tree === null) {
+        v.return.error = NewErrorKV("state.tree === null", {})
         return;
       }
       if (v.parentID === null) {
@@ -192,7 +196,8 @@ export const store = {
         ] // this will be updated later in treeToMapNodeLayers
       };
 
-      addNode(state, { parentID: v.parentID, node: newNode, mapNode });
+      v.return.error = addNode(state, { parentID: v.parentID, node: newNode, mapNode });
+      v.return.nodeID = newNode.id
     },
 
     /**
@@ -240,7 +245,7 @@ export const store = {
       v: {
         nodeId: string,
         newCenter: Point,
-        result: ErrorKV // still waiting for vuex to implement mutation return values https://github.com/vuejs/vuex/issues/1437
+        returnError: ErrorKV // still waiting for vuex to implement mutation return values https://github.com/vuejs/vuex/issues/1437
       }
     ) {
       // check that new position is inside parent borders
@@ -248,7 +253,7 @@ export const store = {
       if (parent !== null) {
         const [parentMapNode] = findMapNode(parent.id, state.mapNodeLayers);
         if (!parentMapNode) {
-          v.result = NewErrorKV(
+          v.returnError = NewErrorKV(
             "UPDATE_NODE_POSITION: cannot find parent mapNode",
             {"parent.id":parent.id, "state.mapNodeLayers": state.mapNodeLayers}
           );
@@ -256,7 +261,7 @@ export const store = {
         }
 
         if (!isInside(v.newCenter, parentMapNode.border)) {
-          v.result = NewErrorKV(
+          v.returnError = NewErrorKV(
             "!isInside",
             {"newCenter":v.newCenter, "parentMapNode.border": parentMapNode.border}
           );
@@ -264,7 +269,7 @@ export const store = {
         }
       }
 
-      updatePosition(state, { nodeId: v.nodeId, position: v.newCenter });
+      v.returnError = updatePosition(state, { nodeId: v.nodeId, position: v.newCenter });
     }
   }
 };
