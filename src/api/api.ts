@@ -8,6 +8,8 @@ import axios from "axios";
 import { Pins } from "@/store/pin";
 
 const IS_OFFLINE = false; // to write code even without wi-fi set this to true
+const ROOT_WIDTH = 1440
+const ROOT_HEIGHT = 821
 
 export default {
   initFirebase() {
@@ -36,7 +38,7 @@ export default {
         {
           id: "0",
           title: "",
-          position: { x: window.innerWidth / 2, y: window.innerHeight / 2 },
+          position: { x: ROOT_WIDTH / 2, y: ROOT_HEIGHT / 2 },
           wikipedia: "",
           resources: [],
           children: apiTree.children
@@ -58,7 +60,7 @@ export default {
         {
           id: "0",
           title: "",
-          position: { x: window.innerWidth / 2, y: window.innerHeight / 2 },
+          position: { x: ROOT_WIDTH / 2, y: ROOT_HEIGHT / 2 },
           wikipedia: "",
           resources: [],
           // children: apiTree.children
