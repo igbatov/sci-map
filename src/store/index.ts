@@ -28,6 +28,7 @@ import { addVector } from "@/tools/graphics";
 export type State = {
   pin: PinState;
   tree: TreeState;
+  baseTree: TreeState;
   user: UserState;
   zoomPan: ZoomPanState;
   history: HistoryState;
@@ -38,7 +39,8 @@ export const actions = {
   updateNodePosition: "updateNodePosition",
   createNode: "createNode",
   cutPasteNode: "cutPasteNode",
-  removeNode: "removeNode"
+  removeNode: "removeNode",
+  saveMap: "saveMap"
 };
 
 export const key: InjectionKey<Store<State>> = Symbol();
@@ -51,6 +53,19 @@ export const store = createStore<State>({
       commit(`user/${userMutations.SET_USER}`, user);
       await fetchMap(user);
       await fetchPins(user);
+    },
+
+    [actions.saveMap](
+      { commit, state }: { commit: Commit; state: State },
+    ) {
+      // fetch base map
+      console.log("state", state)
+
+      // merge our changes to base
+
+      // save result
+      api.saveMap(state.user.user!, state.tree.tree!);
+      api.savePins(state.user.user!, state.pin.pins);
     },
 
     [actions.createNode](
@@ -137,6 +152,7 @@ export const store = createStore<State>({
   modules: {
     pin: pinStore,
     tree: treeStore,
+    baseTree: treeStore,
     user: userStore,
     zoomPan: zoomPanStore,
     history: historyStore

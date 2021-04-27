@@ -3,19 +3,16 @@
 </template>
 
 <script>
-import { useStore } from "@/store";
-import api from "@/api/api";
+import {actions, useStore} from "@/store";
 
 export default {
   name: "Menu",
   setup() {
     const store = useStore();
-    const user = store.state.user;
 
     return {
       save: () => {
-        api.saveMap(user.user, store.state.tree.tree);
-        api.savePins(user.user, store.state.pin.pins);
+        store.dispatch(`${actions.saveMap}`);
       }
     };
   }

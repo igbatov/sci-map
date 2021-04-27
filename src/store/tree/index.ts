@@ -37,12 +37,12 @@ export const mutations = {
 
 export const store = {
   namespaced: true,
-  state: {
+  state() {return {
     tree: null,
     nodeRecord: {}, // id => NodeRecordItem
     mapNodeLayers: [],
     selectedNodeId: null
-  },
+  }},
   getters: {
     selectedNode: (state: State) => {
       if (!state.selectedNodeId) {
