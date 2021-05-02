@@ -34,10 +34,12 @@ export interface CHCreate {
 
 export interface CHRemove {
   nodeID: string; // object of change
+  parentID: string; // parent where object sits (we need it to revert this event)
 }
 
 export interface CHPositionChange {
   nodeID: string; // object of change
+  oldPosition: Point; // old position (we need it to revert this event)
   newPosition: Point; // new position
 }
 
@@ -93,9 +95,15 @@ export const store = {
       if (!state.localChangeList[change.nodeID]) {
         state.localChangeList[change.nodeID] = {};
       }
-      state.localChangeList[change.nodeID][
-        changeTypes.POSITION_CHANGE
-      ] = change;
+      let firstOldPosition = change.oldPosition;
+      if (state.localChangeList[change.nodeID][changeTypes.POSITION_CHANGE]) {
+        firstOldPosition = state.localChangeList[change.nodeID][changeTypes.POSITION_CHANGE]!.oldPosition
+      }
+      state.localChangeList[change.nodeID][changeTypes.POSITION_CHANGE] = {
+        nodeID: change.nodeID,
+        oldPosition: firstOldPosition,
+        newPosition: change.newPosition
+      };
     }
   },
   actions: {}

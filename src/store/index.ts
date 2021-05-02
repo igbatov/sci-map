@@ -19,11 +19,12 @@ import {
 } from "./history";
 
 import api from "@/api/api";
-import { fetchMap, fetchPins } from "./helpers";
+import { fetchMap, fetchPins, applyChangesToBaseTree } from "./helpers";
 import { Point } from "@/types/graphics";
 import { findMapNode } from "@/store/tree/helpers";
 import NewErrorKV from "@/tools/errorkv";
 import { addVector } from "@/tools/graphics";
+import { printError } from "@/tools/utils";
 
 export type State = {
   pin: PinState;
@@ -55,13 +56,18 @@ export const store = createStore<State>({
       await fetchPins(user);
     },
 
-    [actions.saveMap](
+    async [actions.saveMap](
       { commit, state }: { commit: Commit; state: State },
     ) {
       // fetch base map
-      console.log("state", state)
-
-      // merge our changes to base
+      // const [baseTree, err] = await api.getMap(null);
+      // if (baseTree == null || err) {
+      //   printError("fetchMap: cannot api.getMap(null)", {err});
+      // }
+      // commit(`baseTree/${treeMutations.SET_TREE}`, baseTree);
+      //
+      // // merge our changes to base
+      // applyChangesToBaseTree()
 
       // save result
       api.saveMap(state.user.user!, state.tree.tree!);
@@ -111,14 +117,15 @@ export const store = createStore<State>({
     },
 
     [actions.removeNode](
-      { commit }: { commit: Commit; state: State },
+      { commit, state }: { commit: Commit; state: State },
       nodeID: string
     ) {
       const args = { nodeID: nodeID, returnError: null };
       commit(`tree/${treeMutations.REMOVE_NODE}`, args);
       if (args.returnError === null) {
         commit(`history/${historyMutations.ADD_REMOVE}`, {
-          nodeID
+          parentNodeID: state.tree.nodeRecord[nodeID].parent!.id,
+          nodeID: nodeID
         });
       }
     },
@@ -144,6 +151,7 @@ export const store = createStore<State>({
       if (args.returnError === null) {
         commit(`history/${historyMutations.ADD_POSITION_CHANGE}`, {
           nodeID: v.nodeId,
+          oldPosition: mapNode.center,
           newPosition: newCenter
         });
       }
