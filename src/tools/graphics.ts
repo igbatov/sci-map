@@ -9,11 +9,11 @@ import {
 } from "@/types/graphics";
 import * as turf from "@turf/turf";
 import { ErrorKV } from "@/types/errorkv";
-import NewErrorKV from "@/tools/errorkv";
+import {default as NewErrorKV} from "../tools/errorkv";
 import { NodeRecordItem } from "@/store/tree";
 import { polygonArea } from "d3-polygon";
 import polygonClipping from "polygon-clipping";
-import { clone, round } from "@/tools/utils";
+import { clone, round } from "../tools/utils";
 
 export function getVectorLength(v: Vector): number {
   return Math.sqrt(

@@ -7,8 +7,8 @@ import {
   Viewport
 } from "@/types/graphics";
 import { ErrorKV } from "@/types/errorkv";
-import NewErrorKV from "@/tools/errorkv";
-import { getBoundingBorders, getVoronoiCells } from "@/tools/graphics";
+import NewErrorKV from "../tools/errorkv";
+import { getBoundingBorders, getVoronoiCells } from "../tools/graphics";
 
 export const ROUND_EPSILON = 0;
 
