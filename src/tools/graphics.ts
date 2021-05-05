@@ -24,6 +24,9 @@ export function getVectorLength(v: Vector): number {
 export function polygonToTurf(
   p: Polygon
 ): turf.Feature<turf.Polygon, turf.Properties> {
+  if (!p) {
+    throw new Error("polygonToTurf: p is empty")
+  }
   const pp = p.map(point => [point.x, point.y]);
   pp.push([p[0].x, p[0].y]);
   return turf.polygon([pp]);
@@ -229,6 +232,29 @@ export function getVoronoiCells(
   }
 
   return [res, null];
+}
+
+export function getVoronoiCellRecords(
+  outerBorder: Polygon, //(граница массива точек)
+  centers: Record<string, Point> //(точки внутри этой границы)
+): [Record<string, Polygon>, ErrorKV] {
+  const result: Record<string, Polygon> = {}
+  const ids: string[] = []
+  const centersArray: Point[] = []
+  for (const id in centers) {
+    ids.push(id)
+    centersArray.push(centers[id])
+  }
+
+  const [cells, err] = getVoronoiCells(outerBorder, centersArray)
+  if (err !== null) {
+    return [{}, err]
+  }
+  for (const i in ids) {
+    result[ids[i]] = cells[i].border
+  }
+
+  return [result, null]
 }
 
 export function polygonToPath(polygon: Polygon): string {

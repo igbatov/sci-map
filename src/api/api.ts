@@ -1,17 +1,23 @@
 import firebase from "firebase";
-import { Tree } from "@/types/graphics";
+import {Tree, Polygon, Point} from "@/types/graphics";
 import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "@/tools/errorkv";
 // import { apiTree } from "./mocks";
 import apiTree from "./mindmeister";
 import axios from "axios";
 import { Pins } from "@/store/pin";
+import {DBNode} from "@/api/types";
+import {getVoronoiCellRecords, getVoronoiCells, morphChildrenPoints} from "@/tools/graphics";
+import {convertDBMapToTree} from "@/api/helpers";
 
 const IS_OFFLINE = false; // to write code even without wi-fi set this to true
-const ROOT_WIDTH = 1440
-const ROOT_HEIGHT = 821
+const MAP_FROM_STORAGE = false; // is storage is source for map (or database)
 
 export default {
+  ROOT_WIDTH: 1440,
+  ROOT_HEIGHT: 821,
+  ST_WIDTH: 1000,
+  ST_HEIGHT: 1000,
   initFirebase() {
     // Your web app's Firebase configuration
     // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -32,13 +38,52 @@ export default {
     }
   },
 
+  async getMapFromDB(): Promise<[Tree | null, ErrorKV]> {
+    const snapshot = await firebase.database().ref("map").get();
+    if (!snapshot.exists()) {
+      return [null, NewErrorKV("!snapshot.exists", {})]
+    }
+    const map = snapshot.val()
+
+    // create Tree with denormalized positions
+    const [tree, err] = convertDBMapToTree(map, window.innerWidth, window.innerHeight, this.ST_WIDTH, this.ST_HEIGHT)
+    if (err !== null) {
+      return [null, err]
+    }
+
+    return [tree, null]
+  },
+
+  async getMapFromStorage(user: firebase.User | null): Promise<[Tree | null, ErrorKV]> {
+    const storage = firebase.storage().ref();
+    let ref = storage.child(`/map.json`);
+    if (user) {
+      ref = storage.child(`/user/${user.uid}/map.json`);
+    }
+    const url = await ref.getDownloadURL();
+
+    const response = await axios.get(url);
+    return [
+      {
+        id: "0",
+        title: "",
+        position: { x: this.ROOT_WIDTH / 2, y: this.ROOT_HEIGHT / 2 },
+        wikipedia: "",
+        resources: [],
+        // children: apiTree.children
+        children: response.data
+      },
+      null
+    ];
+  },
+
   async getMap(user: firebase.User | null): Promise<[Tree | null, ErrorKV]> {
     if (IS_OFFLINE) {
       return [
         {
           id: "0",
           title: "",
-          position: { x: ROOT_WIDTH / 2, y: ROOT_HEIGHT / 2 },
+          position: { x: this.ROOT_WIDTH / 2, y: this.ROOT_HEIGHT / 2 },
           wikipedia: "",
           resources: [],
           children: apiTree.children
@@ -48,26 +93,11 @@ export default {
     }
 
     try {
-      const storage = firebase.storage().ref();
-      let ref = storage.child(`/map.json`);
-      if (user) {
-        ref = storage.child(`/user/${user.uid}/map.json`);
+      if (MAP_FROM_STORAGE) {
+        return this.getMapFromStorage(user)
+      } else {
+        return this.getMapFromDB()
       }
-      const url = await ref.getDownloadURL();
-
-      const response = await axios.get(url);
-      return [
-        {
-          id: "0",
-          title: "",
-          position: { x: ROOT_WIDTH / 2, y: ROOT_HEIGHT / 2 },
-          wikipedia: "",
-          resources: [],
-          // children: apiTree.children
-          children: response.data
-        },
-        null
-      ];
     } catch (e) {
       return [null, NewErrorKV(e.message, { e: e })];
     }

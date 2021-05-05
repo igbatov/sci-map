@@ -11,19 +11,10 @@ import { Tree, Polygon, Point } from "../src/types/graphics";
 import serviceAccount from "./sci-map-1982-firebase-adminsdk-s5ytq-8a913139ae.json";
 // @ts-ignore
 import {printError} from "../src/tools/utils";
-
-type DBNode = {
-  parentID: string,
-  name: string,
-  children: string[],
-  position: Point,
-}
-
-const ROOT_WIDTH = 1440
-const ROOT_HEIGHT = 821
-
-const ST_WIDTH = 1000;
-const ST_HEIGHT = 1000;
+// @ts-ignore
+import {DBNode} from "../src/api/types";
+// @ts-ignore
+import {ROOT_WIDTH, ROOT_HEIGHT, ST_WIDTH, ST_HEIGHT} from "../src/api/api";
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as ServiceAccount),
@@ -41,8 +32,9 @@ function setToDB(admin, dbNodes: DBNode[]) {
   const db = admin.database();
   const DBRef = db.ref("map");
   DBRef.set(dbNodes);
-  DBRef.once("value", function(snapshot) {
+  DBRef.get().then(function(snapshot) {
     console.log(snapshot.val());
+    console.log("DONE!")
   });
 }
 
@@ -84,6 +76,7 @@ function convertToDBNodes(map:Tree[]): DBNode[] {
     }
 
     dbNodes[node!.id] = {
+      id: node!.id,
       parentID: node!.parentID,
       name: node!.title,
       children: node!.children.map(function(child){
