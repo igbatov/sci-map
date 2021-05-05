@@ -5,8 +5,19 @@ import {ServiceAccount} from "firebase-admin/lib/credential";
 // @ts-ignore
 import {getVoronoiCells, morphChildrenPoints} from "../src/tools/graphics";
 // @ts-ignore
-import { Tree, Polygon } from "../src/types/graphics";
+import { Tree, Polygon, Point } from "../src/types/graphics";
+// this file can be downloaded at Firebase Settings > Service Accounts: https://console.firebase.google.com/u/0/project/sci-map-1982/settings/serviceaccounts/adminsdk
+// (see also https://firebase.google.com/docs/admin/setup?hl=en#prerequisites)
 import serviceAccount from "./sci-map-1982-firebase-adminsdk-s5ytq-8a913139ae.json";
+// @ts-ignore
+import {printError} from "../src/tools/utils";
+
+type DBNode = {
+  parentID: string,
+  name: string,
+  children: string[],
+  position: Point,
+}
 
 const ROOT_WIDTH = 1440
 const ROOT_HEIGHT = 821
@@ -21,23 +32,39 @@ admin.initializeApp({
 });
 
 getMapFromFile(admin).then(function(map){
+  const dbNodes = convertToDBNodes(map)
+  setToDB(admin, dbNodes)
+})
+
+function setToDB(admin, dbNodes: DBNode[]) {
+  // As an admin, the app has access to read and write all data, regardless of Security Rules
+  const db = admin.database();
+  const DBRef = db.ref("map");
+  DBRef.set(dbNodes);
+  DBRef.once("value", function(snapshot) {
+    console.log(snapshot.val());
+  });
+}
+
+function convertToDBNodes(map:Tree[]): DBNode[] {
   const borders: Record<string, Polygon> = {}
   borders[0] = [{x:0, y:0}, {x:0, y:ROOT_HEIGHT}, {x:ROOT_WIDTH, y:ROOT_HEIGHT}, {x:ROOT_WIDTH, y:0}]
   const stack = map
+  stack[0].parentID = null
   const dbNodes: Record<string, any> = {}
   while (stack.length > 0) {
     const node = stack.pop()
-    const children = []
     const [cells, error] = getVoronoiCells(
       borders[node!.id],
       node!.children.map(ch => ({ x: ch.position.x, y: ch.position.y }))
     );
     if (error != null) {
-      return error;
+      printError("Cannot getVoronoiCells", {"node.id":node!.id, borders, "error":error.error, "kv":error.kv});
+      return
     }
     for (const i in node!.children) {
       node!.children[i].parentID = node!.id
-      borders[node!.id] = cells[i]
+      borders[node!.children[i].id] = cells[i].border
     }
     stack.push(...node!.children)
 
@@ -66,20 +93,8 @@ getMapFromFile(admin).then(function(map){
     }
   }
 
-  console.log("dbNodes", dbNodes)
-})
-
-// As an admin, the app has access to read and write all data, regardless of Security Rules
-// var db = admin.database();
-// var DBRef = db.ref("map");
-// DBRef.set({
-//   username: "a",
-//   email: "v",
-//   profile_picture : "dd"
-// });
-// DBRef.once("value", function(snapshot) {
-//   console.log(snapshot.val());
-// });
+  return dbNodes;
+}
 
 function getMapFromFile(admin: any): Promise<Tree[]> {
   const TMP_FILE =  __dirname + "/tmp.json"

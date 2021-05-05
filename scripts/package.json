@@ -2,11 +2,12 @@
   "name": "sci-map-scripts",
   "version": "0.1.0",
   "private": true,
-  "scripts":{
-    "start": "ts-node setMapToDatabase.ts"
+  "scripts": {
+    "set-map-to-db": "ts-node set-map-to-db.ts"
   },
   "devDependencies": {
     "@types/node": "^15.0.1",
+    "firebase-admin": "^9.7.0",
     "nodemon": "^2.0.7",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.5"

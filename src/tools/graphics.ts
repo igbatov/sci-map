@@ -157,7 +157,6 @@ export function getVoronoiCells(
   centers: Point[] //(точки внутри этой границы)
 ): [VoronoiCell[], ErrorKV] {
   if (!outerBorder) {
-    throw new Error("getVoronoiCells: bad outerBorder");
     return [
       [],
       NewErrorKV("getVoronoiCells: bad outerBorder", { outerBorder, centers })
