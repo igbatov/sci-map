@@ -2,12 +2,15 @@
   <div :class="$style.wrapper">
     <div v-if="email">
       {{ email }}
-      <CutPaste v-if="isNodeSelected" />
+      <EditMode v-if="isNodeSelected" />
+      <span v-if="editModeOn">
+        <CutPaste v-if="isNodeSelected" />
+        <AddNode />
+        <RemoveNode v-if="isNodeSelected" />
+        <Save />
+      </span>
       <PinNode v-if="isNodeSelected" />
       <UnpinNode v-if="isNodeSelected && isPinned" />
-      <AddNode />
-      <RemoveNode v-if="isNodeSelected" />
-      <Save />
       <button @click="signOut">Sign Out</button>
     </div>
     <button v-else @click="signIn">
@@ -24,6 +27,7 @@ import PinNode from "./PinNode";
 import AddNode from "./AddNode";
 import RemoveNode from "./RemoveNode";
 import Save from "./Save";
+import EditMode from "./EditMode";
 import UnpinNode from "@/components/menu/UnpinNode";
 import CutPaste from "@/components/menu/CutPaste";
 
@@ -35,7 +39,8 @@ export default {
     PinNode,
     AddNode,
     RemoveNode,
-    Save
+    Save,
+    EditMode,
   },
   setup() {
     const store = useStore();
@@ -46,6 +51,7 @@ export default {
 
     return {
       email,
+      editModeOn: computed(() => store.state.editModeOn),
       isNodeSelected: computed(() => store.state.tree.selectedNodeId),
       isPinned: computed(
         () =>

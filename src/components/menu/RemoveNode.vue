@@ -33,7 +33,7 @@ import { computed, ref } from "vue";
 import { actions } from "@/store";
 
 export default {
-  name: "AddNode",
+  name: "RemoveNode",
   components: {
     Dialog,
     Button

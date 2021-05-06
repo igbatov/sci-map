@@ -6,7 +6,7 @@
 import {actions, useStore} from "@/store";
 
 export default {
-  name: "Menu",
+  name: "Save",
   setup() {
     const store = useStore();
 

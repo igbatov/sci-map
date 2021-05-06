@@ -33,6 +33,7 @@ export type State = {
   user: UserState;
   zoomPan: ZoomPanState;
   history: HistoryState;
+  editModeOn: boolean;
 };
 
 export const actions = {
@@ -41,13 +42,30 @@ export const actions = {
   createNode: "createNode",
   cutPasteNode: "cutPasteNode",
   removeNode: "removeNode",
-  saveMap: "saveMap"
+  saveMap: "saveMap",
+  setEditMode: "setEditMode"
 };
+
+export const mutations = {
+  SET_EDIT_MODE: "SET_EDIT_MODE",
+}
 
 export const key: InjectionKey<Store<State>> = Symbol();
 
 export const store = createStore<State>({
+  state: {
+    editModeOn: false,
+  } as State,
+  mutations: {
+    [mutations.SET_EDIT_MODE](state: State, val: boolean) {
+      state.editModeOn = val
+    }
+  },
   actions: {
+    [actions.setEditMode]({ commit }: { commit: Commit }, val: boolean) {
+      commit("SET_EDIT_MODE", val)
+    },
+
     async [actions.init]({ commit }: { commit: Commit }) {
       api.initFirebase();
       const user = await api.getCurrentUser();
