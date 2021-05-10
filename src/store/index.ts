@@ -1,10 +1,11 @@
-import { Commit, createStore, Store, useStore as baseUseStore } from "vuex";
+import {Commit, createStore, Dispatch, Store, useStore as baseUseStore} from "vuex";
 import { InjectionKey } from "vue";
 import { store as pinStore, State as PinState } from "./pin";
 import {
   store as treeStore,
   State as TreeState,
-  mutations as treeMutations
+  mutations as treeMutations,
+  actions as treeActions
 } from "./tree";
 import { store as zoomPanStore, State as ZoomPanState } from "./zoom_pan";
 import {
@@ -19,21 +20,25 @@ import {
 } from "./history";
 
 import api from "@/api/api";
-import { fetchMap, fetchPins, applyChangesToBaseTree } from "./helpers";
+import { fetchMap, fetchPins } from "./helpers";
 import { Point } from "@/types/graphics";
-import { findMapNode } from "@/store/tree/helpers";
+import {createNewNode, findMapNode, getNewNodeCenter} from "@/store/tree/helpers";
 import NewErrorKV from "@/tools/errorkv";
-import { addVector } from "@/tools/graphics";
-import { printError } from "@/tools/utils";
+import {addVector, morphChildrenPoints} from "@/tools/graphics";
+import {DBNode} from "@/api/types";
+import {isEqual} from "lodash";
 
 export type State = {
+  // root states
+  editModeOn: boolean;
+  subscribedNodeIDs: string[];
+
+  // module states
   pin: PinState;
   tree: TreeState;
-  baseTree: TreeState;
   user: UserState;
   zoomPan: ZoomPanState;
   history: HistoryState;
-  editModeOn: boolean;
 };
 
 export const actions = {
@@ -42,12 +47,14 @@ export const actions = {
   createNode: "createNode",
   cutPasteNode: "cutPasteNode",
   removeNode: "removeNode",
-  saveMap: "saveMap",
-  setEditMode: "setEditMode"
+  handleDBUpdate: "handleDBUpdate", // apply external update from server
+  setEditMode: "setEditMode",
+  subscribeDBChange: "subscribeDBChange"
 };
 
 export const mutations = {
   SET_EDIT_MODE: "SET_EDIT_MODE",
+  SET_SUBSCRIBED_NODE_IDS: "SET_SUBSCRIBED_NODE_IDS",
 }
 
 export const key: InjectionKey<Store<State>> = Symbol();
@@ -55,15 +62,27 @@ export const key: InjectionKey<Store<State>> = Symbol();
 export const store = createStore<State>({
   state: {
     editModeOn: false,
+    subscribedNodeIDs: [] as string[],
   } as State,
   mutations: {
     [mutations.SET_EDIT_MODE](state: State, val: boolean) {
       state.editModeOn = val
+    },
+    [mutations.SET_SUBSCRIBED_NODE_IDS](state: State, val: string[]) {
+      state.subscribedNodeIDs = val
     }
   },
   actions: {
-    [actions.setEditMode]({ commit }: { commit: Commit }, val: boolean) {
-      commit("SET_EDIT_MODE", val)
+    [actions.setEditMode]({ commit, state }: { commit: Commit, state: State }, val: boolean) {
+      commit(mutations.SET_EDIT_MODE, val)
+      if (!val) {
+        state.subscribedNodeIDs.forEach((id) =>  api.unsubscribeDBChange("map/" + id))
+        commit(mutations.SET_SUBSCRIBED_NODE_IDS, [])
+      }
+    },
+
+    async [actions.handleDBUpdate]({ dispatch }: { dispatch: Dispatch }, newNode: DBNode) {
+      await dispatch(`tree/${treeActions.handleDBUpdate}`, newNode)
     },
 
     async [actions.init]({ commit }: { commit: Commit }) {
@@ -74,28 +93,10 @@ export const store = createStore<State>({
       await fetchPins(user);
     },
 
-    async [actions.saveMap](
-      { commit, state }: { commit: Commit; state: State },
-    ) {
-      // fetch base map
-      // const [baseTree, err] = await api.getMap(null);
-      // if (baseTree == null || err) {
-      //   printError("fetchMap: cannot api.getMap(null)", {err});
-      // }
-      // commit(`baseTree/${treeMutations.SET_TREE}`, baseTree);
-      //
-      // // merge our changes to base
-      // applyChangesToBaseTree()
-
-      // save result
-      api.saveMap(state.user.user!, state.tree.tree!);
-      api.savePins(state.user.user!, state.pin.pins);
-    },
-
-    [actions.createNode](
-      { commit }: { commit: Commit },
+    async [actions.createNode](
+      { commit, state }: { commit: Commit, state: State },
       v: {
-        parentID: string | null;
+        parentID: string;
         title: string;
       }
     ) {
@@ -104,10 +105,30 @@ export const store = createStore<State>({
         title: v.title,
         return: { error: null, nodeID: "" }
       };
-      commit(`tree/${treeMutations.CREATE_NEW_NODE}`, args);
+
+      const parent = state.tree.nodeRecord[v.parentID].node
+      const [parentMapNode] = findMapNode(parent.id, state.tree.mapNodeLayers)
+      const [newCenter] = getNewNodeCenter(parent, state.tree.mapNodeLayers)
+      const node = createNewNode(v.title, newCenter!)
+      const centers = {[node.id]: node.position}
+      const [normalizedPosition] = morphChildrenPoints(
+        parentMapNode!.border,
+        [{x:0, y:0}, {x:0, y:api.ST_HEIGHT}, {x:api.ST_WIDTH, y:api.ST_HEIGHT}, {x:api.ST_WIDTH, y:0}],
+        centers
+      )
+      await api.transaction(node.id, (_) => {
+        return {
+          id: node.id,
+          parentID: v.parentID,
+          name: v.title,
+          children: [],
+          position: normalizedPosition![node.id]
+        } as DBNode;
+      })
+
       if (args.return.error === null) {
         commit(`history/${historyMutations.ADD_CREATE}`, {
-          nodeID: args.return.nodeID,
+          nodeID: node.id,
           parentID: v.parentID
         });
       }
@@ -125,7 +146,12 @@ export const store = createStore<State>({
         parentID: v.parentID,
         returnError: null
       };
-      commit(`tree/${treeMutations.CUT_PASTE_NODE}`, args);
+      // remove nodeID from oldParent children,
+      // add to newParent children,
+      // recalculate position of node, normalize it and
+      // update DB with these three modifications in one transaction
+
+      // commit(`tree/${treeMutations.CUT_PASTE_NODE}`, args);
       if (args.returnError === null) {
         commit(`history/${historyMutations.ADD_CUT_PASTE}`, {
           nodeID: v.nodeID,
@@ -139,7 +165,9 @@ export const store = createStore<State>({
       nodeID: string
     ) {
       const args = { nodeID: nodeID, returnError: null };
-      commit(`tree/${treeMutations.REMOVE_NODE}`, args);
+      // remove node from DB
+
+      //commit(`tree/${treeMutations.REMOVE_NODE}`, args);
       if (args.returnError === null) {
         commit(`history/${historyMutations.ADD_REMOVE}`, {
           parentNodeID: state.tree.nodeRecord[nodeID].parent!.id,
@@ -173,12 +201,32 @@ export const store = createStore<State>({
           newPosition: newCenter
         });
       }
+    },
+
+    [actions.subscribeDBChange](
+      { commit, state }: { commit: Commit; state: State },
+      v: {oldNodeIDs: string[], newNodeIDs: string[], cb: (dbNode: DBNode) => void},
+    ) {
+      // check we really need unsubscribe/subscribe
+      if (isEqual(v.oldNodeIDs.sort(), v.newNodeIDs.sort())) {
+        return
+      }
+
+      // unsubscribe old nodes that have visible titles
+      v.oldNodeIDs.forEach((id) =>  api.unsubscribeDBChange("map/"+id))
+
+      // subscribe new nodes that have visible titles
+      v.newNodeIDs.forEach((id) =>  api.subscribeDBChange("map/"+id, (snapshot) => {
+        const node = snapshot.val();
+        v.cb(node)
+      }))
+
+      commit(mutations.SET_SUBSCRIBED_NODE_IDS, v.newNodeIDs)
     }
   },
   modules: {
     pin: pinStore,
     tree: treeStore,
-    baseTree: treeStore,
     user: userStore,
     zoomPan: zoomPanStore,
     history: historyStore

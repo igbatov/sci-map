@@ -10,6 +10,7 @@ import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "@/tools/errorkv";
 import { clone } from "@/tools/utils";
 import { NodeRecordItem } from "@/store/tree/index";
+import {v4 as uuidv4} from "uuid";
 
 export function findMapNode(
   id: string,
@@ -135,6 +136,18 @@ export function calcSubtreesPositions(
   }
 
   return null;
+}
+
+export function createNewNode(title: string, center: Point): Tree {
+  return {
+    id: uuidv4(),
+    position: center,
+    title: title,
+    wikipedia: "",
+    resources: [],
+    children: [],
+  } as Tree;
+
 }
 
 /**
@@ -265,12 +278,6 @@ export function addNode(
       parentId: v.parentID
     });
   }
-
-  // calculate position for new node
-  const [newCenter] = getNewNodeCenter(parentRecord.node, state.mapNodeLayers);
-
-  v.node.position = newCenter!;
-  v.mapNode.center = newCenter!;
 
   // update tree
   parentRecord.node.children.push(v.node);

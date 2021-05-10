@@ -5,12 +5,16 @@ import NewErrorKV from "@/tools/errorkv";
 import { NodeRecordItem } from "@/store/tree";
 import { findMapNode } from "@/store/tree/helpers";
 import { clone } from "@/tools/utils";
+import api from "@/api/api";
+import { isEqual } from "lodash";
+import {DBNode} from "@/api/types";
 
 const MIN_VISIBLE_NUM_IN_LAYER = 2;
 
 export function zoomAndPanPoint(p: Point, zoom: number, pan: Point): Point {
   return { x: p.x * zoom + pan.x, y: p.y * zoom + pan.y };
 }
+
 export function zoomAndPanPolygon(
   p: Polygon,
   zoom: number,

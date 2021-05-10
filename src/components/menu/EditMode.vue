@@ -1,6 +1,6 @@
 <template>
-  <button v-if="editModeOn" @click="off">View Mode</button>
-  <button v-if="!editModeOn" @click="on">Edit Mode</button>
+  <button v-if="editModeOn" @click="off">Back to view mode</button>
+  <button v-if="!editModeOn" @click="on">Edit Map</button>
 </template>
 
 <script>

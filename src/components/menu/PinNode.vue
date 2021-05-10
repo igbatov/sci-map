@@ -34,6 +34,7 @@ import Listbox from "primevue/listbox";
 import { useStore } from "@/store";
 import { computed, ref } from "vue";
 import { actions as pinActions } from "@/store/pin";
+import api from "@/api/api";
 
 export default {
   name: "PinNode",
@@ -75,6 +76,7 @@ export default {
           parentId: selectedParent.value.id,
           nodeId: selectedNode.value.id
         });
+        api.savePins(store.state.user.user, store.state.pin.pins);
         selectedParent.value = null;
       },
       cancelAdd: () => {

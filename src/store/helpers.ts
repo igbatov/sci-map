@@ -5,10 +5,6 @@ import { mutations as pinMutations } from "@/store/pin";
 import { store } from "@/store/index";
 import {printError} from "@/tools/utils";
 
-export function applyChangesToBaseTree() {
-  return
-}
-
 export async function fetchMap(user: firebase.User | null) {
   let [tree, err] = await api.getMap(user);
   if (tree == null || err) {

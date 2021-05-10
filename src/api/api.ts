@@ -46,12 +46,17 @@ export default {
     const map = snapshot.val()
 
     // create Tree with denormalized positions
-    const [tree, err] = convertDBMapToTree(map, window.innerWidth, window.innerHeight, this.ST_WIDTH, this.ST_HEIGHT)
+    const [tree, err] = convertDBMapToTree(map, this.ROOT_WIDTH, this.ROOT_HEIGHT, this.ST_WIDTH, this.ST_HEIGHT)
     if (err !== null) {
       return [null, err]
     }
 
     return [tree, null]
+  },
+
+  async getNode(user: firebase.User | null, nodeID: string): Promise<[DBNode | null, ErrorKV]> {
+    const pr = await firebase.database().ref("map/"+nodeID).get()
+    return pr.val()
   },
 
   async getMapFromStorage(user: firebase.User | null): Promise<[Tree | null, ErrorKV]> {
@@ -141,7 +146,7 @@ export default {
     );
   },
 
-  async saveMap(user: firebase.User, map: Tree) {
+  async saveUserMap(user: firebase.User, map: Tree) {
     if (IS_OFFLINE) {
       return;
     }
@@ -173,5 +178,17 @@ export default {
       btoa(unescape(encodeURIComponent(JSON.stringify(pins)))),
       "base64"
     );
+  },
+
+  subscribeDBChange(path: string, cb: (a: firebase.database.DataSnapshot) => any) {
+    firebase.database().ref(path).on('value', cb);
+  },
+
+  unsubscribeDBChange(path: string, cb?: (a: firebase.database.DataSnapshot) => any) {
+    firebase.database().ref(path).off('value', cb);
+  },
+
+  async transaction(nodeID: string, update: (val: any) => any) {
+    await firebase.database().ref("map/"+nodeID).transaction(update, ()=>{ return }, false);
   }
 };

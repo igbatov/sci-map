@@ -1,18 +1,24 @@
 import { MapNode, Point, Tree } from "@/types/graphics";
 import {
-  isInside,
+  isInside, morphChildrenPoints,
   treeToMapNodeLayers,
   treeToNodeRecord
 } from "@/tools/graphics";
 import {
   addNode,
   calcSubtreesPositions,
-  findMapNode,
+  findMapNode, getNewNodeCenter,
   updatePosition
 } from "@/store/tree/helpers";
 import { v4 as uuidv4 } from "uuid";
 import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "@/tools/errorkv";
+import {DBNode} from "@/api/types";
+import { isEqual } from "lodash";
+import {printError, round} from "@/tools/utils";
+import api from "@/api/api";
+import {Commit} from "vuex";
+import firebase from "firebase";
 
 export interface NodeRecordItem {
   node: Tree;
@@ -30,10 +36,14 @@ export const mutations = {
   SET_SELECTED_NODE_ID: "SET_SELECTED_NODE_ID",
   SET_TREE: "SET_TREE",
   UPDATE_NODE_POSITION: "UPDATE_NODE_POSITION",
-  CREATE_NEW_NODE: "CREATE_NEW_NODE",
+  ADD_NODE: "ADD_NODE",
   CUT_PASTE_NODE: "CUT_PASTE_NODE",
-  REMOVE_NODE: "REMOVE_NODE"
+  REMOVE_NODE: "REMOVE_NODE",
 };
+
+export const actions = {
+  handleDBUpdate: "handleDBUpdate",
+}
 
 export const store = {
   namespaced: true,
@@ -43,6 +53,7 @@ export const store = {
     mapNodeLayers: [],
     selectedNodeId: null
   }},
+
   getters: {
     selectedNode: (state: State) => {
       if (!state.selectedNodeId) {
@@ -53,6 +64,173 @@ export const store = {
       }
       return state.nodeRecord[state.selectedNodeId].node;
     }
+  },
+
+  actions: {
+    /**
+     * Update tree and dependant structures on DBNode change
+     *
+     * После добавления нового узла мы не вносим изменения а схораняем в базу и ждем пока оттуда придет обновление
+     *
+     * Маппинг изменений в виде снэпшотов на изменения в формате store/history выглядит следующим образом.
+     * Мы сравниваем наш узел и пришедший новый снэпшот этого узла
+     *
+     * Если видим удаление child, то это либо перенос либо удаление узла.
+     * В любом случае мы можем у себя удалить этот узел (мы не удаляем всю информацию, только из дерева - 'fake removal').
+     * Если это перенос, то мы либо получили событие добавления в другой узел,
+     * до этого события, либо получим его после. Если мы его уже получили до, то мы из этого узла уже должны были его удалить,
+     * так что остается вариант когда мы еще получим событие о добавлении. В этом случаем для нас это будет добавление нового узла.
+     * То есть мы запросим из базы этот узел и вставим его
+     *
+     * Если видим добавление child то это либо перенос либо добавление нового узла. Если мы не находим у себя child с таким id
+     * то это добавление - нам нужно запросить из базы node с таким id и добавить его к себе.
+     * Если в nodeRecord есть такой узел, то это перенос - мы удаляем его из старого родителя и вставляем в новый
+     *
+     * Этими двумя кейсами покрываются события добавления, удаления и переноса.
+     * Событие изменения имени и позиции мапятся тривиально
+     *
+     * @param commit
+     * @param state
+     * @param arg
+     */
+    async [actions.handleDBUpdate](
+      { commit, state }: { commit: Commit; state: State },
+      arg: {dbNode: DBNode, user: firebase.User | null },
+    ) {
+      const dbNodeRecord = state.nodeRecord[arg.dbNode.id]
+      if (!dbNodeRecord) {
+        printError("UPDATE_NODE: Cannot find dbNode in dbNodeRecord", {"dbNode.id":arg.dbNode.id})
+        return
+      }
+
+      // calculate denormalized position of dbNode
+      let denormalizedPosition = {x:0, y:0}
+      if (dbNodeRecord.parent) {
+        const [parentMapNode] = findMapNode(dbNodeRecord.parent.id, state.mapNodeLayers)
+        if (!parentMapNode) {
+          printError("UPDATE_NODE: Cannot findMapNode", {"id":dbNodeRecord.parent.id})
+          return
+        }
+        const normalizedBorder = [{x:0, y:0}, {x:0, y:api.ST_HEIGHT}, {x:api.ST_WIDTH, y:api.ST_HEIGHT}, {x:api.ST_WIDTH, y:0}]
+        const [denormalizedPositions, err] = morphChildrenPoints(
+          normalizedBorder,
+          parentMapNode.border,
+          {[arg.dbNode.id]: arg.dbNode.position}
+        )
+        if (err !== null) {
+          printError("UPDATE_NODE: Cannot morphChildrenPoints", {
+            "normalizedBorder": normalizedBorder,
+            "parentMapNode.border":parentMapNode.border,
+            "dbNode.position": arg.dbNode.position
+          })
+          return
+        }
+        denormalizedPosition = denormalizedPositions![arg.dbNode.id]
+      } else {
+        denormalizedPosition = {x: api.ROOT_WIDTH/2, y:api.ROOT_HEIGHT/2}
+      }
+
+      arg.dbNode.children.sort()
+
+      const oldDBNode = {
+        id: dbNodeRecord.node.id,
+        parentID: dbNodeRecord.parent ? dbNodeRecord.parent.id : null,
+        name: dbNodeRecord.node.title,
+        children: dbNodeRecord.node.children.map((n)=>n.id).sort(),
+        position: dbNodeRecord.node.position,
+      }
+
+      const newChildren = arg.dbNode.children.filter(x => !oldDBNode.children.includes(x));
+      const removedChildren = oldDBNode.children.filter(x => !arg.dbNode.children.includes(x));
+
+      // Add or move of new child
+      if (newChildren.length) {
+        for (const childID of newChildren) {
+          if (!state.nodeRecord[childID]) { // create new Node
+            // request node from server
+            const [addedDBNode, err] = await api.getNode(arg.user, arg.dbNode.id)
+            if (!addedDBNode) {
+              // we cannot find node for addition, skip it
+              printError("Cannot find node for addition", {"nodeID": arg.dbNode.id})
+              continue;
+            }
+
+            // get children if any
+            const children: Tree[] = []
+            if (addedDBNode.children && addedDBNode.children.length) {
+              for (const childrenID of addedDBNode.children) {
+                if (!state.nodeRecord[childrenID]) {
+                  printError("ADD_NODE: cannot find child in nodeRecord", {"addedDBNode":addedDBNode})
+                  continue;
+                }
+                children.push(state.nodeRecord[childrenID].node)
+              }
+            }
+
+            const v = {
+              parentID: addedDBNode.parentID,
+              node: {
+                id: addedDBNode.id,
+                title: addedDBNode.name,
+                position: addedDBNode.position,
+                children: children,
+                wikipedia: "",
+                resources: []
+              } as Tree,
+              error: null
+            }
+            commit(mutations.ADD_NODE, v)
+            if (v.error) {
+              printError("actions.handleDBUpdate: cannot create new node", {"err":v.error})
+            }
+          } else { // move Node
+            const nr = state.nodeRecord[childID]
+            if (!nr.parent) {
+              printError("actions.handleDBUpdate: Cannot insert as root node", {"state.nodeRecord[childID]": nr})
+              continue
+            }
+            const v = { parentID: nr.parent.id, nodeID: nr.node.id, returnError: null }
+            commit(mutations.CUT_PASTE_NODE, v)
+            if (v.returnError) {
+              printError("actions.handleDBUpdate: Cannot insert as root node", {"err": v.returnError})
+            }
+          }
+        }
+      }
+
+      // Remove of child
+      if (removedChildren.length) {
+        for (const childID of removedChildren) {
+          const v = {nodeID: childID, returnError: null }
+          commit(mutations.REMOVE_NODE,  v)
+          if (v.returnError) {
+            printError("actions.handleDBUpdate: cannot remove node", {"err": v.returnError, "id": childID})
+          }
+        }
+      }
+
+      // Change of position
+      if (round(denormalizedPosition.x) !== round(oldDBNode.position.x) ||
+        round(denormalizedPosition.y) !== round(oldDBNode.position.y)
+      ) {
+        const v = {
+          nodeId: arg.dbNode.id,
+          newCenter: denormalizedPosition,
+          returnError: null,
+        }
+        commit(mutations.UPDATE_NODE_POSITION, v)
+        if (v.returnError !== null) {
+          printError("actions.handleDBUpdate: cannot update node's position", {"arg.dbNode": arg.dbNode,"err":v.returnError})
+          return
+        }
+      }
+
+      // Change of name
+      if (oldDBNode.name !== arg.dbNode.name) {
+        dbNodeRecord.node.title = arg.dbNode.name
+      }
+    },
+
   },
   mutations: {
     /**
@@ -84,15 +262,16 @@ export const store = {
         return;
       }
 
-      // recursively remove node and its descendants from nodeRecord
-      const stack = [v.nodeID];
-      while (stack.length) {
-        const id = stack.pop();
-        stack.push(...state.nodeRecord[id!].node.children.map(node => node.id));
-        delete state.nodeRecord[id!];
-      }
+      ////// commented out removal from state.nodeRecord, because it may be 'fake removal' - see actions.updateNode
+      //// remove node and its descendants from nodeRecord
+      // const stack = [v.nodeID];
+      // while (stack.length) {
+      //   const id = stack.pop();
+      //   stack.push(...state.nodeRecord[id!].node.children.map(node => node.id));
+      //   delete state.nodeRecord[id!];
+      // }
 
-      // remove from parents children
+      // remove from parent's children
       const ind = parent.children.findIndex(node => node.id === v.nodeID);
       parent.children.splice(ind, 1);
 
@@ -141,6 +320,12 @@ export const store = {
       oldParent!.children.splice(ind, 1);
 
       const [mapNode] = findMapNode(v.nodeID, state.mapNodeLayers);
+
+      // calculate position for new node
+      const [newCenter] = getNewNodeCenter(nodeRecord.parent!, state.mapNodeLayers);
+      nodeRecord.node.position = newCenter!;
+      mapNode!.center = newCenter!;
+
       v.returnError = addNode(state, {
         parentID: v.parentID,
         node: nodeRecord.node,
@@ -170,37 +355,27 @@ export const store = {
      * @param state
      * @param v
      */
-    [mutations.CREATE_NEW_NODE](
+    [mutations.ADD_NODE](
       state: State,
       v: {
-        parentID: string | null;
-        title: string;
-        return: { error: ErrorKV; nodeID: string };
+        parentID: string,
+        node: Tree,
+        error: ErrorKV
       }
     ) {
       if (state.tree === null) {
-        v.return.error = NewErrorKV("state.tree === null", {});
+        v.error = NewErrorKV("state.tree === null", {});
         return;
       }
       if (v.parentID === null) {
         v.parentID = state.tree.id; // take root node as parent
       }
 
-      // create new node
-      const newNode = {
-        id: uuidv4(),
-        title: v.title,
-        position: { x: 0, y: 0 },
-        wikipedia: "",
-        resources: [],
-        children: []
-      };
-
       // create new MapNode
       const mapNode = {
-        id: newNode.id,
-        title: v.title,
-        center: { x: 0, y: 0 },
+        id: v.node.id,
+        title: v.node.title,
+        center: v.node.position,
         border: [
           { x: 0, y: 0 },
           { x: 0, y: 100 },
@@ -209,12 +384,11 @@ export const store = {
         ] // this will be updated later in treeToMapNodeLayers
       };
 
-      v.return.error = addNode(state, {
+      v.error = addNode(state, {
         parentID: v.parentID,
-        node: newNode,
+        node: v.node,
         mapNode
       });
-      v.return.nodeID = newNode.id;
     },
 
     /**

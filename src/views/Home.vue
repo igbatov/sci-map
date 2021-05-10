@@ -36,6 +36,7 @@ import {
 import { clone, printError } from "@/tools/utils";
 import { MapNode } from "@/types/graphics";
 import { findMapNodes } from "@/store/tree/helpers";
+import {DBNode} from "@/api/types";
 
 export default defineComponent({
   name: "Home",
@@ -54,7 +55,7 @@ export default defineComponent({
     const pinState = store.state.pin;
 
     watch(
-      () => route.params,
+      () => route.params.id,
       () => {
         store.commit(
           `tree/${treeMutations.SET_SELECTED_NODE_ID}`,
@@ -80,9 +81,9 @@ export default defineComponent({
       currNodeId: string,
       mapNodeLayers: Array<Record<string, MapNode>>,
       nodeRecord: Record<string, NodeRecordItem>
-    ) => {
+    ): Array<Record<number, MapNode>> => {
       // Вычленяем слои и узлы которые мы хотим показывать учитывая что текущий узел это currentNodeId
-      const [layers, err] = filterNodesAndLayers(
+      const [filteredLayers, err] = filterNodesAndLayers(
         mapNodeLayers,
         nodeRecord,
         currNodeId
@@ -91,7 +92,7 @@ export default defineComponent({
         printError("Home.vue: error in filterNodesAndLayers:", { err });
         return [];
       }
-      return layers.reverse();
+      return filteredLayers.reverse();
     };
 
     const currentNodeId = ref<string | null>(null);
@@ -111,12 +112,28 @@ export default defineComponent({
           printError("filterNodesAndLayers: error in findCurrentNode", { err });
         }
 
+        const oldVisibleNodeIDs = []
+        for (const layer of layers.value) {
+          oldVisibleNodeIDs.push(...Object.values(layer).filter((n: MapNode) => (!!n.title)).map((n: MapNode)=>n.id))
+        }
+
         currentNodeId.value = currNodeId;
         layers.value = updateLayers(
           currNodeId,
           treeState.mapNodeLayers,
           treeState.nodeRecord
         );
+
+        const newVisibleNodeIDs = []
+        for (const layer of layers.value) {
+          newVisibleNodeIDs.push(...Object.values(layer).filter((n: MapNode) => (!!n.title)).map((n: MapNode)=>n.id))
+        }
+
+        store.dispatch(actions.subscribeDBChange, {
+          oldNodeIDs: oldVisibleNodeIDs,
+          newNodeIDs: newVisibleNodeIDs,
+          cb: (dbNode: DBNode) => store.dispatch(actions.handleDBUpdate, dbNode)
+        })
       },
       { immediate: true, deep: true }
     );
