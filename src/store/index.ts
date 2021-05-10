@@ -24,7 +24,7 @@ import { fetchMap, fetchPins } from "./helpers";
 import { Point } from "@/types/graphics";
 import {createNewNode, findMapNode, getNewNodeCenter} from "@/store/tree/helpers";
 import NewErrorKV from "@/tools/errorkv";
-import {addVector, morphChildrenPoints} from "@/tools/graphics";
+import {addVector, convertPosition, morphChildrenPoints} from "@/tools/graphics";
 import {DBNode} from "@/api/types";
 import {isEqual} from "lodash";
 
@@ -100,12 +100,6 @@ export const store = createStore<State>({
         title: string;
       }
     ) {
-      const args = {
-        parentID: v.parentID,
-        title: v.title,
-        return: { error: null, nodeID: "" }
-      };
-
       const parent = state.tree.nodeRecord[v.parentID].node
       const [parentMapNode] = findMapNode(parent.id, state.tree.mapNodeLayers)
       const [newCenter] = getNewNodeCenter(parent, state.tree.mapNodeLayers)
@@ -116,48 +110,40 @@ export const store = createStore<State>({
         [{x:0, y:0}, {x:0, y:api.ST_HEIGHT}, {x:api.ST_WIDTH, y:api.ST_HEIGHT}, {x:api.ST_WIDTH, y:0}],
         centers
       )
-      await api.transaction(node.id, (_) => {
-        return {
-          id: node.id,
-          parentID: v.parentID,
-          name: v.title,
-          children: [],
-          position: normalizedPosition![node.id]
-        } as DBNode;
+      await api.set({
+        id: node.id,
+        parentID: v.parentID,
+        name: v.title,
+        children: [],
+        position: normalizedPosition![node.id]
       })
 
-      if (args.return.error === null) {
-        commit(`history/${historyMutations.ADD_CREATE}`, {
-          nodeID: node.id,
-          parentID: v.parentID
-        });
-      }
+      commit(`history/${historyMutations.ADD_CREATE}`, {
+        nodeID: node.id,
+        parentID: v.parentID
+      });
     },
 
     [actions.cutPasteNode](
-      { commit }: { commit: Commit },
+      { commit, state }: { commit: Commit, state: State },
       v: {
         nodeID: string;
         parentID: string;
       }
     ) {
-      const args = {
-        nodeID: v.nodeID,
-        parentID: v.parentID,
-        returnError: null
-      };
       // remove nodeID from oldParent children,
       // add to newParent children,
       // recalculate position of node, normalize it and
       // update DB with these three modifications in one transaction
+      const oldParent = state.tree.nodeRecord[v.nodeID].parent
+      const newParent = state.tree.nodeRecord[v.parentID].node
+      const [newCenter] = getNewNodeCenter(newParent, state.tree.mapNodeLayers);
+      const [normalizedNewNodeCenter] = convertPosition("normalize", newCenter!, v.parentID, state.tree.mapNodeLayers)
 
-      // commit(`tree/${treeMutations.CUT_PASTE_NODE}`, args);
-      if (args.returnError === null) {
-        commit(`history/${historyMutations.ADD_CUT_PASTE}`, {
-          nodeID: v.nodeID,
-          parentID: v.parentID
-        });
-      }
+      commit(`history/${historyMutations.ADD_CUT_PASTE}`, {
+        nodeID: v.nodeID,
+        parentID: v.parentID
+      });
     },
 
     [actions.removeNode](
@@ -167,7 +153,7 @@ export const store = createStore<State>({
       const args = { nodeID: nodeID, returnError: null };
       // remove node from DB
 
-      //commit(`tree/${treeMutations.REMOVE_NODE}`, args);
+
       if (args.returnError === null) {
         commit(`history/${historyMutations.ADD_REMOVE}`, {
           parentNodeID: state.tree.nodeRecord[nodeID].parent!.id,

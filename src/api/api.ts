@@ -190,5 +190,9 @@ export default {
 
   async transaction(nodeID: string, update: (val: any) => any) {
     await firebase.database().ref("map/"+nodeID).transaction(update, ()=>{ return }, false);
+  },
+
+  async set(node: DBNode) {
+    await firebase.database().ref("map/"+node.id).set(node);
   }
 };

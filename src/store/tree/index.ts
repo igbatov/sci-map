@@ -1,6 +1,7 @@
 import { MapNode, Point, Tree } from "@/types/graphics";
 import {
-  isInside, morphChildrenPoints,
+  convertPosition,
+  isInside,
   treeToMapNodeLayers,
   treeToNodeRecord
 } from "@/tools/graphics";
@@ -37,7 +38,6 @@ export const mutations = {
   SET_TREE: "SET_TREE",
   UPDATE_NODE_POSITION: "UPDATE_NODE_POSITION",
   ADD_NODE: "ADD_NODE",
-  CUT_PASTE_NODE: "CUT_PASTE_NODE",
   REMOVE_NODE: "REMOVE_NODE",
 };
 
@@ -104,31 +104,12 @@ export const store = {
       }
 
       // calculate denormalized position of dbNode
-      let denormalizedPosition = {x:0, y:0}
-      if (dbNodeRecord.parent) {
-        const [parentMapNode] = findMapNode(dbNodeRecord.parent.id, state.mapNodeLayers)
-        if (!parentMapNode) {
-          printError("UPDATE_NODE: Cannot findMapNode", {"id":dbNodeRecord.parent.id})
-          return
-        }
-        const normalizedBorder = [{x:0, y:0}, {x:0, y:api.ST_HEIGHT}, {x:api.ST_WIDTH, y:api.ST_HEIGHT}, {x:api.ST_WIDTH, y:0}]
-        const [denormalizedPositions, err] = morphChildrenPoints(
-          normalizedBorder,
-          parentMapNode.border,
-          {[arg.dbNode.id]: arg.dbNode.position}
-        )
-        if (err !== null) {
-          printError("UPDATE_NODE: Cannot morphChildrenPoints", {
-            "normalizedBorder": normalizedBorder,
-            "parentMapNode.border":parentMapNode.border,
-            "dbNode.position": arg.dbNode.position
-          })
-          return
-        }
-        denormalizedPosition = denormalizedPositions![arg.dbNode.id]
-      } else {
-        denormalizedPosition = {x: api.ROOT_WIDTH/2, y:api.ROOT_HEIGHT/2}
-      }
+      const [denormalizedPosition] = convertPosition(
+        "denormalize",
+        arg.dbNode.position,
+        dbNodeRecord.parent ? dbNodeRecord.parent.id : null,
+        state.mapNodeLayers,
+      )
 
       arg.dbNode.children.sort()
 
@@ -143,57 +124,56 @@ export const store = {
       const newChildren = arg.dbNode.children.filter(x => !oldDBNode.children.includes(x));
       const removedChildren = oldDBNode.children.filter(x => !arg.dbNode.children.includes(x));
 
-      // Add or move of new child
+      // Add/move of new child
       if (newChildren.length) {
         for (const childID of newChildren) {
-          if (!state.nodeRecord[childID]) { // create new Node
-            // request node from server
-            const [addedDBNode, err] = await api.getNode(arg.user, arg.dbNode.id)
-            if (!addedDBNode) {
-              // we cannot find node for addition, skip it
-              printError("Cannot find node for addition", {"nodeID": arg.dbNode.id})
-              continue;
-            }
+          if (state.nodeRecord[childID]) {
+            // if we already have this node, then it is cut-and-paste new parent
+            // so we should remove node from old parent
+            commit(mutations.REMOVE_NODE, {nodeID: childID, returnError: null})
+          }
+          // request node from server
+          const [addedDBNode] = await api.getNode(arg.user, arg.dbNode.id)
+          if (!addedDBNode) {
+            // we cannot find node for addition, skip it
+            printError("Cannot find node for addition", {"nodeID": arg.dbNode.id})
+            continue;
+          }
 
-            // get children if any
-            const children: Tree[] = []
-            if (addedDBNode.children && addedDBNode.children.length) {
-              for (const childrenID of addedDBNode.children) {
-                if (!state.nodeRecord[childrenID]) {
-                  printError("ADD_NODE: cannot find child in nodeRecord", {"addedDBNode":addedDBNode})
-                  continue;
-                }
-                children.push(state.nodeRecord[childrenID].node)
+          // get children if any
+          const children: Tree[] = []
+          if (addedDBNode.children && addedDBNode.children.length) {
+            for (const childrenID of addedDBNode.children) {
+              if (!state.nodeRecord[childrenID]) {
+                printError("ADD_NODE: cannot find child in nodeRecord", {"addedDBNode": addedDBNode})
+                continue;
               }
+              children.push(state.nodeRecord[childrenID].node)
             }
+          }
 
-            const v = {
-              parentID: addedDBNode.parentID,
-              node: {
-                id: addedDBNode.id,
-                title: addedDBNode.name,
-                position: addedDBNode.position,
-                children: children,
-                wikipedia: "",
-                resources: []
-              } as Tree,
-              error: null
-            }
-            commit(mutations.ADD_NODE, v)
-            if (v.error) {
-              printError("actions.handleDBUpdate: cannot create new node", {"err":v.error})
-            }
-          } else { // move Node
-            const nr = state.nodeRecord[childID]
-            if (!nr.parent) {
-              printError("actions.handleDBUpdate: Cannot insert as root node", {"state.nodeRecord[childID]": nr})
-              continue
-            }
-            const v = { parentID: nr.parent.id, nodeID: nr.node.id, returnError: null }
-            commit(mutations.CUT_PASTE_NODE, v)
-            if (v.returnError) {
-              printError("actions.handleDBUpdate: Cannot insert as root node", {"err": v.returnError})
-            }
+          const [denormalizedChildPosition] = convertPosition(
+            "denormalize",
+            addedDBNode.position,
+            addedDBNode.parentID,
+            state.mapNodeLayers,
+          )
+
+          const v = {
+            parentID: addedDBNode.parentID,
+            node: {
+              id: addedDBNode.id,
+              title: addedDBNode.name,
+              position: denormalizedChildPosition,
+              children: children,
+              wikipedia: "",
+              resources: []
+            } as Tree,
+            error: null
+          }
+          commit(mutations.ADD_NODE, v)
+          if (v.error) {
+            printError("actions.handleDBUpdate: cannot create new node", {"err": v.error})
           }
         }
       }
@@ -210,18 +190,20 @@ export const store = {
       }
 
       // Change of position
-      if (round(denormalizedPosition.x) !== round(oldDBNode.position.x) ||
-        round(denormalizedPosition.y) !== round(oldDBNode.position.y)
+      if (round(denormalizedPosition!.x) !== round(oldDBNode.position.x) ||
+        round(denormalizedPosition!.y) !== round(oldDBNode.position.y)
       ) {
-        const v = {
-          nodeId: arg.dbNode.id,
-          newCenter: denormalizedPosition,
-          returnError: null,
-        }
-        commit(mutations.UPDATE_NODE_POSITION, v)
-        if (v.returnError !== null) {
-          printError("actions.handleDBUpdate: cannot update node's position", {"arg.dbNode": arg.dbNode,"err":v.returnError})
-          return
+        if (oldDBNode.parentID == arg.dbNode.parentID) {  // we do not want to process position change due to parent change - it is already processed by ADD_NODE
+          const v = {
+            nodeId: arg.dbNode.id,
+            newCenter: denormalizedPosition,
+            returnError: null,
+          }
+          commit(mutations.UPDATE_NODE_POSITION, v)
+          if (v.returnError !== null) {
+            printError("actions.handleDBUpdate: cannot update node's position", {"arg.dbNode": arg.dbNode,"err":v.returnError})
+            return
+          }
         }
       }
 
@@ -275,68 +257,8 @@ export const store = {
       const ind = parent.children.findIndex(node => node.id === v.nodeID);
       parent.children.splice(ind, 1);
 
-      // update layers
-      const [ls, err2] = treeToMapNodeLayers(state.tree);
-      if (ls == null || err2 != null) {
-        v.returnError = err2;
-        return;
-      }
-
-      state.mapNodeLayers = ls;
-    },
-
-    [mutations.CUT_PASTE_NODE](
-      state: State,
-      v: { parentID: string; nodeID: string; returnError: ErrorKV }
-    ) {
-      if (state.tree === null) {
-        v.returnError = NewErrorKV("state.tree === null", {});
-        return;
-      }
-
-      const newParentRecord = state.nodeRecord[v.parentID];
-      if (!newParentRecord) {
-        v.returnError = NewErrorKV(
-          "CUT_PASTE_NODE: cannot find newParentRecord",
-          {
-            parentID: v.parentID
-          }
-        );
-        return;
-      }
-
-      const nodeRecord = state.nodeRecord[v.nodeID];
-      if (!nodeRecord) {
-        v.returnError = NewErrorKV("CUT_PASTE_NODE: cannot find nodeRecord", {
-          "node.id": v.nodeID
-        });
-        return;
-      }
-
-      const oldParent = nodeRecord.parent;
-
-      // remove from tree
-      const ind = oldParent!.children.findIndex(node => node.id === v.nodeID);
-      oldParent!.children.splice(ind, 1);
-
-      const [mapNode] = findMapNode(v.nodeID, state.mapNodeLayers);
-
-      // calculate position for new node
-      const [newCenter] = getNewNodeCenter(nodeRecord.parent!, state.mapNodeLayers);
-      nodeRecord.node.position = newCenter!;
-      mapNode!.center = newCenter!;
-
-      v.returnError = addNode(state, {
-        parentID: v.parentID,
-        node: nodeRecord.node,
-        mapNode: mapNode!
-      });
-      if (v.returnError) {
-        return;
-      }
-
       // update mapNodes in old parent
-      v.returnError = calcSubtreesPositions(state, oldParent!.id);
+      v.returnError = calcSubtreesPositions(state, parent.id);
       if (v.returnError) {
         return;
       }
@@ -347,6 +269,7 @@ export const store = {
         v.returnError = err2;
         return;
       }
+
       state.mapNodeLayers = ls;
     },
 
