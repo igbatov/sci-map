@@ -470,52 +470,6 @@ export function getVectorIntersection(v1: Vector, v2: Vector): Point | null {
   return null;
 }
 
-export function convertPosition(
-  type: "normalize" | "denormalize",
-  position: Point, parentID: string | null,
-  mapNodeLayers: Array<Record<string, MapNode>>
-): [Point | null, ErrorKV] {
-  let convertedPosition: Point
-  if (parentID) {
-    const [parentMapNode] = findMapNode(parentID, mapNodeLayers)
-    if (!parentMapNode) {
-      return [null, NewErrorKV("UPDATE_NODE: Cannot findMapNode", {"id":parentID})]
-    }
-    const normalizedBorder = [{x:0, y:0}, {x:0, y:api.ST_HEIGHT}, {x:api.ST_WIDTH, y:api.ST_HEIGHT}, {x:api.ST_WIDTH, y:0}]
-    let morphedPositions: Record<string, Point> | null, err: ErrorKV
-    if (type === "denormalize") {
-        [morphedPositions, err] = morphChildrenPoints(
-        normalizedBorder,
-        parentMapNode.border,
-        {"tmp": position}
-      )
-    } else {
-      [morphedPositions, err] = morphChildrenPoints(
-        parentMapNode.border,
-        normalizedBorder,
-        {"tmp": position}
-      )
-    }
-    if (err !== null) {
-      return [null, NewErrorKV("UPDATE_NODE: Cannot morphChildrenPoints", {
-        "type": type,
-        "normalizedBorder": normalizedBorder,
-        "parentMapNode.border":parentMapNode.border,
-        "dbNode.position": position
-      })]
-    }
-    convertedPosition = morphedPositions!["tmp"]
-  } else {
-    if (type === "denormalize") {
-      convertedPosition = {x: api.ROOT_WIDTH/2, y:api.ROOT_HEIGHT/2}
-    } else {
-      convertedPosition = {x: api.ST_WIDTH/2, y:api.ST_HEIGHT/2}
-    }
-  }
-
-  return [convertedPosition, null]
-}
-
 export function morphChildrenPoints(
   oldBorder: Polygon,
   newBorder: Polygon,
@@ -669,4 +623,50 @@ export function getMaxDiagonal(polygon: Polygon): Vector {
   }
 
   return maxDiagonal;
+}
+
+export function convertPosition(
+  type: "normalize" | "denormalize",
+  position: Point, parentID: string | null,
+  mapNodeLayers: Array<Record<string, MapNode>>
+): [Point | null, ErrorKV] {
+  let convertedPosition: Point
+  if (parentID) {
+    const [parentMapNode] = findMapNode(parentID, mapNodeLayers)
+    if (!parentMapNode) {
+      return [null, NewErrorKV("UPDATE_NODE: Cannot findMapNode", {"id":parentID})]
+    }
+    const normalizedBorder = [{x:0, y:0}, {x:0, y:api.ST_HEIGHT}, {x:api.ST_WIDTH, y:api.ST_HEIGHT}, {x:api.ST_WIDTH, y:0}]
+    let morphedPositions: Record<string, Point> | null, err: ErrorKV
+    if (type === "denormalize") {
+      [morphedPositions, err] = morphChildrenPoints(
+        normalizedBorder,
+        parentMapNode.border,
+        {"tmp": position}
+      )
+    } else {
+      [morphedPositions, err] = morphChildrenPoints(
+        parentMapNode.border,
+        normalizedBorder,
+        {"tmp": position}
+      )
+    }
+    if (err !== null) {
+      return [null, NewErrorKV("UPDATE_NODE: Cannot morphChildrenPoints", {
+        "type": type,
+        "normalizedBorder": normalizedBorder,
+        "parentMapNode.border":parentMapNode.border,
+        "dbNode.position": position
+      })]
+    }
+    convertedPosition = morphedPositions!["tmp"]
+  } else {
+    if (type === "denormalize") {
+      convertedPosition = {x: api.ROOT_WIDTH/2, y:api.ROOT_HEIGHT/2}
+    } else {
+      convertedPosition = {x: api.ST_WIDTH/2, y:api.ST_HEIGHT/2}
+    }
+  }
+
+  return [convertedPosition, null]
 }
