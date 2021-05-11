@@ -124,7 +124,7 @@ export const store = createStore<State>({
       });
     },
 
-    [actions.cutPasteNode](
+    async [actions.cutPasteNode](
       { commit, state }: { commit: Commit, state: State },
       v: {
         nodeID: string;
@@ -139,6 +139,15 @@ export const store = createStore<State>({
       const newParent = state.tree.nodeRecord[v.parentID].node
       const [newCenter] = getNewNodeCenter(newParent, state.tree.mapNodeLayers);
       const [normalizedNewNodeCenter] = convertPosition("normalize", newCenter!, v.parentID, state.tree.mapNodeLayers)
+      // generate key for new child in list of newParent
+      const newKey = api.generateKey();
+      // search for key of childID in children of oldParent
+      const oldKey = await api.findKeyInList(`map/${oldParent!.id}/children`, v.nodeID)
+      await api.update({
+        [`map/${oldParent!.id}/children/${oldKey}`]: null, // remove from old parent children
+        [`map/${newParent!.id}/children/${newKey}`]: v.nodeID, // add to children of new parents
+        [`map/${v.nodeID}/position`]: normalizedNewNodeCenter,
+      })
 
       commit(`history/${historyMutations.ADD_CUT_PASTE}`, {
         nodeID: v.nodeID,
@@ -146,20 +155,21 @@ export const store = createStore<State>({
       });
     },
 
-    [actions.removeNode](
+    async [actions.removeNode](
       { commit, state }: { commit: Commit; state: State },
       nodeID: string
     ) {
-      const args = { nodeID: nodeID, returnError: null };
-      // remove node from DB
+      // move node from /map to /trash
+      const node = await api.get(nodeID)
+      await api.update({
+        [`trash/${nodeID}`]: node,
+        [`map/${nodeID}`]: null,
+      })
 
-
-      if (args.returnError === null) {
-        commit(`history/${historyMutations.ADD_REMOVE}`, {
-          parentNodeID: state.tree.nodeRecord[nodeID].parent!.id,
-          nodeID: nodeID
-        });
-      }
+      commit(`history/${historyMutations.ADD_REMOVE}`, {
+        parentNodeID: state.tree.nodeRecord[nodeID].parent!.id,
+        nodeID: nodeID
+      });
     },
 
     [actions.updateNodePosition](

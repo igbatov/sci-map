@@ -1,5 +1,5 @@
 import firebase from "firebase";
-import {Tree, Polygon, Point} from "@/types/graphics";
+import {Tree} from "@/types/graphics";
 import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "@/tools/errorkv";
 // import { apiTree } from "./mocks";
@@ -7,7 +7,6 @@ import apiTree from "./mindmeister";
 import axios from "axios";
 import { Pins } from "@/store/pin";
 import {DBNode} from "@/api/types";
-import {getVoronoiCellRecords, getVoronoiCells, morphChildrenPoints} from "@/tools/graphics";
 import {convertDBMapToTree} from "@/api/helpers";
 
 const IS_OFFLINE = false; // to write code even without wi-fi set this to true
@@ -194,5 +193,23 @@ export default {
 
   async set(node: DBNode) {
     await firebase.database().ref("map/"+node.id).set(node);
+  },
+
+  async get(nodeID: string): Promise<any> {
+    const snap = await firebase.database().ref("map/"+nodeID).get();
+    return snap.val()
+  },
+
+  generateKey(): string | null {
+    return firebase.database().ref().push().key
+  },
+
+  async findKeyInList(path: string, value: string): Promise<string | null> {
+    const snap = await firebase.database().ref(path).orderByValue().equalTo(value).limitToFirst(1).get()
+    return snap.key
+  },
+
+  async update(data: Record<string, any>) {
+    await firebase.database().ref().update(data)
   }
 };
