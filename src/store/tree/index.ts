@@ -97,7 +97,7 @@ export const store = {
       { commit, state }: { commit: Commit; state: State },
       arg: {dbNode: DBNode, user: firebase.User | null },
     ) {
-      console.log("actions.handleDBUpdate")
+      console.log("actions.handleDBUpdate", arg.dbNode)
       const dbNodeRecord = state.nodeRecord[arg.dbNode.id]
       if (!dbNodeRecord) {
         printError("UPDATE_NODE: Cannot find dbNode in dbNodeRecord", {"dbNode.id":arg.dbNode.id})
@@ -132,7 +132,7 @@ export const store = {
             commit(mutations.REMOVE_NODE, {nodeID: childID, returnError: null})
           }
           // request node from server
-          const [addedDBNode] = await api.getNode(arg.user, arg.dbNode.id)
+          const addedDBNode = await api.getNode(arg.dbNode.id)
           if (!addedDBNode) {
             // we cannot find node for addition, skip it
             printError("Cannot find node for addition", {"nodeID": arg.dbNode.id})

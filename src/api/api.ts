@@ -53,11 +53,6 @@ export default {
     return [tree, null]
   },
 
-  async getNode(user: firebase.User | null, nodeID: string): Promise<[DBNode | null, ErrorKV]> {
-    const pr = await firebase.database().ref("map/"+nodeID).get()
-    return pr.val()
-  },
-
   async getMapFromStorage(user: firebase.User | null): Promise<[Tree | null, ErrorKV]> {
     const storage = firebase.storage().ref();
     let ref = storage.child(`/map.json`);
@@ -191,13 +186,13 @@ export default {
     await firebase.database().ref("map/"+nodeID).transaction(update, ()=>{ return }, false);
   },
 
-  async set(node: DBNode) {
+  async setNode(node: DBNode) {
     await firebase.database().ref("map/"+node.id).set(node);
   },
 
-  async get(nodeID: string): Promise<any> {
-    const snap = await firebase.database().ref("map/"+nodeID).get();
-    return snap.val()
+  async getNode(nodeID: string): Promise<DBNode | null> {
+    const pr = await firebase.database().ref("map/"+nodeID).get()
+    return pr.val()
   },
 
   generateKey(): string | null {

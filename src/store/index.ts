@@ -122,13 +122,15 @@ export const store = createStore<State>({
         [{x:0, y:0}, {x:0, y:api.ST_HEIGHT}, {x:api.ST_WIDTH, y:api.ST_HEIGHT}, {x:api.ST_WIDTH, y:0}],
         centers
       )
-      await api.set({
+      const newDBNode = {
         id: node.id,
         parentID: v.parentID,
         name: v.title,
         children: [],
         position: normalizedPosition![node.id]
-      })
+      }
+      console.log("createNode: set node", newDBNode)
+      await api.setNode(newDBNode)
 
       commit(`history/${historyMutations.ADD_CREATE}`, {
         nodeID: node.id,
@@ -172,7 +174,7 @@ export const store = createStore<State>({
       nodeID: string
     ) {
       // move node from /map to /trash
-      const node = await api.get(nodeID)
+      const node = await api.getNode(nodeID)
       await api.update({
         [`trash/${nodeID}`]: node,
         [`map/${nodeID}`]: null,
