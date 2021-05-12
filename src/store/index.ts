@@ -21,12 +21,12 @@ import {
 
 import api from "@/api/api";
 import { fetchMap, fetchPins } from "./helpers";
-import { Point } from "@/types/graphics";
+import {MapNode, Point} from "@/types/graphics";
 import {createNewNode, findMapNode, getNewNodeCenter} from "@/store/tree/helpers";
 import NewErrorKV from "@/tools/errorkv";
 import {addVector, convertPosition, morphChildrenPoints} from "@/tools/graphics";
 import {DBNode} from "@/api/types";
-import {isEqual} from "lodash";
+import {isEqual, debounce} from "lodash";
 
 export type State = {
   // root states
@@ -57,6 +57,18 @@ export const mutations = {
   SET_SUBSCRIBED_NODE_IDS: "SET_SUBSCRIBED_NODE_IDS",
 }
 
+const debouncedPositionSet = debounce(
+  (nodeID: string, newCenter: Point, parentID: string, mapNodeLayers: Record<string, MapNode>[]) => {
+  const [normalizedNewNodeCenter] = convertPosition(
+    "normalize",
+    newCenter,
+    parentID,
+    mapNodeLayers,
+  )
+
+  api.update({[`map/${nodeID}/position`]: normalizedNewNodeCenter})
+}, 200)
+
 export const key: InjectionKey<Store<State>> = Symbol();
 
 export const store = createStore<State>({
@@ -81,8 +93,8 @@ export const store = createStore<State>({
       }
     },
 
-    async [actions.handleDBUpdate]({ dispatch }: { dispatch: Dispatch }, newNode: DBNode) {
-      await dispatch(`tree/${treeActions.handleDBUpdate}`, newNode)
+    async [actions.handleDBUpdate]({ dispatch, state }: { dispatch: Dispatch, state: State }, newNode: DBNode) {
+      await dispatch(`tree/${treeActions.handleDBUpdate}`, {dbNode: newNode, user: state.user.user })
     },
 
     async [actions.init]({ commit }: { commit: Commit }) {
@@ -196,6 +208,14 @@ export const store = createStore<State>({
           oldPosition: mapNode.center,
           newPosition: newCenter
         });
+
+        // save to DB with debounce
+        debouncedPositionSet(
+          v.nodeId,
+          newCenter,
+          state.tree.nodeRecord[v.nodeId].parent!.id,
+          state.tree.mapNodeLayers
+        )
       }
     },
 
@@ -214,6 +234,9 @@ export const store = createStore<State>({
       // subscribe new nodes that have visible titles
       v.newNodeIDs.forEach((id) =>  api.subscribeDBChange("map/"+id, (snapshot) => {
         const node = snapshot.val();
+        if (!node.children) {
+          node.children = []
+        }
         v.cb(node)
       }))
 

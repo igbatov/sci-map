@@ -97,6 +97,7 @@ export const store = {
       { commit, state }: { commit: Commit; state: State },
       arg: {dbNode: DBNode, user: firebase.User | null },
     ) {
+      console.log("actions.handleDBUpdate")
       const dbNodeRecord = state.nodeRecord[arg.dbNode.id]
       if (!dbNodeRecord) {
         printError("UPDATE_NODE: Cannot find dbNode in dbNodeRecord", {"dbNode.id":arg.dbNode.id})
@@ -110,8 +111,6 @@ export const store = {
         dbNodeRecord.parent ? dbNodeRecord.parent.id : null,
         state.mapNodeLayers,
       )
-
-      arg.dbNode.children.sort()
 
       const oldDBNode = {
         id: dbNodeRecord.node.id,
