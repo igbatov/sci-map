@@ -1,13 +1,13 @@
 import firebase from "firebase";
 import {Tree} from "@/types/graphics";
 import { ErrorKV } from "@/types/errorkv";
-import NewErrorKV from "@/tools/errorkv";
+import NewErrorKV from "../tools/errorkv";
 // import { apiTree } from "./mocks";
 import apiTree from "./mindmeister";
 import axios from "axios";
 import { Pins } from "@/store/pin";
 import {DBNode} from "@/api/types";
-import {convertDBMapToTree} from "@/api/helpers";
+import {convertChildren, convertDBMapToTree} from "./helpers";
 
 const IS_OFFLINE = false; // to write code even without wi-fi set this to true
 const MAP_FROM_STORAGE = false; // is storage is source for map (or database)
@@ -174,6 +174,24 @@ export default {
     );
   },
 
+  subscribeNodeChange(nodeID: string, cb: (a: DBNode) => any) {
+    console.log("subscribeNodeChange", nodeID)
+    this.subscribeDBChange(`map/${nodeID}`, (snap: firebase.database.DataSnapshot) => {
+      console.log("got update on node", nodeID)
+      if (!snap.exists()) {
+        return
+      }
+      const node = snap.val() as DBNode
+      node.children = convertChildren(node.children)
+      cb(node)
+    });
+  },
+
+  unsubscribeNodeChange(nodeID: string) {
+    console.log("unsubscribeNodeChange", nodeID)
+    firebase.database().ref(`map/${nodeID}`).off('value');
+  },
+
   subscribeDBChange(path: string, cb: (a: firebase.database.DataSnapshot) => any) {
     firebase.database().ref(path).on('value', cb);
   },
@@ -192,7 +210,9 @@ export default {
 
   async getNode(nodeID: string): Promise<DBNode | null> {
     const pr = await firebase.database().ref("map/"+nodeID).get()
-    return pr.val()
+    const node = pr.val()
+    node.children = convertChildren(node.children)
+    return node
   },
 
   generateKey(): string | null {
@@ -204,7 +224,22 @@ export default {
     return snap.key
   },
 
+  async findKeyOfChild(nodeID: string, childID: string): Promise<string | null> {
+    const pr = await firebase.database().ref("map/"+nodeID).get()
+    const node = pr.val()
+    if (!node.children) {
+      return null
+    }
+
+    for (const key in node.children) {
+      if (node.children[key] === childID) {
+        return key
+      }
+    }
+    return null
+  },
+
   async update(data: Record<string, any>) {
     await firebase.database().ref().update(data)
-  }
+  },
 };

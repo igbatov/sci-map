@@ -1,8 +1,23 @@
 import {DBNode} from "@/api/types";
 import {Point, Polygon, Tree} from "@/types/graphics";
 import {ErrorKV} from "@/types/errorkv";
-import NewErrorKV from "@/tools/errorkv";
-import {getVoronoiCellRecords, morphChildrenPoints} from "@/tools/graphics";
+import NewErrorKV from "../tools/errorkv";
+import {getVoronoiCellRecords, morphChildrenPoints} from "../tools/graphics";
+
+// convert children object to array
+export function convertChildren(children: any): string[] {
+  let result
+
+  if (!children) {
+    result = []
+  } else if (Array.isArray(children)) {
+    result = children.filter(childID => !!childID).sort()
+  } else {
+    result = Object.values(children).filter(childID => !!childID).sort() as string[]
+  }
+
+  return result
+}
 
 export function convertDBMapToTree(
   dbNodes: Record<string, DBNode>,
@@ -39,7 +54,8 @@ export function convertDBMapToTree(
     if (!dbNodes[node.id]) {
       return [null, NewErrorKV("Cannot find id in dbNodes", {"node.id":node.id, dbNodes})]
     }
-    if (!dbNodes[node.id].children) {
+    dbNodes[node.id].children = convertChildren(dbNodes[node.id].children)
+    if (!dbNodes[node.id].children.length) {
       continue
     }
     const children: Tree[] = []
@@ -62,7 +78,13 @@ export function convertDBMapToTree(
     }
     for (const childID of dbNodes[node.id].children) {
       if (!childrenBorders[childID]) {
-        return [null, NewErrorKV("Cannot find childID in childrenBorders", {childID, childrenBorders, "borders[node.id]":borders[node.id], childrenCenters})]
+        return [null, NewErrorKV("Cannot find childID in childrenBorders", {
+          childID,
+          childrenBorders,
+          "dbNodes[node.id]": dbNodes[node.id],
+          "borders[node.id]":borders[node.id],
+          childrenCenters
+        })]
       }
       borders[childID] = childrenBorders[childID]
       children.push({

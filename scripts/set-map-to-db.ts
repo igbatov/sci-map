@@ -14,7 +14,7 @@ import {printError} from "../src/tools/utils";
 // @ts-ignore
 import {DBNode} from "../src/api/types";
 // @ts-ignore
-import {ROOT_WIDTH, ROOT_HEIGHT, ST_WIDTH, ST_HEIGHT} from "../src/api/api";
+import api from "../src/api/api";
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as ServiceAccount),
@@ -40,7 +40,7 @@ function setToDB(admin, dbNodes: DBNode[]) {
 
 function convertToDBNodes(map:Tree[]): DBNode[] {
   const borders: Record<string, Polygon> = {}
-  borders[0] = [{x:0, y:0}, {x:0, y:ROOT_HEIGHT}, {x:ROOT_WIDTH, y:ROOT_HEIGHT}, {x:ROOT_WIDTH, y:0}]
+  borders[0] = [{x:0, y:0}, {x:0, y:api.ROOT_HEIGHT}, {x:api.ROOT_WIDTH, y:api.ROOT_HEIGHT}, {x:api.ROOT_WIDTH, y:0}]
   const stack = map
   stack[0].parentID = null
   const dbNodes: Record<string, any> = {}
@@ -65,11 +65,11 @@ function convertToDBNodes(map:Tree[]): DBNode[] {
     // при сохранении позиция конвертируется обратно под квадрат 1000х1000
     let position = {x:0, y:0}
     if (node!.id === "0") {
-      position = {x: ST_WIDTH/2, y: ST_HEIGHT/2}
+      position = {x: api.ST_WIDTH/2, y: api.ST_HEIGHT/2}
     } else {
       const [newPos, err] = morphChildrenPoints(
         borders[node!.parentID],
-        [{x:0, y:0}, {x:0, y:ST_HEIGHT}, {x:ST_WIDTH, y:ST_HEIGHT}, {x:ST_WIDTH, y:0}],
+        [{x:0, y:0}, {x:0, y:api.ST_HEIGHT}, {x:api.ST_WIDTH, y:api.ST_HEIGHT}, {x:api.ST_WIDTH, y:0}],
         {"tmp": node!.position}
       )
       position = newPos!["tmp"]
@@ -100,7 +100,7 @@ function getMapFromFile(admin: any): Promise<Tree[]> {
       {
         id: "0",
         title: "",
-        position: { x: ROOT_WIDTH / 2, y: ROOT_HEIGHT / 2 },
+        position: { x: api.ROOT_WIDTH / 2, y: api.ROOT_HEIGHT / 2 },
         wikipedia: "",
         resources: [],
         children: map

@@ -14,8 +14,8 @@ import { NodeRecordItem } from "@/store/tree";
 import { polygonArea } from "d3-polygon";
 import polygonClipping from "polygon-clipping";
 import {clone, round} from "../tools/utils";
-import {findMapNode} from "@/store/tree/helpers";
-import api from "@/api/api";
+import {findMapNode} from "../store/tree/helpers";
+import api from "../api/api";
 
 export function getVectorLength(v: Vector): number {
   return Math.sqrt(
@@ -604,6 +604,7 @@ export function morphChildrenPoints(
       getVectorLength({ from: newCenter, to: newBorderIntersection }) /
       getVectorLength({ from: newCenter, to: oldBorderIntersection });
     newPoints[id] = vectorOnNumber({ from: newCenter, to: oldPoint }, coeff).to;
+    newPoints[id] = {x: round(newPoints[id].x), y: round(newPoints[id].y)}
   }
 
   return [newPoints, null];

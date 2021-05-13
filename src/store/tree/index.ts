@@ -132,10 +132,10 @@ export const store = {
             commit(mutations.REMOVE_NODE, {nodeID: childID, returnError: null})
           }
           // request node from server
-          const addedDBNode = await api.getNode(arg.dbNode.id)
+          const addedDBNode = await api.getNode(childID)
           if (!addedDBNode) {
             // we cannot find node for addition, skip it
-            printError("Cannot find node for addition", {"nodeID": arg.dbNode.id})
+            printError("Cannot find node for addition", {"nodeID": childID})
             continue;
           }
 
@@ -144,6 +144,8 @@ export const store = {
           if (addedDBNode.children && addedDBNode.children.length) {
             for (const childrenID of addedDBNode.children) {
               if (!state.nodeRecord[childrenID]) {
+                // TODO: recursively create children if not found
+                // for now just skip
                 printError("ADD_NODE: cannot find child in nodeRecord", {"addedDBNode": addedDBNode})
                 continue;
               }

@@ -5,10 +5,10 @@ import {
   getVoronoiCells,
   morphChildrenPoints,
   vectorOnNumber
-} from "@/tools/graphics";
+} from "../../tools/graphics";
 import { ErrorKV } from "@/types/errorkv";
-import NewErrorKV from "@/tools/errorkv";
-import { clone } from "@/tools/utils";
+import NewErrorKV from "../../tools/errorkv";
+import { clone } from "../../tools/utils";
 import { NodeRecordItem } from "@/store/tree/index";
 import {v4 as uuidv4} from "uuid";
 

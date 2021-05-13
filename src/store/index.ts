@@ -129,8 +129,10 @@ export const store = createStore<State>({
         children: [],
         position: normalizedPosition![node.id]
       }
-      console.log("createNode: set node", newDBNode)
-      await api.setNode(newDBNode)
+      await api.update({
+        [`map/${newDBNode.id}`]: newDBNode,
+        [`map/${newDBNode.parentID}/children/${api.generateKey()}`]: newDBNode.id
+      })
 
       commit(`history/${historyMutations.ADD_CREATE}`, {
         nodeID: node.id,
@@ -156,7 +158,7 @@ export const store = createStore<State>({
       // generate key for new child in list of newParent
       const newKey = api.generateKey();
       // search for key of childID in children of oldParent
-      const oldKey = await api.findKeyInList(`map/${oldParent!.id}/children`, v.nodeID)
+      const oldKey = await api.findKeyOfChild(oldParent!.id, v.nodeID)
       await api.update({
         [`map/${oldParent!.id}/children/${oldKey}`]: null, // remove from old parent children
         [`map/${newParent!.id}/children/${newKey}`]: v.nodeID, // add to children of new parents
@@ -173,10 +175,16 @@ export const store = createStore<State>({
       { commit, state }: { commit: Commit; state: State },
       nodeID: string
     ) {
+      const parent = state.tree.nodeRecord[nodeID].parent
+      if (!parent) {
+        return
+      }
       // move node from /map to /trash
       const node = await api.getNode(nodeID)
+      const oldKey = await api.findKeyOfChild(parent!.id, nodeID)
       await api.update({
         [`trash/${nodeID}`]: node,
+        [`map/${parent.id}/children/${oldKey}`]: null,
         [`map/${nodeID}`]: null,
       })
 
@@ -231,14 +239,10 @@ export const store = createStore<State>({
       }
 
       // unsubscribe old nodes that have visible titles
-      v.oldNodeIDs.forEach((id) =>  api.unsubscribeDBChange("map/"+id))
+      v.oldNodeIDs.forEach((id) =>  api.unsubscribeNodeChange(id))
 
       // subscribe new nodes that have visible titles
-      v.newNodeIDs.forEach((id) =>  api.subscribeDBChange("map/"+id, (snapshot) => {
-        const node = snapshot.val();
-        if (!node.children) {
-          node.children = []
-        }
+      v.newNodeIDs.forEach((id) =>  api.subscribeNodeChange(id, (node) => {
         v.cb(node)
       }))
 
