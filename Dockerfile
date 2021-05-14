@@ -4,6 +4,7 @@ WORKDIR /app
 COPY package.json yarn.lock ./
 RUN yarn install
 COPY . .
+RUN yarn test:unit
 RUN yarn build
 
 # production-stage
