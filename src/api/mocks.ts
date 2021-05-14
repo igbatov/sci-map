@@ -1,6 +1,6 @@
-export const apiTree = [
+export const apiTree = {children: [
   {
-    id: 1,
+    id: "1",
     title: "Mathematics",
     position: {
       x: 200,
@@ -19,7 +19,7 @@ export const apiTree = [
     ],
     children: [
       {
-        id: 2,
+        id: "2",
         title: "Logic",
         position: {
           x: 70,
@@ -39,7 +39,7 @@ export const apiTree = [
         children: []
       },
       {
-        id: 3,
+        id: "3",
         title: "Algebra",
         position: {
           x: 250,
@@ -61,7 +61,7 @@ export const apiTree = [
     ]
   },
   {
-    id: 4,
+    id: "4",
     title: "Physics",
     position: {
       x: 1000,
@@ -79,7 +79,7 @@ export const apiTree = [
     ],
     children: [
       {
-        id: 5,
+        id: "5",
         title: "Principle of least action",
         position: {
           x: 850,
@@ -99,7 +99,7 @@ export const apiTree = [
         children: []
       },
       {
-        id: 6,
+        id: "6",
         title: "Space and time",
         position: {
           x: 1200,
@@ -122,7 +122,7 @@ export const apiTree = [
     ]
   },
   {
-    id: 7,
+    id: "7",
     title: "Chemistry",
     position: {
       x: 700,
@@ -141,7 +141,7 @@ export const apiTree = [
     ],
     children: [
       {
-        id: 8,
+        id: "8",
         title: "Organic",
         position: {
           x: 600,
@@ -152,7 +152,7 @@ export const apiTree = [
         children: []
       },
       {
-        id: 9,
+        id: "9",
         title: "Inorganic",
         position: {
           x: 900,
@@ -164,4 +164,4 @@ export const apiTree = [
       }
     ]
   }
-];
+]};

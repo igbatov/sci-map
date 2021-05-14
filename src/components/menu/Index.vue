@@ -2,7 +2,7 @@
   <div :class="$style.wrapper">
     <div v-if="email">
       {{ email }}
-      <EditMode v-if="isNodeSelected" />
+      <EditMode/>
       <span v-if="editModeOn">
         <CutPaste v-if="isNodeSelected" />
         <AddNode />

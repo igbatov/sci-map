@@ -166,11 +166,10 @@ export const store = createStore<State>({
         children: [],
         position: normalizedPosition![node.id]
       };
+      const newKey = api.generateKey()
       await api.update({
         [`map/${newDBNode.id}`]: newDBNode,
-        [`map/${
-          newDBNode.parentID
-        }/children/${api.generateKey()}`]: newDBNode.id
+        [`map/${newDBNode.parentID}/children/${newKey}`]: newDBNode.id
       });
 
       commit(`history/${historyMutations.ADD_CREATE}`, {
