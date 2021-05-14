@@ -6,6 +6,7 @@ stages:
 step-deploy-prod:
   stage: deploy
   script:
+    - yarn test:unit
     - docker ps
     - docker stop sci-map || true
     - docker system prune --all --force
