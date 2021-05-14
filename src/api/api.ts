@@ -1,13 +1,13 @@
 import firebase from "firebase";
-import {Tree} from "@/types/graphics";
+import { Tree } from "@/types/graphics";
 import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "../tools/errorkv";
 // import { apiTree } from "./mocks";
 import apiTree from "./mindmeister";
 import axios from "axios";
 import { Pins } from "@/store/pin";
-import {DBNode} from "@/api/types";
-import {convertChildren, convertDBMapToTree} from "./helpers";
+import { DBNode } from "@/api/types";
+import { convertChildren, convertDBMapToTree } from "./helpers";
 
 const IS_OFFLINE = false; // to write code even without wi-fi set this to true
 const MAP_FROM_STORAGE = false; // is storage is source for map (or database)
@@ -38,22 +38,33 @@ export default {
   },
 
   async getMapFromDB(): Promise<[Tree | null, ErrorKV]> {
-    const snapshot = await firebase.database().ref("map").get();
+    const snapshot = await firebase
+      .database()
+      .ref("map")
+      .get();
     if (!snapshot.exists()) {
-      return [null, NewErrorKV("!snapshot.exists", {})]
+      return [null, NewErrorKV("!snapshot.exists", {})];
     }
-    const map = snapshot.val()
+    const map = snapshot.val();
 
     // create Tree with denormalized positions
-    const [tree, err] = convertDBMapToTree(map, this.ROOT_WIDTH, this.ROOT_HEIGHT, this.ST_WIDTH, this.ST_HEIGHT)
+    const [tree, err] = convertDBMapToTree(
+      map,
+      this.ROOT_WIDTH,
+      this.ROOT_HEIGHT,
+      this.ST_WIDTH,
+      this.ST_HEIGHT
+    );
     if (err !== null) {
-      return [null, err]
+      return [null, err];
     }
 
-    return [tree, null]
+    return [tree, null];
   },
 
-  async getMapFromStorage(user: firebase.User | null): Promise<[Tree | null, ErrorKV]> {
+  async getMapFromStorage(
+    user: firebase.User | null
+  ): Promise<[Tree | null, ErrorKV]> {
     const storage = firebase.storage().ref();
     let ref = storage.child(`/map.json`);
     if (user) {
@@ -93,9 +104,9 @@ export default {
 
     try {
       if (MAP_FROM_STORAGE) {
-        return this.getMapFromStorage(user)
+        return this.getMapFromStorage(user);
       } else {
-        return this.getMapFromDB()
+        return this.getMapFromDB();
       }
     } catch (e) {
       return [null, NewErrorKV(e.message, { e: e })];
@@ -175,71 +186,122 @@ export default {
   },
 
   subscribeNodeChange(nodeID: string, cb: (a: DBNode) => any) {
-    console.log("subscribeNodeChange", nodeID)
-    this.subscribeDBChange(`map/${nodeID}`, (snap: firebase.database.DataSnapshot) => {
-      console.log("got update on node", nodeID)
-      if (!snap.exists()) {
-        return
+    console.log("subscribeNodeChange", nodeID);
+    this.subscribeDBChange(
+      `map/${nodeID}`,
+      (snap: firebase.database.DataSnapshot) => {
+        console.log("got update on node", nodeID);
+        if (!snap.exists()) {
+          return;
+        }
+        const node = snap.val() as DBNode;
+        node.children = convertChildren(node.children);
+        cb(node);
       }
-      const node = snap.val() as DBNode
-      node.children = convertChildren(node.children)
-      cb(node)
-    });
+    );
   },
 
   unsubscribeNodeChange(nodeID: string) {
-    console.log("unsubscribeNodeChange", nodeID)
-    firebase.database().ref(`map/${nodeID}`).off('value');
+    console.log("unsubscribeNodeChange", nodeID);
+    firebase
+      .database()
+      .ref(`map/${nodeID}`)
+      .off("value");
   },
 
-  subscribeDBChange(path: string, cb: (a: firebase.database.DataSnapshot) => any) {
-    firebase.database().ref(path).on('value', cb);
+  subscribeDBChange(
+    path: string,
+    cb: (a: firebase.database.DataSnapshot) => any
+  ) {
+    firebase
+      .database()
+      .ref(path)
+      .on("value", cb);
   },
 
-  unsubscribeDBChange(path: string, cb?: (a: firebase.database.DataSnapshot) => any) {
-    firebase.database().ref(path).off('value', cb);
+  unsubscribeDBChange(
+    path: string,
+    cb?: (a: firebase.database.DataSnapshot) => any
+  ) {
+    firebase
+      .database()
+      .ref(path)
+      .off("value", cb);
   },
 
   async transaction(nodeID: string, update: (val: any) => any) {
-    await firebase.database().ref("map/"+nodeID).transaction(update, ()=>{ return }, false);
+    await firebase
+      .database()
+      .ref("map/" + nodeID)
+      .transaction(
+        update,
+        () => {
+          return;
+        },
+        false
+      );
   },
 
   async setNode(node: DBNode) {
-    await firebase.database().ref("map/"+node.id).set(node);
+    await firebase
+      .database()
+      .ref("map/" + node.id)
+      .set(node);
   },
 
   async getNode(nodeID: string): Promise<DBNode | null> {
-    const pr = await firebase.database().ref("map/"+nodeID).get()
-    const node = pr.val()
-    node.children = convertChildren(node.children)
-    return node
+    const pr = await firebase
+      .database()
+      .ref("map/" + nodeID)
+      .get();
+    const node = pr.val();
+    node.children = convertChildren(node.children);
+    return node;
   },
 
   generateKey(): string | null {
-    return firebase.database().ref().push().key
+    return firebase
+      .database()
+      .ref()
+      .push().key;
   },
 
   async findKeyInList(path: string, value: string): Promise<string | null> {
-    const snap = await firebase.database().ref(path).orderByValue().equalTo(value).limitToFirst(1).get()
-    return snap.key
+    const snap = await firebase
+      .database()
+      .ref(path)
+      .orderByValue()
+      .equalTo(value)
+      .limitToFirst(1)
+      .get();
+    return snap.key;
   },
 
-  async findKeyOfChild(nodeID: string, childID: string): Promise<string | null> {
-    const pr = await firebase.database().ref("map/"+nodeID).get()
-    const node = pr.val()
+  async findKeyOfChild(
+    nodeID: string,
+    childID: string
+  ): Promise<string | null> {
+    const pr = await firebase
+      .database()
+      .ref("map/" + nodeID)
+      .get();
+    const node = pr.val();
     if (!node.children) {
-      return null
+      return null;
     }
 
     for (const key in node.children) {
       if (node.children[key] === childID) {
-        return key
+        return key;
       }
     }
-    return null
+    return null;
   },
 
   async update(data: Record<string, any>) {
-    await firebase.database().ref().update(data)
-  },
+    await firebase
+      .database()
+      .ref()
+      .update(data);
+  }
 };

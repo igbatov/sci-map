@@ -9,12 +9,12 @@ import {
 } from "@/types/graphics";
 import * as turf from "@turf/turf";
 import { ErrorKV } from "@/types/errorkv";
-import {default as NewErrorKV} from "../tools/errorkv";
+import { default as NewErrorKV } from "../tools/errorkv";
 import { NodeRecordItem } from "@/store/tree";
 import { polygonArea } from "d3-polygon";
 import polygonClipping from "polygon-clipping";
-import {clone, round} from "../tools/utils";
-import {findMapNode} from "../store/tree/helpers";
+import { clone, round } from "../tools/utils";
+import { findMapNode } from "../store/tree/helpers";
 import api from "../api/api";
 
 export function getVectorLength(v: Vector): number {
@@ -27,7 +27,7 @@ export function polygonToTurf(
   p: Polygon
 ): turf.Feature<turf.Polygon, turf.Properties> {
   if (!p) {
-    throw new Error("polygonToTurf: p is empty")
+    throw new Error("polygonToTurf: p is empty");
   }
   const pp = p.map(point => [point.x, point.y]);
   pp.push([p[0].x, p[0].y]);
@@ -240,23 +240,23 @@ export function getVoronoiCellRecords(
   outerBorder: Polygon, //(граница массива точек)
   centers: Record<string, Point> //(точки внутри этой границы)
 ): [Record<string, Polygon>, ErrorKV] {
-  const result: Record<string, Polygon> = {}
-  const ids: string[] = []
-  const centersArray: Point[] = []
+  const result: Record<string, Polygon> = {};
+  const ids: string[] = [];
+  const centersArray: Point[] = [];
   for (const id in centers) {
-    ids.push(id)
-    centersArray.push(centers[id])
+    ids.push(id);
+    centersArray.push(centers[id]);
   }
 
-  const [cells, err] = getVoronoiCells(outerBorder, centersArray)
+  const [cells, err] = getVoronoiCells(outerBorder, centersArray);
   if (err !== null) {
-    return [{}, err]
+    return [{}, err];
   }
   for (const i in ids) {
-    result[ids[i]] = cells[i].border
+    result[ids[i]] = cells[i].border;
   }
 
-  return [result, null]
+  return [result, null];
 }
 
 export function polygonToPath(polygon: Polygon): string {
@@ -604,7 +604,7 @@ export function morphChildrenPoints(
       getVectorLength({ from: newCenter, to: newBorderIntersection }) /
       getVectorLength({ from: newCenter, to: oldBorderIntersection });
     newPoints[id] = vectorOnNumber({ from: newCenter, to: oldPoint }, coeff).to;
-    newPoints[id] = {x: round(newPoints[id].x), y: round(newPoints[id].y)}
+    newPoints[id] = { x: round(newPoints[id].x), y: round(newPoints[id].y) };
   }
 
   return [newPoints, null];
@@ -628,46 +628,58 @@ export function getMaxDiagonal(polygon: Polygon): Vector {
 
 export function convertPosition(
   type: "normalize" | "denormalize",
-  position: Point, parentID: string | null,
+  position: Point,
+  parentID: string | null,
   mapNodeLayers: Array<Record<string, MapNode>>
 ): [Point | null, ErrorKV] {
-  let convertedPosition: Point
+  let convertedPosition: Point;
   if (parentID) {
-    const [parentMapNode] = findMapNode(parentID, mapNodeLayers)
+    const [parentMapNode] = findMapNode(parentID, mapNodeLayers);
     if (!parentMapNode) {
-      return [null, NewErrorKV("UPDATE_NODE: Cannot findMapNode", {"id":parentID})]
+      return [
+        null,
+        NewErrorKV("UPDATE_NODE: Cannot findMapNode", { id: parentID })
+      ];
     }
-    const normalizedBorder = [{x:0, y:0}, {x:0, y:api.ST_HEIGHT}, {x:api.ST_WIDTH, y:api.ST_HEIGHT}, {x:api.ST_WIDTH, y:0}]
-    let morphedPositions: Record<string, Point> | null, err: ErrorKV
+    const normalizedBorder = [
+      { x: 0, y: 0 },
+      { x: 0, y: api.ST_HEIGHT },
+      { x: api.ST_WIDTH, y: api.ST_HEIGHT },
+      { x: api.ST_WIDTH, y: 0 }
+    ];
+    let morphedPositions: Record<string, Point> | null, err: ErrorKV;
     if (type === "denormalize") {
       [morphedPositions, err] = morphChildrenPoints(
         normalizedBorder,
         parentMapNode.border,
-        {"tmp": position}
-      )
+        { tmp: position }
+      );
     } else {
       [morphedPositions, err] = morphChildrenPoints(
         parentMapNode.border,
         normalizedBorder,
-        {"tmp": position}
-      )
+        { tmp: position }
+      );
     }
     if (err !== null) {
-      return [null, NewErrorKV("UPDATE_NODE: Cannot morphChildrenPoints", {
-        "type": type,
-        "normalizedBorder": normalizedBorder,
-        "parentMapNode.border":parentMapNode.border,
-        "dbNode.position": position
-      })]
+      return [
+        null,
+        NewErrorKV("UPDATE_NODE: Cannot morphChildrenPoints", {
+          type: type,
+          normalizedBorder: normalizedBorder,
+          "parentMapNode.border": parentMapNode.border,
+          "dbNode.position": position
+        })
+      ];
     }
-    convertedPosition = morphedPositions!["tmp"]
+    convertedPosition = morphedPositions!["tmp"];
   } else {
     if (type === "denormalize") {
-      convertedPosition = {x: api.ROOT_WIDTH/2, y:api.ROOT_HEIGHT/2}
+      convertedPosition = { x: api.ROOT_WIDTH / 2, y: api.ROOT_HEIGHT / 2 };
     } else {
-      convertedPosition = {x: api.ST_WIDTH/2, y:api.ST_HEIGHT/2}
+      convertedPosition = { x: api.ST_WIDTH / 2, y: api.ST_HEIGHT / 2 };
     }
   }
 
-  return [convertedPosition, null]
+  return [convertedPosition, null];
 }

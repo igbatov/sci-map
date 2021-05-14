@@ -10,7 +10,7 @@ import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "../../tools/errorkv";
 import { clone } from "../../tools/utils";
 import { NodeRecordItem } from "@/store/tree/index";
-import {v4 as uuidv4} from "uuid";
+import { v4 as uuidv4 } from "uuid";
 
 export function findMapNode(
   id: string,
@@ -145,9 +145,8 @@ export function createNewNode(title: string, center: Point): Tree {
     title: title,
     wikipedia: "",
     resources: [],
-    children: [],
+    children: []
   } as Tree;
-
 }
 
 /**

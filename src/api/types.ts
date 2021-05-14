@@ -1,9 +1,9 @@
-import {Point} from "@/types/graphics";
+import { Point } from "@/types/graphics";
 
 export type DBNode = {
-  id: string,
-  parentID: string,
-  name: string,
-  children: string[],
-  position: Point,
-}
+  id: string;
+  parentID: string;
+  name: string;
+  children: string[];
+  position: Point;
+};

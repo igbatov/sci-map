@@ -97,7 +97,9 @@ export const store = {
       }
       let firstOldPosition = change.oldPosition;
       if (state.localChangeList[change.nodeID][changeTypes.POSITION_CHANGE]) {
-        firstOldPosition = state.localChangeList[change.nodeID][changeTypes.POSITION_CHANGE]!.oldPosition
+        firstOldPosition = state.localChangeList[change.nodeID][
+          changeTypes.POSITION_CHANGE
+        ]!.oldPosition;
       }
       state.localChangeList[change.nodeID][changeTypes.POSITION_CHANGE] = {
         nodeID: change.nodeID,

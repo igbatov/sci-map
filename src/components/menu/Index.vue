@@ -37,7 +37,7 @@ export default {
     PinNode,
     AddNode,
     RemoveNode,
-    EditMode,
+    EditMode
   },
   setup() {
     const store = useStore();

@@ -4,8 +4,8 @@
 </template>
 
 <script>
-import {actions, useStore} from "@/store";
-import {computed} from "vue";
+import { actions, useStore } from "@/store";
+import { computed } from "vue";
 
 export default {
   name: "EditMode",

@@ -36,7 +36,7 @@ import {
 import { clone, printError } from "@/tools/utils";
 import { MapNode } from "@/types/graphics";
 import { findMapNodes } from "@/store/tree/helpers";
-import {DBNode} from "@/api/types";
+import { DBNode } from "@/api/types";
 
 export default defineComponent({
   name: "Home",
@@ -112,9 +112,13 @@ export default defineComponent({
           printError("filterNodesAndLayers: error in findCurrentNode", { err });
         }
 
-        const oldVisibleNodeIDs = []
+        const oldVisibleNodeIDs = [];
         for (const layer of layers.value) {
-          oldVisibleNodeIDs.push(...Object.values(layer).filter((n: MapNode) => (!!n.title)).map((n: MapNode)=>n.id))
+          oldVisibleNodeIDs.push(
+            ...Object.values(layer)
+              .filter((n: MapNode) => !!n.title)
+              .map((n: MapNode) => n.id)
+          );
         }
 
         currentNodeId.value = currNodeId;
@@ -124,16 +128,20 @@ export default defineComponent({
           treeState.nodeRecord
         );
 
-        const newVisibleNodeIDs = []
+        const newVisibleNodeIDs = [];
         for (const layer of layers.value) {
-          newVisibleNodeIDs.push(...Object.values(layer).filter((n: MapNode) => (!!n.title)).map((n: MapNode)=>n.id))
+          newVisibleNodeIDs.push(
+            ...Object.values(layer)
+              .filter((n: MapNode) => !!n.title)
+              .map((n: MapNode) => n.id)
+          );
         }
 
         store.dispatch(actions.subscribeDBChange, {
           oldNodeIDs: oldVisibleNodeIDs,
           newNodeIDs: newVisibleNodeIDs,
           cb: (dbNode: DBNode) => store.dispatch(actions.handleDBUpdate, dbNode)
-        })
+        });
       },
       { immediate: true, deep: true }
     );

@@ -8,17 +8,18 @@ import {
 import {
   addNode,
   calcSubtreesPositions,
-  findMapNode, getNewNodeCenter,
+  findMapNode,
+  getNewNodeCenter,
   updatePosition
 } from "@/store/tree/helpers";
 import { v4 as uuidv4 } from "uuid";
 import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "@/tools/errorkv";
-import {DBNode} from "@/api/types";
+import { DBNode } from "@/api/types";
 import { isEqual } from "lodash";
-import {printError, round} from "@/tools/utils";
+import { printError, round } from "@/tools/utils";
 import api from "@/api/api";
-import {Commit} from "vuex";
+import { Commit } from "vuex";
 import firebase from "firebase";
 
 export interface NodeRecordItem {
@@ -38,21 +39,23 @@ export const mutations = {
   SET_TREE: "SET_TREE",
   UPDATE_NODE_POSITION: "UPDATE_NODE_POSITION",
   ADD_NODE: "ADD_NODE",
-  REMOVE_NODE: "REMOVE_NODE",
+  REMOVE_NODE: "REMOVE_NODE"
 };
 
 export const actions = {
-  handleDBUpdate: "handleDBUpdate",
-}
+  handleDBUpdate: "handleDBUpdate"
+};
 
 export const store = {
   namespaced: true,
-  state() {return {
-    tree: null,
-    nodeRecord: {}, // id => NodeRecordItem
-    mapNodeLayers: [],
-    selectedNodeId: null
-  }},
+  state() {
+    return {
+      tree: null,
+      nodeRecord: {}, // id => NodeRecordItem
+      mapNodeLayers: [],
+      selectedNodeId: null
+    };
+  },
 
   getters: {
     selectedNode: (state: State) => {
@@ -95,13 +98,15 @@ export const store = {
      */
     async [actions.handleDBUpdate](
       { commit, state }: { commit: Commit; state: State },
-      arg: {dbNode: DBNode, user: firebase.User | null },
+      arg: { dbNode: DBNode; user: firebase.User | null }
     ) {
-      console.log("actions.handleDBUpdate", arg.dbNode)
-      const dbNodeRecord = state.nodeRecord[arg.dbNode.id]
+      console.log("actions.handleDBUpdate", arg.dbNode);
+      const dbNodeRecord = state.nodeRecord[arg.dbNode.id];
       if (!dbNodeRecord) {
-        printError("UPDATE_NODE: Cannot find dbNode in dbNodeRecord", {"dbNode.id":arg.dbNode.id})
-        return
+        printError("UPDATE_NODE: Cannot find dbNode in dbNodeRecord", {
+          "dbNode.id": arg.dbNode.id
+        });
+        return;
       }
 
       // calculate denormalized position of dbNode
@@ -109,19 +114,23 @@ export const store = {
         "denormalize",
         arg.dbNode.position,
         dbNodeRecord.parent ? dbNodeRecord.parent.id : null,
-        state.mapNodeLayers,
-      )
+        state.mapNodeLayers
+      );
 
       const oldDBNode = {
         id: dbNodeRecord.node.id,
         parentID: dbNodeRecord.parent ? dbNodeRecord.parent.id : null,
         name: dbNodeRecord.node.title,
-        children: dbNodeRecord.node.children.map((n)=>n.id).sort(),
-        position: dbNodeRecord.node.position,
-      }
+        children: dbNodeRecord.node.children.map(n => n.id).sort(),
+        position: dbNodeRecord.node.position
+      };
 
-      const newChildren = arg.dbNode.children.filter(x => !oldDBNode.children.includes(x));
-      const removedChildren = oldDBNode.children.filter(x => !arg.dbNode.children.includes(x));
+      const newChildren = arg.dbNode.children.filter(
+        x => !oldDBNode.children.includes(x)
+      );
+      const removedChildren = oldDBNode.children.filter(
+        x => !arg.dbNode.children.includes(x)
+      );
 
       // Add/move of new child
       if (newChildren.length) {
@@ -129,27 +138,32 @@ export const store = {
           if (state.nodeRecord[childID]) {
             // if we already have this node, then it is cut-and-paste new parent
             // so we should remove node from old parent
-            commit(mutations.REMOVE_NODE, {nodeID: childID, returnError: null})
+            commit(mutations.REMOVE_NODE, {
+              nodeID: childID,
+              returnError: null
+            });
           }
           // request node from server
-          const addedDBNode = await api.getNode(childID)
+          const addedDBNode = await api.getNode(childID);
           if (!addedDBNode) {
             // we cannot find node for addition, skip it
-            printError("Cannot find node for addition", {"nodeID": childID})
+            printError("Cannot find node for addition", { nodeID: childID });
             continue;
           }
 
           // get children if any
-          const children: Tree[] = []
+          const children: Tree[] = [];
           if (addedDBNode.children && addedDBNode.children.length) {
             for (const childrenID of addedDBNode.children) {
               if (!state.nodeRecord[childrenID]) {
                 // TODO: recursively create children if not found
                 // for now just skip
-                printError("ADD_NODE: cannot find child in nodeRecord", {"addedDBNode": addedDBNode})
+                printError("ADD_NODE: cannot find child in nodeRecord", {
+                  addedDBNode: addedDBNode
+                });
                 continue;
               }
-              children.push(state.nodeRecord[childrenID].node)
+              children.push(state.nodeRecord[childrenID].node);
             }
           }
 
@@ -157,8 +171,8 @@ export const store = {
             "denormalize",
             addedDBNode.position,
             addedDBNode.parentID,
-            state.mapNodeLayers,
-          )
+            state.mapNodeLayers
+          );
 
           const v = {
             parentID: addedDBNode.parentID,
@@ -171,10 +185,12 @@ export const store = {
               resources: []
             } as Tree,
             error: null
-          }
-          commit(mutations.ADD_NODE, v)
+          };
+          commit(mutations.ADD_NODE, v);
           if (v.error) {
-            printError("actions.handleDBUpdate: cannot create new node", {"err": v.error})
+            printError("actions.handleDBUpdate: cannot create new node", {
+              err: v.error
+            });
           }
         }
       }
@@ -182,38 +198,45 @@ export const store = {
       // Remove of child
       if (removedChildren.length) {
         for (const childID of removedChildren) {
-          const v = {nodeID: childID, returnError: null }
-          commit(mutations.REMOVE_NODE,  v)
+          const v = { nodeID: childID, returnError: null };
+          commit(mutations.REMOVE_NODE, v);
           if (v.returnError) {
-            printError("actions.handleDBUpdate: cannot remove node", {"err": v.returnError, "id": childID})
+            printError("actions.handleDBUpdate: cannot remove node", {
+              err: v.returnError,
+              id: childID
+            });
           }
         }
       }
 
       // Change of position
-      if (round(denormalizedPosition!.x) !== round(oldDBNode.position.x) ||
+      if (
+        round(denormalizedPosition!.x) !== round(oldDBNode.position.x) ||
         round(denormalizedPosition!.y) !== round(oldDBNode.position.y)
       ) {
-        if (oldDBNode.parentID == arg.dbNode.parentID) {  // we do not want to process position change due to parent change - it is already processed by ADD_NODE
+        if (oldDBNode.parentID == arg.dbNode.parentID) {
+          // we do not want to process position change due to parent change - it is already processed by ADD_NODE
           const v = {
             nodeId: arg.dbNode.id,
             newCenter: denormalizedPosition,
-            returnError: null,
-          }
-          commit(mutations.UPDATE_NODE_POSITION, v)
+            returnError: null
+          };
+          commit(mutations.UPDATE_NODE_POSITION, v);
           if (v.returnError !== null) {
-            printError("actions.handleDBUpdate: cannot update node's position", {"arg.dbNode": arg.dbNode,"err":v.returnError})
-            return
+            printError(
+              "actions.handleDBUpdate: cannot update node's position",
+              { "arg.dbNode": arg.dbNode, err: v.returnError }
+            );
+            return;
           }
         }
       }
 
       // Change of name
       if (oldDBNode.name !== arg.dbNode.name) {
-        dbNodeRecord.node.title = arg.dbNode.name
+        dbNodeRecord.node.title = arg.dbNode.name;
       }
-    },
-
+    }
   },
   mutations: {
     /**
@@ -282,9 +305,9 @@ export const store = {
     [mutations.ADD_NODE](
       state: State,
       v: {
-        parentID: string,
-        node: Tree,
-        error: ErrorKV
+        parentID: string;
+        node: Tree;
+        error: ErrorKV;
       }
     ) {
       if (state.tree === null) {
