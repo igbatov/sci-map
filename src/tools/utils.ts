@@ -12,6 +12,15 @@ import { getBoundingBorders, getVoronoiCells } from "../tools/graphics";
 
 export const ROUND_EPSILON = 0;
 
+/**
+ * Correct modulo on negative numbers
+ * @param n
+ * @param m
+ */
+export function mod(n: number, m: number): number {
+  return ((n % m) + m) % m;
+}
+
 export function round(num: number): number {
   const t = Math.pow(10, ROUND_EPSILON);
   return Math.round(num * t) / t;

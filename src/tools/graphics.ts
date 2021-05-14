@@ -13,9 +13,10 @@ import { default as NewErrorKV } from "../tools/errorkv";
 import { NodeRecordItem } from "@/store/tree";
 import { polygonArea } from "d3-polygon";
 import polygonClipping from "polygon-clipping";
-import { clone, round } from "../tools/utils";
+import {clone, mod, round} from "../tools/utils";
 import { findMapNode } from "../store/tree/helpers";
 import api from "../api/api";
+import { isEqual } from "lodash";
 
 export function getVectorLength(v: Vector): number {
   return Math.sqrt(
@@ -341,10 +342,12 @@ export function treeToMapNodeLayers(
             NewErrorKV(
               "treeToMapNodeLayers: children position outside parent's border",
               {
-                "treeNode.title": treeNode.title,
-                "treeNode.id": treeNode.id,
-                border: lastMapNodeLayer[treeNode.id].border,
-                "child.position": child.position
+                "parent nodeID": treeNode.id,
+                "parent title": treeNode.title,
+                "parent border": lastMapNodeLayer[treeNode.id].border,
+                "child nodeID": child.id,
+                "child title": child.title,
+                "child position": child.position
               }
             )
           ];
@@ -604,17 +607,24 @@ export function morphChildrenPoints(
       getVectorLength({ from: newCenter, to: newBorderIntersection }) /
       getVectorLength({ from: newCenter, to: oldBorderIntersection });
     newPoints[id] = vectorOnNumber({ from: newCenter, to: oldPoint }, coeff).to;
-    newPoints[id] = { x: round(newPoints[id].x), y: round(newPoints[id].y) };
   }
 
   return [newPoints, null];
 }
 
 export function getMaxDiagonal(polygon: Polygon): Vector {
-  const diagonals = polygon.reduce((res, p) => {
-    res.push(...polygon.map(v => ({ from: p, to: v })));
-    return res;
-  }, [] as Array<Vector>);
+  const diagonals: Vector[] = []
+  for (const i in polygon) {
+    for (const j in polygon) {
+      if (
+        Number(j) != mod(Number(i) - 1, polygon.length) &&
+        Number(j) != Number(i) &&
+        Number(j) != mod(Number(i) + 1, polygon.length)
+      ) {
+        diagonals.push({from:polygon[i], to: polygon[j]})
+      }
+    }
+  }
 
   let maxDiagonal = diagonals[0];
   for (const diag of diagonals) {
@@ -660,6 +670,30 @@ export function convertPosition(
         normalizedBorder,
         { tmp: position }
       );
+      if (err !== null) {
+        return [
+          null,
+          NewErrorKV("UPDATE_NODE: Cannot morphChildrenPoints", {
+            type: type,
+            normalizedBorder: normalizedBorder,
+            "parentMapNode.border": parentMapNode.border,
+            "dbNode.position": position
+          })
+        ];
+      }
+      // make sure that after normalization position is strictly inside border
+      if (morphedPositions!["tmp"].x < 0) {
+        morphedPositions!["tmp"].x = 1
+      }
+      if (morphedPositions!["tmp"].x > api.ST_WIDTH) {
+        morphedPositions!["tmp"].x = api.ST_WIDTH - 1
+      }
+      if (morphedPositions!["tmp"].y < 0) {
+        morphedPositions!["tmp"].y = 1
+      }
+      if (morphedPositions!["tmp"].y > api.ST_HEIGHT) {
+        morphedPositions!["tmp"].y = api.ST_HEIGHT - 1
+      }
     }
     if (err !== null) {
       return [

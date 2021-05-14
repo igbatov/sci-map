@@ -592,7 +592,7 @@ describe("intersect", () => {
   });
 });
 
-describe("morphChildrenPoints", () => {
+describe("getMaxDiagonal", () => {
   it("works for square", () => {
     const v = getMaxDiagonal([
       { x: 100, y: 100 },

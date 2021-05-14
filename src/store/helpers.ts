@@ -6,17 +6,18 @@ import { store } from "@/store/index";
 import { printError } from "@/tools/utils";
 
 export async function fetchMap(user: firebase.User | null) {
-  let [tree, err] = await api.getMap(user);
+  const [tree, err] = await api.getMap(user);
   if (tree == null || err) {
     printError("fetchMap: cannot api.getMap(user)", { err });
   }
 
-  if (user && !tree) {
-    [tree, err] = await api.getMap(null);
-    if (tree == null || err) {
-      printError("fetchMap: cannot api.getMap(null)", { err });
-    }
-  }
+  //// Commented out because reading map from DB is always made from single general version
+  // if (user && !tree) {
+  //   [tree, err] = await api.getMap(null);
+  //   if (tree == null || err) {
+  //     printError("fetchMap: cannot api.getMap(null)", { err });
+  //   }
+  // }
 
   store.commit(`tree/${treeMutations.SET_TREE}`, tree);
 }

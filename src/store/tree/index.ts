@@ -9,14 +9,11 @@ import {
   addNode,
   calcSubtreesPositions,
   findMapNode,
-  getNewNodeCenter,
   updatePosition
 } from "@/store/tree/helpers";
-import { v4 as uuidv4 } from "uuid";
 import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "@/tools/errorkv";
 import { DBNode } from "@/api/types";
-import { isEqual } from "lodash";
 import { printError, round } from "@/tools/utils";
 import api from "@/api/api";
 import { Commit } from "vuex";
