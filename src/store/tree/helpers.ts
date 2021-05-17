@@ -204,7 +204,7 @@ export function updatePosition(
   if (!parentMapNode || layerLevel === null)  {
     return NewErrorKV("updateNodePosition: cannot find mapNode for parent", {"id":item.parent.id, "state.mapNodeLayers":state.mapNodeLayers})
   }
-  const [ls, err] = treeToMapNodeLayers(item.parent, parentMapNode.border);
+  const [ls, err] = treeToMapNodeLayers(item.parent, parentMapNode.border, parentMapNode.center);
   if (ls == null || err != null) {
     return NewErrorKV("updateNodePosition: create layers for parent", {"id":item.parent.id, "parentMapNode":parentMapNode})
   }

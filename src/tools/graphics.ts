@@ -670,27 +670,19 @@ export function convertPosition(
 export function treeToMapNodeLayers(
   tree: Tree,
   rootBorder: Polygon,
+  rootPosition: Point,
 ): [Array<Record<string, MapNode>> | null, ErrorKV] {
   if (Object.keys(tree).length == 0) {
     return [[], null];
   }
   const treeLayers: Array<Array<Tree>> = [[tree]];
-  // normalize root position
-  const [morphedPositions, err] = morphChildrenPoints(
-    NORMALIZED_BORDER,
-    rootBorder,
-    { normRootPos: tree.position }
-  );
-  if (err) {
-    return [null, err]
-  }
   const mapNodeLayers: Array<Record<string, MapNode>> = [
     {
       [tree.id]: {
         id: tree.id,
         border: rootBorder,
         title: tree.title,
-        center: morphedPositions!['normRootPos']
+        center: rootPosition
       }
     }
   ];

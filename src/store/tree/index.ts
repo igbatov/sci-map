@@ -18,6 +18,7 @@ import { Commit } from "vuex";
 import firebase from "firebase";
 
 const ROOT_BORDER = [{x:0, y:0}, {x:0, y:api.ROOT_HEIGHT}, {x:api.ROOT_WIDTH, y:api.ROOT_HEIGHT}, {x:api.ROOT_WIDTH, y:0}]
+const ROOT_CENTER = {x:api.ROOT_WIDTH/2, y:api.ROOT_HEIGHT/2}
 
 export interface NodeRecordItem {
   node: Tree;
@@ -193,7 +194,7 @@ export const store = {
             }
           }
 
-          const [ls, err2] = treeToMapNodeLayers(state.tree!, ROOT_BORDER);
+          const [ls, err2] = treeToMapNodeLayers(state.tree!, ROOT_BORDER, ROOT_CENTER);
           if (err2) {
             printError("Cannot treeToMapNodeLayers", { "err": err2 });
             return;
@@ -293,7 +294,7 @@ export const store = {
       parent.children.splice(ind, 1);
 
       // update layers
-      const [ls, err2] = treeToMapNodeLayers(state.tree, ROOT_BORDER);
+      const [ls, err2] = treeToMapNodeLayers(state.tree, ROOT_BORDER, ROOT_CENTER);
       if (ls == null || err2 != null) {
         v.returnError = err2;
         return;
@@ -329,7 +330,7 @@ export const store = {
       state.nodeRecord = treeToNodeRecord(tree);
 
       // fill state.mapNodeLayers
-      const [ls, err] = treeToMapNodeLayers(tree, ROOT_BORDER);
+      const [ls, err] = treeToMapNodeLayers(tree, ROOT_BORDER, ROOT_CENTER);
       if (ls == null || err != null) {
         console.error(err);
         return;
