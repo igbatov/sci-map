@@ -122,16 +122,19 @@ export const store = {
 
       // Add/move of new child
       if (newChildren.length) {
-        console.log("actions.handleDBUpdate: adding new children", newChildren);
         for (const childID of newChildren) {
           if (state.nodeRecord[childID]) {
+            console.log("actions.handleDBUpdate: remove node for cut-and-paste", state.nodeRecord[childID]);
             // if we already have this node, then it is cut-and-paste new parent
             // so we should remove node from old parent
             const v = {
               nodeID: childID,
               returnError: null
             }
-            commit(mutations.REMOVE_NODE, );
+            commit(mutations.REMOVE_NODE, {
+              nodeID: childID,
+              returnError: null
+            });
             if (v.returnError) {
               printError("handleDBUpdate: cannot cut node", {"err":v.returnError})
             }
@@ -139,6 +142,8 @@ export const store = {
 
           // request node and its children from the server, fill in tree
           const addedDBNode = await api.getNode(childID);
+          console.log("actions.handleDBUpdate: add node for cut-and-paste", addedDBNode);
+
           const toProcess = [addedDBNode]
           if (!addedDBNode) {
             // we cannot find node for addition, remove it from parent
@@ -197,8 +202,16 @@ export const store = {
 
       // Remove of child
       if (removedChildren.length) {
-        console.log("actions.handleDBUpdate: removing children", removedChildren);
         for (const childID of removedChildren) {
+          if (!state.nodeRecord[childID] || !state.nodeRecord[childID].parent) {
+            // node was already removed somewhere
+            continue;
+          }
+          if (state.nodeRecord[childID] && state.nodeRecord[childID].parent!.id !== arg.dbNode.id) {
+            // node was already removed from this parent (this is cut-and-paste operation)
+            continue;
+          }
+          console.log("actions.handleDBUpdate: removing children", state.nodeRecord[childID]);
           const v = { nodeID: childID, returnError: null };
           commit(mutations.REMOVE_NODE, v);
           if (v.returnError) {

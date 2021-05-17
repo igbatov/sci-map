@@ -183,11 +183,11 @@ export default {
     this.subscribeDBChange(
       `map/${nodeID}`,
       (snap: firebase.database.DataSnapshot) => {
-        console.log("got update on node", nodeID);
         if (!snap.exists()) {
           return;
         }
         const node = snap.val() as DBNode;
+        console.log("got update on node", node);
         node.children = convertChildren(node.children);
         cb(node);
       }

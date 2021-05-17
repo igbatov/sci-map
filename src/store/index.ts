@@ -122,10 +122,10 @@ export const store = createStore<State>({
 
     async [actions.handleDBUpdate](
       { dispatch, state }: { dispatch: Dispatch; state: State },
-      newNode: DBNode
+      node: DBNode
     ) {
       await dispatch(`tree/${treeActions.handleDBUpdate}`, {
-        dbNode: newNode,
+        dbNode: node,
         user: state.user.user
       });
     },
@@ -227,6 +227,7 @@ export const store = createStore<State>({
       // search for key of childID in children of oldParent
       const oldKey = await api.findKeyOfChild(oldParent!.id, v.nodeID);
       const updateMap = {
+        [`map/${v.nodeID}/parentID`]: newParent!.id,
         [`map/${oldParent!.id}/children/${oldKey}`]: null, // remove from old parent children
         [`map/${newParent!.id}/children/${newKey}`]: v.nodeID, // add to children of new parents
         [`map/${v.nodeID}/position`]: normalizedNewNodeCenter
