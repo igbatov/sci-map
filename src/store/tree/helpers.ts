@@ -1,9 +1,10 @@
 import { MapNode, Point, Tree } from "@/types/graphics";
 import {
+  convertPosition,
   getMaxDiagonal,
   getVectorLength,
-  getVoronoiCells,
-  morphChildrenPoints,
+  mergeMapNodeLayers,
+  treeToMapNodeLayers,
   vectorOnNumber
 } from "../../tools/graphics";
 import { ErrorKV } from "@/types/errorkv";
@@ -16,12 +17,11 @@ export function findMapNode(
   id: string,
   mapNodeLayers: Array<Record<string, MapNode>>
 ): [MapNode | null, number | null] {
-  let level = 0;
-  for (const layer of mapNodeLayers) {
+  for (const level in mapNodeLayers) {
+    const layer = mapNodeLayers[Number(level)]
     if (layer && layer[id]) {
-      return [layer[id], level];
+      return [layer[id], Number(level)];
     }
-    level++;
   }
 
   return [null, null];
@@ -44,98 +44,6 @@ export function findMapNodes(
   }
 
   return result;
-}
-
-/**
- * Если у узла parentID поменялся состав или расположение детей,
- * то надо вызвать этот метод для пересчета
- * positions у всего поддерева во главе с parentID
- * @param state
- * @param parentID
- */
-export function calcSubtreesPositions(
-  state: {
-    tree: Tree | null;
-    nodeRecord: Record<string, NodeRecordItem>;
-    mapNodeLayers: Record<string, MapNode>[];
-  },
-  parentID: string
-): ErrorKV {
-  if (state.tree == null) {
-    return NewErrorKV("state.tree == null", {});
-  }
-
-  const parent = state.nodeRecord[parentID];
-  if (!parent) {
-    return NewErrorKV("updateNodePosition: cannot find node in nodeRecord", {
-      parentID,
-      "state.nodeRecord": state.nodeRecord
-    });
-  }
-
-  let inProcess = [parent.node];
-  let newInProcess = [];
-  while (inProcess.length) {
-    newInProcess = [];
-    const childMapNodes: Record<string, MapNode> = {};
-    const childOldMapNodes: Record<string, MapNode> = {};
-    for (const node of inProcess) {
-      if (node.children.length == 0) {
-        continue;
-      }
-      newInProcess.push(...node.children);
-      const [nodeMapNode] = findMapNode(node.id, state.mapNodeLayers);
-      // get borders of node children
-      for (const child of node.children) {
-        const [childMapNode] = findMapNode(child.id, state.mapNodeLayers);
-        if (childMapNode == null) {
-          return NewErrorKV("Cannot find oldMapNode", {
-            "child.id": child.id,
-            layers: state.mapNodeLayers
-          });
-        }
-        childMapNodes[child.id] = childMapNode;
-        childMapNodes[child.id].center =
-          state.nodeRecord[child.id].node.position;
-        childOldMapNodes[child.id] = clone(childMapNode);
-      }
-
-      // recalculate new borders for children
-      const [cells, error] = getVoronoiCells(
-        nodeMapNode!.border,
-        node.children.map(ch => ({ x: ch.position.x, y: ch.position.y }))
-      );
-      if (error != null) {
-        return error;
-      }
-
-      let cellIndex = 0;
-      for (const child of node.children) {
-        // update borders in state.mapNodeLayers
-        childMapNodes[child.id].border = cells[cellIndex].border;
-
-        // calculate new position for each child of child (because its border was changed)
-        const [newChildrenPositions] = morphChildrenPoints(
-          childOldMapNodes[child.id].border,
-          cells[cellIndex].border,
-          state.nodeRecord[child.id].node.children.reduce((prev, curr) => {
-            prev[curr.id] = curr.position;
-            return prev;
-          }, {} as Record<string, Point>)
-        );
-
-        // update positions in state
-        for (const id in newChildrenPositions) {
-          state.nodeRecord[id].node.position = newChildrenPositions[id];
-        }
-        cellIndex++;
-      }
-    }
-
-    inProcess = newInProcess;
-  }
-
-  return null;
 }
 
 export function createNewNode(title: string, center: Point): Tree {
@@ -232,69 +140,33 @@ export function getNewNodeCenter(
         ];
       }
 
-      if (
-        getVectorLength(getMaxDiagonal(childMapNode.border)) >
-        getVectorLength(getMaxDiagonal(maxDiagChildMapNode.border))
-      ) {
+      const [childDiag, err1] = getMaxDiagonal(childMapNode.border)
+      if (err1) {
+        return [
+          null,
+          null,
+          NewErrorKV("getNewNodeCenter: error getMaxDiagonal", {childMapNode, err1})
+        ]
+      }
+      const [maxDiag, err2] = getMaxDiagonal(maxDiagChildMapNode.border)
+      if (err2) {
+        return [
+          null,
+          null,
+          NewErrorKV("getNewNodeCenter: error getMaxDiagonal", {maxDiagChildMapNode, err2})
+        ]
+      }
+      if (getVectorLength(childDiag) > getVectorLength(maxDiag)) {
         maxDiagChildMapNode = childMapNode;
       }
     }
 
-    const maxDiag = getMaxDiagonal(maxDiagChildMapNode.border);
-    const newNodeCenter = vectorOnNumber(maxDiag, 3 / 4).to;
+    const [finalMaxDiag] = getMaxDiagonal(maxDiagChildMapNode.border);
+    const newNodeCenter = vectorOnNumber(finalMaxDiag!, 3 / 4).to;
     const modifiedNode = clone(maxDiagChild);
-    modifiedNode.position = vectorOnNumber(maxDiag, 1 / 4).to;
+    modifiedNode.position = vectorOnNumber(finalMaxDiag!, 1 / 4).to;
     return [newNodeCenter, modifiedNode, null];
   }
-}
-
-export function addNode(
-  state: {
-    tree: Tree | null;
-    nodeRecord: Record<string, NodeRecordItem>;
-    mapNodeLayers: Array<Record<string, MapNode>>;
-  },
-  v: { parentID: string; node: Tree; mapNode: MapNode }
-): ErrorKV {
-  // sanity check
-  if (state.tree === null) {
-    return NewErrorKV("addNode: Cannot add to empty tree", { state });
-  }
-  if (!v.parentID) {
-    return NewErrorKV("addNode: Cannot add to parent", {
-      parentID: v.parentID
-    });
-  }
-  if (!v.node) {
-    return NewErrorKV("addNode: empty node", { node: v.node });
-  }
-  if (!v.mapNode) {
-    return NewErrorKV("addNode: empty mapNode", { node: v.mapNode });
-  }
-  const parentRecord = state.nodeRecord[v.parentID];
-  if (!parentRecord) {
-    return NewErrorKV("addNode: cannot find parentRecord", {
-      parentId: v.parentID
-    });
-  }
-
-  // update tree
-  parentRecord.node.children.push(v.node);
-
-  // update nodeRecord
-  state.nodeRecord[v.node.id] = {
-    parent: parentRecord.node,
-    node: v.node
-  };
-
-  // update mapLayer
-  const [_, layerIndex] = findMapNode(
-    parentRecord.node.id,
-    state.mapNodeLayers
-  );
-  state.mapNodeLayers[layerIndex! + 1][v.node.id] = v.mapNode;
-
-  return calcSubtreesPositions(state, v.parentID);
 }
 
 export function updatePosition(
@@ -323,9 +195,18 @@ export function updatePosition(
     });
   }
 
-  item.node.position = v.position;
+  const [normalizedPosition] = convertPosition("normalize", v.position, item.parent.id, state.mapNodeLayers)
+  item.node.position = normalizedPosition!;
 
   // Если мы меняем один узел, то могут поменяться границы всех соседей
   // так что надо действовать так как будто поменялись границы всех подузлов родителя узла
-  return calcSubtreesPositions(state, item.parent.id);
+  const [parentMapNode, layerLevel] = findMapNode(item.parent.id, state.mapNodeLayers)
+  if (!parentMapNode || layerLevel === null)  {
+    return NewErrorKV("updateNodePosition: cannot find mapNode for parent", {"id":item.parent.id, "state.mapNodeLayers":state.mapNodeLayers})
+  }
+  const [ls, err] = treeToMapNodeLayers(item.parent, parentMapNode.border);
+  if (ls == null || err != null) {
+    return NewErrorKV("updateNodePosition: create layers for parent", {"id":item.parent.id, "parentMapNode":parentMapNode})
+  }
+  return mergeMapNodeLayers(state.mapNodeLayers, ls, layerLevel);
 }

@@ -4,8 +4,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useStore } from "@/store";
-import { actions } from "@/store";
+import { useStore, actions } from "@/store";
 export default defineComponent({
   setup() {
     const store = useStore();

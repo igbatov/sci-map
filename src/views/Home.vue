@@ -69,11 +69,11 @@ export default defineComponent({
      * compute svg viewBox
      */
     const viewBox = computed(() => {
-      if (treeState.tree && treeState.tree.position) {
-        return `0 0 ${2 * treeState.tree.position.x} ${2 *
-          treeState.tree.position.y}`;
+      if (treeState.mapNodeLayers && treeState.mapNodeLayers.length) {
+        return `0 0 ${2 * treeState.mapNodeLayers[0]["0"].center.x} ${2 *
+        treeState.mapNodeLayers[0]["0"].center.y}`;
       } else {
-        return `0 0 1000 600`;
+        return `0 0 1000 1000`;
       }
     });
 

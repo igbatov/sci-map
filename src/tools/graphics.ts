@@ -16,7 +16,13 @@ import polygonClipping from "polygon-clipping";
 import {clone, mod, round} from "../tools/utils";
 import { findMapNode } from "../store/tree/helpers";
 import api from "../api/api";
-import { isEqual } from "lodash";
+
+const NORMALIZED_BORDER = [
+  { x: 0, y: 0 },
+  { x: 0, y: api.ST_HEIGHT },
+  { x: api.ST_WIDTH, y: api.ST_HEIGHT },
+  { x: api.ST_WIDTH, y: 0 }
+];
 
 export function getVectorLength(v: Vector): number {
   return Math.sqrt(
@@ -178,6 +184,7 @@ export function getVoronoiCells(
     return [
       [],
       NewErrorKV("getVoronoiCells: error in getVoronoiCellsInSquare", {
+        err,
         bb,
         centers
       })
@@ -282,109 +289,6 @@ export function treeToNodeRecord(tree: Tree): Record<number, NodeRecordItem> {
   }
 
   return nodeRecord;
-}
-export function treeToMapNodeLayers(
-  tree: Tree
-): [Array<Record<string, MapNode>> | null, ErrorKV] {
-  if (Object.keys(tree).length == 0) {
-    return [[], null];
-  }
-  const treeLayers: Array<Array<Tree>> = [[tree]];
-  const mapNodeLayers: Array<Record<string, MapNode>> = [
-    {
-      0: {
-        id: "0",
-        border: [
-          { x: 0, y: 0 },
-          { x: 2 * tree.position.x, y: 0 },
-          { x: 2 * tree.position.x, y: 2 * tree.position.y },
-          { x: 0, y: 2 * tree.position.y }
-        ],
-        title: "",
-        center: { x: tree.position.x, y: tree.position.y }
-      }
-    }
-  ];
-  /*eslint no-constant-condition: ["error", { "checkLoops": false }]*/
-  while (true) {
-    const lastTreeLayer = treeLayers[treeLayers.length - 1];
-    const lastMapNodeLayer = mapNodeLayers[treeLayers.length - 1];
-    const newTreeLayer = [];
-    const newMapNodeLayer: Record<string, MapNode> = {};
-    for (const treeNode of lastTreeLayer) {
-      if (!treeNode.children) {
-        return [
-          null,
-          NewErrorKV("treeToMapNodeLayers: treeNode with children undefined", {
-            treeNode
-          })
-        ];
-      }
-      if (!treeNode.children.length) {
-        continue;
-      }
-      newTreeLayer.push(...treeNode.children);
-      if (!lastMapNodeLayer[treeNode.id]) {
-        return [
-          null,
-          NewErrorKV("Cannot find node in mapNodeLayers", {
-            layer: mapNodeLayers[mapNodeLayers.length - 1],
-            treeNode: treeNode
-          })
-        ];
-      }
-
-      // check that node's children positions lay inside node's border
-      for (const child of treeNode.children) {
-        if (!isInside(child.position, lastMapNodeLayer[treeNode.id].border)) {
-          return [
-            null,
-            NewErrorKV(
-              "treeToMapNodeLayers: children position outside parent's border",
-              {
-                "parent nodeID": treeNode.id,
-                "parent title": treeNode.title,
-                "parent border": lastMapNodeLayer[treeNode.id].border,
-                "child nodeID": child.id,
-                "child title": child.title,
-                "child position": child.position
-              }
-            )
-          ];
-        }
-      }
-      const [cells, error] = getVoronoiCells(
-        lastMapNodeLayer[treeNode.id].border,
-        treeNode.children.map(ch => ({ x: ch.position.x, y: ch.position.y }))
-      );
-      if (error != null) {
-        return [null, error];
-      }
-
-      for (const cell of cells) {
-        for (const child of treeNode.children) {
-          if (
-            child.position.x == cell.center.x &&
-            child.position.y == cell.center.y
-          ) {
-            newMapNodeLayer[child.id] = {
-              id: child.id,
-              title: child.title,
-              center: child.position,
-              border: cell.border
-            };
-          }
-        }
-      }
-    }
-
-    if (newTreeLayer.length) {
-      treeLayers.push(newTreeLayer);
-      mapNodeLayers.push(newMapNodeLayer);
-    } else {
-      return [mapNodeLayers, null];
-    }
-  }
 }
 
 export function transferToPoint(vector: Vector, point: Point): Vector {
@@ -612,16 +516,35 @@ export function morphChildrenPoints(
   return [newPoints, null];
 }
 
-export function getMaxDiagonal(polygon: Polygon): Vector {
+export function NewEmptyVector(): Vector {
+  return {from:{x:0,y:0}, to:{x:0,y:0}}
+}
+
+export function getMaxDiagonal(polygon: Polygon): [Vector, ErrorKV] {
+  if (!polygon || polygon.length < 3) {
+    return [NewEmptyVector(), NewErrorKV("getMaxDiagonal: bad polygon", {polygon})]
+  }
+
   const diagonals: Vector[] = []
-  for (const i in polygon) {
-    for (const j in polygon) {
-      if (
-        Number(j) != mod(Number(i) - 1, polygon.length) &&
-        Number(j) != Number(i) &&
-        Number(j) != mod(Number(i) + 1, polygon.length)
-      ) {
-        diagonals.push({from:polygon[i], to: polygon[j]})
+  if (polygon.length == 3) {
+    // triangle does not has diagonals, so me emulate them
+    for (const i in polygon) {
+      const middle = vectorOnNumber({
+        from:polygon[mod(Number(i) - 1, polygon.length)],
+        to:polygon[mod(Number(i) + 1, polygon.length)]
+      }, 1/2)
+      diagonals.push({from: polygon[i], to: middle.to})
+    }
+  }  else {
+    for (const i in polygon) {
+      for (const j in polygon) {
+        if (
+          Number(j) != mod(Number(i) - 1, polygon.length) &&
+          Number(j) != Number(i) &&
+          Number(j) != mod(Number(i) + 1, polygon.length)
+        ) {
+          diagonals.push({from:polygon[i], to: polygon[j]})
+        }
       }
     }
   }
@@ -633,7 +556,7 @@ export function getMaxDiagonal(polygon: Polygon): Vector {
     }
   }
 
-  return maxDiagonal;
+  return [maxDiagonal, null];
 }
 
 export function convertPosition(
@@ -651,23 +574,44 @@ export function convertPosition(
         NewErrorKV("UPDATE_NODE: Cannot findMapNode", { id: parentID })
       ];
     }
-    const normalizedBorder = [
-      { x: 0, y: 0 },
-      { x: 0, y: api.ST_HEIGHT },
-      { x: api.ST_WIDTH, y: api.ST_HEIGHT },
-      { x: api.ST_WIDTH, y: 0 }
-    ];
+
     let morphedPositions: Record<string, Point> | null, err: ErrorKV;
     if (type === "denormalize") {
+      if (!isInside(position, NORMALIZED_BORDER)) {
+        return [
+          null,
+          NewErrorKV(
+            "convertPosition: position outside NORMALIZED_BORDER",
+            {
+              normalizedBorder: NORMALIZED_BORDER,
+              position,
+              parentID,
+            }
+          )
+        ];
+      }
       [morphedPositions, err] = morphChildrenPoints(
-        normalizedBorder,
+        NORMALIZED_BORDER,
         parentMapNode.border,
         { tmp: position }
       );
     } else {
+      if (!isInside(position, parentMapNode.border)) {
+        return [
+          null,
+          NewErrorKV(
+            "convertPosition: position outside parentMapNode.border",
+            {
+              "parentMapNode.border": parentMapNode.border,
+              position,
+              parentID,
+            }
+          )
+        ];
+      }
       [morphedPositions, err] = morphChildrenPoints(
         parentMapNode.border,
-        normalizedBorder,
+        NORMALIZED_BORDER,
         { tmp: position }
       );
       if (err !== null) {
@@ -675,7 +619,7 @@ export function convertPosition(
           null,
           NewErrorKV("UPDATE_NODE: Cannot morphChildrenPoints", {
             type: type,
-            normalizedBorder: normalizedBorder,
+            normalizedBorder: NORMALIZED_BORDER,
             "parentMapNode.border": parentMapNode.border,
             "dbNode.position": position
           })
@@ -700,7 +644,7 @@ export function convertPosition(
         null,
         NewErrorKV("UPDATE_NODE: Cannot morphChildrenPoints", {
           type: type,
-          normalizedBorder: normalizedBorder,
+          normalizedBorder: NORMALIZED_BORDER,
           "parentMapNode.border": parentMapNode.border,
           "dbNode.position": position
         })
@@ -716,4 +660,135 @@ export function convertPosition(
   }
 
   return [convertedPosition, null];
+}
+
+/**
+ *
+ * @param tree
+ * @param rootBorder
+ */
+export function treeToMapNodeLayers(
+  tree: Tree,
+  rootBorder: Polygon,
+): [Array<Record<string, MapNode>> | null, ErrorKV] {
+  if (Object.keys(tree).length == 0) {
+    return [[], null];
+  }
+  const treeLayers: Array<Array<Tree>> = [[tree]];
+  // normalize root position
+  const [morphedPositions, err] = morphChildrenPoints(
+    NORMALIZED_BORDER,
+    rootBorder,
+    { normRootPos: tree.position }
+  );
+  if (err) {
+    return [null, err]
+  }
+  const mapNodeLayers: Array<Record<string, MapNode>> = [
+    {
+      [tree.id]: {
+        id: tree.id,
+        border: rootBorder,
+        title: tree.title,
+        center: morphedPositions!['normRootPos']
+      }
+    }
+  ];
+  /*eslint no-constant-condition: ["error", { "checkLoops": false }]*/
+  while (true) {
+    const lastTreeLayer = treeLayers[treeLayers.length - 1];
+    const lastMapNodeLayer = mapNodeLayers[treeLayers.length - 1];
+    const newTreeLayer = [];
+    const newMapNodeLayer: Record<string, MapNode> = {};
+    for (const treeNode of lastTreeLayer) {
+      if (!treeNode.children) {
+        return [
+          null,
+          NewErrorKV("treeToMapNodeLayers: treeNode with children undefined", {
+            treeNode
+          })
+        ];
+      }
+      if (!treeNode.children.length) {
+        continue;
+      }
+      newTreeLayer.push(...treeNode.children);
+      if (!lastMapNodeLayer[treeNode.id]) {
+        return [
+          null,
+          NewErrorKV("Cannot find node in mapNodeLayers", {
+            layer: mapNodeLayers[mapNodeLayers.length - 1],
+            treeNode: treeNode
+          })
+        ];
+      }
+
+      // denormalize positions
+      const treeNodeChildren = clone(treeNode.children) as Array<Tree>
+      for (const child of treeNodeChildren) {
+        const [denormalizedPosition, err] = convertPosition(
+          "denormalize",
+          child.position,
+          treeNode.id,
+          [lastMapNodeLayer]
+        );
+        if (err) {
+          return [null, err]
+        }
+        child.position = denormalizedPosition!
+      }
+      const [cells, error] = getVoronoiCells(
+        lastMapNodeLayer[treeNode.id].border,
+        treeNodeChildren.map(ch => ({ x: ch.position.x, y: ch.position.y }))
+      );
+      if (error != null) {
+        return [null, error];
+      }
+
+      for (const cell of cells) {
+        for (const child of treeNodeChildren) {
+          if (
+            child.position.x == cell.center.x &&
+            child.position.y == cell.center.y
+          ) {
+            newMapNodeLayer[child.id] = {
+              id: child.id,
+              title: child.title,
+              center: child.position,
+              border: cell.border
+            };
+          }
+        }
+      }
+    }
+
+    if (newTreeLayer.length) {
+      treeLayers.push(newTreeLayer);
+      mapNodeLayers.push(newMapNodeLayer);
+    } else {
+      return [mapNodeLayers, null];
+    }
+  }
+}
+
+export function mergeMapNodeLayers(
+  recipientLayers: Record<string, MapNode>[],
+  insertedLayers: Record<string, MapNode>[],
+  startFromLevel: number
+): ErrorKV {
+  if (startFromLevel >= recipientLayers.length || startFromLevel < 0) {
+    return NewErrorKV("startFromLevel >= recipientLayers.length or startFromLevel < 0", {
+      startFromLevel,
+      "recipientLayers.length":recipientLayers.length
+    })
+  }
+  let i = startFromLevel
+  while (i < startFromLevel + insertedLayers.length) {
+    for(const id in insertedLayers[i-startFromLevel]) {
+      recipientLayers[i][id] = insertedLayers[i-startFromLevel][id]
+    }
+    i++;
+  }
+
+  return null
 }

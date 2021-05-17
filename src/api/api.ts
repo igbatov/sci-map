@@ -48,13 +48,7 @@ export default {
     const map = snapshot.val();
 
     // create Tree with denormalized positions
-    const [tree, err] = convertDBMapToTree(
-      map,
-      this.ROOT_WIDTH,
-      this.ROOT_HEIGHT,
-      this.ST_WIDTH,
-      this.ST_HEIGHT
-    );
+    const [tree, err] = convertDBMapToTree(map);
     if (err !== null) {
       return [null, err];
     }
@@ -186,7 +180,6 @@ export default {
   },
 
   subscribeNodeChange(nodeID: string, cb: (a: DBNode) => any) {
-    console.log("subscribeNodeChange", nodeID);
     this.subscribeDBChange(
       `map/${nodeID}`,
       (snap: firebase.database.DataSnapshot) => {
@@ -202,7 +195,6 @@ export default {
   },
 
   unsubscribeNodeChange(nodeID: string) {
-    console.log("unsubscribeNodeChange", nodeID);
     firebase
       .database()
       .ref(`map/${nodeID}`)

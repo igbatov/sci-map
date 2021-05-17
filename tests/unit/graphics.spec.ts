@@ -46,21 +46,21 @@ describe("treeToMapNodeLayers", () => {
     const tree = {
       id: "0",
       title: "",
-      position: { x: 600, y: 400 },
+      position: { x: 500, y: 500 },
       wikipedia: "",
       resources: [],
       children: [
         {
           id: "1",
           title: "1",
-          position: { x: 150, y: 400 },
+          position: { x: 250, y: 500 },
           wikipedia: "",
           resources: [],
           children: [
             {
               id: "3",
               title: "3",
-              position: { x: 150, y: 100 },
+              position: { x: 500, y: 250 },
               wikipedia: "",
               resources: [],
               children: []
@@ -68,7 +68,7 @@ describe("treeToMapNodeLayers", () => {
             {
               id: "4",
               title: "4",
-              position: { x: 150, y: 300 },
+              position: { x: 500, y: 750 },
               wikipedia: "",
               resources: [],
               children: []
@@ -78,14 +78,14 @@ describe("treeToMapNodeLayers", () => {
         {
           id: "2",
           title: "2",
-          position: { x: 450, y: 400 },
+          position: { x: 750, y: 500 },
           wikipedia: "",
           resources: [],
           children: [
             {
               id: "5",
               title: "5",
-              position: { x: 450, y: 100 },
+              position: { x: 500, y: 250 },
               wikipedia: "",
               resources: [],
               children: []
@@ -93,7 +93,7 @@ describe("treeToMapNodeLayers", () => {
             {
               id: "6",
               title: "6",
-              position: { x: 450, y: 300 },
+              position: { x: 500, y: 750 },
               wikipedia: "",
               resources: [],
               children: []
@@ -136,7 +136,7 @@ describe("treeToMapNodeLayers", () => {
           id: "1",
           title: "1",
           center: {
-            x: 150,
+            x: 300,
             y: 400
           },
           border: [
@@ -145,11 +145,11 @@ describe("treeToMapNodeLayers", () => {
               y: 0
             },
             {
-              x: 300,
+              x: 600,
               y: 0
             },
             {
-              x: 300,
+              x: 600,
               y: 800
             },
             {
@@ -162,12 +162,12 @@ describe("treeToMapNodeLayers", () => {
           id: "2",
           title: "2",
           center: {
-            x: 450,
+            x: 900,
             y: 400
           },
           border: [
             {
-              x: 300,
+              x: 600,
               y: 0
             },
             {
@@ -179,7 +179,7 @@ describe("treeToMapNodeLayers", () => {
               y: 800
             },
             {
-              x: 300,
+              x: 600,
               y: 800
             }
           ]
@@ -190,8 +190,8 @@ describe("treeToMapNodeLayers", () => {
           id: "3",
           title: "3",
           center: {
-            x: 150,
-            y: 100
+            x: 300,
+            y: 200
           },
           border: [
             {
@@ -199,16 +199,16 @@ describe("treeToMapNodeLayers", () => {
               y: 0
             },
             {
-              x: 300,
+              x: 600,
               y: 0
             },
             {
-              x: 300,
-              y: 200
+              x: 600,
+              y: 400
             },
             {
               x: 0,
-              y: 200
+              y: 400
             }
           ]
         },
@@ -216,20 +216,20 @@ describe("treeToMapNodeLayers", () => {
           id: "4",
           title: "4",
           center: {
-            x: 150,
-            y: 300
+            x: 300,
+            y: 600
           },
           border: [
             {
               x: 0,
-              y: 200
+              y: 400
             },
             {
-              x: 300,
-              y: 200
+              x: 600,
+              y: 400
             },
             {
-              x: 300,
+              x: 600,
               y: 800
             },
             {
@@ -242,12 +242,12 @@ describe("treeToMapNodeLayers", () => {
           id: "5",
           title: "5",
           center: {
-            x: 450,
-            y: 100
+            x: 900,
+            y: 200
           },
           border: [
             {
-              x: 300,
+              x: 600,
               y: 0
             },
             {
@@ -256,11 +256,11 @@ describe("treeToMapNodeLayers", () => {
             },
             {
               x: 1200,
-              y: 200
+              y: 400
             },
             {
-              x: 300,
-              y: 200
+              x: 600,
+              y: 400
             }
           ]
         },
@@ -268,24 +268,24 @@ describe("treeToMapNodeLayers", () => {
           id: "6",
           title: "6",
           center: {
-            x: 450,
-            y: 300
+            x: 900,
+            y: 600
           },
           border: [
             {
-              x: 300,
-              y: 200
+              x: 600,
+              y: 400
             },
             {
               x: 1200,
-              y: 200
+              y: 400
             },
             {
               x: 1200,
               y: 800
             },
             {
-              x: 300,
+              x: 600,
               y: 800
             }
           ]
@@ -293,7 +293,24 @@ describe("treeToMapNodeLayers", () => {
       }
     ];
 
-    const [res, err] = treeToMapNodeLayers(tree);
+    const [res, err] = treeToMapNodeLayers(tree, [
+      {
+        x: 0,
+        y: 0
+      },
+      {
+        x: 1200,
+        y: 0
+      },
+      {
+        x: 1200,
+        y: 800
+      },
+      {
+        x: 0,
+        y: 800
+      }
+    ]);
 
     expect(err).toEqual(null);
     expect(res).toEqual(exp);
@@ -594,13 +611,21 @@ describe("intersect", () => {
 
 describe("getMaxDiagonal", () => {
   it("works for square", () => {
-    const v = getMaxDiagonal([
+    const [v] = getMaxDiagonal([
       { x: 100, y: 100 },
       { x: 100, y: 200 },
       { x: 200, y: 200 },
       { x: 200, y: 100 }
     ]);
     expect(v).toEqual({ from: { x: 100, y: 100 }, to: { x: 200, y: 200 } });
+  });
+  it("works for triangle", () => {
+    const [v] = getMaxDiagonal([
+      { x: 0, y: 0 },
+      { x: 100, y: 0 },
+      { x: 0, y: 100 },
+    ]);
+    expect(v).toEqual({"from": {"x": 100, "y": 0}, "to": {"x": 0, "y": 50}});
   });
 });
 

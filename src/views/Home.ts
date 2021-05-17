@@ -167,14 +167,14 @@ export function filterNodesAndLayers(
     upperLayer[currentNode.id] = clone(currentNode);
   } else {
     for (const child of nodeRecord[currentNode.id].parent!.children) {
-      const [mapNode, _] = findMapNode(child.id, [layers[level]]);
-      if (mapNode == null || _ == null) {
+      const [mapNode, l] = findMapNode(child.id, [layers[level]]);
+      if (mapNode == null || l === null) {
         return [
           [],
           NewErrorKV("filterNodesAndLayers-upperLayer: error in findMapNode", {
             "child.id": child.id,
             level,
-            layers: [layers[level]]
+            layers: [layers[level]],
           })
         ];
       }
@@ -188,13 +188,13 @@ export function filterNodesAndLayers(
   const firstLayer: Record<string, MapNode> = {};
   for (const nodeId in upperLayer) {
     for (const child of nodeRecord[nodeId].node.children) {
-      const [mapNode, _] = findMapNode(child.id, [layers[level + 1]]);
-      if (mapNode == null || _ == null) {
+      const [mapNode, l] = findMapNode(child.id, [layers[level + 1]]);
+      if (mapNode == null || l === null) {
         return [
           [],
           NewErrorKV("filterNodesAndLayers-firstLayer: error in findMapNode", {
             "child.id": child.id,
-            layers: [layers[level]]
+            layers: [layers[level + 1]],
           })
         ];
       }
@@ -216,13 +216,13 @@ export function filterNodesAndLayers(
   //for (const childId in firstLayer) {
   for (const child of nodeRecord[currentNodeId].node.children) {
     for (const childOfChild of nodeRecord[child.id].node.children) {
-      const [mapNode, _] = findMapNode(childOfChild.id, [layers[level + 2]]);
-      if (mapNode == null || _ == null) {
+      const [mapNode, l] = findMapNode(childOfChild.id, [layers[level + 2]]);
+      if (mapNode == null || l === null) {
         return [
           [],
           NewErrorKV("filterNodesAndLayers-secondLayer: error in findMapNode", {
             "child.id": child.id,
-            layers: [layers[level]]
+            layers: [layers[level + 2]],
           })
         ];
       }
@@ -238,14 +238,14 @@ export function filterNodesAndLayers(
   const thirdLayer: Record<string, MapNode> = {};
   for (const nodeId in secondLayer) {
     for (const child of nodeRecord[nodeId].node.children) {
-      const [mapNode, _] = findMapNode(child.id, [layers[level + 3]]);
-      if (mapNode == null || _ == null) {
+      const [mapNode, l] = findMapNode(child.id, [layers[level + 3]]);
+      if (mapNode == null || l === null) {
         return [
           [],
           NewErrorKV("filterNodesAndLayers-thirdLayer:cannot findMapNode", {
             "child.id": child.id,
             level: level + 3,
-            layers: [layers[level + 3]]
+            layers: [layers[level + 3]],
           })
         ];
       }
