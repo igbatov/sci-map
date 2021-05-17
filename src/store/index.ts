@@ -256,10 +256,11 @@ export const store = createStore<State>({
       if (!parent) {
         return;
       }
+      const parentID = parent.id
       // move node from /map to /trash
       const node = await api.getNode(nodeID) as any;
-      node!.removedAt = Date.now()
-      const oldKey = await api.findKeyOfChild(parent!.id, nodeID);
+      node.removedAt = Date.now()
+      const oldKey = await api.findKeyOfChild(parent.id, nodeID);
       await api.update({
         [`trash/${nodeID}`]: node,
         [`map/${parent.id}/children/${oldKey}`]: null,
@@ -267,7 +268,7 @@ export const store = createStore<State>({
       });
 
       commit(`history/${historyMutations.ADD_REMOVE}`, {
-        parentNodeID: state.tree.nodeRecord[nodeID].parent!.id,
+        parentNodeID: parentID,
         nodeID: nodeID
       });
     },
