@@ -277,7 +277,6 @@ export const store = createStore<State>({
       { commit, state }: { commit: Commit; state: State },
       v: { nodeId: string; delta: Point }
     ) {
-      console.log("actions.updateNodePosition")
       const [mapNode] = findMapNode(v.nodeId, state.tree.mapNodeLayers);
       if (!mapNode) {
         return NewErrorKV("UPDATE_NODE_POSITION: cannot find mapNode", {

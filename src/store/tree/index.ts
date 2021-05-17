@@ -105,14 +105,6 @@ export const store = {
         return;
       }
 
-      // calculate denormalized position of dbNode
-      const [denormalizedPosition] = convertPosition(
-        "denormalize",
-        arg.dbNode.position,
-        dbNodeRecord.parent ? dbNodeRecord.parent.id : null,
-        state.mapNodeLayers
-      );
-
       const oldDBNode = {
         id: dbNodeRecord.node.id,
         parentID: dbNodeRecord.parent ? dbNodeRecord.parent.id : null,
@@ -220,10 +212,16 @@ export const store = {
 
       // Change of position
       if (
-        round(denormalizedPosition!.x) !== round(oldDBNode.position.x) ||
-        round(denormalizedPosition!.y) !== round(oldDBNode.position.y)
+        round(arg.dbNode.position.x) !== round(oldDBNode.position.x) ||
+        round(arg.dbNode.position.y) !== round(oldDBNode.position.y)
       ) {
-        console.log("actions.handleDBUpdate: change of position", arg.dbNode, denormalizedPosition);
+        // calculate denormalized position of dbNode
+        const [denormalizedPosition] = convertPosition(
+          "denormalize",
+          arg.dbNode.position,
+          dbNodeRecord.parent ? dbNodeRecord.parent.id : null,
+          state.mapNodeLayers
+        );
         if (oldDBNode.parentID == arg.dbNode.parentID) {
           // we do not want to process position change due to parent change - it is already processed by ADD_NODE
           const v = {
