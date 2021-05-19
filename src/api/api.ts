@@ -187,7 +187,6 @@ export default {
           return;
         }
         const node = snap.val() as DBNode;
-        console.log("got update on node", node);
         node.children = convertChildren(node.children);
         cb(node);
       }

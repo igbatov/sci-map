@@ -16,9 +16,13 @@ describe("filterNodesAndLayers", () => {
   ): [Array<Record<number, MapNode>>, ErrorKV] => {
     const tree = skeletonToTree(treeSk, true);
     fillTreePositions(tree, rootWH);
-    const [layers, err] = treeToMapNodeLayers(tree);
-    expect(layers).not.toBeNull();
+    const [layers, err] = treeToMapNodeLayers(
+      tree,
+      [{x:0, y:0}, {x:rootWH.width, y:0}, {x:rootWH.width, y:rootWH.height}, {x:0, y:rootWH.height}],
+      {x:rootWH.width/2, y:rootWH.height/2}
+    );
     expect(err).toBeNull();
+    expect(layers).not.toBeNull();
     const nodeRecord = treeToNodeRecord(tree);
 
     const [currNodeId, _] = findCurrentNode(
@@ -70,7 +74,7 @@ describe("filterNodesAndLayers", () => {
             y: 500
           },
           id: "0",
-          title: ""
+          title: "0"
         }
       },
       {
@@ -134,8 +138,8 @@ describe("filterNodesAndLayers", () => {
     const treeSk = generateTreeSkeleton(6, 4);
     const [layers, err] = runTest(
       treeSk,
-      { width: 4000, height: 4000 },
-      { width: 1000, height: 1000 }
+      { width: 1000, height: 1000 },
+      { width: 250, height: 250 }
     );
     expect(err).toBeNull();
     expect(layers.length).toEqual(4);
@@ -175,7 +179,11 @@ describe("findCurrentNode", () => {
   ): [string, ErrorKV] => {
     const tree = skeletonToTree(treeSk, false);
     fillTreePositions(tree, rootWH);
-    const [layers, err] = treeToMapNodeLayers(tree);
+    const [layers, err] = treeToMapNodeLayers(
+      tree,
+      [{x:0, y:0}, {x:rootWH.width, y:0}, {x:rootWH.width, y:rootWH.height}, {x:0, y:rootWH.height}],
+      {x:rootWH.width/2, y:rootWH.height/2}
+    );
     expect(layers).not.toBeNull();
     expect(err).toBeNull();
     const nodeRecord = treeToNodeRecord(tree);

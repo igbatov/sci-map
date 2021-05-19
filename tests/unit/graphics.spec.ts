@@ -136,7 +136,7 @@ describe("treeToMapNodeLayers", () => {
           id: "1",
           title: "1",
           center: {
-            x: 300,
+            x: 300.00000000000006,
             y: 400
           },
           border: [
@@ -310,7 +310,7 @@ describe("treeToMapNodeLayers", () => {
         x: 0,
         y: 800
       }
-    ]);
+    ], {x:600, y:400});
 
     expect(err).toEqual(null);
     expect(res).toEqual(exp);
