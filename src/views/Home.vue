@@ -71,7 +71,7 @@ export default defineComponent({
     const viewBox = computed(() => {
       if (treeState.mapNodeLayers && treeState.mapNodeLayers.length) {
         return `0 0 ${2 * treeState.mapNodeLayers[0]["0"].center.x} ${2 *
-        treeState.mapNodeLayers[0]["0"].center.y}`;
+          treeState.mapNodeLayers[0]["0"].center.y}`;
       } else {
         return `0 0 1000 1000`;
       }

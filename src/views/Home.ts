@@ -174,7 +174,7 @@ export function filterNodesAndLayers(
           NewErrorKV("filterNodesAndLayers-upperLayer: error in findMapNode", {
             "child.id": child.id,
             level,
-            layers: [layers[level]],
+            layers: [layers[level]]
           })
         ];
       }
@@ -194,7 +194,7 @@ export function filterNodesAndLayers(
           [],
           NewErrorKV("filterNodesAndLayers-firstLayer: error in findMapNode", {
             "child.id": child.id,
-            layers: [layers[level + 1]],
+            layers: [layers[level + 1]]
           })
         ];
       }
@@ -222,7 +222,7 @@ export function filterNodesAndLayers(
           [],
           NewErrorKV("filterNodesAndLayers-secondLayer: error in findMapNode", {
             "child.id": child.id,
-            layers: [layers[level + 2]],
+            layers: [layers[level + 2]]
           })
         ];
       }
@@ -245,7 +245,7 @@ export function filterNodesAndLayers(
           NewErrorKV("filterNodesAndLayers-thirdLayer:cannot findMapNode", {
             "child.id": child.id,
             level: level + 3,
-            layers: [layers[level + 3]],
+            layers: [layers[level + 3]]
           })
         ];
       }

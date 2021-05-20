@@ -18,8 +18,13 @@ describe("filterNodesAndLayers", () => {
     fillTreePositions(tree, rootWH);
     const [layers, err] = treeToMapNodeLayers(
       tree,
-      [{x:0, y:0}, {x:rootWH.width, y:0}, {x:rootWH.width, y:rootWH.height}, {x:0, y:rootWH.height}],
-      {x:rootWH.width/2, y:rootWH.height/2}
+      [
+        { x: 0, y: 0 },
+        { x: rootWH.width, y: 0 },
+        { x: rootWH.width, y: rootWH.height },
+        { x: 0, y: rootWH.height }
+      ],
+      { x: rootWH.width / 2, y: rootWH.height / 2 }
     );
     expect(err).toBeNull();
     expect(layers).not.toBeNull();
@@ -181,8 +186,13 @@ describe("findCurrentNode", () => {
     fillTreePositions(tree, rootWH);
     const [layers, err] = treeToMapNodeLayers(
       tree,
-      [{x:0, y:0}, {x:rootWH.width, y:0}, {x:rootWH.width, y:rootWH.height}, {x:0, y:rootWH.height}],
-      {x:rootWH.width/2, y:rootWH.height/2}
+      [
+        { x: 0, y: 0 },
+        { x: rootWH.width, y: 0 },
+        { x: rootWH.width, y: rootWH.height },
+        { x: 0, y: rootWH.height }
+      ],
+      { x: rootWH.width / 2, y: rootWH.height / 2 }
     );
     expect(layers).not.toBeNull();
     expect(err).toBeNull();

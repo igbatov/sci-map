@@ -41,14 +41,16 @@ describe("getNewNodeCenter", () => {
       position: { x: 965, y: 130 },
       wikipedia: "",
       resources: [],
-      children: [{
-        id: "2",
-        title: "zzz",
-        position: {x: 1102, y: 108},
-        wikipedia: "",
-        resources: [],
-        children: [],
-      }]
+      children: [
+        {
+          id: "2",
+          title: "zzz",
+          position: { x: 1102, y: 108 },
+          wikipedia: "",
+          resources: [],
+          children: []
+        }
+      ]
     };
 
     const mapNodeLayers = [
@@ -58,10 +60,10 @@ describe("getNewNodeCenter", () => {
           title: "virus",
           center: { x: 965, y: 130 },
           border: [
-            {x: 704, y: 87},
-            {x: 1239, y: 87},
-            {x: 1148, y: 268},
-            {x: 768, y: 244}
+            { x: 704, y: 87 },
+            { x: 1239, y: 87 },
+            { x: 1148, y: 268 },
+            { x: 768, y: 244 }
           ]
         }
       },
@@ -69,21 +71,22 @@ describe("getNewNodeCenter", () => {
         "2": {
           id: "2",
           title: "zzz",
-          center: {x: 1102, y: 108},
+          center: { x: 1102, y: 108 },
           border: [
-            {x: 704, y: 87},
-            {x: 1239, y: 87},
-            {x: 1148, y: 268},
-            {x: 768, y: 244}
+            { x: 704, y: 87 },
+            { x: 1239, y: 87 },
+            { x: 1148, y: 268 },
+            { x: 768, y: 244 }
           ]
         }
-      },
+      }
     ] as Array<Record<string, MapNode>>;
 
-    const [newCenter, changedNode, err] = getNewNodeCenter(tree, mapNodeLayers)
-    expect(newCenter).toEqual({ x: 885.75, y: 204.75 })
-    expect(changedNode!.id).toEqual("2")
-    expect(changedNode!.position).toEqual({ x: 1121.25, y: 126.25 })
+    const [newCenter, changedNode, err] = getNewNodeCenter(tree, mapNodeLayers);
+    expect(err).toBeNull();
+    expect(newCenter).toEqual({ x: 885.75, y: 204.75 });
+    expect(changedNode!.id).toEqual("2");
+    expect(changedNode!.position).toEqual({ x: 1121.25, y: 126.25 });
   });
 
   it("for parent with children returns newCenter on the diagonal of node with maximal diagonal", () => {

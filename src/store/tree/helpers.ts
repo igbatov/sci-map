@@ -18,7 +18,7 @@ export function findMapNode(
   mapNodeLayers: Array<Record<string, MapNode>>
 ): [MapNode | null, number | null] {
   for (const level in mapNodeLayers) {
-    const layer = mapNodeLayers[Number(level)]
+    const layer = mapNodeLayers[Number(level)];
     if (layer && layer[id]) {
       return [layer[id], Number(level)];
     }
@@ -140,21 +140,27 @@ export function getNewNodeCenter(
         ];
       }
 
-      const [childDiag, err1] = getMaxDiagonal(childMapNode.border)
+      const [childDiag, err1] = getMaxDiagonal(childMapNode.border);
       if (err1) {
         return [
           null,
           null,
-          NewErrorKV("getNewNodeCenter: error getMaxDiagonal", {childMapNode, err1})
-        ]
+          NewErrorKV("getNewNodeCenter: error getMaxDiagonal", {
+            childMapNode,
+            err1
+          })
+        ];
       }
-      const [maxDiag, err2] = getMaxDiagonal(maxDiagChildMapNode.border)
+      const [maxDiag, err2] = getMaxDiagonal(maxDiagChildMapNode.border);
       if (err2) {
         return [
           null,
           null,
-          NewErrorKV("getNewNodeCenter: error getMaxDiagonal", {maxDiagChildMapNode, err2})
-        ]
+          NewErrorKV("getNewNodeCenter: error getMaxDiagonal", {
+            maxDiagChildMapNode,
+            err2
+          })
+        ];
       }
       if (getVectorLength(childDiag) > getVectorLength(maxDiag)) {
         maxDiagChildMapNode = childMapNode;
@@ -195,18 +201,36 @@ export function updatePosition(
     });
   }
 
-  const [normalizedPosition] = convertPosition("normalize", v.position, item.parent.id, state.mapNodeLayers)
+  const [normalizedPosition] = convertPosition(
+    "normalize",
+    v.position,
+    item.parent.id,
+    state.mapNodeLayers
+  );
   item.node.position = normalizedPosition!;
 
   // Если мы меняем один узел, то могут поменяться границы всех соседей
   // так что надо действовать так как будто поменялись границы всех подузлов родителя узла
-  const [parentMapNode, layerLevel] = findMapNode(item.parent.id, state.mapNodeLayers)
-  if (!parentMapNode || layerLevel === null)  {
-    return NewErrorKV("updateNodePosition: cannot find mapNode for parent", {"id":item.parent.id, "state.mapNodeLayers":state.mapNodeLayers})
+  const [parentMapNode, layerLevel] = findMapNode(
+    item.parent.id,
+    state.mapNodeLayers
+  );
+  if (!parentMapNode || layerLevel === null) {
+    return NewErrorKV("updateNodePosition: cannot find mapNode for parent", {
+      id: item.parent.id,
+      "state.mapNodeLayers": state.mapNodeLayers
+    });
   }
-  const [ls, err] = treeToMapNodeLayers(item.parent, parentMapNode.border, parentMapNode.center);
+  const [ls, err] = treeToMapNodeLayers(
+    item.parent,
+    parentMapNode.border,
+    parentMapNode.center
+  );
   if (ls == null || err != null) {
-    return NewErrorKV("updateNodePosition: create layers for parent", {"id":item.parent.id, "parentMapNode":parentMapNode})
+    return NewErrorKV("updateNodePosition: create layers for parent", {
+      id: item.parent.id,
+      parentMapNode: parentMapNode
+    });
   }
   return mergeMapNodeLayers(state.mapNodeLayers, ls, layerLevel);
 }

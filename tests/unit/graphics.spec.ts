@@ -293,24 +293,28 @@ describe("treeToMapNodeLayers", () => {
       }
     ];
 
-    const [res, err] = treeToMapNodeLayers(tree, [
-      {
-        x: 0,
-        y: 0
-      },
-      {
-        x: 1200,
-        y: 0
-      },
-      {
-        x: 1200,
-        y: 800
-      },
-      {
-        x: 0,
-        y: 800
-      }
-    ], {x:600, y:400});
+    const [res, err] = treeToMapNodeLayers(
+      tree,
+      [
+        {
+          x: 0,
+          y: 0
+        },
+        {
+          x: 1200,
+          y: 0
+        },
+        {
+          x: 1200,
+          y: 800
+        },
+        {
+          x: 0,
+          y: 800
+        }
+      ],
+      { x: 600, y: 400 }
+    );
 
     expect(err).toEqual(null);
     expect(res).toEqual(exp);
@@ -623,9 +627,9 @@ describe("getMaxDiagonal", () => {
     const [v] = getMaxDiagonal([
       { x: 0, y: 0 },
       { x: 100, y: 0 },
-      { x: 0, y: 100 },
+      { x: 0, y: 100 }
     ]);
-    expect(v).toEqual({"from": {"x": 100, "y": 0}, "to": {"x": 0, "y": 50}});
+    expect(v).toEqual({ from: { x: 100, y: 0 }, to: { x: 0, y: 50 } });
   });
 });
 

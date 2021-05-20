@@ -5,10 +5,7 @@ import {
   treeToMapNodeLayers,
   treeToNodeRecord
 } from "@/tools/graphics";
-import {
-  findMapNode,
-  updatePosition
-} from "@/store/tree/helpers";
+import { findMapNode, updatePosition } from "@/store/tree/helpers";
 import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "@/tools/errorkv";
 import { DBNode } from "@/api/types";
@@ -17,8 +14,13 @@ import api from "@/api/api";
 import { Commit } from "vuex";
 import firebase from "firebase";
 
-const ROOT_BORDER = [{x:0, y:0}, {x:0, y:api.ROOT_HEIGHT}, {x:api.ROOT_WIDTH, y:api.ROOT_HEIGHT}, {x:api.ROOT_WIDTH, y:0}]
-const ROOT_CENTER = {x:api.ROOT_WIDTH/2, y:api.ROOT_HEIGHT/2}
+const ROOT_BORDER = [
+  { x: 0, y: 0 },
+  { x: 0, y: api.ROOT_HEIGHT },
+  { x: api.ROOT_WIDTH, y: api.ROOT_HEIGHT },
+  { x: api.ROOT_WIDTH, y: 0 }
+];
+const ROOT_CENTER = { x: api.ROOT_WIDTH / 2, y: api.ROOT_HEIGHT / 2 };
 
 export interface NodeRecordItem {
   node: Tree;
@@ -124,35 +126,45 @@ export const store = {
       if (newChildren.length) {
         for (const childID of newChildren) {
           if (state.nodeRecord[childID]) {
-            console.log("actions.handleDBUpdate: remove node for cut-and-paste", state.nodeRecord[childID]);
+            console.log(
+              "actions.handleDBUpdate: remove node for cut-and-paste",
+              state.nodeRecord[childID]
+            );
             // if we already have this node, then it is cut-and-paste new parent
             // so we should remove node from old parent
             const v = {
               nodeID: childID,
               returnError: null
-            }
+            };
             commit(mutations.REMOVE_NODE, {
               nodeID: childID,
               returnError: null
             });
             if (v.returnError) {
-              printError("handleDBUpdate: cannot cut node", {"err":v.returnError})
+              printError("handleDBUpdate: cannot cut node", {
+                err: v.returnError
+              });
             }
           }
 
           // request node and its children from the server, fill in tree
           const addedDBNode = await api.getNode(childID);
-          console.log("actions.handleDBUpdate: add node for cut-and-paste", addedDBNode);
+          console.log(
+            "actions.handleDBUpdate: add node for cut-and-paste",
+            addedDBNode
+          );
 
-          const toProcess = [addedDBNode]
+          const toProcess = [addedDBNode];
           if (!addedDBNode) {
             // we cannot find node for addition, remove it from parent
-            arg.dbNode.children = arg.dbNode.children.filter(id => id != childID)
+            arg.dbNode.children = arg.dbNode.children.filter(
+              id => id != childID
+            );
             printError("Cannot find node for addition", { nodeID: childID });
             continue;
           }
           while (toProcess.length) {
-            const inProcessNode = toProcess.pop()
+            const inProcessNode = toProcess.pop();
             if (!inProcessNode) {
               continue;
             }
@@ -163,37 +175,52 @@ export const store = {
               position: inProcessNode.position,
               children: [],
               wikipedia: "",
-              resources: [],
+              resources: []
             } as Tree;
             if (!state.nodeRecord[inProcessNode.parentID]) {
-              printError("Cannot find nodeID in nodeRecord", {nodeID:inProcessNode.parentID})
-              return
+              printError("Cannot find nodeID in nodeRecord", {
+                nodeID: inProcessNode.parentID
+              });
+              return;
             }
             // make sure we have no duplicates
-            state.nodeRecord[inProcessNode.parentID].node.children =
-              state.nodeRecord[inProcessNode.parentID].node.children.filter(n => n.id != treeNode.id)
+            state.nodeRecord[
+              inProcessNode.parentID
+            ].node.children = state.nodeRecord[
+              inProcessNode.parentID
+            ].node.children.filter(n => n.id != treeNode.id);
             // add child to parent
-            state.nodeRecord[inProcessNode.parentID].node.children.push(treeNode)
+            state.nodeRecord[inProcessNode.parentID].node.children.push(
+              treeNode
+            );
             // add child to nodeRecord
             state.nodeRecord[treeNode.id] = {
               parent: state.nodeRecord[inProcessNode.parentID].node,
               node: treeNode
-            }
-            for(const childID of inProcessNode.children) {
+            };
+            for (const childID of inProcessNode.children) {
               const childNode = await api.getNode(childID);
               if (!childNode) {
                 // we cannot find node for addition, remove it from parent
-                inProcessNode.children = inProcessNode.children.filter(id => id != childID)
-                printError("Cannot find node for addition", { nodeID: childID });
+                inProcessNode.children = inProcessNode.children.filter(
+                  id => id != childID
+                );
+                printError("Cannot find node for addition", {
+                  nodeID: childID
+                });
                 continue;
               }
-              toProcess.push(childNode)
+              toProcess.push(childNode);
             }
           }
 
-          const [ls, err2] = treeToMapNodeLayers(state.tree!, ROOT_BORDER, ROOT_CENTER);
+          const [ls, err2] = treeToMapNodeLayers(
+            state.tree!,
+            ROOT_BORDER,
+            ROOT_CENTER
+          );
           if (err2) {
-            printError("Cannot treeToMapNodeLayers", { "err": err2 });
+            printError("Cannot treeToMapNodeLayers", { err: err2 });
             return;
           }
           state.mapNodeLayers = ls!;
@@ -207,11 +234,17 @@ export const store = {
             // node was already removed somewhere
             continue;
           }
-          if (state.nodeRecord[childID] && state.nodeRecord[childID].parent!.id !== arg.dbNode.id) {
+          if (
+            state.nodeRecord[childID] &&
+            state.nodeRecord[childID].parent!.id !== arg.dbNode.id
+          ) {
             // node was already removed from this parent (this is cut-and-paste operation)
             continue;
           }
-          console.log("actions.handleDBUpdate: removing children", state.nodeRecord[childID]);
+          console.log(
+            "actions.handleDBUpdate: removing children",
+            state.nodeRecord[childID]
+          );
           const v = { nodeID: childID, returnError: null };
           commit(mutations.REMOVE_NODE, v);
           if (v.returnError) {
@@ -294,7 +327,7 @@ export const store = {
       while (stack.length) {
         const id = stack.pop();
         if (!id) {
-          continue
+          continue;
         }
         stack.push(...state.nodeRecord[id].node.children.map(node => node.id));
         delete state.nodeRecord[id];
@@ -305,7 +338,11 @@ export const store = {
       parent.children.splice(ind, 1);
 
       // update layers
-      const [ls, err2] = treeToMapNodeLayers(state.tree, ROOT_BORDER, ROOT_CENTER);
+      const [ls, err2] = treeToMapNodeLayers(
+        state.tree,
+        ROOT_BORDER,
+        ROOT_CENTER
+      );
       if (ls == null || err2 != null) {
         v.returnError = err2;
         return;

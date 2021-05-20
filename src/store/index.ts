@@ -41,7 +41,7 @@ import {
 } from "@/tools/graphics";
 import { DBNode } from "@/api/types";
 import { isEqual, debounce } from "lodash";
-import {printError} from "@/tools/utils";
+import { printError } from "@/tools/utils";
 
 export type State = {
   // root states
@@ -146,10 +146,17 @@ export const store = createStore<State>({
       }
     ) {
       const parent = state.tree.nodeRecord[v.parentID].node;
-      const [newCenter, changedNode, err1] = getNewNodeCenter(parent, state.tree.mapNodeLayers);
+      const [newCenter, changedNode, err1] = getNewNodeCenter(
+        parent,
+        state.tree.mapNodeLayers
+      );
       if (err1 !== null) {
-        printError("Cannot create new center", {err: err1, parent, "state.tree.mapNodeLayers":state.tree.mapNodeLayers})
-        return
+        printError("Cannot create new center", {
+          err: err1,
+          parent,
+          "state.tree.mapNodeLayers": state.tree.mapNodeLayers
+        });
+        return;
       }
 
       const [normalizedPosition, err2] = convertPosition(
@@ -159,8 +166,12 @@ export const store = createStore<State>({
         state.tree.mapNodeLayers
       );
       if (err2) {
-        printError("createNode: cannot create new center", {err: err2, parent, "state.tree.mapNodeLayers":state.tree.mapNodeLayers})
-        return
+        printError("createNode: cannot create new center", {
+          err: err2,
+          parent,
+          "state.tree.mapNodeLayers": state.tree.mapNodeLayers
+        });
+        return;
       }
       const node = createNewNode(v.title, normalizedPosition!);
       const newDBNode = {
@@ -170,11 +181,11 @@ export const store = createStore<State>({
         children: [],
         position: normalizedPosition
       };
-      const newKey = api.generateKey()
+      const newKey = api.generateKey();
       const updateMap: Record<string, any> = {
         [`map/${newDBNode.id}`]: newDBNode,
         [`map/${newDBNode.parentID}/children/${newKey}`]: newDBNode.id
-      }
+      };
 
       if (changedNode) {
         const [normalizedChangedCenter] = convertPosition(
@@ -183,7 +194,7 @@ export const store = createStore<State>({
           v.parentID,
           state.tree.mapNodeLayers
         );
-        updateMap[`map/${changedNode.id}/position`] = normalizedChangedCenter
+        updateMap[`map/${changedNode.id}/position`] = normalizedChangedCenter;
       }
 
       await api.update(updateMap);
@@ -207,10 +218,13 @@ export const store = createStore<State>({
       // update DB with these three modifications in one transaction
       const oldParent = state.tree.nodeRecord[v.nodeID].parent;
       const newParent = state.tree.nodeRecord[v.parentID].node;
-      const [newCenter, changedNode, err1] = getNewNodeCenter(newParent, state.tree.mapNodeLayers);
+      const [newCenter, changedNode, err1] = getNewNodeCenter(
+        newParent,
+        state.tree.mapNodeLayers
+      );
       if (err1) {
-        printError("cutPasteNode: cannot getNewNodeCenter", {err: err1})
-        return
+        printError("cutPasteNode: cannot getNewNodeCenter", { err: err1 });
+        return;
       }
       const [normalizedNewNodeCenter, err2] = convertPosition(
         "normalize",
@@ -219,8 +233,12 @@ export const store = createStore<State>({
         state.tree.mapNodeLayers
       );
       if (err2) {
-        printError("createNode: cannot create new center", {err: err2, parent, "state.tree.mapNodeLayers":state.tree.mapNodeLayers})
-        return
+        printError("createNode: cannot create new center", {
+          err: err2,
+          parent,
+          "state.tree.mapNodeLayers": state.tree.mapNodeLayers
+        });
+        return;
       }
       // generate key for new child in list of newParent
       const newKey = api.generateKey();
@@ -231,7 +249,7 @@ export const store = createStore<State>({
         [`map/${oldParent!.id}/children/${oldKey}`]: null, // remove from old parent children
         [`map/${newParent!.id}/children/${newKey}`]: v.nodeID, // add to children of new parents
         [`map/${v.nodeID}/position`]: normalizedNewNodeCenter
-      }
+      };
       if (changedNode) {
         const [normalizedChangedCenter] = convertPosition(
           "normalize",
@@ -239,7 +257,7 @@ export const store = createStore<State>({
           v.parentID,
           state.tree.mapNodeLayers
         );
-        updateMap[`map/${changedNode.id}/position`] = normalizedChangedCenter
+        updateMap[`map/${changedNode.id}/position`] = normalizedChangedCenter;
       }
       await api.update(updateMap);
 
@@ -257,10 +275,10 @@ export const store = createStore<State>({
       if (!parent) {
         return;
       }
-      const parentID = parent.id
+      const parentID = parent.id;
       // move node from /map to /trash
-      const node = await api.getNode(nodeID) as any;
-      node.removedAt = Date.now()
+      const node = (await api.getNode(nodeID)) as any;
+      node.removedAt = Date.now();
       const oldKey = await api.findKeyOfChild(parent.id, nodeID);
       await api.update({
         [`trash/${nodeID}`]: node,

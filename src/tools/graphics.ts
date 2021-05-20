@@ -13,7 +13,7 @@ import { default as NewErrorKV } from "../tools/errorkv";
 import { NodeRecordItem } from "@/store/tree";
 import { polygonArea } from "d3-polygon";
 import polygonClipping from "polygon-clipping";
-import {clone, mod, round} from "../tools/utils";
+import { clone, mod, round } from "../tools/utils";
 import { findMapNode } from "../store/tree/helpers";
 import api from "../api/api";
 
@@ -517,25 +517,31 @@ export function morphChildrenPoints(
 }
 
 export function NewEmptyVector(): Vector {
-  return {from:{x:0,y:0}, to:{x:0,y:0}}
+  return { from: { x: 0, y: 0 }, to: { x: 0, y: 0 } };
 }
 
 export function getMaxDiagonal(polygon: Polygon): [Vector, ErrorKV] {
   if (!polygon || polygon.length < 3) {
-    return [NewEmptyVector(), NewErrorKV("getMaxDiagonal: bad polygon", {polygon})]
+    return [
+      NewEmptyVector(),
+      NewErrorKV("getMaxDiagonal: bad polygon", { polygon })
+    ];
   }
 
-  const diagonals: Vector[] = []
+  const diagonals: Vector[] = [];
   if (polygon.length == 3) {
     // triangle does not has diagonals, so me emulate them
     for (const i in polygon) {
-      const middle = vectorOnNumber({
-        from:polygon[mod(Number(i) - 1, polygon.length)],
-        to:polygon[mod(Number(i) + 1, polygon.length)]
-      }, 1/2)
-      diagonals.push({from: polygon[i], to: middle.to})
+      const middle = vectorOnNumber(
+        {
+          from: polygon[mod(Number(i) - 1, polygon.length)],
+          to: polygon[mod(Number(i) + 1, polygon.length)]
+        },
+        1 / 2
+      );
+      diagonals.push({ from: polygon[i], to: middle.to });
     }
-  }  else {
+  } else {
     for (const i in polygon) {
       for (const j in polygon) {
         if (
@@ -543,7 +549,7 @@ export function getMaxDiagonal(polygon: Polygon): [Vector, ErrorKV] {
           Number(j) != Number(i) &&
           Number(j) != mod(Number(i) + 1, polygon.length)
         ) {
-          diagonals.push({from:polygon[i], to: polygon[j]})
+          diagonals.push({ from: polygon[i], to: polygon[j] });
         }
       }
     }
@@ -580,14 +586,11 @@ export function convertPosition(
       if (!isInside(position, NORMALIZED_BORDER)) {
         return [
           null,
-          NewErrorKV(
-            "convertPosition: position outside NORMALIZED_BORDER",
-            {
-              normalizedBorder: NORMALIZED_BORDER,
-              position,
-              parentID,
-            }
-          )
+          NewErrorKV("convertPosition: position outside NORMALIZED_BORDER", {
+            normalizedBorder: NORMALIZED_BORDER,
+            position,
+            parentID
+          })
         ];
       }
       [morphedPositions, err] = morphChildrenPoints(
@@ -599,14 +602,11 @@ export function convertPosition(
       if (!isInside(position, parentMapNode.border)) {
         return [
           null,
-          NewErrorKV(
-            "convertPosition: position outside parentMapNode.border",
-            {
-              "parentMapNode.border": parentMapNode.border,
-              position,
-              parentID,
-            }
-          )
+          NewErrorKV("convertPosition: position outside parentMapNode.border", {
+            "parentMapNode.border": parentMapNode.border,
+            position,
+            parentID
+          })
         ];
       }
       [morphedPositions, err] = morphChildrenPoints(
@@ -627,16 +627,16 @@ export function convertPosition(
       }
       // make sure that after normalization position is strictly inside border
       if (morphedPositions!["tmp"].x < 0) {
-        morphedPositions!["tmp"].x = 1
+        morphedPositions!["tmp"].x = 1;
       }
       if (morphedPositions!["tmp"].x > api.ST_WIDTH) {
-        morphedPositions!["tmp"].x = api.ST_WIDTH - 1
+        morphedPositions!["tmp"].x = api.ST_WIDTH - 1;
       }
       if (morphedPositions!["tmp"].y < 0) {
-        morphedPositions!["tmp"].y = 1
+        morphedPositions!["tmp"].y = 1;
       }
       if (morphedPositions!["tmp"].y > api.ST_HEIGHT) {
-        morphedPositions!["tmp"].y = api.ST_HEIGHT - 1
+        morphedPositions!["tmp"].y = api.ST_HEIGHT - 1;
       }
     }
     if (err !== null) {
@@ -670,7 +670,7 @@ export function convertPosition(
 export function treeToMapNodeLayers(
   tree: Tree,
   rootBorder: Polygon,
-  rootPosition: Point,
+  rootPosition: Point
 ): [Array<Record<string, MapNode>> | null, ErrorKV] {
   if (Object.keys(tree).length == 0) {
     return [[], null];
@@ -716,7 +716,7 @@ export function treeToMapNodeLayers(
       }
 
       // denormalize positions
-      const treeNodeChildren = clone(treeNode.children) as Array<Tree>
+      const treeNodeChildren = clone(treeNode.children) as Array<Tree>;
       for (const child of treeNodeChildren) {
         const [denormalizedPosition, err] = convertPosition(
           "denormalize",
@@ -725,9 +725,9 @@ export function treeToMapNodeLayers(
           [lastMapNodeLayer]
         );
         if (err) {
-          return [null, err]
+          return [null, err];
         }
-        child.position = denormalizedPosition!
+        child.position = denormalizedPosition!;
       }
       const [cells, error] = getVoronoiCells(
         lastMapNodeLayer[treeNode.id].border,
@@ -769,18 +769,21 @@ export function mergeMapNodeLayers(
   startFromLevel: number
 ): ErrorKV {
   if (startFromLevel >= recipientLayers.length || startFromLevel < 0) {
-    return NewErrorKV("startFromLevel >= recipientLayers.length or startFromLevel < 0", {
-      startFromLevel,
-      "recipientLayers.length":recipientLayers.length
-    })
+    return NewErrorKV(
+      "startFromLevel >= recipientLayers.length or startFromLevel < 0",
+      {
+        startFromLevel,
+        "recipientLayers.length": recipientLayers.length
+      }
+    );
   }
-  let i = startFromLevel
+  let i = startFromLevel;
   while (i < startFromLevel + insertedLayers.length) {
-    for(const id in insertedLayers[i-startFromLevel]) {
-      recipientLayers[i][id] = insertedLayers[i-startFromLevel][id]
+    for (const id in insertedLayers[i - startFromLevel]) {
+      recipientLayers[i][id] = insertedLayers[i - startFromLevel][id];
     }
     i++;
   }
 
-  return null
+  return null;
 }

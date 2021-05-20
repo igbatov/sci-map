@@ -1,6 +1,7 @@
 import {
   fillTreePositions,
-  generateTreeSkeleton, mod,
+  generateTreeSkeleton,
+  mod,
   skeletonToTree
 } from "@/tools/utils";
 describe("skeletonToTree", () => {
@@ -109,15 +110,15 @@ describe("fillTreePositions", () => {
 
 describe("generateTreeSkeleton", () => {
   it("correctly works for negative numbers", () => {
-    expect(mod(-1, 8)).toEqual(7)
-  })
+    expect(mod(-1, 8)).toEqual(7);
+  });
   it("correctly works for edge case numbers", () => {
-    expect(mod(8, 8)).toEqual(0)
-  })
+    expect(mod(8, 8)).toEqual(0);
+  });
   it("correctly works for positive numbers", () => {
-    expect(mod(10, 8)).toEqual(2)
-  })
-})
+    expect(mod(10, 8)).toEqual(2);
+  });
+});
 
 describe("generateTreeSkeleton", () => {
   it("", () => {

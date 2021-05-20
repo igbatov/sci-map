@@ -22,7 +22,7 @@ export function convertChildren(children: any): string[] {
 }
 
 export function convertDBMapToTree(
-  dbNodes: Record<string, DBNode>,
+  dbNodes: Record<string, DBNode>
 ): [Tree | null, ErrorKV] {
   const root: Tree = {
     id: dbNodes["0"].id,
