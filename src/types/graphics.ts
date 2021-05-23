@@ -36,9 +36,6 @@ export type Tree = {
   id: string;
   title: string;
   position: Point;
-  wikipedia: string;
-  // список книг, статей, курсов по этой теме
-  resources: Array<TreeNodeResource>;
   children: Array<Tree>;
 };
 
@@ -46,9 +43,6 @@ export type TreeSkeleton = {
   id: string;
   title?: string;
   position?: Point;
-  wikipedia?: string;
-  // список книг, статей, курсов по этой теме
-  resources?: Array<TreeNodeResource>;
   children?: Array<TreeSkeleton>;
 };
 

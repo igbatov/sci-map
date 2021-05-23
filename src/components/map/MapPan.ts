@@ -12,6 +12,10 @@ const mouseDownBg = reactive({
   startPoint: { x: 0, y: 0 }
 });
 
+let draggingBackgroundOn = false;
+
+let pinNodeMouseDown = false;
+
 let layers: Array<Record<number, MapNode>> | undefined = [];
 
 const updateMouseDownResolvers = () => {
@@ -48,13 +52,26 @@ const mouseDown = async (event: MouseEvent) => {
   mouseDownBg.startPoint = { x: event.clientX, y: event.clientY };
 };
 
-const mouseUp = () => {
+const mouseUp = (emit: (
+    name: "click-background",
+    o: any
+  ) => void
+) => {
+  if (mouseDownBg.on && !draggingBackgroundOn && !pinNodeMouseDown) {
+    emit("click-background", {})
+  }
   mouseDownBg.on = false;
+  draggingBackgroundOn = false;
+  pinNodeMouseDown = false
 };
+
+const pinNodeMouseDownHandler = () => {
+  pinNodeMouseDown = true
+}
 
 const mouseMove = (
   emit: (
-    name: "dragging-background" | "dragging-node" | "click-node",
+    name: "dragging-background",
     o: any
   ) => void,
   event: MouseEvent
@@ -62,6 +79,7 @@ const mouseMove = (
   if (!mouseDownBg.on) {
     return;
   }
+  draggingBackgroundOn = true;
   emit("dragging-background", {
     from: {
       x: event.clientX - event.movementX,
@@ -91,5 +109,6 @@ export default {
   mouseUp,
   mouseMove,
   bgMouseDownReject,
-  bgMouseDownResolve
+  bgMouseDownResolve,
+  pinNodeMouseDownHandler,
 };

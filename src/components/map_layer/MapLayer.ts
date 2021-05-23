@@ -83,8 +83,6 @@ export const mouseUpListener = (emit: emitFn, mouseDownInfo: MouseDownInfo) => {
   if (mouseDownInfo.nodeId) {
     if (mouseDownInfo.dragStart) {
       emit("drop", { id: mouseDownInfo.nodeId });
-    } else {
-      emit("click", { id: mouseDownInfo.nodeId });
     }
     mouseDownInfo.dragStart = false;
     mouseDownInfo.nodeId = null;

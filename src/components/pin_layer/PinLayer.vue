@@ -42,6 +42,7 @@
     cursor="pointer"
     fill="transparent"
     @click="titleBoxClick(node.id)"
+    @mousedown="nodeMouseDown(node.id)"
     stroke-width="0"
     stroke="pink"
   />
@@ -63,7 +64,7 @@ const TITLE_PREFIX = "pin_title_";
 export default defineComponent({
   name: "PinLayer",
   components: { SVGTextBox, PinMarker },
-  emits: ["click"],
+  emits: ["click", "node-mouse-down"],
   props: {
     pinNodes: {
       type: Object as PropType<Array<MapNode>>,
@@ -102,6 +103,9 @@ export default defineComponent({
       }),
       titleBoxClick: (nodeId: number) => {
         ctx.emit("click", { id: nodeId });
+      },
+      nodeMouseDown: (nodeId: number) => {
+        ctx.emit("node-mouse-down", { id: nodeId });
       }
     };
   }

@@ -48,6 +48,7 @@
     :height="titleBox[mapNode.id] ? titleBox[mapNode.id].bbox.height : 0"
     fill="transparent"
     stroke-width="0"
+    @click="titleRectClick(mapNode.id)"
     stroke="pink"
     cursor="pointer"
   />
@@ -58,6 +59,7 @@ import { defineComponent, PropType, toRef, onMounted, onUnmounted } from "vue";
 import { MapNode } from "@/types/graphics";
 import { polygonToPath } from "@/tools/graphics";
 import {
+  EventDraggingNode,
   getTitleBoxes,
   MouseDownInfo,
   mouseDownListener,
@@ -124,7 +126,12 @@ export default defineComponent({
 
     return {
       TITLE_PREFIX,
-      titleBox
+      titleBox,
+      titleRectClick: (nodeID: string) => {
+        ctx.emit("click", {
+          id: nodeID
+        });
+      },
     };
   },
 

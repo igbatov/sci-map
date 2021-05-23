@@ -79,16 +79,9 @@ export function skeletonToTree(sk: TreeSkeleton, idAsTitle: boolean): Tree {
     if (!node.position) {
       node.position = { x: 0, y: 0 };
     }
-    if (!node.wikipedia) {
-      node.wikipedia = "";
-    }
-    if (!node.resources) {
-      node.resources = [];
-    }
     if (!node.children) {
       node.children = [];
     }
-
     stack.push(...node.children);
   }
   return res;
@@ -218,8 +211,6 @@ export function mindMeisterToTree(mm: MindMeisterNode): TreeSkeleton | null {
     const treeNode: TreeSkeleton = {
       id: String(mmNode.id),
       title: mmNode.title,
-      wikipedia: mmNode.link ? mmNode.link : "",
-      resources: mindMeisterNoteToResources(mmNode.note),
       children: []
     };
     if (parents[mmNode.id]) {

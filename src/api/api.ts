@@ -72,8 +72,6 @@ export default {
         id: "0",
         title: "",
         position: { x: this.ROOT_WIDTH / 2, y: this.ROOT_HEIGHT / 2 },
-        wikipedia: "",
-        resources: [],
         // children: apiTree.children
         children: response.data
       },
@@ -88,8 +86,6 @@ export default {
           id: "0",
           title: "",
           position: { x: this.ROOT_WIDTH / 2, y: this.ROOT_HEIGHT / 2 },
-          wikipedia: "",
-          resources: [],
           children: apiTree.children
         },
         null
@@ -289,10 +285,15 @@ export default {
     return null;
   },
 
-  async update(data: Record<string, any>) {
-    await firebase
-      .database()
-      .ref()
-      .update(data);
+  async update(data: Record<string, any>): Promise<ErrorKV> {
+    try {
+      await firebase
+        .database()
+        .ref()
+        .update(data);
+      return null
+    } catch (e) {
+      return NewErrorKV("api: error in update", {err: e})
+    }
   }
 };

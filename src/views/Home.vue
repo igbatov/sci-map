@@ -1,5 +1,6 @@
 <template>
   <Menu />
+  <NodeContent />
   <Map
     :layers="zoomedPanedLayers"
     :viewBox="viewBox"
@@ -7,6 +8,7 @@
     :pin-nodes="pinNodes"
     @dragging-node="nodeDragging"
     @click-node="nodeClick"
+    @click-background="bgClick"
     @dragging-background="mapDragging"
     @wheel="zoom"
   />
@@ -15,6 +17,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from "vue";
 import Map from "@/components/map/Map.vue";
+import NodeContent from "@/components/node_content/Index.vue";
 import {
   EventClickNode,
   EventDraggingBackground,
@@ -43,7 +46,8 @@ export default defineComponent({
 
   components: {
     Map,
-    Menu
+    Menu,
+    NodeContent,
   },
 
   setup() {
@@ -203,6 +207,9 @@ export default defineComponent({
       },
       nodeClick: (e: EventClickNode) => {
         router.push({ name: "node", params: { id: e.id } });
+      },
+      bgClick: () => {
+        store.commit(`tree/${treeMutations.SET_SELECTED_NODE_ID}`, null);
       },
       mapDragging: (event: EventDraggingBackground) => {
         store.commit(`zoomPan/${zoomPanMutations.ADD_PAN}`, event);

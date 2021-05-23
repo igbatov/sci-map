@@ -18,6 +18,7 @@
       :pinNodes="pinNodes"
       :selectedNodeId="selectedNodeId"
       @click="clickNode"
+      @node-mouse-down="pinNodeMouseDown"
     />
   </svg>
 </template>
@@ -35,7 +36,7 @@ import PinLayer from "@/components/pin_layer/PinLayer.vue";
 
 export default defineComponent({
   name: "Map",
-  emits: ["dragging-node", "click-node", "dragging-background", "wheel"],
+  emits: ["dragging-node", "click-node", "click-background", "dragging-background", "wheel"],
   components: {
     PinLayer,
     MapLayer
@@ -66,7 +67,7 @@ export default defineComponent({
         await pan.mouseDown(event);
       });
       window.addEventListener("mouseup", () => {
-        pan.mouseUp();
+        pan.mouseUp(ctx.emit);
       });
       window.addEventListener("mousemove", event => {
         pan.mouseMove(ctx.emit, event);
@@ -94,6 +95,9 @@ export default defineComponent({
       },
       clickNode: (e: EventClickNode) => {
         ctx.emit("click-node", { id: e.id });
+      },
+      pinNodeMouseDown: () => {
+        pan.pinNodeMouseDownHandler()
       }
     };
   }
