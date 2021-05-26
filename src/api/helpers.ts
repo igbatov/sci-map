@@ -28,7 +28,7 @@ export function convertDBMapToTree(
     id: dbNodes["0"].id,
     title: dbNodes["0"].name,
     position: dbNodes["0"].position,
-    children: [],
+    children: []
   };
   const stack = [root];
 
@@ -53,7 +53,7 @@ export function convertDBMapToTree(
         id: childID,
         title: dbNodes[childID].name,
         position: dbNodes[childID].position,
-        children: [],
+        children: []
       });
     }
 

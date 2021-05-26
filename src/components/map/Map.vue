@@ -1,9 +1,9 @@
 <template>
   <svg
-      xmlns="http://www.w3.org/2000/svg"
-      :viewBox="viewBox"
-      @click="clickMap"
-      :id="mapID"
+    xmlns="http://www.w3.org/2000/svg"
+    :viewBox="viewBox"
+    @click="clickMap"
+    :id="mapID"
   >
     <MapLayer
       v-for="(layer, index) of layers"
@@ -41,11 +41,17 @@ import pan from "./MapPan";
 import PinLayer from "@/components/pin_layer/PinLayer.vue";
 import { printError } from "@/tools/utils";
 
-const mapID = "mapID"
+const mapID = "mapID";
 
 export default defineComponent({
   name: "Map",
-  emits: ["dragging-node", "click-node", "click-background", "dragging-background", "wheel"],
+  emits: [
+    "dragging-node",
+    "click-node",
+    "click-background",
+    "dragging-background",
+    "wheel"
+  ],
   components: {
     PinLayer,
     MapLayer
@@ -72,15 +78,15 @@ export default defineComponent({
     );
 
     onMounted(() => {
-      const map = document.getElementById(mapID)
+      const map = document.getElementById(mapID);
       if (!map) {
-        printError("Map.vue: cannot find map id for event listener", {})
-        return
+        printError("Map.vue: cannot find map id for event listener", {});
+        return;
       }
       map.addEventListener("mousedown", async event => {
         await pan.mouseDown(event);
       });
-      map.addEventListener("mousemove", (event) => {
+      map.addEventListener("mousemove", event => {
         pan.mouseMove(ctx.emit, event);
       });
       map.addEventListener("wheel", event => {
@@ -111,9 +117,9 @@ export default defineComponent({
         pan.mapClick(ctx.emit);
       },
       pinNodeMouseDown: () => {
-        pan.pinNodeMouseDownHandler()
+        pan.pinNodeMouseDownHandler();
       },
-      mapID: mapID,
+      mapID: mapID
     };
   }
 });

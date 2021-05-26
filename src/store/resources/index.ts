@@ -1,4 +1,3 @@
-
 export type Resource = {
   id: string;
   type: string; // book, article, post, course, internship, job
@@ -10,7 +9,7 @@ export type Resource = {
   isbn: string;
   createdAt: number; // = Date.UTC()
   updatedAt: number; // = Date.UTC()
-}
+};
 
 export type Resources = Record<
   string /* id of resource */,
@@ -23,45 +22,46 @@ export interface State {
 
 export const mutations = {
   SET_RESOURCES: "SET_RESOURCES",
-  ADD_TO_RESOURCES: "ADD_TO_RESOURCES",
+  ADD_TO_RESOURCES: "ADD_TO_RESOURCES"
 };
 
 export const actions = {
   find: "find",
-  getByID: "getByID",
+  getByID: "getByID"
 };
 
 export const store = {
   namespaced: true,
   state: {
-    resources: {},
+    resources: {}
   },
   actions: {
     [actions.find]({ state }: { state: State }, str: string): Resource[] {
-      const result = []
+      const result = [];
       for (const id in state.resources) {
-        const resource = state.resources[id]
-        if (resource.author.indexOf(str) != -1 ||
+        const resource = state.resources[id];
+        if (
+          resource.author.indexOf(str) != -1 ||
           resource.name.indexOf(str) != -1 ||
           resource.doi.indexOf(str) != -1 ||
           resource.isbn.indexOf(str) != -1
         ) {
-          result.push(resource)
+          result.push(resource);
         }
       }
 
-      return result
+      return result;
     },
     [actions.getByID]({ state }: { state: State }, id: string): Resource {
-      return state.resources[id]
+      return state.resources[id];
     }
   },
   mutations: {
     [mutations.SET_RESOURCES](state: State, resources: Resources) {
-      state.resources = resources
+      state.resources = resources;
     },
     [mutations.ADD_TO_RESOURCES](state: State, resource: Resource) {
-      state.resources[resource.id] = resource
-    },
-  },
-}
+      state.resources[resource.id] = resource;
+    }
+  }
+};

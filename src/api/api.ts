@@ -291,9 +291,9 @@ export default {
         .database()
         .ref()
         .update(data);
-      return null
+      return null;
     } catch (e) {
-      return NewErrorKV("api: error in update", {err: e})
+      return NewErrorKV("api: error in update", { err: e });
     }
   }
 };

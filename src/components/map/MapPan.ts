@@ -7,7 +7,7 @@ let bgMouseDownResolvers: Record<
 > = {};
 
 const mouseDownBg = {
-  on: false,
+  on: false
 };
 
 let pinNodeMouseDown = false;
@@ -49,26 +49,20 @@ const mouseDown = async (event: MouseEvent) => {
   mouseDownBg.on = true;
 };
 
-const mapClick = async (emit: (
-  name: "click-background",
-  o: any
-) => void) => {
+const mapClick = async (emit: (name: "click-background", o: any) => void) => {
   if (mouseDownBg.on && !pinNodeMouseDown) {
-    emit("click-background", {})
+    emit("click-background", {});
   }
   mouseDownBg.on = false;
-  pinNodeMouseDown = false
-}
+  pinNodeMouseDown = false;
+};
 
 const pinNodeMouseDownHandler = () => {
-  pinNodeMouseDown = true
-}
+  pinNodeMouseDown = true;
+};
 
 const mouseMove = (
-  emit: (
-    name: "dragging-background",
-    o: any
-  ) => void,
+  emit: (name: "dragging-background", o: any) => void,
   event: MouseEvent
 ) => {
   if (!mouseDownBg.on) {
@@ -104,5 +98,5 @@ export default {
   bgMouseDownReject,
   bgMouseDownResolve,
   pinNodeMouseDownHandler,
-  mapClick,
+  mapClick
 };

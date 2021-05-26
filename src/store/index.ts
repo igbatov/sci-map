@@ -28,13 +28,15 @@ import {
   store as resourcesStore,
   State as ResourcesState,
   mutations as resourcesMutations,
-  actions as resourcesActions, Resource
+  actions as resourcesActions,
+  Resource
 } from "./resources";
 import {
   store as nodeContentStore,
   State as NodeContentState,
   mutations as nodeContentMutations,
-  actions as nodeContentActions, ResourceRating
+  actions as nodeContentActions,
+  ResourceRating
 } from "./node_content";
 
 import api from "@/api/api";
@@ -46,10 +48,7 @@ import {
   getNewNodeCenter
 } from "@/store/tree/helpers";
 import NewErrorKV from "@/tools/errorkv";
-import {
-  addVector,
-  convertPosition,
-} from "@/tools/graphics";
+import { addVector, convertPosition } from "@/tools/graphics";
 import { DBNode } from "@/api/types";
 import { isEqual, debounce } from "lodash";
 import { printError } from "@/tools/utils";
@@ -85,7 +84,7 @@ export const actions = {
   setNodeWikipedia: "setNodeWikipedia",
   setNodeComment: "setNodeComment",
   rateNodeResource: "rateNodeResource",
-  hideNodeResource: "hideNodeResource",
+  hideNodeResource: "hideNodeResource"
 };
 
 export const mutations = {
@@ -130,138 +129,138 @@ export const store = createStore<State>({
   actions: {
     async [actions.hideNodeResource](
       { commit, state }: { commit: Commit; state: State },
-      v: {nodeID: string, resourceID: string, hide: boolean},
+      v: { nodeID: string; resourceID: string; hide: boolean }
     ) {
       // cannot save for unauthorized user
       if (!state.user.user || state.user.user.isAnonymous) {
-        return null
+        return null;
       }
 
       // add to DB
       const err = await api.update({
-        [`node_content/${state.user.user.uid}/${v.nodeID}/resources/${v.resourceID}/hide`]: v.hide,
+        [`node_content/${state.user.user.uid}/${v.nodeID}/resources/${v.resourceID}/hide`]: v.hide
       });
       if (err) {
-        printError("addNodeResource: api.update error", {err})
-        return
+        printError("addNodeResource: api.update error", { err });
+        return;
       }
 
       // add to local store
-      commit(`node_content/${nodeContentMutations.HIDE_NODE_RESOURCE}`, v)
+      commit(`node_content/${nodeContentMutations.HIDE_NODE_RESOURCE}`, v);
     },
 
     async [actions.rateNodeResource](
       { commit, state }: { commit: Commit; state: State },
-      v: {nodeID: string, resourceID: string, rating: number},
+      v: { nodeID: string; resourceID: string; rating: number }
     ) {
       // cannot save for unauthorized user
       if (!state.user.user || state.user.user.isAnonymous) {
-        return null
+        return null;
       }
 
       // add to DB
       const err = await api.update({
-        [`node_content/${state.user.user.uid}/${v.nodeID}/resources/${v.resourceID}/rating`]: v.rating,
+        [`node_content/${state.user.user.uid}/${v.nodeID}/resources/${v.resourceID}/rating`]: v.rating
       });
       if (err) {
-        printError("addNodeResource: api.update error", {err})
-        return
+        printError("addNodeResource: api.update error", { err });
+        return;
       }
 
       // add to local store
-      commit(`node_content/${nodeContentMutations.RATE_NODE_RESOURCE}`, v)
+      commit(`node_content/${nodeContentMutations.RATE_NODE_RESOURCE}`, v);
     },
 
-     async [actions.setNodeComment](
+    async [actions.setNodeComment](
       { commit, state }: { commit: Commit; state: State },
-      v: {nodeID: string, comment: string},
+      v: { nodeID: string; comment: string }
     ) {
       // cannot save for unauthorized user
       if (!state.user.user || state.user.user.isAnonymous) {
-        return null
+        return null;
       }
 
       // add to DB
       const err = await api.update({
-        [`node_content/${state.user.user.uid}/${v.nodeID}/comment`]: v.comment,
+        [`node_content/${state.user.user.uid}/${v.nodeID}/comment`]: v.comment
       });
       if (err) {
-        printError("addNodeResource: api.update error", {err})
-        return
+        printError("addNodeResource: api.update error", { err });
+        return;
       }
 
       // add to local store
-      commit(`node_content/${nodeContentMutations.SET_NODE_COMMENT}`, v)
+      commit(`node_content/${nodeContentMutations.SET_NODE_COMMENT}`, v);
     },
 
     async [actions.setNodeWikipedia](
       { commit, state }: { commit: Commit; state: State },
-      v: {nodeID: string, wikipedia: string},
+      v: { nodeID: string; wikipedia: string }
     ) {
       // cannot save for unauthorized user
       if (!state.user.user || state.user.user.isAnonymous) {
-        return null
+        return null;
       }
 
       // add to DB
       const err = await api.update({
-        [`node_content/${state.user.user.uid}/${v.nodeID}/wikipedia`]: v.wikipedia,
+        [`node_content/${state.user.user.uid}/${v.nodeID}/wikipedia`]: v.wikipedia
       });
       if (err) {
-        printError("addNodeResource: api.update error", {err})
-        return
+        printError("addNodeResource: api.update error", { err });
+        return;
       }
 
       // add to local store
-      commit(`node_content/${nodeContentMutations.SET_NODE_WIKIPEDIA}`, v)
+      commit(`node_content/${nodeContentMutations.SET_NODE_WIKIPEDIA}`, v);
     },
 
     async [actions.addNodeResource](
       { commit, state }: { commit: Commit; state: State },
-      v: {rr: ResourceRating, nodeID: string},
+      v: { rr: ResourceRating; nodeID: string }
     ) {
       // cannot save for unauthorized user
       if (!state.user.user || state.user.user.isAnonymous) {
-        return null
+        return null;
       }
 
       // add to DB
       const err = await api.update({
-        [`node_content/${state.user.user.uid}/${v.nodeID}/resources/${v.rr.resourceID}`]: v.rr,
+        [`node_content/${state.user.user.uid}/${v.nodeID}/resources/${v.rr.resourceID}`]: v.rr
       });
       if (err) {
-        printError("addNodeResource: api.update error", {err})
-        return
+        printError("addNodeResource: api.update error", { err });
+        return;
       }
 
       // add to local store
-      commit(`node_content/${nodeContentMutations.ADD_TO_NODE_RESOURCES}`, v)
+      commit(`node_content/${nodeContentMutations.ADD_TO_NODE_RESOURCES}`, v);
     },
 
     async [actions.addNewResource](
       { commit, state }: { commit: Commit; state: State },
-      rs: Resource,
+      rs: Resource
     ): Promise<Resource | null> {
       // save to DB
       const newKey = api.generateKey();
       if (!newKey) {
-        printError("addNewResource: Cannot api.generateKey", {})
-        return null
+        printError("addNewResource: Cannot api.generateKey", {});
+        return null;
       }
-      rs.id = newKey
+      rs.id = newKey;
       const updateMap: Record<string, any> = {
-        [`resources/${newKey}`]: rs,
+        [`resources/${newKey}`]: rs
       };
       const err = await api.update(updateMap);
       if (!err) {
-        printError("addNewResource: cannot update", {err})
-        return null
+        printError("addNewResource: cannot update", { err });
+        return null;
       }
 
       // add to local resources
-      commit(`resources/${resourcesMutations.ADD_TO_RESOURCES}`, rs)
+      commit(`resources/${resourcesMutations.ADD_TO_RESOURCES}`, rs);
 
-      return rs
+      return rs;
     },
 
     [actions.setEditMode](
@@ -454,7 +453,7 @@ export const store = createStore<State>({
       v: { nodeId: string; delta: Point }
     ) {
       if (!state.editModeOn) {
-        return
+        return;
       }
       const [mapNode] = findMapNode(v.nodeId, state.tree.mapNodeLayers);
       if (!mapNode) {

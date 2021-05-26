@@ -66,7 +66,7 @@ import {
   mouseMoveListener,
   mouseUpListener
 } from "@/components/map_layer/MapLayer";
-import {printError} from "@/tools/utils";
+import { printError } from "@/tools/utils";
 
 const TITLE_PREFIX = "title_";
 
@@ -121,18 +121,18 @@ export default defineComponent({
     onMounted(() => {
       const map = document.getElementById(props.mapId);
       if (!map) {
-        printError("MapLayer.vue: cannot find map id for event listener", {})
-        return
+        printError("MapLayer.vue: cannot find map id for event listener", {});
+        return;
       }
       map.addEventListener("mousedown", mouseDown);
       map.addEventListener("mousemove", mouseMove);
       map.addEventListener("mouseup", mouseUp);
     });
     onUnmounted(() => {
-      const map = document.getElementById(props.mapId)
+      const map = document.getElementById(props.mapId);
       if (!map) {
-        printError("MapLayer.vue: cannot find map id for event listener", {})
-        return
+        printError("MapLayer.vue: cannot find map id for event listener", {});
+        return;
       }
       map.removeEventListener("mousedown", mouseDown);
       map.removeEventListener("mousemove", mouseMove);
@@ -146,7 +146,7 @@ export default defineComponent({
         ctx.emit("click", {
           id: nodeID
         });
-      },
+      }
     };
   },
 

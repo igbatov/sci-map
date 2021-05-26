@@ -1,8 +1,6 @@
 <template>
   <Menu />
-  <NodeContent
-      :show="!editModeOn && !!selectedNodeId"
-  />
+  <NodeContent :show="!editModeOn && !!selectedNodeId" />
   <Map
     :layers="zoomedPanedLayers"
     :viewBox="viewBox"
@@ -49,7 +47,7 @@ export default defineComponent({
   components: {
     Map,
     Menu,
-    NodeContent,
+    NodeContent
   },
 
   setup() {
@@ -212,7 +210,7 @@ export default defineComponent({
         router.push({ name: "node", params: { id: e.id } });
       },
       bgClick: () => {
-        router.push({ path: '/' })
+        router.push({ path: "/" });
       },
       mapDragging: (event: EventDraggingBackground) => {
         store.commit(`zoomPan/${zoomPanMutations.ADD_PAN}`, event);
