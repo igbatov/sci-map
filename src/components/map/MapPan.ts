@@ -1,4 +1,3 @@
-import { reactive } from "vue";
 import { MapNode } from "@/types/graphics";
 import { printError } from "@/tools/utils";
 
@@ -7,12 +6,9 @@ let bgMouseDownResolvers: Record<
   { resolve: (v: any) => void; reject: (v: any) => void; promise: Promise<any> }
 > = {};
 
-const mouseDownBg = reactive({
+const mouseDownBg = {
   on: false,
-  startPoint: { x: 0, y: 0 }
-});
-
-let draggingBackgroundOn = false;
+};
 
 let pinNodeMouseDown = false;
 
@@ -34,6 +30,8 @@ const setLayers = (ls: Array<Record<number, MapNode>> | undefined) => {
 };
 
 const mouseDown = async (event: MouseEvent) => {
+  mouseDownBg.on = false;
+
   const values = await Promise.allSettled<Promise<number>[]>(
     Object.values(bgMouseDownResolvers).map(v => v.promise)
   );
@@ -49,21 +47,18 @@ const mouseDown = async (event: MouseEvent) => {
   }
 
   mouseDownBg.on = true;
-  mouseDownBg.startPoint = { x: event.clientX, y: event.clientY };
 };
 
-const mouseUp = (emit: (
-    name: "click-background",
-    o: any
-  ) => void
-) => {
-  if (mouseDownBg.on && !draggingBackgroundOn && !pinNodeMouseDown) {
+const mapClick = async (emit: (
+  name: "click-background",
+  o: any
+) => void) => {
+  if (mouseDownBg.on && !pinNodeMouseDown) {
     emit("click-background", {})
   }
   mouseDownBg.on = false;
-  draggingBackgroundOn = false;
   pinNodeMouseDown = false
-};
+}
 
 const pinNodeMouseDownHandler = () => {
   pinNodeMouseDown = true
@@ -79,7 +74,6 @@ const mouseMove = (
   if (!mouseDownBg.on) {
     return;
   }
-  draggingBackgroundOn = true;
   emit("dragging-background", {
     from: {
       x: event.clientX - event.movementX,
@@ -106,9 +100,9 @@ const bgMouseDownResolve = (layerId: number) => {
 export default {
   setLayers,
   mouseDown,
-  mouseUp,
   mouseMove,
   bgMouseDownReject,
   bgMouseDownResolve,
   pinNodeMouseDownHandler,
+  mapClick,
 };

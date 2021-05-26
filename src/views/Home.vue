@@ -1,6 +1,8 @@
 <template>
   <Menu />
-  <NodeContent />
+  <NodeContent
+      :show="!editModeOn && !!selectedNodeId"
+  />
   <Map
     :layers="zoomedPanedLayers"
     :viewBox="viewBox"
@@ -195,6 +197,7 @@ export default defineComponent({
         );
       }),
       viewBox,
+      editModeOn: computed(() => store.state.editModeOn),
       selectedNodeId: computed(() => treeState.selectedNodeId),
       nodeDragging: (e: EventDraggingNode) => {
         store.dispatch(`${actions.updateNodePosition}`, {
@@ -209,7 +212,7 @@ export default defineComponent({
         router.push({ name: "node", params: { id: e.id } });
       },
       bgClick: () => {
-        store.commit(`tree/${treeMutations.SET_SELECTED_NODE_ID}`, null);
+        router.push({ path: '/' })
       },
       mapDragging: (event: EventDraggingBackground) => {
         store.commit(`zoomPan/${zoomPanMutations.ADD_PAN}`, event);

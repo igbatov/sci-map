@@ -66,6 +66,7 @@ import {
   mouseMoveListener,
   mouseUpListener
 } from "@/components/map_layer/MapLayer";
+import {printError} from "@/tools/utils";
 
 const TITLE_PREFIX = "title_";
 
@@ -79,6 +80,10 @@ export default defineComponent({
     "background-mouse-down"
   ],
   props: {
+    mapId: {
+      type: String,
+      required: true
+    },
     mapNodes: {
       type: Object as PropType<Array<MapNode>>,
       required: true
@@ -114,14 +119,24 @@ export default defineComponent({
       mouseMoveListener(ctx.emit, event, mouseDownInfo);
     const mouseUp = () => mouseUpListener(ctx.emit, mouseDownInfo);
     onMounted(() => {
-      window.addEventListener("mousedown", mouseDown);
-      window.addEventListener("mousemove", mouseMove);
-      window.addEventListener("mouseup", mouseUp);
+      const map = document.getElementById(props.mapId);
+      if (!map) {
+        printError("MapLayer.vue: cannot find map id for event listener", {})
+        return
+      }
+      map.addEventListener("mousedown", mouseDown);
+      map.addEventListener("mousemove", mouseMove);
+      map.addEventListener("mouseup", mouseUp);
     });
     onUnmounted(() => {
-      window.removeEventListener("mousedown", mouseDown);
-      window.removeEventListener("mousemove", mouseMove);
-      window.removeEventListener("mouseup", mouseUp);
+      const map = document.getElementById(props.mapId)
+      if (!map) {
+        printError("MapLayer.vue: cannot find map id for event listener", {})
+        return
+      }
+      map.removeEventListener("mousedown", mouseDown);
+      map.removeEventListener("mousemove", mouseMove);
+      map.removeEventListener("mouseup", mouseUp);
     });
 
     return {

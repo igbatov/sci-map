@@ -518,7 +518,8 @@ export const store = createStore<State>({
     tree: treeStore,
     user: userStore,
     zoomPan: zoomPanStore,
-    history: historyStore
+    history: historyStore,
+    nodeContent: nodeContentStore
   }
 });
 

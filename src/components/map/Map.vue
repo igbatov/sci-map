@@ -1,5 +1,10 @@
 <template>
-  <svg xmlns="http://www.w3.org/2000/svg" :viewBox="viewBox">
+  <svg
+      xmlns="http://www.w3.org/2000/svg"
+      :viewBox="viewBox"
+      @click="clickMap"
+      :id="mapID"
+  >
     <MapLayer
       v-for="(layer, index) of layers"
       :key="index"
@@ -9,6 +14,7 @@
       "
       :font-size="10 * (index + 1)"
       :selectedNodeId="selectedNodeId"
+      :map-id="mapID"
       @dragging="draggingNode"
       @click="clickNode"
       @background-mouse-down="backgroundMouseDown(index)"
@@ -33,6 +39,9 @@ import {
 } from "@/components/map_layer/MapLayer";
 import pan from "./MapPan";
 import PinLayer from "@/components/pin_layer/PinLayer.vue";
+import { printError } from "@/tools/utils";
+
+const mapID = "mapID"
 
 export default defineComponent({
   name: "Map",
@@ -63,16 +72,18 @@ export default defineComponent({
     );
 
     onMounted(() => {
-      window.addEventListener("mousedown", async event => {
+      const map = document.getElementById(mapID)
+      if (!map) {
+        printError("Map.vue: cannot find map id for event listener", {})
+        return
+      }
+      map.addEventListener("mousedown", async event => {
         await pan.mouseDown(event);
       });
-      window.addEventListener("mouseup", () => {
-        pan.mouseUp(ctx.emit);
-      });
-      window.addEventListener("mousemove", event => {
+      map.addEventListener("mousemove", (event) => {
         pan.mouseMove(ctx.emit, event);
       });
-      window.addEventListener("wheel", event => {
+      map.addEventListener("wheel", event => {
         ctx.emit("wheel", {
           delta: event.deltaY,
           center: { x: event.clientX, y: event.clientY }
@@ -96,9 +107,13 @@ export default defineComponent({
       clickNode: (e: EventClickNode) => {
         ctx.emit("click-node", { id: e.id });
       },
+      clickMap: (e: EventClickNode) => {
+        pan.mapClick(ctx.emit);
+      },
       pinNodeMouseDown: () => {
         pan.pinNodeMouseDownHandler()
-      }
+      },
+      mapID: mapID,
     };
   }
 });
