@@ -59,7 +59,6 @@ import { defineComponent, PropType, toRef, onMounted, onUnmounted } from "vue";
 import { MapNode } from "@/types/graphics";
 import { polygonToPath } from "@/tools/graphics";
 import {
-  EventDraggingNode,
   getTitleBoxes,
   MouseDownInfo,
   mouseDownListener,

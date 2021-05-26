@@ -1,9 +1,9 @@
 <template>
   <transition name="slide">
     <div v-if="show" class="wrapper">
-      <h5>
+      <h2>
         {{ selectedNode ? selectedNode.title : "" }}
-      </h5>
+      </h2>
       <div class="p-fluid">
         <div class="p-field p-grid">
           <label for="wikipedia" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0"
@@ -11,6 +11,15 @@
           >
           <div class="p-col-12 p-md-10">
             <InputText id="wikipedia" type="text" v-model="newWikipediaLink" />
+          </div>
+        </div>
+        <!-- Comment -->
+        <div class="p-field p-grid">
+          <label for="wikipedia" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0"
+            >Comment</label
+          >
+          <div class="p-col-12 p-md-10">
+            <InputText id="comment" type="text" v-model="newWikipediaLink" />
           </div>
         </div>
       </div>
@@ -34,7 +43,7 @@ export default {
       required: true
     }
   },
-  setup(props) {
+  setup() {
     const store = useStore();
     const tree = store.state.tree;
     const nodeContents = store.state.nodeContent.nodeContents;
@@ -74,12 +83,12 @@ export default {
 <style scoped>
 .wrapper {
   position: absolute;
-  width: 60%;
+  width: 40%;
   height: 100%;
-  display: flex;
-  justify-content: flex-end;
   padding: 8px;
   background-color: rgba(255, 255, 255, 1);
+  font-family: Roboto;
+  color: rgb(73, 80, 87);
 }
 
 .slide-enter-active,

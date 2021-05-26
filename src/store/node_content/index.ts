@@ -1,5 +1,3 @@
-import { Resource, Resources } from "@/store/resources";
-
 export type ResourceRating = {
   resourceID: string;
   comment: string;

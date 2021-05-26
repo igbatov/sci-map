@@ -1,6 +1,6 @@
 <template>
-  <Menu />
   <NodeContent :show="!editModeOn && !!selectedNodeId" />
+  <Menu />
   <Map
     :layers="zoomedPanedLayers"
     :viewBox="viewBox"
