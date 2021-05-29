@@ -1,6 +1,7 @@
+export type ResourceType = "book" | "article" | "post" | "onlineCourse" | "offlineCourse" | "internship" | "vacancy" | "crowdfunding"
 export type Resource = {
   id: string;
-  type: string; // book, article, post, course, internship, job
+  type: ResourceType;
   author: string;
   title: string;
   findPhrase: string; // как найти - цитата, главы, ссылки

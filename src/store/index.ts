@@ -234,7 +234,7 @@ export const store = createStore<State>({
       }
 
       // add to local store
-      commit(`node_content/${nodeContentMutations.ADD_TO_NODE_RESOURCES}`, v);
+      commit(`nodeContent/${nodeContentMutations.ADD_TO_NODE_RESOURCES}`, v);
     },
 
     async [actions.addNewResource](
@@ -252,7 +252,7 @@ export const store = createStore<State>({
         [`resources/${newKey}`]: rs
       };
       const err = await api.update(updateMap);
-      if (!err) {
+      if (err) {
         printError("addNewResource: cannot update", { err });
         return null;
       }
@@ -518,7 +518,8 @@ export const store = createStore<State>({
     user: userStore,
     zoomPan: zoomPanStore,
     history: historyStore,
-    nodeContent: nodeContentStore
+    resources: resourcesStore,
+    nodeContent: nodeContentStore,
   }
 });
 

@@ -37,7 +37,7 @@
           Object.values(field)[0]
         }}</label>
         <div class="p-col-9">
-          <InputText :id="Object.keys(field)[0]" type="text"></InputText>
+          <InputText :id="Object.keys(field)[0]" type="text" :placeholder="placeholders[Object.keys(field)[0]]"></InputText>
         </div>
       </div>
       <div class="p-grid">
@@ -52,12 +52,15 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import InputText from "primevue/inputtext";
 import AutoComplete from "primevue/autocomplete";
 import Button from "primevue/button";
 import SelectButton from "primevue/selectbutton";
-import { ref } from "vue";
+import {computed, ref} from "vue";
+import { actions, useStore} from "@/store";
+import {Resource, ResourceType} from '@/store/resources';
+import {printError} from "@/tools/utils";
 
 export default {
   name: "Education",
@@ -68,8 +71,10 @@ export default {
     SelectButton
   },
   setup() {
+    const store = useStore()
     const newFormShow = ref(false);
-    const selectedType = ref("book");
+    const selectedNode = computed(() => store.getters["tree/selectedNode"]);
+    const selectedType = ref<ResourceType>("book");
     const types = {
       book: {
         name: "book",
@@ -114,8 +119,30 @@ export default {
     return {
       newFormShow,
       selectedType,
-      save: () => {
-        console.log(selectedType.value);
+      save: async () => {
+        if (!selectedNode.value || !selectedNode.value.id) {
+          printError("Bad selectedNode", {selectedNode})
+          return
+        }
+        const values = {} as Resource
+        for (const field of types[selectedType.value].fields) {
+          const fieldID = Object.keys(field)[0] as keyof Resource
+          values[fieldID] = document.getElementById(fieldID)!.value
+        }
+        const resource: Resource | null = await store.dispatch(`${actions.addNewResource}`, values);
+        if (resource == null) {
+          printError("Cannot add addNewResource", values)
+          return
+        }
+        await store.dispatch(`${actions.addNodeResource}`, {
+          rr:{
+            resourceID: resource.id,
+            comment: "",
+            rate: 0,
+            hide: false,
+          },
+          nodeID: selectedNode.value.id
+        });
       },
       cancel: () => {
         newFormShow.value = false;
@@ -127,7 +154,16 @@ export default {
         name: types[key].name,
         code: key
       })),
-      types
+      types,
+      placeholders: {
+        title: "The Feynman Lectures on Physics, Vol. 1: Mainly Mechanics, Radiation, and Heat",
+        author: "Richard Feynman, Robert B. Leighton, Matthew Sands",
+        chapter: "1",
+        findPhrase: "If, in some cataclysm, all of scientific knowledge were to be destroyed, and only one sentence passed on to the next generations of creatures, what statement would contain the most information in the fewest words?",
+        url: "https://www.feynmanlectures.caltech.edu/I_01.html#Ch1-S1",
+        doi: "https://doi.org/10.1119/1.1972241",
+        isbn: "9780465023820",
+      }
     };
   }
 };

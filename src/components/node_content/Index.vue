@@ -12,7 +12,7 @@
             <InputText
               id="video"
               type="text"
-              placeholder="Video that describes this theme the best"
+              placeholder="https://www.youtube.com/embed/OmJ-4B-mS-Y"
               v-model="newWikipediaLink"
             />
           </div>
@@ -24,7 +24,7 @@
             <InputText
               id="wikipedia"
               type="text"
-              placeholder="Wikipedia article URL"
+              placeholder="https://en.wikipedia.org/wiki/Mathematics"
               v-model="newWikipediaLink"
             />
           </div>
@@ -57,7 +57,7 @@
   </transition>
 </template>
 
-<script>
+<script lang="ts">
 import { useStore } from "@/store";
 import { computed, ref, watch } from "vue";
 import InputText from "primevue/inputtext";
