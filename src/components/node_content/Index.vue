@@ -10,45 +10,41 @@
           <label for="video" class="p-col-2 p-mb-0">Video</label>
           <div class="p-col-10">
             <InputText
-                id="video"
-                type="text"
-                placeholder="Video that describes this theme the best"
-                v-model="newWikipediaLink"
+              id="video"
+              type="text"
+              placeholder="Video that describes this theme the best"
+              v-model="newWikipediaLink"
             />
           </div>
         </div>
         <!--   wikipedia   -->
         <div class="p-field p-grid">
-          <label for="wikipedia" class="p-col-2 p-mb-0"
-            >Wikipedia</label
-          >
+          <label for="wikipedia" class="p-col-2 p-mb-0">Wikipedia</label>
           <div class="p-col-10">
             <InputText
-                id="wikipedia"
-                type="text"
-                placeholder="Wikipedia article URL"
-                v-model="newWikipediaLink"
+              id="wikipedia"
+              type="text"
+              placeholder="Wikipedia article URL"
+              v-model="newWikipediaLink"
             />
           </div>
         </div>
         <!-- Comment -->
         <div class="p-field p-grid">
-          <label for="comment" class="p-col-2 p-mb-0"
-            >Comment</label
-          >
+          <label for="comment" class="p-col-2 p-mb-0">Comment</label>
           <div class="p-col-12 p-md-10">
             <TextArea
-                id="comment"
-                placeholder="Your personal comment (visible only for you)"
-                :autoResize="true"
-                rows="2"
-                v-model="newWikipediaLink"
+              id="comment"
+              placeholder="Your personal comment (visible only for you)"
+              :autoResize="true"
+              rows="2"
+              v-model="newWikipediaLink"
             />
           </div>
         </div>
 
         <!-- Education section -->
-        <Education/>
+        <Education />
 
         <!-- Internship section -->
         <h3>Internship</h3>
@@ -57,7 +53,6 @@
         <!-- Crowdfunding section -->
         <h3>Crowdfunding</h3>
       </div>
-
     </div>
   </transition>
 </template>
@@ -74,7 +69,7 @@ export default {
   components: {
     InputText,
     TextArea,
-    Education,
+    Education
   },
   props: {
     show: {
@@ -113,7 +108,7 @@ export default {
     return {
       selectedNode,
       selectedNodeContent,
-      newWikipediaLink,
+      newWikipediaLink
     };
   }
 };
