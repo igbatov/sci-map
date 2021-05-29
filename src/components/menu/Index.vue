@@ -2,6 +2,7 @@
   <div :class="$style.wrapper">
     <div v-if="email">
       {{ email }}
+      <Feedback />
       <EditMode />
       <span v-if="editModeOn">
         <CutPaste v-if="isNodeSelected" />
@@ -28,10 +29,12 @@ import RemoveNode from "./RemoveNode";
 import EditMode from "./EditMode";
 import UnpinNode from "@/components/menu/UnpinNode";
 import CutPaste from "@/components/menu/CutPaste";
+import Feedback from "@/components/menu/Feedback";
 
 export default {
   name: "Menu",
   components: {
+    Feedback,
     CutPaste,
     UnpinNode,
     PinNode,

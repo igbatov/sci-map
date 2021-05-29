@@ -2,9 +2,9 @@ export type Resource = {
   id: string;
   type: string; // book, article, post, course, internship, job
   author: string;
-  name: string;
-  path: string; // как найти - цитата, главы, ссылки
-  link: string;
+  title: string;
+  findPhrase: string; // как найти - цитата, главы, ссылки
+  url: string;
   doi: string;
   isbn: string;
   createdAt: number; // = Date.UTC()
@@ -42,7 +42,7 @@ export const store = {
         const resource = state.resources[id];
         if (
           resource.author.indexOf(str) != -1 ||
-          resource.name.indexOf(str) != -1 ||
+          resource.title.indexOf(str) != -1 ||
           resource.doi.indexOf(str) != -1 ||
           resource.isbn.indexOf(str) != -1
         ) {
