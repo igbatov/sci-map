@@ -40,7 +40,7 @@ import {
 } from "./node_content";
 
 import api from "@/api/api";
-import { fetchMap, fetchPins } from "./helpers";
+import {fetchMap, fetchNodeContents, fetchPins, fetchResources} from "./helpers";
 import { MapNode, Point } from "@/types/graphics";
 import {
   createNewNode,
@@ -182,6 +182,7 @@ export const store = createStore<State>({
 
       // add to DB
       const err = await api.update({
+        [`node_content/${state.user.user.uid}/${v.nodeID}/nodeID`]: v.nodeID,
         [`node_content/${state.user.user.uid}/${v.nodeID}/comment`]: v.comment
       });
       if (err) {
@@ -204,6 +205,7 @@ export const store = createStore<State>({
 
       // add to DB
       const err = await api.update({
+        [`node_content/${state.user.user.uid}/${v.nodeID}/nodeID`]: v.nodeID,
         [`node_content/${state.user.user.uid}/${v.nodeID}/wikipedia`]: v.wikipedia
       });
       if (err) {
@@ -226,6 +228,7 @@ export const store = createStore<State>({
 
       // add to DB
       const err = await api.update({
+        [`node_content/${state.user.user.uid}/${v.nodeID}/nodeID`]: v.nodeID,
         [`node_content/${state.user.user.uid}/${v.nodeID}/resources/${v.rr.resourceID}`]: v.rr
       });
       if (err) {
@@ -292,6 +295,8 @@ export const store = createStore<State>({
       commit(`user/${userMutations.SET_USER}`, user);
       await fetchMap(user);
       await fetchPins(user);
+      await fetchResources();
+      await fetchNodeContents(user);
     },
 
     async [actions.createNode](
