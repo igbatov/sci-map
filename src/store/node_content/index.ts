@@ -12,7 +12,7 @@ export type NodeContent = {
   nodeID: string;
   wikipedia: string;
   comment: string;
-  resources: Record<string, ResourceRating>;
+  resourceRatings: Record<string, ResourceRating>;
 };
 
 export interface State {
@@ -23,10 +23,10 @@ export const mutations = {
   SET_CONTENTS: "SET_CONTENTS",
   SET_NODE_WIKIPEDIA: "SET_WIKIPEDIA",
   SET_NODE_COMMENT: "SET_COMMENT",
-  ADD_TO_NODE_RESOURCES: "ADD_TO_NODE_RESOURCES",
-  RATE_NODE_RESOURCE: "RATE_NODE_RESOURCE",
-  HIDE_NODE_RESOURCE: "HIDE_NODE_RESOURCE",
-  SET_NODE_RESOURCE_COMMENT: "SET_NODE_RESOURCE_COMMENT"
+  ADD_TO_NODE_RESOURCE_RATINGS: "ADD_TO_NODE_RESOURCE_RATINGS",
+  RATE_NODE_RESOURCE_RATING: "RATE_NODE_RESOURCE_RATING",
+  HIDE_NODE_RESOURCE_RATING: "HIDE_NODE_RESOURCE_RATING",
+  SET_NODE_RESOURCE_RATING_COMMENT: "SET_NODE_RESOURCE_COMMENT"
 };
 
 export const actions = {
@@ -87,7 +87,7 @@ export const store = {
       }
       state.nodeContents[v.nodeID].comment = v.comment;
     },
-    [mutations.ADD_TO_NODE_RESOURCES](
+    [mutations.ADD_TO_NODE_RESOURCE_RATINGS](
       state: State,
       v: { rr: ResourceRating; nodeID: string }
     ) {
@@ -97,9 +97,9 @@ export const store = {
           state.nodeContents[v.nodeID].nodeID = v.nodeID
         }
       }
-      state.nodeContents[v.nodeID].resources[v.rr.resourceID] = v.rr;
+      state.nodeContents[v.nodeID].resourceRatings[v.rr.resourceID] = v.rr;
     },
-    [mutations.RATE_NODE_RESOURCE](
+    [mutations.RATE_NODE_RESOURCE_RATING](
       state: State,
       v: { nodeID: string; resourceID: string; rating: RateValues }
     ) {
@@ -107,13 +107,13 @@ export const store = {
         state.nodeContents[v.nodeID] = clone(EmptyNodeContent)
         state.nodeContents[v.nodeID].nodeID = v.nodeID
       }
-      if (!state.nodeContents[v.nodeID].resources[v.resourceID]) {
-        state.nodeContents[v.nodeID].resources[v.resourceID] = clone(EmptyResourceRating)
-        state.nodeContents[v.nodeID].resources[v.resourceID].resourceID = v.resourceID
+      if (!state.nodeContents[v.nodeID].resourceRatings[v.resourceID]) {
+        state.nodeContents[v.nodeID].resourceRatings[v.resourceID] = clone(EmptyResourceRating)
+        state.nodeContents[v.nodeID].resourceRatings[v.resourceID].resourceID = v.resourceID
       }
-      state.nodeContents[v.nodeID].resources[v.resourceID].rate = v.rating;
+      state.nodeContents[v.nodeID].resourceRatings[v.resourceID].rate = v.rating;
     },
-    [mutations.HIDE_NODE_RESOURCE](
+    [mutations.HIDE_NODE_RESOURCE_RATING](
       state: State,
       v: { nodeID: string; resourceID: string; hide: boolean }
     ) {
@@ -121,13 +121,13 @@ export const store = {
         state.nodeContents[v.nodeID] = clone(EmptyNodeContent)
         state.nodeContents[v.nodeID].nodeID = v.nodeID
       }
-      if (!state.nodeContents[v.nodeID].resources[v.resourceID]) {
-        state.nodeContents[v.nodeID].resources[v.resourceID] = clone(EmptyResourceRating)
-        state.nodeContents[v.nodeID].resources[v.resourceID].resourceID = v.resourceID
+      if (!state.nodeContents[v.nodeID].resourceRatings[v.resourceID]) {
+        state.nodeContents[v.nodeID].resourceRatings[v.resourceID] = clone(EmptyResourceRating)
+        state.nodeContents[v.nodeID].resourceRatings[v.resourceID].resourceID = v.resourceID
       }
-      state.nodeContents[v.nodeID].resources[v.resourceID].hide = v.hide;
+      state.nodeContents[v.nodeID].resourceRatings[v.resourceID].hide = v.hide;
     },
-    [mutations.SET_NODE_RESOURCE_COMMENT](
+    [mutations.SET_NODE_RESOURCE_RATING_COMMENT](
       state: State,
       v: { nodeID: string; resourceID: string; comment: string }
     ) {
@@ -135,11 +135,11 @@ export const store = {
         state.nodeContents[v.nodeID] = clone(EmptyNodeContent)
         state.nodeContents[v.nodeID].nodeID = v.nodeID
       }
-      if (!state.nodeContents[v.nodeID].resources[v.resourceID]) {
-        state.nodeContents[v.nodeID].resources[v.resourceID] = clone(EmptyResourceRating)
-        state.nodeContents[v.nodeID].resources[v.resourceID].resourceID = v.resourceID
+      if (!state.nodeContents[v.nodeID].resourceRatings[v.resourceID]) {
+        state.nodeContents[v.nodeID].resourceRatings[v.resourceID] = clone(EmptyResourceRating)
+        state.nodeContents[v.nodeID].resourceRatings[v.resourceID].resourceID = v.resourceID
       }
-      state.nodeContents[v.nodeID].resources[v.resourceID].comment = v.comment;
+      state.nodeContents[v.nodeID].resourceRatings[v.resourceID].comment = v.comment;
     }
   }
 };

@@ -1,8 +1,8 @@
 <template>
   <transition name="slide">
-    <div v-if="show" class="wrapper">
+    <div v-if="show && selectedNode" class="wrapper">
       <h2>
-        {{ selectedNode ? selectedNode.title : "" }}
+        {{ selectedNode.title }}
       </h2>
       <div class="p-fluid">
         <!-- Video -->
@@ -44,8 +44,12 @@
         </div>
 
         <!-- Education section -->
-        <Education />
-
+        <EducationForm :resources="resources" />
+        <EducationResources
+            v-if="selectedNodeContent"
+            :resources="resources"
+            :resourcesRating="selectedNodeContent.resourceRatings"
+        />
         <!-- Internship section -->
         <h3>Internship</h3>
         <!-- Job section -->
@@ -62,14 +66,19 @@ import { useStore } from "@/store";
 import { computed, ref, watch } from "vue";
 import InputText from "primevue/inputtext";
 import TextArea from "primevue/textarea";
-import Education from "./Education";
+import EducationForm from "./EducationForm.vue";
+import EducationResources from "./EducationResources.vue";
+import {Tree} from "@/types/graphics";
+import {NodeContent} from "@/store/node_content";
+import {Resources} from "@/store/resources";
 
 export default {
   name: "NodeContent",
   components: {
     InputText,
     TextArea,
-    Education
+    EducationForm,
+    EducationResources
   },
   props: {
     show: {
@@ -80,32 +89,35 @@ export default {
   setup() {
     const store = useStore();
     const tree = store.state.tree;
-    const nodeContents = store.state.nodeContent.nodeContents;
+    const nodeContents = computed<Record<string, NodeContent>>(()=>store.state.nodeContent.nodeContents);
 
-    const selectedNode = computed(() =>
+    const resources = computed<Resources>(()=>store.state.resources.resources)
+
+    const selectedNode = computed<Tree | null>(() =>
       tree.selectedNodeId && tree.nodeRecord[tree.selectedNodeId]
         ? tree.nodeRecord[tree.selectedNodeId].node
         : null
     );
 
-    const selectedNodeContent = computed(() =>
-      tree.selectedNodeId && nodeContents[tree.selectedNodeId]
-        ? nodeContents[tree.selectedNodeId]
+    const selectedNodeContent = computed<NodeContent | null>(() =>
+      tree.selectedNodeId && nodeContents.value[tree.selectedNodeId]
+        ? nodeContents.value[tree.selectedNodeId]
         : null
     );
 
-    const newWikipediaLink = ref("");
+    const newWikipediaLink = ref<string>("");
     watch(
       () => tree.selectedNodeId,
       () =>
         (newWikipediaLink.value =
-          tree.selectedNodeId && nodeContents[tree.selectedNodeId]
-            ? nodeContents[tree.selectedNodeId].wikipedia
+          tree.selectedNodeId && nodeContents.value[tree.selectedNodeId]
+            ? nodeContents.value[tree.selectedNodeId].wikipedia
             : ""),
       { immediate: true }
     );
 
     return {
+      resources,
       selectedNode,
       selectedNodeContent,
       newWikipediaLink

@@ -4,12 +4,10 @@
       <span style="font-weight: bold; font-size: larger">Education</span>
     </div>
     <div v-if="!newFormShow" class="p-col-7">
-      <AutoComplete
-        placeholder="start typing to find resource..."
-        v-model="selectedCountry"
-        :suggestions="filteredCountriesBasic"
-        @complete="searchCountry($event)"
-        field="education"
+      <EducationFormAutocomplete
+          :resources="resources"
+          @item-select="autoCompleteSelect($event)"
+          @update-value="autoCompleteUpdate($event)"
       />
     </div>
     <div v-if="!newFormShow" class="p-col-3">
@@ -37,7 +35,11 @@
           Object.values(field)[0]
         }}</label>
         <div class="p-col-9">
-          <InputText :id="Object.keys(field)[0]" type="text" :placeholder="placeholders[Object.keys(field)[0]]"></InputText>
+          <InputText
+              :id="Object.keys(field)[0]"
+              type="text"
+              :placeholder="placeholders[Object.keys(field)[0]]"
+          ></InputText>
         </div>
       </div>
       <div class="p-grid">
@@ -54,27 +56,31 @@
 
 <script lang="ts">
 import InputText from "primevue/inputtext";
-import AutoComplete from "primevue/autocomplete";
+import EducationFormAutocomplete from "./EducationFormAutocomplete.vue";
 import Button from "primevue/button";
 import SelectButton from "primevue/selectbutton";
-import {computed, ref} from "vue";
+import {computed, PropType, ref, watch} from "vue";
 import { actions, useStore} from "@/store";
-import {Resource, ResourceType} from '@/store/resources';
+import {EducationType, Resource, Resources, ResourceType} from '@/store/resources';
 import {printError} from "@/tools/utils";
+import {ResourceRating} from "@/store/node_content";
 
 export default {
-  name: "Education",
+  name: "EducationForm",
   components: {
     InputText,
-    AutoComplete,
+    EducationFormAutocomplete,
     Button,
     SelectButton
+  },
+  props: {
+    resources: Object as PropType<Resources>,
   },
   setup() {
     const store = useStore()
     const newFormShow = ref(false);
     const selectedNode = computed(() => store.getters["tree/selectedNode"]);
-    const selectedType = ref<ResourceType>("book");
+    const selectedType = ref<EducationType>("book");
     const types = {
       book: {
         name: "book",
@@ -116,25 +122,58 @@ export default {
         fields: [{ title: "title" }, { url: "URL" }]
       }
     };
+    const typeKeys = Object.keys(types) as EducationType[]
+    const typeOptions = typeKeys.map((key) => ({
+      name: types[key].name,
+      code: key
+    }))
     return {
       newFormShow,
       selectedType,
+      autoCompleteUpdate: (e: string) => {
+        console.log("autoCompleteUpdate", e)
+      },
+      autoCompleteSelect: async (e: Resource) => {
+        console.log("autoCompleteSelect", e)
+        await store.dispatch(`${actions.addNodeResourceRating}`, {
+          rr: {
+            resourceID: e.id,
+            comment: "",
+            rate: 0,
+            hide: false,
+          } as ResourceRating,
+          nodeID: selectedNode.value.id
+        });
+      },
       save: async () => {
         if (!selectedNode.value || !selectedNode.value.id) {
           printError("Bad selectedNode", {selectedNode})
           return
         }
-        const values = {} as Resource
+        const values: any = {
+          id: "",
+          type: "book",
+          author: "",
+          title: "",
+          findPhrase: "",
+          url: "",
+          doi: "",
+          isbn: "",
+          createdAt: 0, // = Date.UTC()
+          updatedAt: 0, // = Date.UTC()
+        } as Resource
         for (const field of types[selectedType.value].fields) {
           const fieldID = Object.keys(field)[0] as keyof Resource
-          values[fieldID] = document.getElementById(fieldID)!.value
+          const el = document.getElementById(fieldID) as HTMLInputElement
+          const val = el.value as Resource[keyof Resource]
+          values[fieldID] = val
         }
         const resource: Resource | null = await store.dispatch(`${actions.addNewResource}`, values);
         if (resource == null) {
           printError("Cannot add addNewResource", values)
           return
         }
-        await store.dispatch(`${actions.addNodeResource}`, {
+        await store.dispatch(`${actions.addNodeResourceRating}`, {
           rr:{
             resourceID: resource.id,
             comment: "",
@@ -150,10 +189,7 @@ export default {
       addNew: () => {
         newFormShow.value = true;
       },
-      typeOptions: Object.keys(types).map(key => ({
-        name: types[key].name,
-        code: key
-      })),
+      typeOptions,
       types,
       placeholders: {
         title: "The Feynman Lectures on Physics, Vol. 1: Mainly Mechanics, Radiation, and Heat",
@@ -163,7 +199,7 @@ export default {
         url: "https://www.feynmanlectures.caltech.edu/I_01.html#Ch1-S1",
         doi: "https://doi.org/10.1119/1.1972241",
         isbn: "9780465023820",
-      }
+      },
     };
   }
 };

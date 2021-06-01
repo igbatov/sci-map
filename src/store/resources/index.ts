@@ -1,9 +1,11 @@
-export type ResourceType = "book" | "article" | "post" | "onlineCourse" | "offlineCourse" | "internship" | "vacancy" | "crowdfunding"
+export type EducationType = "book" | "article" | "post" | "onlineCourse" | "offlineCourse"
+export type ResourceType = EducationType | "internship" | "vacancy" | "crowdfunding"
 export type Resource = {
   id: string;
   type: ResourceType;
   author: string;
   title: string;
+  chapter: string;
   findPhrase: string; // как найти - цитата, главы, ссылки
   url: string;
   doi: string;
@@ -34,7 +36,7 @@ export const actions = {
 export const store = {
   namespaced: true,
   state: {
-    resources: {}
+    resources: {} as Resources
   },
   actions: {
     [actions.find]({ state }: { state: State }, str: string): Resource[] {

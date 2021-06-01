@@ -42,7 +42,7 @@ export async function fetchPins(user: firebase.User | null) {
 }
 
 export async function fetchResources() {
-  let [resources, err] = await api.getResources();
+  const [resources, err] = await api.getResources();
   if (resources == null || err) {
     printError("fetchResources error", {err});
     return
@@ -53,7 +53,7 @@ export async function fetchResources() {
 
 export async function fetchNodeContents(user: firebase.User | null) {
   // fetch node_content from general map
-  let [nodeContents, err] = await api.getNodeContents(null);
+  const [nodeContents, err] = await api.getNodeContents(null);
   if (nodeContents == null || err) {
     printError("fetchNodeContents error", {err});
     return

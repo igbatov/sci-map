@@ -80,7 +80,7 @@ export const actions = {
 
   // manipulating node contents
   addNewResource: "addNewResource",
-  addNodeResource: "addNodeResource",
+  addNodeResourceRating: "addNodeResourceRating",
   setNodeWikipedia: "setNodeWikipedia",
   setNodeComment: "setNodeComment",
   rateNodeResource: "rateNodeResource",
@@ -138,7 +138,7 @@ export const store = createStore<State>({
 
       // add to DB
       const err = await api.update({
-        [`node_content/${state.user.user.uid}/${v.nodeID}/resources/${v.resourceID}/hide`]: v.hide
+        [`node_content/${state.user.user.uid}/${v.nodeID}/resourceRatings/${v.resourceID}/hide`]: v.hide
       });
       if (err) {
         printError("addNodeResource: api.update error", { err });
@@ -146,7 +146,7 @@ export const store = createStore<State>({
       }
 
       // add to local store
-      commit(`node_content/${nodeContentMutations.HIDE_NODE_RESOURCE}`, v);
+      commit(`node_content/${nodeContentMutations.HIDE_NODE_RESOURCE_RATING}`, v);
     },
 
     async [actions.rateNodeResource](
@@ -160,7 +160,7 @@ export const store = createStore<State>({
 
       // add to DB
       const err = await api.update({
-        [`node_content/${state.user.user.uid}/${v.nodeID}/resources/${v.resourceID}/rating`]: v.rating
+        [`node_content/${state.user.user.uid}/${v.nodeID}/resourceRatings/${v.resourceID}/rating`]: v.rating
       });
       if (err) {
         printError("addNodeResource: api.update error", { err });
@@ -168,7 +168,7 @@ export const store = createStore<State>({
       }
 
       // add to local store
-      commit(`node_content/${nodeContentMutations.RATE_NODE_RESOURCE}`, v);
+      commit(`node_content/${nodeContentMutations.RATE_NODE_RESOURCE_RATING}`, v);
     },
 
     async [actions.setNodeComment](
@@ -217,7 +217,7 @@ export const store = createStore<State>({
       commit(`node_content/${nodeContentMutations.SET_NODE_WIKIPEDIA}`, v);
     },
 
-    async [actions.addNodeResource](
+    async [actions.addNodeResourceRating](
       { commit, state }: { commit: Commit; state: State },
       v: { rr: ResourceRating; nodeID: string }
     ) {
@@ -229,7 +229,7 @@ export const store = createStore<State>({
       // add to DB
       const err = await api.update({
         [`node_content/${state.user.user.uid}/${v.nodeID}/nodeID`]: v.nodeID,
-        [`node_content/${state.user.user.uid}/${v.nodeID}/resources/${v.rr.resourceID}`]: v.rr
+        [`node_content/${state.user.user.uid}/${v.nodeID}/resourceRatings/${v.rr.resourceID}`]: v.rr
       });
       if (err) {
         printError("addNodeResource: api.update error", { err });
@@ -237,7 +237,7 @@ export const store = createStore<State>({
       }
 
       // add to local store
-      commit(`nodeContent/${nodeContentMutations.ADD_TO_NODE_RESOURCES}`, v);
+      commit(`nodeContent/${nodeContentMutations.ADD_TO_NODE_RESOURCE_RATINGS}`, v);
     },
 
     async [actions.addNewResource](
