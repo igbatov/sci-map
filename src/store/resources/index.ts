@@ -5,7 +5,8 @@ export type Resource = {
   type: ResourceType;
   author: string;
   title: string;
-  chapter: string;
+  chapterNumber: string;
+  chapterName: string;
   findPhrase: string; // как найти - цитата, главы, ссылки
   url: string;
   doi: string;
@@ -46,6 +47,7 @@ export const store = {
         if (
           resource.author.indexOf(str) != -1 ||
           resource.title.indexOf(str) != -1 ||
+          resource.chapterName.indexOf(str) != -1 ||
           resource.doi.indexOf(str) != -1 ||
           resource.isbn.indexOf(str) != -1
         ) {

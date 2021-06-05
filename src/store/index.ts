@@ -84,7 +84,7 @@ export const actions = {
   setNodeWikipedia: "setNodeWikipedia",
   setNodeComment: "setNodeComment",
   rateNodeResource: "rateNodeResource",
-  hideNodeResource: "hideNodeResource"
+  removeNodeResource: "removeNodeResource"
 };
 
 export const mutations = {
@@ -127,18 +127,18 @@ export const store = createStore<State>({
     }
   },
   actions: {
-    async [actions.hideNodeResource](
+    async [actions.removeNodeResource](
       { commit, state }: { commit: Commit; state: State },
-      v: { nodeID: string; resourceID: string; hide: boolean }
+      v: { nodeID: string; resourceID: string }
     ) {
       // cannot save for unauthorized user
       if (!state.user.user || state.user.user.isAnonymous) {
         return null;
       }
 
-      // add to DB
+      // remove from DB
       const err = await api.update({
-        [`node_content/${state.user.user.uid}/${v.nodeID}/resourceRatings/${v.resourceID}/hide`]: v.hide
+        [`node_content/${state.user.user.uid}/${v.nodeID}/resourceRatings/${v.resourceID}`]: null
       });
       if (err) {
         printError("addNodeResource: api.update error", { err });
@@ -146,7 +146,7 @@ export const store = createStore<State>({
       }
 
       // add to local store
-      commit(`node_content/${nodeContentMutations.HIDE_NODE_RESOURCE_RATING}`, v);
+      commit(`nodeContent/${nodeContentMutations.REMOVE_NODE_RESOURCE_RATING}`, v);
     },
 
     async [actions.rateNodeResource](
@@ -167,8 +167,8 @@ export const store = createStore<State>({
         return;
       }
 
-      // add to local store
-      commit(`node_content/${nodeContentMutations.RATE_NODE_RESOURCE_RATING}`, v);
+      // change in local store
+      commit(`nodeContent/${nodeContentMutations.RATE_NODE_RESOURCE_RATING}`, v);
     },
 
     async [actions.setNodeComment](
@@ -190,8 +190,8 @@ export const store = createStore<State>({
         return;
       }
 
-      // add to local store
-      commit(`node_content/${nodeContentMutations.SET_NODE_COMMENT}`, v);
+      // change in local store
+      commit(`nodeContent/${nodeContentMutations.SET_NODE_COMMENT}`, v);
     },
 
     async [actions.setNodeWikipedia](
@@ -213,8 +213,8 @@ export const store = createStore<State>({
         return;
       }
 
-      // add to local store
-      commit(`node_content/${nodeContentMutations.SET_NODE_WIKIPEDIA}`, v);
+      // change in local store
+      commit(`nodeContent/${nodeContentMutations.SET_NODE_WIKIPEDIA}`, v);
     },
 
     async [actions.addNodeResourceRating](

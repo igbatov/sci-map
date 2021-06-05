@@ -24,14 +24,6 @@ export type MapNode = {
   border: Polygon;
 };
 
-export type TreeNodeResource = {
-  type: string;
-  author: string;
-  name: string;
-  link: string;
-  rate: number;
-};
-
 export type Tree = {
   id: string;
   title: string;

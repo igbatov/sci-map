@@ -13,7 +13,7 @@ export const apiTree = {
           type: "Textbook",
           author: "Steven Strogatz",
           name: "The Joy of x: A Guided Tour of Math, from One to Infinity",
-          rate: 0,
+          rating: 0,
           link:
             "https://www.amazon.com/Joy-Guided-Tour-Math-Infinity/dp/0544105850"
         }
@@ -32,7 +32,7 @@ export const apiTree = {
               type: "Textbook",
               author: "Wolf",
               name: "A Tour Through Mathematical Logic ",
-              rate: 0,
+              rating: 0,
               link:
                 "https://www.scribd.com/document/332668344/R-Wolf-A-Tour-Through-Mathematical-Logic?language_settings_changed=English"
             }
@@ -52,7 +52,7 @@ export const apiTree = {
               type: "Textbook",
               author: "Vinberg",
               name: "A Course in Algebra",
-              rate: 5,
+              rating: 5,
               link:
                 "https://kupdf.net/download/vinberg-a-course-in-algebra_59c5b36508bbc5a1196871c6_pdf"
             }
@@ -74,7 +74,7 @@ export const apiTree = {
           type: "Textbook",
           author: "Richard Feynman",
           name: "Feynman Lectures on Physics",
-          rate: 5,
+          rating: 5,
           link: "https://www.feynmanlectures.caltech.edu"
         }
       ],
@@ -93,7 +93,7 @@ export const apiTree = {
               author: "Richard Feynman",
               name:
                 "The Feynman Lectures on Physics, Part II, Ch 19, The Principle of Least Action",
-              rate: 0,
+              rating: 0,
               link: "https://www.feynmanlectures.caltech.edu/II_19.html"
             }
           ],
@@ -113,7 +113,7 @@ export const apiTree = {
               author: "Brian Greene",
               name:
                 "The Fabric of the Cosmos: Space, Time, and the Texture of Reality",
-              rate: 0,
+              rating: 0,
               link:
                 "https://www.amazon.com/Fabric-Cosmos-Space-Texture-Reality/dp/0375727205"
             }
@@ -135,7 +135,7 @@ export const apiTree = {
           type: "Textbook",
           author: "Pimentel G.C., Seaborg G.T.",
           name: "Chemistry. An Experimental Science.",
-          rate: 0,
+          rating: 0,
           link:
             "http://chemistry-chemists.com/forum/download/file.php?id=57598&sid=e305ea11b8814ef6863f4ce8c7412753"
         }

@@ -47,6 +47,7 @@
         <EducationForm :resources="resources" />
         <EducationResources
             v-if="selectedNodeContent"
+            :node-id="selectedNode.id"
             :resources="resources"
             :resourcesRating="selectedNodeContent.resourceRatings"
         />

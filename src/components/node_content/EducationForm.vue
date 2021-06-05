@@ -139,8 +139,7 @@ export default {
           rr: {
             resourceID: e.id,
             comment: "",
-            rate: 0,
-            hide: false,
+            rating: 0,
           } as ResourceRating,
           nodeID: selectedNode.value.id
         });
@@ -177,8 +176,7 @@ export default {
           rr:{
             resourceID: resource.id,
             comment: "",
-            rate: 0,
-            hide: false,
+            rating: 0,
           },
           nodeID: selectedNode.value.id
         });

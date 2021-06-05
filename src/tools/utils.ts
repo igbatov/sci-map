@@ -2,7 +2,6 @@ import { cloneDeep } from "lodash";
 import {
   Point,
   Tree,
-  TreeNodeResource,
   TreeSkeleton,
   Viewport
 } from "@/types/graphics";
@@ -193,11 +192,6 @@ type MindMeisterNode = {
   children: MindMeisterNode[];
 };
 
-function mindMeisterNoteToResources(
-  note: string | null
-): Array<TreeNodeResource> {
-  return [];
-}
 
 export function mindMeisterToTree(mm: MindMeisterNode): TreeSkeleton | null {
   let tree = null;
