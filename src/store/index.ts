@@ -40,7 +40,12 @@ import {
 } from "./node_content";
 
 import api from "@/api/api";
-import {fetchMap, fetchNodeContents, fetchPins, fetchResources} from "./helpers";
+import {
+  fetchMap,
+  fetchNodeContents,
+  fetchPins,
+  fetchResources
+} from "./helpers";
 import { MapNode, Point } from "@/types/graphics";
 import {
   createNewNode,
@@ -146,7 +151,10 @@ export const store = createStore<State>({
       }
 
       // add to local store
-      commit(`nodeContent/${nodeContentMutations.REMOVE_NODE_RESOURCE_RATING}`, v);
+      commit(
+        `nodeContent/${nodeContentMutations.REMOVE_NODE_RESOURCE_RATING}`,
+        v
+      );
     },
 
     async [actions.rateNodeResource](
@@ -168,7 +176,10 @@ export const store = createStore<State>({
       }
 
       // change in local store
-      commit(`nodeContent/${nodeContentMutations.RATE_NODE_RESOURCE_RATING}`, v);
+      commit(
+        `nodeContent/${nodeContentMutations.RATE_NODE_RESOURCE_RATING}`,
+        v
+      );
     },
 
     async [actions.setNodeComment](
@@ -237,7 +248,10 @@ export const store = createStore<State>({
       }
 
       // add to local store
-      commit(`nodeContent/${nodeContentMutations.ADD_TO_NODE_RESOURCE_RATINGS}`, v);
+      commit(
+        `nodeContent/${nodeContentMutations.ADD_TO_NODE_RESOURCE_RATINGS}`,
+        v
+      );
     },
 
     async [actions.addNewResource](
@@ -524,7 +538,7 @@ export const store = createStore<State>({
     zoomPan: zoomPanStore,
     history: historyStore,
     resources: resourcesStore,
-    nodeContent: nodeContentStore,
+    nodeContent: nodeContentStore
   }
 });
 

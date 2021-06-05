@@ -1,10 +1,5 @@
 import { cloneDeep } from "lodash";
-import {
-  Point,
-  Tree,
-  TreeSkeleton,
-  Viewport
-} from "@/types/graphics";
+import { Point, Tree, TreeSkeleton, Viewport } from "@/types/graphics";
 import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "../tools/errorkv";
 import { getBoundingBorders, getVoronoiCells } from "../tools/graphics";
@@ -191,7 +186,6 @@ type MindMeisterNode = {
   note: string | null;
   children: MindMeisterNode[];
 };
-
 
 export function mindMeisterToTree(mm: MindMeisterNode): TreeSkeleton | null {
   let tree = null;

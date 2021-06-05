@@ -5,9 +5,9 @@
     </div>
     <div v-if="!newFormShow" class="p-col-7">
       <EducationFormAutocomplete
-          :resources="resources"
-          @item-select="autoCompleteSelect($event)"
-          @update-value="autoCompleteUpdate($event)"
+        :resources="resources"
+        @item-select="autoCompleteSelect($event)"
+        @update-value="autoCompleteUpdate($event)"
       />
     </div>
     <div v-if="!newFormShow" class="p-col-3">
@@ -36,9 +36,9 @@
         }}</label>
         <div class="p-col-9">
           <InputText
-              :id="Object.keys(field)[0]"
-              type="text"
-              :placeholder="placeholders[Object.keys(field)[0]]"
+            :id="Object.keys(field)[0]"
+            type="text"
+            :placeholder="placeholders[Object.keys(field)[0]]"
           ></InputText>
         </div>
       </div>
@@ -59,11 +59,16 @@ import InputText from "primevue/inputtext";
 import EducationFormAutocomplete from "./EducationFormAutocomplete.vue";
 import Button from "primevue/button";
 import SelectButton from "primevue/selectbutton";
-import {computed, PropType, ref, watch} from "vue";
-import { actions, useStore} from "@/store";
-import {EducationType, Resource, Resources, ResourceType} from '@/store/resources';
-import {printError} from "@/tools/utils";
-import {ResourceRating} from "@/store/node_content";
+import { computed, PropType, ref, watch } from "vue";
+import { actions, useStore } from "@/store";
+import {
+  EducationType,
+  Resource,
+  Resources,
+  ResourceType
+} from "@/store/resources";
+import { printError } from "@/tools/utils";
+import { ResourceRating } from "@/store/node_content";
 
 export default {
   name: "EducationForm",
@@ -74,10 +79,10 @@ export default {
     SelectButton
   },
   props: {
-    resources: Object as PropType<Resources>,
+    resources: Object as PropType<Resources>
   },
   setup() {
-    const store = useStore()
+    const store = useStore();
     const newFormShow = ref(false);
     const selectedNode = computed(() => store.getters["tree/selectedNode"]);
     const selectedType = ref<EducationType>("book");
@@ -122,32 +127,32 @@ export default {
         fields: [{ title: "title" }, { url: "URL" }]
       }
     };
-    const typeKeys = Object.keys(types) as EducationType[]
-    const typeOptions = typeKeys.map((key) => ({
+    const typeKeys = Object.keys(types) as EducationType[];
+    const typeOptions = typeKeys.map(key => ({
       name: types[key].name,
       code: key
-    }))
+    }));
     return {
       newFormShow,
       selectedType,
       autoCompleteUpdate: (e: string) => {
-        console.log("autoCompleteUpdate", e)
+        console.log("autoCompleteUpdate", e);
       },
       autoCompleteSelect: async (e: Resource) => {
-        console.log("autoCompleteSelect", e)
+        console.log("autoCompleteSelect", e);
         await store.dispatch(`${actions.addNodeResourceRating}`, {
           rr: {
             resourceID: e.id,
             comment: "",
-            rating: 0,
+            rating: 0
           } as ResourceRating,
           nodeID: selectedNode.value.id
         });
       },
       save: async () => {
         if (!selectedNode.value || !selectedNode.value.id) {
-          printError("Bad selectedNode", {selectedNode})
-          return
+          printError("Bad selectedNode", { selectedNode });
+          return;
         }
         const values: any = {
           id: "",
@@ -159,24 +164,27 @@ export default {
           doi: "",
           isbn: "",
           createdAt: 0, // = Date.UTC()
-          updatedAt: 0, // = Date.UTC()
-        } as Resource
+          updatedAt: 0 // = Date.UTC()
+        } as Resource;
         for (const field of types[selectedType.value].fields) {
-          const fieldID = Object.keys(field)[0] as keyof Resource
-          const el = document.getElementById(fieldID) as HTMLInputElement
-          const val = el.value as Resource[keyof Resource]
-          values[fieldID] = val
+          const fieldID = Object.keys(field)[0] as keyof Resource;
+          const el = document.getElementById(fieldID) as HTMLInputElement;
+          const val = el.value as Resource[keyof Resource];
+          values[fieldID] = val;
         }
-        const resource: Resource | null = await store.dispatch(`${actions.addNewResource}`, values);
+        const resource: Resource | null = await store.dispatch(
+          `${actions.addNewResource}`,
+          values
+        );
         if (resource == null) {
-          printError("Cannot add addNewResource", values)
-          return
+          printError("Cannot add addNewResource", values);
+          return;
         }
         await store.dispatch(`${actions.addNodeResourceRating}`, {
-          rr:{
+          rr: {
             resourceID: resource.id,
             comment: "",
-            rating: 0,
+            rating: 0
           },
           nodeID: selectedNode.value.id
         });
@@ -190,14 +198,16 @@ export default {
       typeOptions,
       types,
       placeholders: {
-        title: "The Feynman Lectures on Physics, Vol. 1: Mainly Mechanics, Radiation, and Heat",
+        title:
+          "The Feynman Lectures on Physics, Vol. 1: Mainly Mechanics, Radiation, and Heat",
         author: "Richard Feynman, Robert B. Leighton, Matthew Sands",
         chapter: "1",
-        findPhrase: "If, in some cataclysm, all of scientific knowledge were to be destroyed, and only one sentence passed on to the next generations of creatures, what statement would contain the most information in the fewest words?",
+        findPhrase:
+          "If, in some cataclysm, all of scientific knowledge were to be destroyed, and only one sentence passed on to the next generations of creatures, what statement would contain the most information in the fewest words?",
         url: "https://www.feynmanlectures.caltech.edu/I_01.html#Ch1-S1",
         doi: "https://doi.org/10.1119/1.1972241",
-        isbn: "9780465023820",
-      },
+        isbn: "9780465023820"
+      }
     };
   }
 };

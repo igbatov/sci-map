@@ -44,8 +44,8 @@ export async function fetchPins(user: firebase.User | null) {
 export async function fetchResources() {
   const [resources, err] = await api.getResources();
   if (resources == null || err) {
-    printError("fetchResources error", {err});
-    return
+    printError("fetchResources error", { err });
+    return;
   }
 
   store.commit(`resources/${resourcesMutations.SET_RESOURCES}`, resources);
@@ -55,22 +55,25 @@ export async function fetchNodeContents(user: firebase.User | null) {
   // fetch node_content from general map
   const [nodeContents, err] = await api.getNodeContents(null);
   if (nodeContents == null || err) {
-    printError("fetchNodeContents error", {err});
-    return
+    printError("fetchNodeContents error", { err });
+    return;
   }
 
   if (user) {
     const [userNodeContents, err] = await api.getNodeContents(user);
     if (userNodeContents == null || err) {
-      printError("fetchNodeContents error", {err});
-      return
+      printError("fetchNodeContents error", { err });
+      return;
     }
 
     // "merge" into general node content
     for (const id in userNodeContents) {
-      nodeContents[id] = userNodeContents[id]
+      nodeContents[id] = userNodeContents[id];
     }
   }
 
-  store.commit(`nodeContent/${nodeContentMutations.SET_CONTENTS}`, nodeContents);
+  store.commit(
+    `nodeContent/${nodeContentMutations.SET_CONTENTS}`,
+    nodeContents
+  );
 }

@@ -46,10 +46,10 @@
         <!-- Education section -->
         <EducationForm :resources="resources" />
         <EducationResources
-            v-if="selectedNodeContent"
-            :node-id="selectedNode.id"
-            :resources="resources"
-            :resourcesRating="selectedNodeContent.resourceRatings"
+          v-if="selectedNodeContent"
+          :node-id="selectedNode.id"
+          :resources="resources"
+          :resourcesRating="selectedNodeContent.resourceRatings"
         />
         <!-- Internship section -->
         <h3>Internship</h3>
@@ -69,9 +69,9 @@ import InputText from "primevue/inputtext";
 import TextArea from "primevue/textarea";
 import EducationForm from "./EducationForm.vue";
 import EducationResources from "./EducationResources.vue";
-import {Tree} from "@/types/graphics";
-import {NodeContent} from "@/store/node_content";
-import {Resources} from "@/store/resources";
+import { Tree } from "@/types/graphics";
+import { NodeContent } from "@/store/node_content";
+import { Resources } from "@/store/resources";
 
 export default {
   name: "NodeContent",
@@ -90,9 +90,13 @@ export default {
   setup() {
     const store = useStore();
     const tree = store.state.tree;
-    const nodeContents = computed<Record<string, NodeContent>>(()=>store.state.nodeContent.nodeContents);
+    const nodeContents = computed<Record<string, NodeContent>>(
+      () => store.state.nodeContent.nodeContents
+    );
 
-    const resources = computed<Resources>(()=>store.state.resources.resources)
+    const resources = computed<Resources>(
+      () => store.state.resources.resources
+    );
 
     const selectedNode = computed<Tree | null>(() =>
       tree.selectedNodeId && tree.nodeRecord[tree.selectedNodeId]

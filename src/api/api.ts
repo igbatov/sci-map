@@ -8,8 +8,8 @@ import axios from "axios";
 import { Pins } from "@/store/pin";
 import { DBNode } from "@/api/types";
 import { convertChildren, convertDBMapToTree } from "./helpers";
-import {Resource} from "@/store/resources";
-import {NodeContent} from "@/store/node_content";
+import { Resource } from "@/store/resources";
+import { NodeContent } from "@/store/node_content";
 
 const IS_OFFLINE = false; // to write code even without wi-fi set this to true
 const MAP_FROM_STORAGE = false; // is storage is source for map (or database)
@@ -312,10 +312,12 @@ export default {
     return [resources, null];
   },
 
-  async getNodeContents(user: firebase.User | null): Promise<[Record<string, NodeContent> | null, ErrorKV]> {
-    let userID = "0"
+  async getNodeContents(
+    user: firebase.User | null
+  ): Promise<[Record<string, NodeContent> | null, ErrorKV]> {
+    let userID = "0";
     if (user) {
-      userID = user.uid
+      userID = user.uid;
     }
     const snapshot = await firebase
       .database()
@@ -327,6 +329,5 @@ export default {
     const nodeContents = snapshot.val();
 
     return [nodeContents, null];
-  },
+  }
 };
-
