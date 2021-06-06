@@ -1,7 +1,7 @@
 <template>
   <div class="p-grid">
     <div v-if="!newFormShow" class="p-col-12">
-      <EducationFormAutocomplete
+      <AddResourceFormAutocomplete
         :resources="resources"
         @item-select="autoCompleteSelect($event)"
         @update-value="autoCompleteUpdate($event)"
@@ -50,26 +50,25 @@
 
 <script lang="ts">
 import InputText from "primevue/inputtext";
-import EducationFormAutocomplete from "./EducationFormAutocomplete.vue";
+import AddResourceFormAutocomplete from "./AddResourceFormAutocomplete.vue";
 import Button from "primevue/button";
 import SelectButton from "primevue/selectbutton";
 import { computed, PropType, ref, watch } from "vue";
 import { actions, useStore } from "@/store";
 import {
-  EducationType,
   Resource,
   Resources,
   ResourceType
 } from "@/store/resources";
 import { printError } from "@/tools/utils";
 import { ResourceRating } from "@/store/node_content";
-import {BRAND_NEW_RESOURCE} from "@/components/node_content/EducationFormAutocomplete.vue";
+import {BRAND_NEW_RESOURCE} from "@/components/node_content/resources/AddResourceFormAutocomplete.vue";
 
 export default {
-  name: "EducationForm",
+  name: "AddResourceForm",
   components: {
     InputText,
-    EducationFormAutocomplete,
+    AddResourceFormAutocomplete,
     Button,
     SelectButton
   },
@@ -80,7 +79,7 @@ export default {
     const store = useStore();
     const newFormShow = ref(false);
     const selectedNode = computed(() => store.getters["tree/selectedNode"]);
-    const selectedType = ref<EducationType>("book");
+    const selectedType = ref<ResourceType>("book");
     const types = {
       book: {
         name: "book",
@@ -122,7 +121,7 @@ export default {
         fields: [{ title: "title" }, { url: "URL" }]
       }
     };
-    const typeKeys = Object.keys(types) as EducationType[];
+    const typeKeys = Object.keys(types) as ResourceType[];
     const typeOptions = typeKeys.map(key => ({
       name: types[key].name,
       code: key

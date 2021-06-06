@@ -17,7 +17,7 @@
             />
           </div>
         </div>
-        <!--   wikipedia   -->
+        <!-- wikipedia   -->
         <div class="p-field p-grid">
           <div class="p-col-12">
             <InputText
@@ -44,19 +44,18 @@
         </div>
 
         <!-- Education section -->
-        <EducationForm :resources="resources" />
-        <EducationResources
+        <SectionResources
           v-if="selectedNodeContent"
           :node-id="selectedNode.id"
           :resources="resources"
           :resourcesRating="selectedNodeContent.resourceRatings"
         />
-        <!-- Internship section -->
-        <h3>Internship</h3>
         <!-- Job section -->
         <h3>Vacancies</h3>
+        <SectionVacancies />
         <!-- Crowdfunding section -->
         <h3>Crowdfunding</h3>
+        <SectionCrowdfunding />
       </div>
     </div>
   </transition>
@@ -64,11 +63,12 @@
 
 <script lang="ts">
 import {actions, useStore} from "@/store";
-import { computed, ref, watch } from "vue";
+import { computed } from "vue";
 import InputText from "primevue/inputtext";
 import TextArea from "primevue/textarea";
-import EducationForm from "./EducationForm.vue";
-import EducationResources from "./EducationResources.vue";
+import SectionResources from "./resources/Index.vue";
+import SectionVacancies from "./Vacancies.vue";
+import SectionCrowdfunding from "./Crowdfunding.vue";
 import { Tree } from "@/types/graphics";
 import { NodeContent } from "@/store/node_content";
 import { Resources } from "@/store/resources";
@@ -78,8 +78,9 @@ export default {
   components: {
     InputText,
     TextArea,
-    EducationForm,
-    EducationResources
+    SectionResources,
+    SectionVacancies,
+    SectionCrowdfunding,
   },
   props: {
     show: {

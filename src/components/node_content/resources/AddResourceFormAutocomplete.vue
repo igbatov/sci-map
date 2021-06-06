@@ -11,13 +11,13 @@
 
 <script lang="ts">
 import AutoComplete from "primevue/autocomplete";
-import { computed, PropType, ref, SetupContext } from "vue";
-import { Resource, Resources, ResourceType } from "@/store/resources";
+import { PropType, ref, SetupContext } from "vue";
+import { Resource, Resources } from "@/store/resources";
 
 export const BRAND_NEW_RESOURCE = "BRAND_NEW_RESOURCE";
 
 export default {
-  name: "EducationFormAutocomplete",
+  name: "AddResourceFormAutocomplete",
   emits: ["item-select", "update-value"],
   components: {
     AutoComplete

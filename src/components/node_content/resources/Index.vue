@@ -1,4 +1,5 @@
 <template>
+  <AddResourceForm :resources="resources" />
   <div class="p-grid">
     <div class="p-col-12">
       <div class="p-grid" v-for="rr of resourcesRating" :key="rr.resourceID">
@@ -30,13 +31,14 @@
 <script lang="ts">
 import { PropType } from "vue";
 import { Resource } from "@/store/resources";
-import { ResourceRating } from "../../store/node_content";
+import { ResourceRating } from "../../../store/node_content";
 import Dropdown from "primevue/dropdown";
 import Button from "primevue/button";
 import { actions, useStore } from "@/store";
+import AddResourceForm from "./AddResourceForm.vue";
 
 export default {
-  name: "EducationResources",
+  name: "Resources",
   props: {
     nodeId: String,
     resources: Object as PropType<Record<string, Resource>>,
@@ -44,7 +46,8 @@ export default {
   },
   components: {
     Dropdown,
-    Button
+    Button,
+    AddResourceForm,
   },
   setup(props: {
     nodeId: string;

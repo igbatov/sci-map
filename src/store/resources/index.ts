@@ -1,14 +1,8 @@
-export type EducationType =
-  | "book"
+export type ResourceType = "book"
   | "article"
   | "post"
   | "onlineCourse"
   | "offlineCourse";
-export type ResourceType =
-  | EducationType
-  | "internship"
-  | "vacancy"
-  | "crowdfunding";
 export type Resource = {
   id: string;
   type: ResourceType;
