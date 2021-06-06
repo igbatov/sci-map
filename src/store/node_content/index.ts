@@ -9,6 +9,7 @@ export type ResourceRating = {
 
 export type NodeContent = {
   nodeID: string;
+  video: string;
   wikipedia: string;
   comment: string;
   resourceRatings: Record<string, ResourceRating>;
@@ -20,6 +21,7 @@ export interface State {
 
 export const mutations = {
   SET_CONTENTS: "SET_CONTENTS",
+  SET_NODE_VIDEO: "SET_NODE_VIDEO",
   SET_NODE_WIKIPEDIA: "SET_WIKIPEDIA",
   SET_NODE_COMMENT: "SET_COMMENT",
   ADD_TO_NODE_RESOURCE_RATINGS: "ADD_TO_NODE_RESOURCE_RATINGS",
@@ -34,6 +36,7 @@ export const actions = {
 
 const EmptyNodeContent = {
   nodeID: "",
+  video: "",
   wikipedia: "",
   comment: "",
   resources: {}
@@ -64,6 +67,16 @@ export const store = {
       nodeContents: Record<string, NodeContent>
     ) {
       state.nodeContents = nodeContents;
+    },
+    [mutations.SET_NODE_VIDEO](
+      state: State,
+      v: { nodeID: string; video: string }
+    ) {
+      if (!state.nodeContents[v.nodeID]) {
+        state.nodeContents[v.nodeID] = clone(EmptyNodeContent);
+        state.nodeContents[v.nodeID].nodeID = v.nodeID;
+      }
+      state.nodeContents[v.nodeID].video = v.video;
     },
     [mutations.SET_NODE_WIKIPEDIA](
       state: State,

@@ -88,6 +88,7 @@ export const actions = {
   addNodeResourceRating: "addNodeResourceRating",
   setNodeWikipedia: "setNodeWikipedia",
   setNodeComment: "setNodeComment",
+  setNodeVideo: "setNodeVideo",
   rateNodeResource: "rateNodeResource",
   removeNodeResource: "removeNodeResource"
 };
@@ -191,6 +192,9 @@ export const store = createStore<State>({
         return null;
       }
 
+      // change in local store
+      commit(`nodeContent/${nodeContentMutations.SET_NODE_COMMENT}`, v);
+
       // add to DB
       const err = await api.update({
         [`node_content/${state.user.user.uid}/${v.nodeID}/nodeID`]: v.nodeID,
@@ -200,9 +204,29 @@ export const store = createStore<State>({
         printError("addNodeResource: api.update error", { err });
         return;
       }
+    },
+
+    async [actions.setNodeVideo](
+      { commit, state }: { commit: Commit; state: State },
+      v: { nodeID: string; video: string }
+    ) {
+      // cannot save for unauthorized user
+      if (!state.user.user || state.user.user.isAnonymous) {
+        return null;
+      }
 
       // change in local store
-      commit(`nodeContent/${nodeContentMutations.SET_NODE_COMMENT}`, v);
+      commit(`nodeContent/${nodeContentMutations.SET_NODE_VIDEO}`, v);
+
+      // add to DB
+      const err = await api.update({
+        [`node_content/${state.user.user.uid}/${v.nodeID}/nodeID`]: v.nodeID,
+        [`node_content/${state.user.user.uid}/${v.nodeID}/video`]: v.video
+      });
+      if (err) {
+        printError("addNodeResource: api.update error", { err });
+        return;
+      }
     },
 
     async [actions.setNodeWikipedia](
@@ -214,6 +238,9 @@ export const store = createStore<State>({
         return null;
       }
 
+      // change in local store
+      commit(`nodeContent/${nodeContentMutations.SET_NODE_WIKIPEDIA}`, v);
+
       // add to DB
       const err = await api.update({
         [`node_content/${state.user.user.uid}/${v.nodeID}/nodeID`]: v.nodeID,
@@ -223,9 +250,6 @@ export const store = createStore<State>({
         printError("addNodeResource: api.update error", { err });
         return;
       }
-
-      // change in local store
-      commit(`nodeContent/${nodeContentMutations.SET_NODE_WIKIPEDIA}`, v);
     },
 
     async [actions.addNodeResourceRating](

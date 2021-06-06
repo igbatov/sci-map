@@ -7,38 +7,38 @@
       <div class="p-fluid">
         <!-- Video -->
         <div class="p-field p-grid">
-          <label for="video" class="p-col-2 p-mb-0">Video</label>
-          <div class="p-col-10">
+          <div class="p-col-12">
             <InputText
               id="video"
               type="text"
               placeholder="https://www.youtube.com/embed/OmJ-4B-mS-Y"
-              v-model="newWikipediaLink"
+              :value="videoURL"
+              @update:modelValue="changeVideoURL($event)"
             />
           </div>
         </div>
         <!--   wikipedia   -->
         <div class="p-field p-grid">
-          <label for="wikipedia" class="p-col-2 p-mb-0">Wikipedia</label>
-          <div class="p-col-10">
+          <div class="p-col-12">
             <InputText
               id="wikipedia"
               type="text"
               placeholder="https://en.wikipedia.org/wiki/Mathematics"
-              v-model="newWikipediaLink"
+              :value="wikipediaURL"
+              @update:modelValue="changeWikipediaURL($event)"
             />
           </div>
         </div>
         <!-- Comment -->
         <div class="p-field p-grid">
-          <label for="comment" class="p-col-2 p-mb-0">Comment</label>
-          <div class="p-col-12 p-md-10">
+          <div class="p-col-12 p-md-12">
             <TextArea
               id="comment"
-              placeholder="Your personal comment (visible only for you)"
+              placeholder="Your personal comment"
               :autoResize="true"
               rows="2"
-              v-model="newWikipediaLink"
+              :value="comment"
+              @update:modelValue="changeComment($event)"
             />
           </div>
         </div>
@@ -63,7 +63,7 @@
 </template>
 
 <script lang="ts">
-import { useStore } from "@/store";
+import {actions, useStore} from "@/store";
 import { computed, ref, watch } from "vue";
 import InputText from "primevue/inputtext";
 import TextArea from "primevue/textarea";
@@ -110,22 +110,49 @@ export default {
         : null
     );
 
-    const newWikipediaLink = ref<string>("");
-    watch(
-      () => tree.selectedNodeId,
-      () =>
-        (newWikipediaLink.value =
-          tree.selectedNodeId && nodeContents.value[tree.selectedNodeId]
+    const wikipediaURL = computed<string>(() =>
+        tree.selectedNodeId && nodeContents.value[tree.selectedNodeId]
             ? nodeContents.value[tree.selectedNodeId].wikipedia
-            : ""),
-      { immediate: true }
+            : ""
+    );
+
+    const videoURL = computed<string>(() =>
+        tree.selectedNodeId && nodeContents.value[tree.selectedNodeId]
+            ? nodeContents.value[tree.selectedNodeId].video
+            : ""
+    );
+
+    const comment = computed<string>(() =>
+        tree.selectedNodeId && nodeContents.value[tree.selectedNodeId]
+            ? nodeContents.value[tree.selectedNodeId].comment
+            : ""
     );
 
     return {
       resources,
       selectedNode,
       selectedNodeContent,
-      newWikipediaLink
+      videoURL,
+      changeVideoURL: (value: string) => {
+         store.dispatch(`${actions.setNodeVideo}`, {
+          nodeID: selectedNode.value!.id,
+          video: value,
+        });
+      },
+      wikipediaURL,
+      changeWikipediaURL: (value: string) => {
+        store.dispatch(`${actions.setNodeWikipedia}`, {
+          nodeID: selectedNode.value!.id,
+          wikipedia: value,
+        });
+      },
+      comment,
+      changeComment: (value: string) => {
+        store.dispatch(`${actions.setNodeComment}`, {
+          nodeID: selectedNode.value!.id,
+          comment: value,
+        });
+      }
     };
   }
 };

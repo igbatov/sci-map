@@ -9,7 +9,7 @@
         <AddNode />
         <RemoveNode v-if="isNodeSelected" />
       </span>
-      <PinNode v-if="isNodeSelected" />
+      <PinNode v-if="isNodeSelected && !isPinned" />
       <UnpinNode v-if="isNodeSelected && isPinned" />
       <button @click="signOut">Sign Out</button>
     </div>

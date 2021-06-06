@@ -1,6 +1,6 @@
 <template>
   <AutoComplete
-    placeholder="start typing to find resource..."
+    placeholder="start typing to add new educational resource..."
     :suggestions="filteredResources"
     v-model="modelValue"
     @complete="searchResource($event)"
@@ -13,6 +13,8 @@
 import AutoComplete from "primevue/autocomplete";
 import { computed, PropType, ref, SetupContext } from "vue";
 import { Resource, Resources, ResourceType } from "@/store/resources";
+
+export const BRAND_NEW_RESOURCE = "BRAND_NEW_RESOURCE";
 
 export default {
   name: "EducationFormAutocomplete",
@@ -40,6 +42,20 @@ export default {
             filteredResources.value.push(props.resources[id]);
           }
         }
+        filteredResources.value.push({
+          id: BRAND_NEW_RESOURCE,
+          type: "book",
+          author: "",
+          title: "Not in list? Click me to add brand new",
+          chapterNumber: "",
+          chapterName: "",
+          findPhrase: "", // как найти - цитата, главы, ссылки
+          url: "",
+          doi: "",
+          isbn: "",
+          createdAt: 0,
+          updatedAt: 0
+        })
       }
     };
   }

@@ -1,17 +1,11 @@
 <template>
   <div class="p-grid">
-    <div class="p-col-2 p-mt-2">
-      <span style="font-weight: bold; font-size: larger">Education</span>
-    </div>
-    <div v-if="!newFormShow" class="p-col-7">
+    <div v-if="!newFormShow" class="p-col-12">
       <EducationFormAutocomplete
         :resources="resources"
         @item-select="autoCompleteSelect($event)"
         @update-value="autoCompleteUpdate($event)"
       />
-    </div>
-    <div v-if="!newFormShow" class="p-col-3">
-      <Button label="or add new" class="p-button-rounded" @click="addNew" />
     </div>
   </div>
   <div v-if="newFormShow" class="p-grid">
@@ -69,6 +63,7 @@ import {
 } from "@/store/resources";
 import { printError } from "@/tools/utils";
 import { ResourceRating } from "@/store/node_content";
+import {BRAND_NEW_RESOURCE} from "@/components/node_content/EducationFormAutocomplete.vue";
 
 export default {
   name: "EducationForm",
@@ -139,7 +134,11 @@ export default {
         console.log("autoCompleteUpdate", e);
       },
       autoCompleteSelect: async (e: Resource) => {
-        console.log("autoCompleteSelect", e);
+        if (e.id == BRAND_NEW_RESOURCE) {
+          newFormShow.value = true;
+          return;
+        }
+
         await store.dispatch(`${actions.addNodeResourceRating}`, {
           rr: {
             resourceID: e.id,
@@ -191,9 +190,6 @@ export default {
       },
       cancel: () => {
         newFormShow.value = false;
-      },
-      addNew: () => {
-        newFormShow.value = true;
       },
       typeOptions,
       types,
