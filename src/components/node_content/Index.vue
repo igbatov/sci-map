@@ -51,8 +51,11 @@
           :resourcesRating="selectedNodeContent.resourceRatings"
         />
         <!-- Job section -->
-        <h3>Vacancies</h3>
-        <SectionVacancies />
+        <SectionVacancies
+            v-if="selectedNodeContent"
+            :node-id="selectedNode.id"
+            :vacancies="selectedNodeContent.vacancies"
+        />
         <!-- Crowdfunding section -->
         <SectionCrowdfunding
           v-if="selectedNodeContent"
