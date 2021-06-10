@@ -36,7 +36,7 @@ import {
   State as NodeContentState,
   mutations as nodeContentMutations,
   actions as nodeContentActions,
-  ResourceRating
+  ResourceRating, Crowdfunding, Vacancy
 } from "./node_content";
 
 import api from "@/api/api";
@@ -90,7 +90,11 @@ export const actions = {
   setNodeComment: "setNodeComment",
   setNodeVideo: "setNodeVideo",
   rateNodeResource: "rateNodeResource",
-  removeNodeResource: "removeNodeResource"
+  removeNodeResource: "removeNodeResource",
+  addVacancy: "addVacancy",
+  removeVacancy: "removeVacancy",
+  addCrowdfunding: "addCrowdfunding",
+  removeCrowdfunding: "removeCrowdfunding"
 };
 
 export const mutations = {
@@ -133,6 +137,123 @@ export const store = createStore<State>({
     }
   },
   actions: {
+    async [actions.addVacancy](
+      { commit, state }: { commit: Commit; state: State },
+      v: { nodeID: string, vacancy: Vacancy  }
+    ) {
+      // cannot save for unauthorized user
+      if (!state.user.user || state.user.user.isAnonymous) {
+        return null;
+      }
+
+      const newKey = api.generateKey();
+      if (!newKey) {
+        printError("Cannot generate new key", {})
+        return null;
+      }
+
+      v.vacancy.id = newKey;
+
+      // add to DB
+      const err = await api.update({
+        [`node_content/${state.user.user.uid}/${v.nodeID}/nodeID`]: v.nodeID,
+        [`node_content/${state.user.user.uid}/${v.nodeID}/vacancies/${v.vacancy.id}`]: v.vacancy
+      });
+      if (err) {
+        printError("addCrowdfunding: api.update error", { err });
+        return;
+      }
+
+      // add to local store
+      commit(
+        `nodeContent/${nodeContentMutations.ADD_VACANCY}`,
+        v
+      );
+    },
+    async [actions.removeVacancy](
+      { commit, state }: { commit: Commit; state: State },
+      v: { nodeID: string; vacancyID: string }
+    ) {
+      // cannot save for unauthorized user
+      if (!state.user.user || state.user.user.isAnonymous) {
+        return null;
+      }
+
+      // remove from DB
+      const err = await api.update({
+        [`node_content/${state.user.user.uid}/${v.nodeID}/vacancies/${v.vacancyID}`]: null
+      });
+      if (err) {
+        printError("addNodeResource: api.update error", { err });
+        return;
+      }
+
+      // add to local store
+      commit(
+        `nodeContent/${nodeContentMutations.REMOVE_VACANCY}`,
+        v
+      );
+    },
+
+
+    async [actions.addCrowdfunding](
+      { commit, state }: { commit: Commit; state: State },
+      v: { nodeID: string, crowdfunding: Crowdfunding  }
+    ) {
+      // cannot save for unauthorized user
+      if (!state.user.user || state.user.user.isAnonymous) {
+        return null;
+      }
+
+      const newKey = api.generateKey();
+      if (!newKey) {
+        printError("Cannot generate new key", {})
+        return null;
+      }
+
+      v.crowdfunding.id = newKey;
+
+      // add to DB
+      const err = await api.update({
+        [`node_content/${state.user.user.uid}/${v.nodeID}/nodeID`]: v.nodeID,
+        [`node_content/${state.user.user.uid}/${v.nodeID}/crowdfundingList/${ v.crowdfunding.id}`]: v.crowdfunding
+      });
+      if (err) {
+        printError("addCrowdfunding: api.update error", { err });
+        return;
+      }
+
+      // add to local store
+      commit(
+        `nodeContent/${nodeContentMutations.ADD_CROWDFUNDING}`,
+        v
+      );
+    },
+    async [actions.removeCrowdfunding](
+      { commit, state }: { commit: Commit; state: State },
+      v: { nodeID: string; crowdfundingID: string }
+    ) {
+      // cannot save for unauthorized user
+      if (!state.user.user || state.user.user.isAnonymous) {
+        return null;
+      }
+
+      // remove from DB
+      const err = await api.update({
+        [`node_content/${state.user.user.uid}/${v.nodeID}/crowdfundingList/${v.crowdfundingID}`]: null
+      });
+      if (err) {
+        printError("addNodeResource: api.update error", { err });
+        return;
+      }
+
+      // add to local store
+      commit(
+        `nodeContent/${nodeContentMutations.REMOVE_CROWDFUNDING}`,
+        v
+      );
+    },
+
     async [actions.removeNodeResource](
       { commit, state }: { commit: Commit; state: State },
       v: { nodeID: string; resourceID: string }

@@ -54,8 +54,11 @@
         <h3>Vacancies</h3>
         <SectionVacancies />
         <!-- Crowdfunding section -->
-        <h3>Crowdfunding</h3>
-        <SectionCrowdfunding />
+        <SectionCrowdfunding
+          v-if="selectedNodeContent"
+          :node-id="selectedNode.id"
+          :crowdfunding-list="selectedNodeContent.crowdfundingList"
+        />
       </div>
     </div>
   </transition>
@@ -70,8 +73,9 @@ import SectionResources from "./resources/Index.vue";
 import SectionVacancies from "./Vacancies.vue";
 import SectionCrowdfunding from "./Crowdfunding.vue";
 import { Tree } from "@/types/graphics";
-import { NodeContent } from "@/store/node_content";
+import {EmptyNodeContent, NodeContent} from "@/store/node_content";
 import { Resources } from "@/store/resources";
+import {clone} from "@/tools/utils";
 
 export default {
   name: "NodeContent",
@@ -105,11 +109,14 @@ export default {
         : null
     );
 
-    const selectedNodeContent = computed<NodeContent | null>(() =>
-      tree.selectedNodeId && nodeContents.value[tree.selectedNodeId]
-        ? nodeContents.value[tree.selectedNodeId]
-        : null
-    );
+    const selectedNodeContent = computed<NodeContent | null>(() => {
+      if (tree.selectedNodeId && nodeContents.value[tree.selectedNodeId]) {
+        return nodeContents.value[tree.selectedNodeId];
+      }
+      const newContent = clone(EmptyNodeContent);
+      newContent.nodeID = tree.selectedNodeId;
+      return newContent;
+    });
 
     const wikipediaURL = computed<string>(() =>
         tree.selectedNodeId && nodeContents.value[tree.selectedNodeId]

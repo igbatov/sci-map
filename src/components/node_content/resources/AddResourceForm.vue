@@ -33,7 +33,7 @@
             :id="Object.keys(field)[0]"
             type="text"
             :placeholder="placeholders[Object.keys(field)[0]]"
-          ></InputText>
+          />
         </div>
       </div>
       <div class="p-grid">
