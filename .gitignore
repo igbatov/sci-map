@@ -27,3 +27,6 @@ pnpm-debug.log*
 
 # firebase admin private key
 /scripts/sci-map-1982-firebase-adminsdk-s5ytq-8a913139ae.json
+/ui-debug.log
+/database-debug.log
+/firebase-debug.log

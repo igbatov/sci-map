@@ -1,4 +1,4 @@
-Here is a directory with an admon scripts that can be run like
+Here is a directory with an admin scripts that can be run like
 ```
 npm run set-map-to-db
 ```
