@@ -13,6 +13,8 @@ import { NodeContent } from "@/store/node_content";
 
 const IS_OFFLINE = false; // to write code even without wi-fi set this to true
 const MAP_FROM_STORAGE = false; // is storage is source for map (or database)
+const FUNCTION_DOMAIN = "https://us-central1-sci-map-1982.cloudfunctions.net/"
+export const FUNCTION_CHANGE_RATING = "changeRating"
 
 export default {
   ROOT_WIDTH: 1440,
@@ -36,6 +38,21 @@ export default {
     if (!IS_OFFLINE) {
       firebase.initializeApp(firebaseConfig);
       firebase.analytics();
+    }
+  },
+
+  async callFunction(method: string, params: Record<string, string>): Promise<[string, ErrorKV]> {
+    const currentUser = firebase.auth().currentUser
+    if (!currentUser) {
+      return ["", NewErrorKV("callFunction: cannot determine current user", {})]
+    }
+    const idToken = await currentUser.getIdToken(true)
+    params.idToken = idToken
+    try {
+      const response = await axios.get(FUNCTION_DOMAIN + method, {params})
+      return [response.data, null]
+    } catch (e) {
+      return ["", NewErrorKV("Error in callFunction", {method, params, e})]
     }
   },
 

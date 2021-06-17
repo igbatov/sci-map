@@ -39,7 +39,7 @@ import {
   ResourceRating, Crowdfunding, Vacancy
 } from "./node_content";
 
-import api from "@/api/api";
+import api, {FUNCTION_CHANGE_RATING} from "@/api/api";
 import {
   fetchMap,
   fetchNodeContents,
@@ -137,6 +137,12 @@ export const store = createStore<State>({
     }
   },
   actions: {
+    /**
+     *
+     * @param commit
+     * @param state
+     * @param v
+     */
     async [actions.addVacancy](
       { commit, state }: { commit: Commit; state: State },
       v: { nodeID: string, vacancy: Vacancy  }
@@ -170,6 +176,13 @@ export const store = createStore<State>({
         v
       );
     },
+
+    /**
+     *
+     * @param commit
+     * @param state
+     * @param v
+     */
     async [actions.removeVacancy](
       { commit, state }: { commit: Commit; state: State },
       v: { nodeID: string; vacancyID: string }
@@ -195,7 +208,12 @@ export const store = createStore<State>({
       );
     },
 
-
+    /**
+     *
+     * @param commit
+     * @param state
+     * @param v
+     */
     async [actions.addCrowdfunding](
       { commit, state }: { commit: Commit; state: State },
       v: { nodeID: string, crowdfunding: Crowdfunding  }
@@ -229,6 +247,13 @@ export const store = createStore<State>({
         v
       );
     },
+
+    /**
+     *
+     * @param commit
+     * @param state
+     * @param v
+     */
     async [actions.removeCrowdfunding](
       { commit, state }: { commit: Commit; state: State },
       v: { nodeID: string; crowdfundingID: string }
@@ -254,6 +279,12 @@ export const store = createStore<State>({
       );
     },
 
+    /**
+     *
+     * @param commit
+     * @param state
+     * @param v
+     */
     async [actions.removeNodeResource](
       { commit, state }: { commit: Commit; state: State },
       v: { nodeID: string; resourceID: string }
@@ -264,9 +295,11 @@ export const store = createStore<State>({
       }
 
       // remove from DB
-      const err = await api.update({
-        [`node_content/${state.user.user.uid}/${v.nodeID}/resourceRatings/${v.resourceID}`]: null
-      });
+      const [_, err] = await api.callFunction(FUNCTION_CHANGE_RATING, {
+        nodeID: v.nodeID,
+        resourceID: v.resourceID,
+        newRating: "null",
+      })
       if (err) {
         printError("addNodeResource: api.update error", { err });
         return;
@@ -279,6 +312,12 @@ export const store = createStore<State>({
       );
     },
 
+    /**
+     *
+     * @param commit
+     * @param state
+     * @param v
+     */
     async [actions.rateNodeResource](
       { commit, state }: { commit: Commit; state: State },
       v: { nodeID: string; resourceID: string; rating: number }
@@ -289,9 +328,11 @@ export const store = createStore<State>({
       }
 
       // add to DB
-      const err = await api.update({
-        [`node_content/${state.user.user.uid}/${v.nodeID}/resourceRatings/${v.resourceID}/rating`]: v.rating
-      });
+      const [_, err] = await api.callFunction(FUNCTION_CHANGE_RATING, {
+        nodeID: v.nodeID,
+        resourceID: v.resourceID,
+        newRating: String(v.rating),
+      })
       if (err) {
         printError("addNodeResource: api.update error", { err });
         return;
@@ -304,6 +345,12 @@ export const store = createStore<State>({
       );
     },
 
+    /**
+     *
+     * @param commit
+     * @param state
+     * @param v
+     */
     async [actions.setNodeComment](
       { commit, state }: { commit: Commit; state: State },
       v: { nodeID: string; comment: string }
@@ -327,6 +374,12 @@ export const store = createStore<State>({
       }
     },
 
+    /**
+     *
+     * @param commit
+     * @param state
+     * @param v
+     */
     async [actions.setNodeVideo](
       { commit, state }: { commit: Commit; state: State },
       v: { nodeID: string; video: string }
@@ -350,6 +403,12 @@ export const store = createStore<State>({
       }
     },
 
+    /**
+     *
+     * @param commit
+     * @param state
+     * @param v
+     */
     async [actions.setNodeWikipedia](
       { commit, state }: { commit: Commit; state: State },
       v: { nodeID: string; wikipedia: string }
@@ -373,6 +432,12 @@ export const store = createStore<State>({
       }
     },
 
+    /**
+     *
+     * @param commit
+     * @param state
+     * @param v
+     */
     async [actions.addNodeResourceRating](
       { commit, state }: { commit: Commit; state: State },
       v: { rr: ResourceRating; nodeID: string }
@@ -399,6 +464,12 @@ export const store = createStore<State>({
       );
     },
 
+    /**
+     *
+     * @param commit
+     * @param state
+     * @param rs
+     */
     async [actions.addNewResource](
       { commit, state }: { commit: Commit; state: State },
       rs: Resource
@@ -425,6 +496,12 @@ export const store = createStore<State>({
       return rs;
     },
 
+    /**
+     *
+     * @param commit
+     * @param state
+     * @param val
+     */
     [actions.setEditMode](
       { commit, state }: { commit: Commit; state: State },
       val: boolean
@@ -438,6 +515,12 @@ export const store = createStore<State>({
       }
     },
 
+    /**
+     *
+     * @param dispatch
+     * @param state
+     * @param node
+     */
     async [actions.handleDBUpdate](
       { dispatch, state }: { dispatch: Dispatch; state: State },
       node: DBNode
@@ -448,6 +531,10 @@ export const store = createStore<State>({
       });
     },
 
+    /**
+     *
+     * @param commit
+     */
     async [actions.init]({ commit }: { commit: Commit }) {
       api.initFirebase();
       const user = await api.getCurrentUser();
@@ -458,6 +545,12 @@ export const store = createStore<State>({
       await fetchNodeContents(user);
     },
 
+    /**
+     *
+     * @param commit
+     * @param state
+     * @param v
+     */
     async [actions.createNode](
       { commit, state }: { commit: Commit; state: State },
       v: {
@@ -525,6 +618,12 @@ export const store = createStore<State>({
       });
     },
 
+    /**
+     *
+     * @param commit
+     * @param state
+     * @param v
+     */
     async [actions.cutPasteNode](
       { commit, state }: { commit: Commit; state: State },
       v: {
@@ -587,6 +686,12 @@ export const store = createStore<State>({
       });
     },
 
+    /**
+     *
+     * @param commit
+     * @param state
+     * @param nodeID
+     */
     async [actions.removeNode](
       { commit, state }: { commit: Commit; state: State },
       nodeID: string
@@ -612,6 +717,12 @@ export const store = createStore<State>({
       });
     },
 
+    /**
+     *
+     * @param commit
+     * @param state
+     * @param v
+     */
     [actions.updateNodePosition](
       { commit, state }: { commit: Commit; state: State },
       v: { nodeId: string; delta: Point }
@@ -650,6 +761,12 @@ export const store = createStore<State>({
       }
     },
 
+    /**
+     *
+     * @param commit
+     * @param state
+     * @param v
+     */
     [actions.subscribeDBChange](
       { commit, state }: { commit: Commit; state: State },
       v: {

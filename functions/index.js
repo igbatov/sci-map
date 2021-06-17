@@ -33,8 +33,9 @@ async function changeGeneralRating(nodeID, resourceID, oldRating, newRating) {
     }
   }
 
-  if (newRating === 0) {
+  if (newRating === 0 || newRating == null) {
     // do not track zero ratings
+    // (and removal was counted in oldRating change)
     return
   }
 
@@ -55,33 +56,48 @@ async function changeGeneralRating(nodeID, resourceID, oldRating, newRating) {
 
 async function changeLocalRating(userID, nodeID, resourceID, newRating) {
   // Get old rating from user's node_content
-  let oldRating = await admin.database()
+  let oldRatingSnapshot = await admin.database()
     .ref(`node_content/${userID}/${nodeID}/resourceRatings/${resourceID}/rating`)
     .get();
-  oldRating = Number(oldRating)
 
-  if (Number(newRating) === Number(oldRating)) {
+  let oldRating = null
+  if (oldRatingSnapshot.exists()) {
+    oldRating = oldRatingSnapshot.val()
+  }
+
+  if (newRating == oldRating) {
     // IMPORTANT: this will prevent from multiple decrease of general rating by one user
-    return
+    throw new Error("newRating == oldRating");
   }
 
   // change local user rating
   await admin.database()
     .ref(`node_content/${userID}/${nodeID}/resourceRatings/${resourceID}/rating`)
     .set(newRating);
+
+  return oldRating == null ? null : Number(oldRating)
 }
 
 exports.changeRating = functions.https.onRequest(async (request, response) => {
+  // sanity check
+  if (["-1", "0", "1", "2", "3", "null"].indexOf(request.query.newRating) == -1) {
+    response.status(500).send("bad values of newRating: must be one of [\"-1\", \"0\", \"1\", \"2\", \"3\", \"null\"]");
+    return
+  }
+
   const idToken = request.query.idToken
   const nodeID = request.query.nodeID
   const resourceID = request.query.resourceID
-  const newRating = Number(request.query.newRating)
+  let newRating = null
+  if (request.query.newRating !== "null") {
+    newRating = Number(request.query.newRating)
+  }
 
   const userID = await getUserID(idToken)
 
   const [oldRating, err] = await lease.execWithLock(async () => {
     return await changeLocalRating(userID, nodeID, resourceID, newRating)
-  }, `/general/${nodeID}/${resourceID}`)
+  }, `/${userID}/${nodeID}/${resourceID}`)
 
   if (err != null) {
     functions.logger.info("got error while changeLocalRating", "err", err, "request", request)

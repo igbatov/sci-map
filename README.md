@@ -33,6 +33,22 @@ yarn lint
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
+## Firebase function
+### Install firebase-tools (once)
+```shell
+$ npm install -g firebase-tools
+$ firebase logout
+$ firebase login
+```
+### Run emulator
+```shell
+$ firebase emulators:start
+```
+### Deploy
+```shell
+$ firebase deploy --only functions
+```
+
 ## Run in docker
 ```shell script
 docker build -t sci-map .
