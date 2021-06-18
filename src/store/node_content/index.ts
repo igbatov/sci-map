@@ -77,16 +77,16 @@ export const EmptyNodeContent = {
   video: "",
   wikipedia: "",
   comment: "",
-  resources: {},
+  resourceRatings: {},
   vacancies: {},
   crowdfundingList: {},
-};
+} as NodeContent;
 
 export const EmptyResourceRating = {
   resourceID: "",
   comment: "",
   rating: 0 // -1 прочитал и это плохо, 0 - не читал, но хочу прочитать, 1 сойдет, 2 понравилось, 3 я под очень сильным впечатлением
-};
+} as ResourceRating;
 
 export const EmptyVacancy = {
   id: "",
@@ -100,7 +100,7 @@ export const EmptyVacancy = {
   isRemote: false,
   published: 0, // date in UTC seconds from epoch
   applicationDeadline: 0, // date in UTC seconds from epoch
-}
+} as Vacancy;
 
 export const EmptyCrowdfunding = {
   id: "",
@@ -110,7 +110,7 @@ export const EmptyCrowdfunding = {
   organization: "",
   published: 0, // date in UTC seconds from epoch
   applicationDeadline: 0, // date in UTC seconds from epoch
-}
+} as Crowdfunding;
 
 function createIfNotExist(nodeContents: Record<string, NodeContent>, nodeID: string) {
   if (!nodeContents[nodeID]) {

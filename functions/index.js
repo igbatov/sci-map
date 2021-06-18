@@ -71,9 +71,16 @@ async function changeLocalRating(userID, nodeID, resourceID, newRating) {
   }
 
   // change local user rating
-  await admin.database()
-    .ref(`node_content/${userID}/${nodeID}/resourceRatings/${resourceID}/rating`)
-    .set(newRating);
+  if (newRating == null) {
+    await admin.database()
+      .ref(`node_content/${userID}/${nodeID}/resourceRatings/${resourceID}`)
+      .set(null);
+  } else {
+    await admin.database()
+      .ref(`node_content/${userID}/${nodeID}/resourceRatings/${resourceID}/rating`)
+      .set(newRating);
+  }
+
 
   return oldRating == null ? null : Number(oldRating)
 }
@@ -102,7 +109,10 @@ exports.changeRating = functions.https.onRequest(async (request, response) => {
   }, `/${userID}/${nodeID}/${resourceID}`)
 
   if (err != null) {
-    functions.logger.info("got error while changeLocalRating", "err", err, "request", request)
+    functions.logger.error(
+      "got error while changeLocalRating",
+      {"err": err, "request": request.query}
+    );
     response.status(500).send("error");
     return
   }
@@ -112,7 +122,10 @@ exports.changeRating = functions.https.onRequest(async (request, response) => {
   }, `/general/${nodeID}/${resourceID}`)
 
   if (err2 != null) {
-    functions.logger.info("got error while changeLocalRating", "err", err, "request", request)
+    functions.logger.error(
+      "got error while changeGeneralRating",
+      {"err": err, "request": request.query}
+    );
     response.status(500).send("error");
     return
   }
