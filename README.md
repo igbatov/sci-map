@@ -40,16 +40,37 @@ $ npm install -g firebase-tools
 $ firebase logout
 $ firebase login
 ```
-### Run emulator
+### Choose emulators to run
+```shell
+firebase init emulators
+```
+### Run empty emulator
 ```shell
 $ firebase emulators:start
 ```
-### Deploy
+### Save data from running emulator
+```shell
+firebase emulators:export functions/data
+```
+### Run emulator with exported data
+```shell
+firebase emulators:start --import=functions/data
+```
+### Deploy on production
 ```shell
 $ firebase deploy --only functions
 ```
+### Run app on emulator
+Set in src/api/api.ts
+```shell
+IS_EMULATOR_ON = true
+```
+and uncomment in functions/index.js
+```shell
+response.set('Access-Control-Allow-Origin', '*');
+```
 
-## Run in docker
+## Run app in docker
 ```shell script
 docker build -t sci-map .
 docker run -d -p 80:80 --rm --name sci-map sci-map

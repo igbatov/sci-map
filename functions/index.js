@@ -85,6 +85,8 @@ exports.changeRating = functions.https.onRequest(async (request, response) => {
     return
   }
 
+  // response.set('Access-Control-Allow-Origin', '*');
+
   const idToken = request.query.idToken
   const nodeID = request.query.nodeID
   const resourceID = request.query.resourceID

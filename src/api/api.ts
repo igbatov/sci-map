@@ -11,9 +11,9 @@ import { convertChildren, convertDBMapToTree } from "./helpers";
 import { Resource } from "@/store/resources";
 import { NodeContent } from "@/store/node_content";
 
-const IS_OFFLINE = false; // to write code even without wi-fi set this to true
+const IS_EMULATOR_ON = false; // to use firebase emulator set this to true
 const MAP_FROM_STORAGE = false; // is storage is source for map (or database)
-const FUNCTION_DOMAIN = "https://us-central1-sci-map-1982.cloudfunctions.net/"
+let FUNCTION_DOMAIN = "https://us-central1-sci-map-1982.cloudfunctions.net/"
 export const FUNCTION_CHANGE_RATING = "changeRating"
 
 export default {
@@ -34,10 +34,15 @@ export default {
       appId: "1:340899060236:web:b136e9289e342a8bb62c29",
       measurementId: "G-TV74Q61H9P"
     };
+
     // Initialize Firebase
-    if (!IS_OFFLINE) {
-      firebase.initializeApp(firebaseConfig);
-      firebase.analytics();
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+
+    if (IS_EMULATOR_ON) {
+      firebase.auth().useEmulator('http://localhost:9099')
+      firebase.database().useEmulator('localhost', 9001)
+      FUNCTION_DOMAIN = 'http://localhost:5001/sci-map-1982/us-central1/'
     }
   },
 
@@ -99,18 +104,6 @@ export default {
   },
 
   async getMap(user: firebase.User | null): Promise<[Tree | null, ErrorKV]> {
-    if (IS_OFFLINE) {
-      return [
-        {
-          id: "0",
-          title: "",
-          position: { x: this.ROOT_WIDTH / 2, y: this.ROOT_HEIGHT / 2 },
-          children: apiTree.children
-        },
-        null
-      ];
-    }
-
     try {
       if (MAP_FROM_STORAGE) {
         return this.getMapFromStorage(user);
@@ -123,10 +116,6 @@ export default {
   },
 
   async getPins(user: firebase.User | null): Promise<[Pins | null, ErrorKV]> {
-    if (IS_OFFLINE) {
-      return [{}, null];
-    }
-
     try {
       const storage = firebase.storage().ref();
       let ref = storage.child(`/pins.json`);
@@ -143,12 +132,6 @@ export default {
   },
 
   async getCurrentUser(): Promise<firebase.User | null> {
-    if (IS_OFFLINE) {
-      return new Promise(resolve => {
-        resolve(null);
-      });
-    }
-
     return new Promise(resolve =>
       firebase.auth().onAuthStateChanged(user => {
         if (user && !user.isAnonymous) {
@@ -161,10 +144,6 @@ export default {
   },
 
   async saveUserMap(user: firebase.User, map: Tree) {
-    if (IS_OFFLINE) {
-      return;
-    }
-
     if (!user) {
       return;
     }
@@ -178,10 +157,6 @@ export default {
   },
 
   async savePins(user: firebase.User, pins: Pins) {
-    if (IS_OFFLINE) {
-      return;
-    }
-
     if (!user) {
       return;
     }
