@@ -1,10 +1,16 @@
 import { clone } from "@/tools/utils";
 
+// -1 прочитал и это плохо, 0 - не читал, но хочу прочитать, 1 сойдет, 2 понравилось, 3 я под очень сильным впечатлением
 export type RateValues = -1 | 0 | 1 | 2 | 3;
 export type ResourceRating = {
   resourceID: string;
   comment: string;
-  rating: RateValues; // -1 прочитал и это плохо, 0 - не читал, но хочу прочитать, 1 сойдет, 2 понравилось, 3 я под очень сильным впечатлением
+  rating: RateValues;
+  ratedCount: number; // zero if this rate is from user himself
+};
+export type ResourceRatingAggregate = {
+  resourceID: string;
+  rating: Record<RateValues, number>;
 };
 
 export type Vacancy = {
@@ -30,6 +36,15 @@ export type Crowdfunding = {
   published: number; // date in UTC seconds from epoch
   applicationDeadline: number; // date in UTC seconds from epoch
 }
+
+export type NodeContentAggregate = {
+  nodeID: string;
+  video: Record<string, number>;
+  wikipedia: Record<string, number>;
+  resourceRatings: Record<string, ResourceRatingAggregate>;
+  vacancies: Record<string, Vacancy>;
+  crowdfundingList: Record<string, Crowdfunding>;
+};
 
 export type NodeContent = {
   nodeID: string;
@@ -85,7 +100,8 @@ export const EmptyNodeContent = {
 export const EmptyResourceRating = {
   resourceID: "",
   comment: "",
-  rating: 0 // -1 прочитал и это плохо, 0 - не читал, но хочу прочитать, 1 сойдет, 2 понравилось, 3 я под очень сильным впечатлением
+  rating: 0, // -1 прочитал и это плохо, 0 - не читал, но хочу прочитать, 1 сойдет, 2 понравилось, 3 я под очень сильным впечатлением
+  ratedCount: 0,
 } as ResourceRating;
 
 export const EmptyVacancy = {

@@ -14,11 +14,29 @@ async function getUserID(idToken) {
   }
 }
 
+async function createNodeContentAggregateIfNeeded(nodeID, resourceID) {
+  const resourceSnapshot =
+    await admin.database().ref(`node_content_aggregate/${nodeID}/resourceRatings/${resourceID}`).get();
+
+  if (resourceSnapshot.exists()) {
+    return
+  }
+
+  await admin.database().ref().update({
+    [`node_content_aggregate/${nodeID}/nodeID`]: nodeID,
+    [`node_content_aggregate/${nodeID}/resourceRatings/${resourceID}/resourceID`]: resourceID,
+    [`node_content_aggregate/${nodeID}/resourceRatings/${resourceID}/rating/-1`]: 0,
+    [`node_content_aggregate/${nodeID}/resourceRatings/${resourceID}/rating/1`]: 0,
+    [`node_content_aggregate/${nodeID}/resourceRatings/${resourceID}/rating/2`]: 0,
+    [`node_content_aggregate/${nodeID}/resourceRatings/${resourceID}/rating/3`]: 0,
+  });
+}
+
 async function changeGeneralRating(nodeID, resourceID, oldRating, newRating) {
   if (oldRating !== 0) {
     // this is change of rating, not creation of new one
     const oldRatingSnapshot = await admin.database()
-        .ref(`node_content_aggregate/${nodeID}/${resourceID}/${oldRating}`).get();
+        .ref(`node_content_aggregate/${nodeID}/resourceRatings/${resourceID}/rating/${oldRating}`).get();
     if (!oldRatingSnapshot.exists()) {
       return errorKV.newErrorKV("!oldRatingSnapshot.exists()", {})
     }
@@ -28,7 +46,7 @@ async function changeGeneralRating(nodeID, resourceID, oldRating, newRating) {
     } else {
       const newVal = Number(oldRatingSnapshot.val()) - 1
       await admin.database()
-        .ref(`node_content_aggregate/${nodeID}/${resourceID}/${oldRating}`)
+        .ref(`node_content_aggregate/${nodeID}/resourceRatings/${resourceID}/rating/${oldRating}`)
         .set(newVal);
     }
   }
@@ -39,18 +57,16 @@ async function changeGeneralRating(nodeID, resourceID, oldRating, newRating) {
     return
   }
 
+  // check that node_content_aggregate for this node exists, if not create it with default values
+  await createNodeContentAggregateIfNeeded(nodeID, resourceID)
+
   const newRatingSnapshot =
-    await admin.database().ref(`node_content_aggregate/${nodeID}/${resourceID}/${newRating}`).get();
+    await admin.database().ref(`node_content_aggregate/${nodeID}/resourceRatings/${resourceID}/rating/${newRating}`).get();
   if (newRatingSnapshot.exists()) {
     const newVal = Number(newRatingSnapshot.val()) + 1
     await admin.database()
-      .ref(`node_content_aggregate/${nodeID}/${resourceID}/${newRating}`)
+      .ref(`node_content_aggregate/${nodeID}/resourceRatings/${resourceID}/rating/${newRating}`)
       .set(newVal);
-  } else {
-    // old value not found, set as brand new rating
-    await admin.database()
-      .ref(`node_content_aggregate/${nodeID}/${resourceID}/${newRating}`)
-      .set(1);
   }
 }
 
@@ -92,7 +108,10 @@ exports.changeRating = functions.https.onRequest(async (request, response) => {
     return
   }
 
-  // response.set('Access-Control-Allow-Origin', '*');
+  if (process.env.VUE_APP_IS_EMULATOR) {
+    functions.logger.info("got VUE_APP_IS_EMULATOR=true: exposing Access-Control-Allow-Origin")
+    response.set('Access-Control-Allow-Origin', '*');
+  }
 
   const idToken = request.query.idToken
   const nodeID = request.query.nodeID

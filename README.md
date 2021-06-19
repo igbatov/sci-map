@@ -63,11 +63,7 @@ $ firebase deploy --only functions
 ### Run app on emulator
 Set in src/api/api.ts
 ```shell
-IS_EMULATOR_ON = true
-```
-and uncomment in functions/index.js
-```shell
-response.set('Access-Control-Allow-Origin', '*');
+export VUE_APP_IS_EMULATOR = true
 ```
 
 ## Run app in docker

@@ -3,9 +3,15 @@ import api from "@/api/api";
 import { mutations as treeMutations } from "@/store/tree";
 import { mutations as pinMutations } from "@/store/pin";
 import { mutations as resourcesMutations } from "@/store/resources";
-import { mutations as nodeContentMutations } from "@/store/node_content";
+import {
+  Crowdfunding,
+  mutations as nodeContentMutations,
+  NodeContent, RateValues,
+  ResourceRating, ResourceRatingAggregate,
+  Vacancy
+} from "@/store/node_content";
 import { store } from "@/store/index";
-import { printError } from "@/tools/utils";
+import {printError, round} from "@/tools/utils";
 
 export async function fetchMap(user: firebase.User | null) {
   const [tree, err] = await api.getMap(user);
@@ -51,24 +57,78 @@ export async function fetchResources() {
   store.commit(`resources/${resourcesMutations.SET_RESOURCES}`, resources);
 }
 
+function getTopValue(obj: Record<string, number>): string {
+  const sortable = []
+  for (const key in obj) {
+    sortable.push([key, obj[key]])
+  }
+  if (sortable.length == 0) {
+    return ""
+  }
+  sortable.sort((a, b) => {
+    const aVal = a[1] as number
+    const bVal = b[1] as number
+    return bVal - aVal;
+  });
+  return sortable[0][0] as string
+}
+
+function aggregateToRating(agg: Record<string, ResourceRatingAggregate>): Record<string, ResourceRating> {
+  const rr: Record<string, ResourceRating> = {}
+  for (const resourceID in agg) {
+    let sum = 0
+    let count = 0
+    for(const rating in agg[resourceID].rating) {
+      const rt = Number(rating) as RateValues
+      sum = sum + Number(rating)*agg[resourceID].rating[rt];
+      count = count + agg[resourceID].rating[rt];
+    }
+    rr[resourceID] = {
+      resourceID: resourceID,
+      comment: "",
+      rating: round(sum/count) as RateValues,
+      ratedCount: count,
+    };
+  }
+
+  return rr;
+}
+
 export async function fetchNodeContents(user: firebase.User | null) {
   // fetch node_content from general map
-  const [nodeContents, err] = await api.getNodeContents(null);
-  if (nodeContents == null || err) {
+  const [nodeContentAggregate, err] = await api.getNodeContentAggregate();
+  if (nodeContentAggregate == null || err) {
     printError("fetchNodeContents error", { err });
     return;
+  }
+
+  // convert nodeContentAggregate to nodeContents
+  const nodeContents: Record<string, NodeContent> = {}
+  for (const i in nodeContentAggregate) {
+    nodeContents[i] = {
+      nodeID: nodeContentAggregate[i].nodeID,
+      video: getTopValue(nodeContentAggregate[i].video),
+      wikipedia: getTopValue(nodeContentAggregate[i].wikipedia),
+      comment: "",
+      resourceRatings: aggregateToRating(nodeContentAggregate[i].resourceRatings),
+      vacancies: nodeContentAggregate[i].vacancies,
+      crowdfundingList: nodeContentAggregate[i].crowdfundingList,
+    } as NodeContent
   }
 
   if (user) {
     const [userNodeContents, err] = await api.getNodeContents(user);
     if (userNodeContents == null || err) {
-      printError("fetchNodeContents error", { err });
+      printError("fetchNodeContents error", { err, user });
       return;
     }
 
     // "merge" into general node content
     for (const id in userNodeContents) {
-      nodeContents[id] = userNodeContents[id];
+      nodeContents[id].video = userNodeContents[id].video;
+      nodeContents[id].wikipedia = userNodeContents[id].wikipedia;
+      nodeContents[id].comment = userNodeContents[id].comment;
+      nodeContents[id].resourceRatings = userNodeContents[id].resourceRatings;
     }
   }
 

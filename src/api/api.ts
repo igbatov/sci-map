@@ -9,9 +9,8 @@ import { Pins } from "@/store/pin";
 import { DBNode } from "@/api/types";
 import { convertChildren, convertDBMapToTree } from "./helpers";
 import { Resource } from "@/store/resources";
-import { NodeContent } from "@/store/node_content";
+import {NodeContent, NodeContentAggregate} from "@/store/node_content";
 
-const IS_EMULATOR_ON = false; // to use firebase emulator set this to true
 const MAP_FROM_STORAGE = false; // is storage is source for map (or database)
 let FUNCTION_DOMAIN = "https://us-central1-sci-map-1982.cloudfunctions.net/"
 export const FUNCTION_CHANGE_RATING = "changeRating"
@@ -39,7 +38,8 @@ export default {
     firebase.initializeApp(firebaseConfig);
     firebase.analytics();
 
-    if (IS_EMULATOR_ON) {
+    if (process.env.VUE_APP_IS_EMULATOR) {
+      console.log("Starting in emulator mode")
       firebase.auth().useEmulator('http://localhost:9099')
       firebase.database().useEmulator('localhost', 9001)
       FUNCTION_DOMAIN = 'http://localhost:5001/sci-map-1982/us-central1/'
@@ -305,12 +305,9 @@ export default {
   },
 
   async getNodeContents(
-    user: firebase.User | null
+    user: firebase.User
   ): Promise<[Record<string, NodeContent> | null, ErrorKV]> {
-    let userID = "0";
-    if (user) {
-      userID = user.uid;
-    }
+    const userID = user.uid;
     const snapshot = await firebase
       .database()
       .ref(`node_content/${userID}`)
@@ -321,5 +318,18 @@ export default {
     const nodeContents = snapshot.val();
 
     return [nodeContents, null];
+  },
+
+  async getNodeContentAggregate(): Promise<[Record<string, NodeContentAggregate> | null, ErrorKV]> {
+    const snapshot = await firebase
+      .database()
+      .ref(`node_content_aggregate`)
+      .get();
+
+    if (!snapshot.exists()) {
+      return [{}, null];
+    }
+
+    return [snapshot.val(), null];
   }
 };
