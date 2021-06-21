@@ -13,6 +13,8 @@ import {
 import { store } from "@/store/index";
 import {printError, round} from "@/tools/utils";
 
+const GENERAL_SPAM_THRESHOLD = 2;
+
 export async function fetchMap(user: firebase.User | null) {
   const [tree, err] = await api.getMap(user);
   if (tree == null || err) {
@@ -83,15 +85,38 @@ function aggregateToRating(agg: Record<string, ResourceRatingAggregate>): Record
       sum = sum + Number(rating)*agg[resourceID].rating[rt];
       count = count + agg[resourceID].rating[rt];
     }
+
+    let spamSum = 0
+    for(const spamType in agg[resourceID].spam) {
+      spamSum = spamSum + agg[resourceID].spam[spamType];
+    }
+
     rr[resourceID] = {
       resourceID: resourceID,
       comment: "",
-      rating: round(sum/count) as RateValues,
+      rating: count > 0 ? round(sum/count) as RateValues : 0,
       ratedCount: count,
+      spam: spamSum > GENERAL_SPAM_THRESHOLD ? 1 : 0,
     };
   }
 
   return rr;
+}
+
+function mergeResourceRatings(
+  userRatings: Record<string, ResourceRating>,
+  generalRatings: Record<string, ResourceRating>,
+): Record<string, ResourceRating> {
+  const r: Record<string, ResourceRating> = {}
+  for (const resourceID in generalRatings) {
+    if (userRatings && userRatings[resourceID]) {
+      r[resourceID] = userRatings[resourceID]
+    } else {
+      r[resourceID] = generalRatings[resourceID]
+    }
+  }
+
+  return r
 }
 
 export async function fetchNodeContents(user: firebase.User | null) {
@@ -128,9 +153,14 @@ export async function fetchNodeContents(user: firebase.User | null) {
       nodeContents[id].video = userNodeContents[id].video;
       nodeContents[id].wikipedia = userNodeContents[id].wikipedia;
       nodeContents[id].comment = userNodeContents[id].comment;
-      nodeContents[id].resourceRatings = userNodeContents[id].resourceRatings;
+      nodeContents[id].resourceRatings = mergeResourceRatings(
+        userNodeContents[id].resourceRatings,
+        nodeContents[id].resourceRatings
+      );
     }
   }
+
+  console.log("nodeContents", nodeContents)
 
   store.commit(
     `nodeContent/${nodeContentMutations.SET_CONTENTS}`,

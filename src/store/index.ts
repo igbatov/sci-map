@@ -91,6 +91,7 @@ export const actions = {
   setNodeVideo: "setNodeVideo",
   rateNodeResource: "rateNodeResource",
   removeNodeResource: "removeNodeResource",
+  reportResourceSpam: "reportResourceSpam",
   addVacancy: "addVacancy",
   removeVacancy: "removeVacancy",
   addCrowdfunding: "addCrowdfunding",
@@ -308,6 +309,38 @@ export const store = createStore<State>({
       // add to local store
       commit(
         `nodeContent/${nodeContentMutations.REMOVE_NODE_RESOURCE_RATING}`,
+        v
+      );
+    },
+
+    /**
+     *
+     * @param commit
+     * @param state
+     * @param v
+     */
+    async [actions.reportResourceSpam](
+      { commit, state }: { commit: Commit; state: State },
+      v: { nodeID: string; resourceID: string, spam: number }
+    ) {
+      // cannot save for unauthorized user
+      if (!state.user.user || state.user.user.isAnonymous) {
+        return null;
+      }
+
+      // mark as spam
+      const err = await api.update({
+        [`node_content/${state.user.user.uid}/${v.nodeID}/resourceRatings/${v.resourceID}/resourceID`]: v.resourceID,
+        [`node_content/${state.user.user.uid}/${v.nodeID}/resourceRatings/${v.resourceID}/spam`]: v.spam
+      });
+      if (err) {
+        printError("addNodeResource: api.update error", { err });
+        return;
+      }
+
+      // add to local store
+      commit(
+        `nodeContent/${nodeContentMutations.REPORT_RESOURCE_SPAM}`,
         v
       );
     },

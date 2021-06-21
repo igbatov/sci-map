@@ -7,10 +7,12 @@ export type ResourceRating = {
   comment: string;
   rating: RateValues;
   ratedCount: number; // zero if this rate is from user himself
+  spam: number; // 0 (default) if not spam, 1 - spam, 2 - not fit content, 3 - malware, ...
 };
 export type ResourceRatingAggregate = {
   resourceID: string;
   rating: Record<RateValues, number>;
+  spam: Record<number, number>;
 };
 
 export type Vacancy = {
@@ -25,6 +27,7 @@ export type Vacancy = {
   isRemote: boolean;
   published: number; // date in UTC seconds from epoch
   applicationDeadline: number; // date in UTC seconds from epoch
+  spam: number;
 }
 
 export type Crowdfunding = {
@@ -35,6 +38,7 @@ export type Crowdfunding = {
   organization: string;
   published: number; // date in UTC seconds from epoch
   applicationDeadline: number; // date in UTC seconds from epoch
+  spam: number;
 }
 
 export type NodeContentAggregate = {
@@ -73,6 +77,7 @@ export const mutations = {
   RATE_NODE_RESOURCE_RATING: "RATE_NODE_RESOURCE_RATING",
   REMOVE_NODE_RESOURCE_RATING: "REMOVE_NODE_RESOURCE_RATING",
   SET_NODE_RESOURCE_RATING_COMMENT: "SET_NODE_RESOURCE_COMMENT",
+  REPORT_RESOURCE_SPAM: "REPORT_RESOURCE_SPAM",
 
   // Vacancy
   ADD_VACANCY: "ADD_VACANCY",
@@ -102,6 +107,7 @@ export const EmptyResourceRating = {
   comment: "",
   rating: 0, // -1 прочитал и это плохо, 0 - не читал, но хочу прочитать, 1 сойдет, 2 понравилось, 3 я под очень сильным впечатлением
   ratedCount: 0,
+  spam: 0,
 } as ResourceRating;
 
 export const EmptyVacancy = {
@@ -116,6 +122,7 @@ export const EmptyVacancy = {
   isRemote: false,
   published: 0, // date in UTC seconds from epoch
   applicationDeadline: 0, // date in UTC seconds from epoch
+  spam: 0,
 } as Vacancy;
 
 export const EmptyCrowdfunding = {
@@ -126,6 +133,7 @@ export const EmptyCrowdfunding = {
   organization: "",
   published: 0, // date in UTC seconds from epoch
   applicationDeadline: 0, // date in UTC seconds from epoch
+  spam: 0,
 } as Crowdfunding;
 
 function createIfNotExist(nodeContents: Record<string, NodeContent>, nodeID: string) {
@@ -249,6 +257,28 @@ export const store = {
       }
       delete state.nodeContents[v.nodeID].resourceRatings[v.resourceID];
     },
+
+    /**
+     * REPORT_RESOURCE_SPAM
+     * @param state
+     * @param v
+     */
+    [mutations.REPORT_RESOURCE_SPAM](
+      state: State,
+      v: { nodeID: string; resourceID: string; spam: number }
+    ) {
+      createIfNotExist(state.nodeContents, v.nodeID)
+      if (!state.nodeContents[v.nodeID].resourceRatings[v.resourceID]) {
+        state.nodeContents[v.nodeID].resourceRatings[v.resourceID] = clone(
+          EmptyResourceRating
+        );
+        state.nodeContents[v.nodeID].resourceRatings[v.resourceID].resourceID =
+          v.resourceID;
+      }
+      state.nodeContents[v.nodeID].resourceRatings[v.resourceID].spam =
+        v.spam;
+    },
+
     /**
      * SET_NODE_RESOURCE_RATING_COMMENT
      * @param state

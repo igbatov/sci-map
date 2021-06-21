@@ -1,4 +1,6 @@
 <template>
+  <ConfirmDialog></ConfirmDialog>
+  <Toast position="bottom-left" />
   <NodeContent :show="!editModeOn && !!selectedNodeId" />
   <Menu />
   <Map
@@ -18,6 +20,8 @@
 import { computed, defineComponent, ref, watch } from "vue";
 import Map from "@/components/map/Map.vue";
 import NodeContent from "@/components/node_content/Index.vue";
+import ConfirmDialog from 'primevue/confirmdialog';
+import Toast from 'primevue/toast';
 import {
   EventClickNode,
   EventDraggingBackground,
@@ -47,7 +51,9 @@ export default defineComponent({
   components: {
     Map,
     Menu,
-    NodeContent
+    NodeContent,
+    ConfirmDialog,
+    Toast,
   },
 
   setup() {

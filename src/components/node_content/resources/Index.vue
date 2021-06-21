@@ -1,8 +1,8 @@
 <template>
   <AddResourceForm :resources="resources" />
-  <div class="p-grid">
-    <div class="p-col-12">
-      <div class="p-grid" v-for="rr of resourcesRating" :key="rr.resourceID">
+  <div class="p-grid" v-for="rr of resourcesRating" :key="rr.resourceID">
+    <div class="p-col-12" v-if="!rr.spam">
+      <div class="p-grid" >
         <div class="p-col-8">
           {{ resources[rr.resourceID].title }}
         </div>
@@ -18,8 +18,15 @@
         </div>
         <div class="p-col-1">
           <Button
+            v-if="rr.ratedCount == 0"
             @click="remove(rr.resourceID)"
             icon="pi pi-ban"
+            class="p-button-rounded p-button-help p-button-outlined"
+          />
+          <Button
+            v-else
+            @click="reportSpam(rr.resourceID)"
+            icon="pi pi-exclamation-circle"
             class="p-button-rounded p-button-help p-button-outlined"
           />
         </div>
@@ -29,11 +36,13 @@
 </template>
 
 <script lang="ts">
-import { PropType } from "vue";
+import {PropType} from "vue";
 import { Resource } from "@/store/resources";
 import { ResourceRating } from "../../../store/node_content";
 import Dropdown from "primevue/dropdown";
 import Button from "primevue/button";
+import { useConfirm } from "primevue/useconfirm";
+import { useToast } from "primevue/usetoast";
 import { actions, useStore } from "@/store";
 import AddResourceForm from "./AddResourceForm.vue";
 
@@ -55,6 +64,8 @@ export default {
     resourcesRating: ResourceRating[];
   }) {
     const store = useStore();
+    const confirm = useConfirm();
+    const toast = useToast();
 
     return {
       changeRating: (
@@ -72,6 +83,25 @@ export default {
         store.dispatch(`${actions.removeNodeResource}`, {
           nodeID: props.nodeId,
           resourceID: resourceID
+        });
+      },
+      reportSpam: (resourceID: string) => {
+        confirm.require({
+          message: 'This will set resource as spam and remove it from your list. This cannot be undone. Are you sure?',
+          header: 'Confirmation',
+          icon: 'pi pi-exclamation-triangle',
+          accept: async () => {
+            await store.dispatch(`${actions.reportResourceSpam}`, {
+              nodeID: props.nodeId,
+              resourceID: resourceID,
+              spam: 1,
+            });
+            const title = props.resources[resourceID].title
+            toast.add({severity:'info', summary:'Confirmed', detail:`"${title}" was removed as spam`, life: 3000});
+          },
+          reject: () => {
+            return
+          }
         });
       },
       ratingList: [

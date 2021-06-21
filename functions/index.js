@@ -2,7 +2,10 @@ const functions = require("firebase-functions");
 const admin = require('firebase-admin');
 const errorKV = require('./ErrorKV.js');
 const lease = require('./lease.js');
+const updateResourceSpam = require('./updateResourceSpam.js');
 admin.initializeApp();
+
+exports.updateResourceSpam = updateResourceSpam.updateResourceSpam;
 
 // thanks to https://stackoverflow.com/questions/45613769/cloud-functions-for-firebase-get-current-user-id
 async function getUserID(idToken) {
