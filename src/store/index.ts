@@ -296,13 +296,11 @@ export const store = createStore<State>({
       }
 
       // remove from DB
-      const [_, err] = await api.callFunction(FUNCTION_CHANGE_RATING, {
-        nodeID: v.nodeID,
-        resourceID: v.resourceID,
-        newRating: "null",
-      })
+      const err = await api.update({
+        [`node_content/${state.user.user.uid}/${v.nodeID}/resourceRatings/${v.resourceID}/rating`]: null
+      });
       if (err) {
-        printError("addNodeResource: api.update error", { err });
+        printError("removeNodeResource: api.update error", { err });
         return;
       }
 
@@ -361,13 +359,11 @@ export const store = createStore<State>({
       }
 
       // add to DB
-      const [_, err] = await api.callFunction(FUNCTION_CHANGE_RATING, {
-        nodeID: v.nodeID,
-        resourceID: v.resourceID,
-        newRating: String(v.rating),
-      })
+      const err = await api.update({
+        [`node_content/${state.user.user.uid}/${v.nodeID}/resourceRatings/${v.resourceID}/rating`]: v.rating
+      });
       if (err) {
-        printError("addNodeResource: api.update error", { err });
+        printError("rateNodeResource: api.update error", { err });
         return;
       }
 

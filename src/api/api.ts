@@ -10,6 +10,7 @@ import { DBNode } from "@/api/types";
 import { convertChildren, convertDBMapToTree } from "./helpers";
 import { Resource } from "@/store/resources";
 import {NodeContent, NodeContentAggregate} from "@/store/node_content";
+import emulatorConfig from "../../firebase.json";
 
 const MAP_FROM_STORAGE = false; // is storage is source for map (or database)
 let FUNCTION_DOMAIN = "https://us-central1-sci-map-1982.cloudfunctions.net/"
@@ -40,8 +41,8 @@ export default {
 
     if (process.env.VUE_APP_IS_EMULATOR) {
       console.log("Starting in emulator mode")
-      firebase.auth().useEmulator('http://localhost:9099')
-      firebase.database().useEmulator('localhost', 9001)
+      firebase.auth().useEmulator(`http://localhost:${emulatorConfig.emulators.auth.port}`)
+      firebase.database().useEmulator('localhost', emulatorConfig.emulators.database.port)
       FUNCTION_DOMAIN = 'http://localhost:5001/sci-map-1982/us-central1/'
     }
   },

@@ -63,7 +63,7 @@ $ firebase deploy --only functions
 ### Run app on emulator
 Set in src/api/api.ts
 ```shell
-export VUE_APP_IS_EMULATOR = true
+export VUE_APP_IS_EMULATOR=true
 ```
 
 ## Run app in docker
