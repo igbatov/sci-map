@@ -1,8 +1,8 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import PrimeVue from "primevue/config";
-import ConfirmationService from 'primevue/confirmationservice';
-import ToastService from 'primevue/toastservice';
+import ConfirmationService from "primevue/confirmationservice";
+import ToastService from "primevue/toastservice";
 import router from "./router";
 import { store, key } from "./store";
 // primevue ui stuff

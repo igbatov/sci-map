@@ -2,7 +2,7 @@
   <AddResourceForm :resources="resources" />
   <div class="p-grid" v-for="rr of resourcesRating" :key="rr.resourceID">
     <div class="p-col-12" v-if="!rr.spam">
-      <div class="p-grid" >
+      <div class="p-grid">
         <div class="p-col-8">
           {{ resources[rr.resourceID].title }}
         </div>
@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts">
-import {PropType} from "vue";
+import { PropType } from "vue";
 import { Resource } from "@/store/resources";
 import { ResourceRating } from "../../../store/node_content";
 import Dropdown from "primevue/dropdown";
@@ -56,7 +56,7 @@ export default {
   components: {
     Dropdown,
     Button,
-    AddResourceForm,
+    AddResourceForm
   },
   setup(props: {
     nodeId: string;
@@ -87,21 +87,27 @@ export default {
       },
       reportSpam: (resourceID: string) => {
         confirm.require({
-          message: 'This will set resource as spam and remove it from your list. This cannot be undone. Are you sure?',
-          header: 'Confirmation',
-          icon: 'pi pi-exclamation-triangle',
+          message:
+            "This will set resource as spam and remove it from your list. This cannot be undone. Are you sure?",
+          header: "Confirmation",
+          icon: "pi pi-exclamation-triangle",
           accept: async () => {
             await store.dispatch(`${actions.reportSpam}`, {
               nodeID: props.nodeId,
               type: "resourceRatings",
               id: resourceID,
-              spam: 1,
+              spam: 1
             });
-            const title = props.resources[resourceID].title
-            toast.add({severity:'info', summary:'Confirmed', detail:`"${title}" was removed as spam`, life: 3000});
+            const title = props.resources[resourceID].title;
+            toast.add({
+              severity: "info",
+              summary: "Confirmed",
+              detail: `"${title}" was removed as spam`,
+              life: 3000
+            });
           },
           reject: () => {
-            return
+            return;
           }
         });
       },

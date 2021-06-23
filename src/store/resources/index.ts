@@ -1,4 +1,5 @@
-export type ResourceType = "book"
+export type ResourceType =
+  | "book"
   | "article"
   | "post"
   | "onlineCourse"

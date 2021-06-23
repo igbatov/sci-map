@@ -55,7 +55,7 @@ export default {
           isbn: "",
           createdAt: 0,
           updatedAt: 0
-        })
+        });
       }
     };
   }

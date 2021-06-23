@@ -9,12 +9,12 @@ import { Pins } from "@/store/pin";
 import { DBNode } from "@/api/types";
 import { convertChildren, convertDBMapToTree } from "./helpers";
 import { Resource } from "@/store/resources";
-import {NodeContent, NodeContentAggregate} from "@/store/node_content";
+import { NodeContent, NodeContentAggregate } from "@/store/node_content";
 import emulatorConfig from "../../firebase.json";
 
 const MAP_FROM_STORAGE = false; // is storage is source for map (or database)
-let FUNCTION_DOMAIN = "https://us-central1-sci-map-1982.cloudfunctions.net/"
-export const FUNCTION_CHANGE_RATING = "changeRating"
+let FUNCTION_DOMAIN = "https://us-central1-sci-map-1982.cloudfunctions.net/";
+export const FUNCTION_CHANGE_RATING = "changeRating";
 
 export default {
   ROOT_WIDTH: 1440,
@@ -40,25 +40,35 @@ export default {
     firebase.analytics();
 
     if (process.env.VUE_APP_IS_EMULATOR) {
-      console.log("Starting in emulator mode")
-      firebase.auth().useEmulator(`http://localhost:${emulatorConfig.emulators.auth.port}`)
-      firebase.database().useEmulator('localhost', emulatorConfig.emulators.database.port)
-      FUNCTION_DOMAIN = 'http://localhost:5001/sci-map-1982/us-central1/'
+      console.log("Starting in emulator mode");
+      firebase
+        .auth()
+        .useEmulator(`http://localhost:${emulatorConfig.emulators.auth.port}`);
+      firebase
+        .database()
+        .useEmulator("localhost", emulatorConfig.emulators.database.port);
+      FUNCTION_DOMAIN = "http://localhost:5001/sci-map-1982/us-central1/";
     }
   },
 
-  async callFunction(method: string, params: Record<string, string>): Promise<[string, ErrorKV]> {
-    const currentUser = firebase.auth().currentUser
+  async callFunction(
+    method: string,
+    params: Record<string, string>
+  ): Promise<[string, ErrorKV]> {
+    const currentUser = firebase.auth().currentUser;
     if (!currentUser) {
-      return ["", NewErrorKV("callFunction: cannot determine current user", {})]
+      return [
+        "",
+        NewErrorKV("callFunction: cannot determine current user", {})
+      ];
     }
-    const idToken = await currentUser.getIdToken(true)
-    params.idToken = idToken
+    const idToken = await currentUser.getIdToken(true);
+    params.idToken = idToken;
     try {
-      const response = await axios.get(FUNCTION_DOMAIN + method, {params})
-      return [response.data, null]
+      const response = await axios.get(FUNCTION_DOMAIN + method, { params });
+      return [response.data, null];
     } catch (e) {
-      return ["", NewErrorKV("Error in callFunction", {method, params, e})]
+      return ["", NewErrorKV("Error in callFunction", { method, params, e })];
     }
   },
 
@@ -321,7 +331,9 @@ export default {
     return [nodeContents, null];
   },
 
-  async getNodeContentAggregate(): Promise<[Record<string, NodeContentAggregate> | null, ErrorKV]> {
+  async getNodeContentAggregate(): Promise<
+    [Record<string, NodeContentAggregate> | null, ErrorKV]
+  > {
     const snapshot = await firebase
       .database()
       .ref(`node_content_aggregate`)

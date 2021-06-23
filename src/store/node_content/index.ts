@@ -12,7 +12,10 @@ export type ResourceRating = {
 export type ResourceRatingAggregate = {
   resourceID: string;
   rating: Record<RateValues, number>;
-  spam: Record<number /* spam reason */, string[] /* array of userIDs that marked this reason */>;
+  spam: Record<
+    number /* spam reason */,
+    string[] /* array of userIDs that marked this reason */
+  >;
 };
 
 export type Vacancy = {
@@ -29,7 +32,7 @@ export type Vacancy = {
   applicationDeadline: number; // date in UTC seconds from epoch
   spam: number;
   authorID: string;
-}
+};
 
 export type VacancyAggregate = {
   id: string;
@@ -43,9 +46,12 @@ export type VacancyAggregate = {
   isRemote: boolean;
   published: number; // date in UTC seconds from epoch
   applicationDeadline: number; // date in UTC seconds from epoch
-  spam: Record<number /* spam reason */, string[] /* array of userIDs that marked this reason */>;
+  spam: Record<
+    number /* spam reason */,
+    string[] /* array of userIDs that marked this reason */
+  >;
   authorID: string;
-}
+};
 
 export type Crowdfunding = {
   id: string;
@@ -57,7 +63,7 @@ export type Crowdfunding = {
   applicationDeadline: number; // date in UTC seconds from epoch
   spam: number;
   authorID: string;
-}
+};
 
 export type CrowdfundingAggregate = {
   id: string;
@@ -67,9 +73,12 @@ export type CrowdfundingAggregate = {
   organization: string;
   published: number; // date in UTC seconds from epoch
   applicationDeadline: number; // date in UTC seconds from epoch
-  spam: Record<number /* spam reason */, string[] /* array of userIDs that marked this reason */>;
+  spam: Record<
+    number /* spam reason */,
+    string[] /* array of userIDs that marked this reason */
+  >;
   authorID: string;
-}
+};
 
 export type NodeContentAggregate = {
   nodeID: string;
@@ -115,7 +124,7 @@ export const mutations = {
 
   // Crowdfunding
   ADD_CROWDFUNDING: "ADD_CROWDFUNDING",
-  REMOVE_CROWDFUNDING: "REMOVE_CROWDFUNDING",
+  REMOVE_CROWDFUNDING: "REMOVE_CROWDFUNDING"
 };
 
 export const actions = {
@@ -129,7 +138,7 @@ export const EmptyNodeContent = {
   comment: "",
   resourceRatings: {},
   vacancies: {},
-  crowdfundingList: {},
+  crowdfundingList: {}
 } as NodeContent;
 
 export const EmptyResourceRating = {
@@ -137,7 +146,7 @@ export const EmptyResourceRating = {
   comment: "",
   rating: 0, // -1 прочитал и это плохо, 0 - не читал, но хочу прочитать, 1 сойдет, 2 понравилось, 3 я под очень сильным впечатлением
   ratedCount: 0,
-  spam: 0,
+  spam: 0
 } as ResourceRating;
 
 export const EmptyVacancy = {
@@ -153,7 +162,7 @@ export const EmptyVacancy = {
   published: 0, // date in UTC seconds from epoch
   applicationDeadline: 0, // date in UTC seconds from epoch
   spam: 0,
-  authorID: "",
+  authorID: ""
 } as Vacancy;
 
 export const EmptyCrowdfunding = {
@@ -165,10 +174,13 @@ export const EmptyCrowdfunding = {
   published: 0, // date in UTC seconds from epoch
   applicationDeadline: 0, // date in UTC seconds from epoch
   spam: 0,
-  authorID: "",
+  authorID: ""
 } as Crowdfunding;
 
-function createIfNotExist(nodeContents: Record<string, NodeContent>, nodeID: string) {
+function createIfNotExist(
+  nodeContents: Record<string, NodeContent>,
+  nodeID: string
+) {
   if (!nodeContents[nodeID]) {
     nodeContents[nodeID] = clone(EmptyNodeContent);
     nodeContents[nodeID].nodeID = nodeID;
@@ -201,7 +213,6 @@ export const store = {
       state.nodeContents = nodeContents;
     },
 
-
     /**
      * SET_NODE_VIDEO
      * @param state
@@ -211,7 +222,7 @@ export const store = {
       state: State,
       v: { nodeID: string; video: string }
     ) {
-      createIfNotExist(state.nodeContents, v.nodeID)
+      createIfNotExist(state.nodeContents, v.nodeID);
       state.nodeContents[v.nodeID].video = v.video;
     },
     /**
@@ -223,7 +234,7 @@ export const store = {
       state: State,
       v: { nodeID: string; wikipedia: string }
     ) {
-      createIfNotExist(state.nodeContents, v.nodeID)
+      createIfNotExist(state.nodeContents, v.nodeID);
       state.nodeContents[v.nodeID].wikipedia = v.wikipedia;
     },
     /**
@@ -235,10 +246,9 @@ export const store = {
       state: State,
       v: { nodeID: string; comment: string }
     ) {
-      createIfNotExist(state.nodeContents, v.nodeID)
+      createIfNotExist(state.nodeContents, v.nodeID);
       state.nodeContents[v.nodeID].comment = v.comment;
     },
-
 
     /**
      * ADD_TO_NODE_RESOURCE_RATINGS
@@ -249,7 +259,7 @@ export const store = {
       state: State,
       v: { rr: ResourceRating; nodeID: string }
     ) {
-      createIfNotExist(state.nodeContents, v.nodeID)
+      createIfNotExist(state.nodeContents, v.nodeID);
       state.nodeContents[v.nodeID].resourceRatings[v.rr.resourceID] = v.rr;
     },
     /**
@@ -261,7 +271,7 @@ export const store = {
       state: State,
       v: { nodeID: string; resourceID: string; rating: RateValues }
     ) {
-      createIfNotExist(state.nodeContents, v.nodeID)
+      createIfNotExist(state.nodeContents, v.nodeID);
       if (!state.nodeContents[v.nodeID].resourceRatings[v.resourceID]) {
         state.nodeContents[v.nodeID].resourceRatings[v.resourceID] = clone(
           EmptyResourceRating
@@ -297,10 +307,15 @@ export const store = {
      */
     [mutations.REPORT_SPAM](
       state: State,
-      v: { nodeID: string; type: "resourceRatings" | "vacancies" | "crowdfundingList", id: string; spam: number }
+      v: {
+        nodeID: string;
+        type: "resourceRatings" | "vacancies" | "crowdfundingList";
+        id: string;
+        spam: number;
+      }
     ) {
-      createIfNotExist(state.nodeContents, v.nodeID)
-      const r: any = state.nodeContents[v.nodeID][v.type]
+      createIfNotExist(state.nodeContents, v.nodeID);
+      const r: any = state.nodeContents[v.nodeID][v.type];
       r[v.id].spam = v.spam;
     },
 
@@ -313,7 +328,7 @@ export const store = {
       state: State,
       v: { nodeID: string; resourceID: string; comment: string }
     ) {
-      createIfNotExist(state.nodeContents, v.nodeID)
+      createIfNotExist(state.nodeContents, v.nodeID);
       if (!state.nodeContents[v.nodeID].resourceRatings[v.resourceID]) {
         state.nodeContents[v.nodeID].resourceRatings[v.resourceID] = clone(
           EmptyResourceRating
@@ -325,7 +340,6 @@ export const store = {
         v.comment;
     },
 
-
     /**
      * ADD_VACANCY
      * @param state
@@ -335,11 +349,11 @@ export const store = {
       state: State,
       v: { nodeID: string; vacancy: Vacancy }
     ) {
-      createIfNotExist(state.nodeContents, v.nodeID)
+      createIfNotExist(state.nodeContents, v.nodeID);
       if (!state.nodeContents[v.nodeID].vacancies) {
-        state.nodeContents[v.nodeID].vacancies = {}
+        state.nodeContents[v.nodeID].vacancies = {};
       }
-      state.nodeContents[v.nodeID].vacancies[v.vacancy.id] = v.vacancy
+      state.nodeContents[v.nodeID].vacancies[v.vacancy.id] = v.vacancy;
     },
     /**
      * REMOVE_VACANCY
@@ -353,9 +367,8 @@ export const store = {
       if (!state.nodeContents[v.nodeID]) {
         return;
       }
-      delete state.nodeContents[v.nodeID].vacancies[v.vacancyID]
+      delete state.nodeContents[v.nodeID].vacancies[v.vacancyID];
     },
-
 
     /**
      * ADD_CROWDFUNDING
@@ -366,11 +379,12 @@ export const store = {
       state: State,
       v: { nodeID: string; crowdfunding: Crowdfunding }
     ) {
-      createIfNotExist(state.nodeContents, v.nodeID)
+      createIfNotExist(state.nodeContents, v.nodeID);
       if (!state.nodeContents[v.nodeID].crowdfundingList) {
-        state.nodeContents[v.nodeID].crowdfundingList = {}
+        state.nodeContents[v.nodeID].crowdfundingList = {};
       }
-      state.nodeContents[v.nodeID].crowdfundingList[v.crowdfunding.id] = v.crowdfunding
+      state.nodeContents[v.nodeID].crowdfundingList[v.crowdfunding.id] =
+        v.crowdfunding;
     },
     /**
      * REMOVE_CROWDFUNDING

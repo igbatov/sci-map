@@ -52,9 +52,9 @@
         />
         <!-- Job section -->
         <SectionVacancies
-            v-if="selectedNodeContent"
-            :node-id="selectedNode.id"
-            :vacancies="selectedNodeContent.vacancies"
+          v-if="selectedNodeContent"
+          :node-id="selectedNode.id"
+          :vacancies="selectedNodeContent.vacancies"
         />
         <!-- Crowdfunding section -->
         <SectionCrowdfunding
@@ -68,7 +68,7 @@
 </template>
 
 <script lang="ts">
-import {actions, useStore} from "@/store";
+import { actions, useStore } from "@/store";
 import { computed } from "vue";
 import InputText from "primevue/inputtext";
 import TextArea from "primevue/textarea";
@@ -76,9 +76,9 @@ import SectionResources from "./resources/Index.vue";
 import SectionVacancies from "./Vacancies.vue";
 import SectionCrowdfunding from "./Crowdfunding.vue";
 import { Tree } from "@/types/graphics";
-import {EmptyNodeContent, NodeContent} from "@/store/node_content";
+import { EmptyNodeContent, NodeContent } from "@/store/node_content";
 import { Resources } from "@/store/resources";
-import {clone} from "@/tools/utils";
+import { clone } from "@/tools/utils";
 
 export default {
   name: "NodeContent",
@@ -87,7 +87,7 @@ export default {
     TextArea,
     SectionResources,
     SectionVacancies,
-    SectionCrowdfunding,
+    SectionCrowdfunding
   },
   props: {
     show: {
@@ -122,21 +122,21 @@ export default {
     });
 
     const wikipediaURL = computed<string>(() =>
-        tree.selectedNodeId && nodeContents.value[tree.selectedNodeId]
-            ? nodeContents.value[tree.selectedNodeId].wikipedia
-            : ""
+      tree.selectedNodeId && nodeContents.value[tree.selectedNodeId]
+        ? nodeContents.value[tree.selectedNodeId].wikipedia
+        : ""
     );
 
     const videoURL = computed<string>(() =>
-        tree.selectedNodeId && nodeContents.value[tree.selectedNodeId]
-            ? nodeContents.value[tree.selectedNodeId].video
-            : ""
+      tree.selectedNodeId && nodeContents.value[tree.selectedNodeId]
+        ? nodeContents.value[tree.selectedNodeId].video
+        : ""
     );
 
     const comment = computed<string>(() =>
-        tree.selectedNodeId && nodeContents.value[tree.selectedNodeId]
-            ? nodeContents.value[tree.selectedNodeId].comment
-            : ""
+      tree.selectedNodeId && nodeContents.value[tree.selectedNodeId]
+        ? nodeContents.value[tree.selectedNodeId].comment
+        : ""
     );
 
     return {
@@ -145,23 +145,23 @@ export default {
       selectedNodeContent,
       videoURL,
       changeVideoURL: (value: string) => {
-         store.dispatch(`${actions.setNodeVideo}`, {
+        store.dispatch(`${actions.setNodeVideo}`, {
           nodeID: selectedNode.value!.id,
-          video: value,
+          video: value
         });
       },
       wikipediaURL,
       changeWikipediaURL: (value: string) => {
         store.dispatch(`${actions.setNodeWikipedia}`, {
           nodeID: selectedNode.value!.id,
-          wikipedia: value,
+          wikipedia: value
         });
       },
       comment,
       changeComment: (value: string) => {
         store.dispatch(`${actions.setNodeComment}`, {
           nodeID: selectedNode.value!.id,
-          comment: value,
+          comment: value
         });
       }
     };

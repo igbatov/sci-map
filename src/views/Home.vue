@@ -20,8 +20,8 @@
 import { computed, defineComponent, ref, watch } from "vue";
 import Map from "@/components/map/Map.vue";
 import NodeContent from "@/components/node_content/Index.vue";
-import ConfirmDialog from 'primevue/confirmdialog';
-import Toast from 'primevue/toast';
+import ConfirmDialog from "primevue/confirmdialog";
+import Toast from "primevue/toast";
 import {
   EventClickNode,
   EventDraggingBackground,
@@ -53,7 +53,7 @@ export default defineComponent({
     Menu,
     NodeContent,
     ConfirmDialog,
-    Toast,
+    Toast
   },
 
   setup() {

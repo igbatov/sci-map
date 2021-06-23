@@ -36,10 +36,12 @@ import {
   State as NodeContentState,
   mutations as nodeContentMutations,
   actions as nodeContentActions,
-  ResourceRating, Crowdfunding, Vacancy
+  ResourceRating,
+  Crowdfunding,
+  Vacancy
 } from "./node_content";
 
-import api, {FUNCTION_CHANGE_RATING} from "@/api/api";
+import api, { FUNCTION_CHANGE_RATING } from "@/api/api";
 import {
   fetchMap,
   fetchNodeContents,
@@ -146,7 +148,7 @@ export const store = createStore<State>({
      */
     async [actions.addVacancy](
       { commit, state }: { commit: Commit; state: State },
-      v: { nodeID: string, vacancy: Vacancy  }
+      v: { nodeID: string; vacancy: Vacancy }
     ) {
       // cannot save for unauthorized user
       if (!state.user.user || state.user.user.isAnonymous) {
@@ -155,7 +157,7 @@ export const store = createStore<State>({
 
       const newKey = api.generateKey();
       if (!newKey) {
-        printError("Cannot generate new key", {})
+        printError("Cannot generate new key", {});
         return null;
       }
 
@@ -172,10 +174,7 @@ export const store = createStore<State>({
       }
 
       // add to local store
-      commit(
-        `nodeContent/${nodeContentMutations.ADD_VACANCY}`,
-        v
-      );
+      commit(`nodeContent/${nodeContentMutations.ADD_VACANCY}`, v);
     },
 
     /**
@@ -203,10 +202,7 @@ export const store = createStore<State>({
       }
 
       // add to local store
-      commit(
-        `nodeContent/${nodeContentMutations.REMOVE_VACANCY}`,
-        v
-      );
+      commit(`nodeContent/${nodeContentMutations.REMOVE_VACANCY}`, v);
     },
 
     /**
@@ -217,7 +213,7 @@ export const store = createStore<State>({
      */
     async [actions.addCrowdfunding](
       { commit, state }: { commit: Commit; state: State },
-      v: { nodeID: string, crowdfunding: Crowdfunding  }
+      v: { nodeID: string; crowdfunding: Crowdfunding }
     ) {
       // cannot save for unauthorized user
       if (!state.user.user || state.user.user.isAnonymous) {
@@ -226,7 +222,7 @@ export const store = createStore<State>({
 
       const newKey = api.generateKey();
       if (!newKey) {
-        printError("Cannot generate new key", {})
+        printError("Cannot generate new key", {});
         return null;
       }
 
@@ -235,7 +231,7 @@ export const store = createStore<State>({
       // add to DB
       const err = await api.update({
         [`node_content/${state.user.user.uid}/${v.nodeID}/nodeID`]: v.nodeID,
-        [`node_content/${state.user.user.uid}/${v.nodeID}/crowdfundingList/${ v.crowdfunding.id}`]: v.crowdfunding
+        [`node_content/${state.user.user.uid}/${v.nodeID}/crowdfundingList/${v.crowdfunding.id}`]: v.crowdfunding
       });
       if (err) {
         printError("addCrowdfunding: api.update error", { err });
@@ -243,10 +239,7 @@ export const store = createStore<State>({
       }
 
       // add to local store
-      commit(
-        `nodeContent/${nodeContentMutations.ADD_CROWDFUNDING}`,
-        v
-      );
+      commit(`nodeContent/${nodeContentMutations.ADD_CROWDFUNDING}`, v);
     },
 
     /**
@@ -274,10 +267,7 @@ export const store = createStore<State>({
       }
 
       // add to local store
-      commit(
-        `nodeContent/${nodeContentMutations.REMOVE_CROWDFUNDING}`,
-        v
-      );
+      commit(`nodeContent/${nodeContentMutations.REMOVE_CROWDFUNDING}`, v);
     },
 
     /**
@@ -319,7 +309,12 @@ export const store = createStore<State>({
      */
     async [actions.reportSpam](
       { commit, state }: { commit: Commit; state: State },
-      v: { nodeID: string; type: "resourceRatings" | "vacancies" | "crowdfundingList", id: string, spam: number }
+      v: {
+        nodeID: string;
+        type: "resourceRatings" | "vacancies" | "crowdfundingList";
+        id: string;
+        spam: number;
+      }
     ) {
       // cannot save for unauthorized user
       if (!state.user.user || state.user.user.isAnonymous) {
@@ -336,10 +331,7 @@ export const store = createStore<State>({
       }
 
       // add to local store
-      commit(
-        `nodeContent/${nodeContentMutations.REPORT_SPAM}`,
-        v
-      );
+      commit(`nodeContent/${nodeContentMutations.REPORT_SPAM}`, v);
     },
 
     /**

@@ -1,32 +1,36 @@
 <template>
   This section is just for test/emulator cases for now
-    <input id="email"/>
-    <input id="password"/>
+  <input id="email" />
+  <input id="password" />
   <button @click="login">login</button>
 </template>
 
 <script lang="ts">
-  import {defineComponent} from "vue";
-  import api from "@/api/api";
-  import {mutations} from "@/store/user";
-  import firebase from "firebase";
-  import {useStore} from "@/store";
+import { defineComponent } from "vue";
+import api from "@/api/api";
+import { mutations } from "@/store/user";
+import firebase from "firebase";
+import { useStore } from "@/store";
 
-  export default defineComponent({
-    name: "PasswordLogin",
+export default defineComponent({
+  name: "PasswordLogin",
 
-    setup() {
-      const store = useStore();
+  setup() {
+    const store = useStore();
 
-      return {
-        login: async () => {
-          const emailEl = document.getElementById("email") as HTMLInputElement;
-          const passwordEl = document.getElementById("password") as HTMLInputElement;
-          await firebase.auth().signInWithEmailAndPassword(emailEl.value, passwordEl.value);
-          const user = await api.getCurrentUser();
-          store.commit(`user/${mutations.SET_USER}`, user);
-        },
+    return {
+      login: async () => {
+        const emailEl = document.getElementById("email") as HTMLInputElement;
+        const passwordEl = document.getElementById(
+          "password"
+        ) as HTMLInputElement;
+        await firebase
+          .auth()
+          .signInWithEmailAndPassword(emailEl.value, passwordEl.value);
+        const user = await api.getCurrentUser();
+        store.commit(`user/${mutations.SET_USER}`, user);
       }
-    }
-  })
+    };
+  }
+});
 </script>
