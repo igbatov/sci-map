@@ -4,14 +4,14 @@ import { mutations as treeMutations } from "@/store/tree";
 import { mutations as pinMutations } from "@/store/pin";
 import { mutations as resourcesMutations } from "@/store/resources";
 import {
-  Crowdfunding,
+  Crowdfunding, CrowdfundingAggregate,
   mutations as nodeContentMutations,
   NodeContent, RateValues,
   ResourceRating, ResourceRatingAggregate,
-  Vacancy
+  Vacancy, VacancyAggregate
 } from "@/store/node_content";
 import { store } from "@/store/index";
-import {printError, round} from "@/tools/utils";
+import {clone, printError, round} from "@/tools/utils";
 
 const GENERAL_SPAM_THRESHOLD = 2;
 
@@ -75,7 +75,16 @@ function getTopValue(obj: Record<string, number>): string {
   return sortable[0][0] as string
 }
 
-function aggregateToRating(agg: Record<string, ResourceRatingAggregate>): Record<string, ResourceRating> {
+function aggregateSpam(spam: Record<number, string[]>): number {
+  let spamSum = 0
+  for(const spamType in spam) {
+    spamSum = spamSum + spam[spamType].length;
+  }
+
+  return spamSum;
+}
+
+function aggregateRatings(agg: Record<string, ResourceRatingAggregate>): Record<string, ResourceRating> {
   const rr: Record<string, ResourceRating> = {}
   for (const resourceID in agg) {
     let sum = 0
@@ -86,21 +95,42 @@ function aggregateToRating(agg: Record<string, ResourceRatingAggregate>): Record
       count = count + agg[resourceID].rating[rt];
     }
 
-    let spamSum = 0
-    for(const spamType in agg[resourceID].spam) {
-      spamSum = spamSum + agg[resourceID].spam[spamType];
-    }
-
     rr[resourceID] = {
       resourceID: resourceID,
       comment: "",
       rating: count > 0 ? round(sum/count) as RateValues : 0,
       ratedCount: count,
-      spam: spamSum > GENERAL_SPAM_THRESHOLD ? 1 : 0,
+      spam: aggregateSpam(agg[resourceID].spam) > GENERAL_SPAM_THRESHOLD ? 1 : 0,
     };
   }
 
   return rr;
+}
+
+function aggregateVacancies(vacanciesAgg: Record<string, VacancyAggregate>): Record<string, Vacancy> {
+  const vacancies = {} as Record<string, Vacancy>
+  if (!vacanciesAgg) {
+    return vacancies
+  }
+
+  for (const id in vacanciesAgg) {
+    vacancies[id] = clone(vacanciesAgg[id])
+    vacancies[id].spam = aggregateSpam(vacanciesAgg[id].spam)
+  }
+  return vacancies
+}
+
+function aggregateCrowdfunding(crowdfundingListAgg: Record<string, CrowdfundingAggregate>): Record<string, Crowdfunding> {
+  const crowdfundingList = {} as Record<string, Crowdfunding>
+  if (!crowdfundingListAgg) {
+    return crowdfundingList
+  }
+
+  for (const id in crowdfundingListAgg) {
+    crowdfundingList[id] = clone(crowdfundingListAgg[id])
+    crowdfundingList[id].spam = aggregateSpam(crowdfundingListAgg[id].spam)
+  }
+  return crowdfundingList
 }
 
 function mergeResourceRatings(
@@ -135,9 +165,9 @@ export async function fetchNodeContents(user: firebase.User | null) {
       video: getTopValue(nodeContentAggregate[i].video),
       wikipedia: getTopValue(nodeContentAggregate[i].wikipedia),
       comment: "",
-      resourceRatings: aggregateToRating(nodeContentAggregate[i].resourceRatings),
-      vacancies: nodeContentAggregate[i].vacancies,
-      crowdfundingList: nodeContentAggregate[i].crowdfundingList,
+      resourceRatings: aggregateRatings(nodeContentAggregate[i].resourceRatings),
+      vacancies: aggregateVacancies(nodeContentAggregate[i].vacancies),
+      crowdfundingList: aggregateCrowdfunding(nodeContentAggregate[i].crowdfundingList),
     } as NodeContent
   }
 
@@ -157,6 +187,12 @@ export async function fetchNodeContents(user: firebase.User | null) {
         userNodeContents[id].resourceRatings,
         nodeContents[id].resourceRatings
       );
+      for (const i in userNodeContents[id].vacancies) {
+        nodeContents[id].vacancies[i].spam = userNodeContents[id].vacancies[i].spam
+      }
+      for (const i in userNodeContents[id].crowdfundingList) {
+        nodeContents[id].crowdfundingList[i].spam = userNodeContents[id].crowdfundingList[i].spam
+      }
     }
   }
 

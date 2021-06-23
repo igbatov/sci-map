@@ -12,7 +12,7 @@ export type ResourceRating = {
 export type ResourceRatingAggregate = {
   resourceID: string;
   rating: Record<RateValues, number>;
-  spam: Record<number, number>;
+  spam: Record<number /* spam reason */, string[] /* array of userIDs that marked this reason */>;
 };
 
 export type Vacancy = {
@@ -28,6 +28,23 @@ export type Vacancy = {
   published: number; // date in UTC seconds from epoch
   applicationDeadline: number; // date in UTC seconds from epoch
   spam: number;
+  authorID: string;
+}
+
+export type VacancyAggregate = {
+  id: string;
+  title: string;
+  url: string;
+  description: string;
+  salary: string;
+  organization: string;
+  place: string;
+  workHours: string; // full-time; part-time etc
+  isRemote: boolean;
+  published: number; // date in UTC seconds from epoch
+  applicationDeadline: number; // date in UTC seconds from epoch
+  spam: Record<number /* spam reason */, string[] /* array of userIDs that marked this reason */>;
+  authorID: string;
 }
 
 export type Crowdfunding = {
@@ -39,6 +56,19 @@ export type Crowdfunding = {
   published: number; // date in UTC seconds from epoch
   applicationDeadline: number; // date in UTC seconds from epoch
   spam: number;
+  authorID: string;
+}
+
+export type CrowdfundingAggregate = {
+  id: string;
+  title: string;
+  url: string;
+  description: string;
+  organization: string;
+  published: number; // date in UTC seconds from epoch
+  applicationDeadline: number; // date in UTC seconds from epoch
+  spam: Record<number /* spam reason */, string[] /* array of userIDs that marked this reason */>;
+  authorID: string;
 }
 
 export type NodeContentAggregate = {
@@ -46,8 +76,8 @@ export type NodeContentAggregate = {
   video: Record<string, number>;
   wikipedia: Record<string, number>;
   resourceRatings: Record<string, ResourceRatingAggregate>;
-  vacancies: Record<string, Vacancy>;
-  crowdfundingList: Record<string, Crowdfunding>;
+  vacancies: Record<string, VacancyAggregate>;
+  crowdfundingList: Record<string, CrowdfundingAggregate>;
 };
 
 export type NodeContent = {
@@ -77,7 +107,7 @@ export const mutations = {
   RATE_NODE_RESOURCE_RATING: "RATE_NODE_RESOURCE_RATING",
   REMOVE_NODE_RESOURCE_RATING: "REMOVE_NODE_RESOURCE_RATING",
   SET_NODE_RESOURCE_RATING_COMMENT: "SET_NODE_RESOURCE_COMMENT",
-  REPORT_RESOURCE_SPAM: "REPORT_RESOURCE_SPAM",
+  REPORT_SPAM: "REPORT_SPAM",
 
   // Vacancy
   ADD_VACANCY: "ADD_VACANCY",
@@ -123,6 +153,7 @@ export const EmptyVacancy = {
   published: 0, // date in UTC seconds from epoch
   applicationDeadline: 0, // date in UTC seconds from epoch
   spam: 0,
+  authorID: "",
 } as Vacancy;
 
 export const EmptyCrowdfunding = {
@@ -134,6 +165,7 @@ export const EmptyCrowdfunding = {
   published: 0, // date in UTC seconds from epoch
   applicationDeadline: 0, // date in UTC seconds from epoch
   spam: 0,
+  authorID: "",
 } as Crowdfunding;
 
 function createIfNotExist(nodeContents: Record<string, NodeContent>, nodeID: string) {
@@ -259,24 +291,17 @@ export const store = {
     },
 
     /**
-     * REPORT_RESOURCE_SPAM
+     * REPORT_SPAM
      * @param state
      * @param v
      */
-    [mutations.REPORT_RESOURCE_SPAM](
+    [mutations.REPORT_SPAM](
       state: State,
-      v: { nodeID: string; resourceID: string; spam: number }
+      v: { nodeID: string; type: "resourceRatings" | "vacancies" | "crowdfundingList", id: string; spam: number }
     ) {
       createIfNotExist(state.nodeContents, v.nodeID)
-      if (!state.nodeContents[v.nodeID].resourceRatings[v.resourceID]) {
-        state.nodeContents[v.nodeID].resourceRatings[v.resourceID] = clone(
-          EmptyResourceRating
-        );
-        state.nodeContents[v.nodeID].resourceRatings[v.resourceID].resourceID =
-          v.resourceID;
-      }
-      state.nodeContents[v.nodeID].resourceRatings[v.resourceID].spam =
-        v.spam;
+      const r: any = state.nodeContents[v.nodeID][v.type]
+      r[v.id].spam = v.spam;
     },
 
     /**

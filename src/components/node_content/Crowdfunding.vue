@@ -42,16 +42,27 @@
       </div>
     </div>
 
-    <div v-for="crw of crowdfundingArray" class="p-grid" :key="crw.id">
-      <div class="p-col-11">
-        {{crw.title}}
-      </div>
-      <div class="p-col-1">
-        <Button
-            @click="remove(crw.id)"
-            icon="pi pi-ban"
-            class="p-button-rounded p-button-help p-button-outlined"
-        />
+    <div v-for="item of crowdfundingArray" class="p-grid" :key="item.id">
+      <div class="p-col-12" v-if="!item.spam">
+        <div class="p-grid">
+          <div class="p-col-11">
+            {{item.title}}
+          </div>
+          <div class="p-col-1">
+            <Button
+                v-if="item.authorID === currentUserID"
+                @click="remove(crw.id)"
+                icon="pi pi-ban"
+                class="p-button-rounded p-button-help p-button-outlined"
+            />
+            <Button
+                v-else
+                @click="reportSpam(item.id)"
+                icon="pi pi-exclamation-circle"
+                class="p-button-rounded p-button-help p-button-outlined"
+            />
+          </div>
+        </div>
       </div>
     </div>
 </template>
@@ -63,6 +74,8 @@ import InputText from "primevue/inputtext";
 import {computed, PropType, ref} from "vue";
 import {Crowdfunding, EmptyCrowdfunding} from "@/store/node_content";
 import {clone} from "@/tools/utils";
+import {useConfirm} from "primevue/useconfirm";
+import {useToast} from "primevue/usetoast";
 
 export default {
   name: "Crowdfunding",
@@ -76,6 +89,9 @@ export default {
   },
   setup(props: {nodeId: string, crowdfundingList: Record<string, Crowdfunding>}) {
     const store = useStore();
+    const confirm = useConfirm();
+    const toast = useToast();
+
     const showForm = ref(false);
     const fields = ref([
       {key:"title", label:"Title", value: ""},
@@ -85,7 +101,10 @@ export default {
       {key:"published", label:"Published", value:""}, // date in UTC seconds from epoch
       {key:"applicationDeadline", label:"Application deadline", value:""},// date in UTC seconds from epoch
     ]);
+
+    const currentUserID = computed(() =>  store.state.user.user ? store.state.user.user.uid : 0);
     return {
+      currentUserID,
       showForm,
       fields,
       crowdfundingArray: computed(() => props.crowdfundingList ? Object.values(props.crowdfundingList) : []),
@@ -95,6 +114,7 @@ export default {
           const key = field.key as keyof Crowdfunding
           crowdfunding[key] = field.value
         }
+        crowdfunding.authorID = currentUserID.value;
         await store.dispatch(`${actions.addCrowdfunding}`, { nodeID: props.nodeId, crowdfunding: crowdfunding });
         showForm.value = false
         for (const field of fields.value) {
@@ -103,7 +123,27 @@ export default {
       },
       remove: (id: string) => {
         store.dispatch(`${actions.removeCrowdfunding}`, {nodeID: props.nodeId, crowdfundingID: id});
-      }
+      },
+      reportSpam: (id: string) => {
+        confirm.require({
+          message: 'This will set resource as spam and remove it from your list. This cannot be undone. Are you sure?',
+          header: 'Confirmation',
+          icon: 'pi pi-exclamation-triangle',
+          accept: async () => {
+            await store.dispatch(`${actions.reportSpam}`, {
+              nodeID: props.nodeId,
+              type: "crowdfundingList",
+              id: id,
+              spam: 1,
+            });
+            const title = props.crowdfundingList[id].title
+            toast.add({severity:'info', summary:'Confirmed', detail:`"${title}" was removed as spam`, life: 3000});
+          },
+          reject: () => {
+            return
+          }
+        });
+      },
     };
   }
 }

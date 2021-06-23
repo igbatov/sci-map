@@ -91,7 +91,7 @@ export const actions = {
   setNodeVideo: "setNodeVideo",
   rateNodeResource: "rateNodeResource",
   removeNodeResource: "removeNodeResource",
-  reportResourceSpam: "reportResourceSpam",
+  reportSpam: "reportSpam",
   addVacancy: "addVacancy",
   removeVacancy: "removeVacancy",
   addCrowdfunding: "addCrowdfunding",
@@ -317,9 +317,9 @@ export const store = createStore<State>({
      * @param state
      * @param v
      */
-    async [actions.reportResourceSpam](
+    async [actions.reportSpam](
       { commit, state }: { commit: Commit; state: State },
-      v: { nodeID: string; resourceID: string, spam: number }
+      v: { nodeID: string; type: "resourceRatings" | "vacancies" | "crowdfundingList", id: string, spam: number }
     ) {
       // cannot save for unauthorized user
       if (!state.user.user || state.user.user.isAnonymous) {
@@ -328,8 +328,7 @@ export const store = createStore<State>({
 
       // mark as spam
       const err = await api.update({
-        [`node_content/${state.user.user.uid}/${v.nodeID}/resourceRatings/${v.resourceID}/resourceID`]: v.resourceID,
-        [`node_content/${state.user.user.uid}/${v.nodeID}/resourceRatings/${v.resourceID}/spam`]: v.spam
+        [`node_content/${state.user.user.uid}/${v.nodeID}/${v.type}/${v.id}/spam`]: v.spam
       });
       if (err) {
         printError("addNodeResource: api.update error", { err });
@@ -338,7 +337,7 @@ export const store = createStore<State>({
 
       // add to local store
       commit(
-        `nodeContent/${nodeContentMutations.REPORT_RESOURCE_SPAM}`,
+        `nodeContent/${nodeContentMutations.REPORT_SPAM}`,
         v
       );
     },

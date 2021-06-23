@@ -91,9 +91,10 @@ export default {
           header: 'Confirmation',
           icon: 'pi pi-exclamation-triangle',
           accept: async () => {
-            await store.dispatch(`${actions.reportResourceSpam}`, {
+            await store.dispatch(`${actions.reportSpam}`, {
               nodeID: props.nodeId,
-              resourceID: resourceID,
+              type: "resourceRatings",
+              id: resourceID,
               spam: 1,
             });
             const title = props.resources[resourceID].title
