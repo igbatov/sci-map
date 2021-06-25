@@ -5,18 +5,6 @@
         {{ selectedNode.title }}
       </h2>
       <div class="p-fluid">
-        <!-- Video -->
-        <div class="p-field p-grid">
-          <div class="p-col-12">
-            <InputText
-              id="video"
-              type="text"
-              placeholder="https://www.youtube.com/embed/OmJ-4B-mS-Y"
-              :value="videoURL"
-              @update:modelValue="changeVideoURL($event)"
-            />
-          </div>
-        </div>
         <!-- wikipedia   -->
         <div class="p-field p-grid">
           <div class="p-col-12">

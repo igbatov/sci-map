@@ -18,7 +18,7 @@
         </div>
         <div class="p-col-1">
           <Button
-            v-if="rr.ratedCount == 0"
+            v-if="rr.ratedCount == -1"
             @click="remove(rr.resourceID)"
             icon="pi pi-ban"
             class="p-button-rounded p-button-help p-button-outlined"

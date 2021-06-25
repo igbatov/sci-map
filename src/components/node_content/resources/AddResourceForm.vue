@@ -56,8 +56,8 @@ import SelectButton from "primevue/selectbutton";
 import { computed, PropType, ref, watch } from "vue";
 import { actions, useStore } from "@/store";
 import { Resource, Resources, ResourceType } from "@/store/resources";
-import { printError } from "@/tools/utils";
-import { ResourceRating } from "@/store/node_content";
+import {clone, printError} from "@/tools/utils";
+import {EmptyResourceRating, ResourceRating} from "@/store/node_content";
 import { BRAND_NEW_RESOURCE } from "@/components/node_content/resources/AddResourceFormAutocomplete.vue";
 
 export default {
@@ -134,13 +134,10 @@ export default {
           return;
         }
 
+        const emptyRating: ResourceRating = clone(EmptyResourceRating)
+        emptyRating.resourceID = e.id
         await store.dispatch(`${actions.addNodeResourceRating}`, {
-          rr: {
-            resourceID: e.id,
-            comment: "",
-            rating: 0,
-            ratedCount: 0
-          } as ResourceRating,
+          rr: emptyRating,
           nodeID: selectedNode.value.id
         });
       },
@@ -175,13 +172,11 @@ export default {
           printError("Cannot add addNewResource", values);
           return;
         }
+
+        const emptyRating: ResourceRating = clone(EmptyResourceRating)
+        emptyRating.resourceID = resource.id
         await store.dispatch(`${actions.addNodeResourceRating}`, {
-          rr: {
-            resourceID: resource.id,
-            comment: "",
-            rating: 0,
-            ratedCount: 0
-          } as ResourceRating,
+          rr: emptyRating,
           nodeID: selectedNode.value.id
         });
       },

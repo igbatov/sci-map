@@ -6,7 +6,7 @@ export type ResourceRating = {
   resourceID: string;
   comment: string;
   rating: RateValues;
-  ratedCount: number; // zero if this rate is from user himself
+  ratedCount: number; // -1 if this rate is from user himself
   spam: number; // 0 (default) if not spam, 1 - spam, 2 - not fit content, 3 - malware, ...
 };
 export type ResourceRatingAggregate = {
@@ -145,7 +145,7 @@ export const EmptyResourceRating = {
   resourceID: "",
   comment: "",
   rating: 0, // -1 прочитал и это плохо, 0 - не читал, но хочу прочитать, 1 сойдет, 2 понравилось, 3 я под очень сильным впечатлением
-  ratedCount: 0,
+  ratedCount: -1,
   spam: 0
 } as ResourceRating;
 
