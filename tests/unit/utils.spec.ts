@@ -25,8 +25,6 @@ describe("skeletonToTree", () => {
         x: 0,
         y: 0
       },
-      wikipedia: "",
-      resources: [],
       children: [
         {
           id: "1",
@@ -35,8 +33,6 @@ describe("skeletonToTree", () => {
             x: 0,
             y: 0
           },
-          wikipedia: "",
-          resources: [],
           children: []
         },
         {
@@ -46,8 +42,6 @@ describe("skeletonToTree", () => {
             x: 0,
             y: 0
           },
-          wikipedia: "",
-          resources: [],
           children: []
         }
       ]
@@ -78,8 +72,6 @@ describe("fillTreePositions", () => {
         x: 500,
         y: 500
       },
-      wikipedia: "",
-      resources: [],
       children: [
         {
           id: "1",
@@ -88,8 +80,6 @@ describe("fillTreePositions", () => {
             x: 250,
             y: 500
           },
-          wikipedia: "",
-          resources: [],
           children: []
         },
         {
@@ -99,8 +89,6 @@ describe("fillTreePositions", () => {
             x: 750,
             y: 500
           },
-          wikipedia: "",
-          resources: [],
           children: []
         }
       ]
