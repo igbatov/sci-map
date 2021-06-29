@@ -1,9 +1,13 @@
 const functions = require("firebase-functions");
 const admin = require('firebase-admin');
 const lease = require('./lease.js');
+const utils = require('./utils.js');
 
 exports.updateResourceSpam = functions.database.ref('node_content/{userID}/{nodeID}/{resourceType}/{resourceID}/spam')
   .onWrite(async (change, context) => {
+    if (!await utils.checkIdempotence(context.eventId)) {
+      return
+    }
     if (change.before.exists() && change.before.val() > 0) {
       const key = `node_content_aggregate/${context.params.nodeID}/${context.params.resourceType}/${context.params.resourceID}/spam/${change.before.val()}`;
       const [_, err] = await lease.execWithLock(async () => {

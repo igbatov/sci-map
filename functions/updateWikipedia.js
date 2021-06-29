@@ -4,6 +4,9 @@ const utils = require('./utils.js');
 
 exports.updateWikipedia = functions.database.ref('node_content/{userID}/{nodeID}/wikipedia')
   .onWrite(async (change, context) => {
+    if (!await utils.checkIdempotence(context.eventId)) {
+      return
+    }
     const path = `node_content_aggregate/${context.params.nodeID}/wikipedia`
     if (change.before.exists()) {
       const key = `${path}/${change.before.val()}`;

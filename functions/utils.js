@@ -2,6 +2,7 @@ const lease = require('./lease.js');
 const admin = require('firebase-admin');
 const functions = require("firebase-functions");
 
+// TODO: use firebase increase here instead of self-made lease
 exports.counterDecrease = async function(key, lockKey, sid) {
   if (!lockKey) {
     functions.logger.error((new Date()).toISOString(), sid, "undefined lockKey")
@@ -59,4 +60,18 @@ exports.counterIncrease = async function(key, lockKey, sid) {
   if (err != null) {
     functions.logger.error(sid, err)
   }
+};
+
+exports.checkIdempotence = async function(eventID) {
+  const res = await admin.database().ref(`processed_event_ids/${eventID}`).transaction( (val) => {
+    if (val == null) {
+      return Date.now()
+    }
+  });
+
+  if (res && res.committed) {
+    return true
+  }
+
+  return false
 }

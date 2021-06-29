@@ -7,6 +7,8 @@ const admin = require('firebase-admin');
  */
 exports.updateResourceVC = functions.database.ref('node_content/{userID}/{nodeID}/{vcType}/{vcID}')
   .onWrite(async (change, context) => {
+    // no need to check for idempotence here
+
     // update only Vacancy or Crowdfunding
     if (!["vacancies", "crowdfundingList"].includes(context.params.vcType)) {
       return

@@ -29,6 +29,9 @@ removeAllZeroRating = async function(resourceRatingPath){
 
 exports.updateResourceRating = functions.database.ref('node_content/{userID}/{nodeID}/resourceRatings/{resourceID}/rating')
   .onWrite(async (change, context) => {
+    if (!await utils.checkIdempotence(context.eventId)) {
+      return
+    }
     const resourceRatingPath = `node_content_aggregate/${context.params.nodeID}/resourceRatings/${context.params.resourceID}`
     if (change.before.exists()) {
       const key = `${resourceRatingPath}/rating/${change.before.val()}`
