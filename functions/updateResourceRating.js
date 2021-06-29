@@ -31,10 +31,8 @@ exports.updateResourceRating = functions.database.ref('node_content/{userID}/{no
   .onWrite(async (change, context) => {
     const resourceRatingPath = `node_content_aggregate/${context.params.nodeID}/resourceRatings/${context.params.resourceID}`
     if (change.before.exists()) {
-      await utils.counterDecrease(
-        `${resourceRatingPath}/rating/${change.before.val()}`,
-        resourceRatingPath,
-      )
+      const key = `${resourceRatingPath}/rating/${change.before.val()}`
+      await utils.counterDecrease(key, key)
     }
 
     if (change.after.exists()) {
@@ -42,10 +40,8 @@ exports.updateResourceRating = functions.database.ref('node_content/{userID}/{no
         [`node_content_aggregate/${context.params.nodeID}/nodeID`]: context.params.nodeID,
         [`node_content_aggregate/${context.params.nodeID}/resourceRatings/${context.params.resourceID}/resourceID`]: context.params.resourceID,
       })
-      await utils.counterIncrease(
-        `${resourceRatingPath}/rating/${change.after.val()}`,
-        resourceRatingPath,
-      )
+      const key = `${resourceRatingPath}/rating/${change.after.val()}`
+      await utils.counterIncrease(key, key)
     }
 
     // remove rating if everybody removed their ratings of this resource
