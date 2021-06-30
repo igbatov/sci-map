@@ -2,13 +2,16 @@ const functions = require("firebase-functions");
 const admin = require('firebase-admin');
 const utils = require('./utils.js');
 const lease = require('./lease.js');
+const logger = require('./logger.js');
 
-removeAllZeroRating = async function(resourceRatingPath){
-  const [_, err] = await lease.execWithLock(async () => {
+removeAllZeroRating = async function(ctx, resourceRatingPath){
+  const [_, err] = await lease.execWithLock(ctx, async () => {
     const oldValSnap = await admin.database().ref(`${resourceRatingPath}/rating`).get()
     if (!oldValSnap.exists()) {
       return
     }
+
+    logger.info(ctx, "removeAllZeroRating: checking if all ratings zero", {resourceRatingPath})
 
     let isForRemoval = true;
     for (const ratingValue in oldValSnap.val()) {
@@ -18,35 +21,36 @@ removeAllZeroRating = async function(resourceRatingPath){
       }
     }
     if (isForRemoval) {
+      logger.info(ctx, "removeAllZeroRating:  all ratings zero - removing resourceRating", {resourceRatingPath})
       await admin.database().ref(`${resourceRatingPath}`).set(null)
     }
   }, resourceRatingPath)
 
   if (err != null) {
-    functions.logger.error(err)
+    logger.error(ctx, "removeAllZeroRating: error", err)
   }
 }
 
 exports.updateResourceRating = functions.database.ref('node_content/{userID}/{nodeID}/resourceRatings/{resourceID}/rating')
-  .onWrite(async (change, context) => {
-    if (!await utils.checkIdempotence(context.eventId)) {
+  .onWrite(async (change, ctx) => {
+    if (!await utils.checkIdempotence(ctx.eventId)) {
       return
     }
-    const resourceRatingPath = `node_content_aggregate/${context.params.nodeID}/resourceRatings/${context.params.resourceID}`
+    const resourceRatingPath = `node_content_aggregate/${ctx.params.nodeID}/resourceRatings/${ctx.params.resourceID}`
     if (change.before.exists()) {
       const key = `${resourceRatingPath}/rating/${change.before.val()}`
-      await utils.counterDecrease(key, key)
+      await utils.counterDecrease(ctx, key, key)
     }
 
     if (change.after.exists()) {
       await admin.database().ref().update({
-        [`node_content_aggregate/${context.params.nodeID}/nodeID`]: context.params.nodeID,
-        [`node_content_aggregate/${context.params.nodeID}/resourceRatings/${context.params.resourceID}/resourceID`]: context.params.resourceID,
+        [`node_content_aggregate/${ctx.params.nodeID}/nodeID`]: ctx.params.nodeID,
+        [`node_content_aggregate/${ctx.params.nodeID}/resourceRatings/${ctx.params.resourceID}/resourceID`]: ctx.params.resourceID,
       })
       const key = `${resourceRatingPath}/rating/${change.after.val()}`
-      await utils.counterIncrease(key, key)
+      await utils.counterIncrease(ctx, key, key)
     }
 
     // remove rating if everybody removed their ratings of this resource
-    await removeAllZeroRating(resourceRatingPath)
+    await removeAllZeroRating(ctx, resourceRatingPath)
   });

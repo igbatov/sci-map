@@ -1,14 +1,14 @@
 const lease = require('./lease.js');
 const admin = require('firebase-admin');
-const functions = require("firebase-functions");
+const logger = require('./logger.js');
 
 // TODO: use firebase increase here instead of self-made lease
-exports.counterDecrease = async function(key, lockKey, sid) {
+exports.counterDecrease = async function(ctx, key, lockKey) {
   if (!lockKey) {
-    functions.logger.error((new Date()).toISOString(), sid, "undefined lockKey")
+    logger.error(ctx, "undefined lockKey")
     return
   }
-  const [_, err] = await lease.execWithLock(async () => {
+  const [_, err] = await lease.execWithLock(ctx, async () => {
     const oldValSnap = await admin.database().ref(key).get()
     // We assume that counterDecrease old value may not exists because of reorder of trigger events
     // So permit negative values for counters here (they will be increased shortly after all events will be triggered)
@@ -17,48 +17,48 @@ exports.counterDecrease = async function(key, lockKey, sid) {
       newVal = oldValSnap.val() - 1
     }
 
-    functions.logger.info((new Date()).toISOString(), sid, "counterDecrease", key, newVal)
+    logger.info(ctx, "counterDecrease", {key, newVal})
     await admin.database().ref().update({
       [key]: newVal,
     }, (err) => {
       if (err) {
-        functions.logger.error(sid, err)
+        logger.error(ctx, "counterDecrease: update error", {err})
       }
     })
-    functions.logger.info((new Date()).toISOString(), sid, "counter decreased", key, newVal)
+    logger.info(ctx, "counter decreased", {key, newVal})
   }, lockKey)
 
   if (err != null) {
-    functions.logger.error(sid, err)
+    logger.error(ctx, "counterDecrease: error", {err})
   }
 };
 
-exports.counterIncrease = async function(key, lockKey, sid) {
+exports.counterIncrease = async function(ctx, key, lockKey) {
   if (!lockKey) {
-    functions.logger.error("undefined lockKey")
+    logger.error(ctx, "undefined lockKey")
     return
   }
-  const [_, err] = await lease.execWithLock(async () => {
+  const [_, err] = await lease.execWithLock(ctx, async () => {
     const oldValSnap = await admin.database().ref(key).get()
     let newVal = 1
     if (oldValSnap.exists() && !isNaN(oldValSnap.val())) {
       newVal = oldValSnap.val() + 1
     }
 
-    functions.logger.info((new Date()).toISOString(), sid, "counterIncrease", key, newVal)
+    logger.info(ctx, "counterIncrease", {key, newVal})
     await admin.database().ref().update({
       [key]: newVal,
     }, (err) => {
       if (err) {
-        functions.logger.error(sid, err)
+        logger.error(ctx, "counterIncrease: update error", {err})
       }
     })
-    functions.logger.info((new Date()).toISOString(), sid, "counter increased", key, newVal)
+    logger.info(ctx, "counter increased", {key, newVal})
 
   }, lockKey)
 
   if (err != null) {
-    functions.logger.error(sid, err)
+    logger.error(ctx, "counterIncrease: error", {err})
   }
 };
 
