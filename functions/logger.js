@@ -9,8 +9,8 @@ const logger = function (severity, ctx, message, json) {
     eventType: ctx.eventType,
     params: ctx.params,
     auth: {
-      uid: ctx.auth.uid,
-      email: ctx.auth.email,
+      uid: ctx.auth ? ctx.auth.uid : null,
+      email: ctx.auth ? ctx.auth.email : null,
     },
     timestamp: ctx.timestamp,
     eventId: ctx.eventId,
