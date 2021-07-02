@@ -27,8 +27,6 @@ export default defineComponent({
         await firebase
           .auth()
           .signInWithEmailAndPassword(emailEl.value, passwordEl.value);
-        const user = await api.getCurrentUser();
-        store.commit(`user/${mutations.SET_USER}`, user);
       }
     };
   }

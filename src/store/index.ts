@@ -28,25 +28,20 @@ import {
   store as resourcesStore,
   State as ResourcesState,
   mutations as resourcesMutations,
-  actions as resourcesActions,
   Resource
 } from "./resources";
 import {
   store as nodeContentStore,
   State as NodeContentState,
   mutations as nodeContentMutations,
-  actions as nodeContentActions,
   ResourceRating,
   Crowdfunding,
   Vacancy
 } from "./node_content";
 
-import api, { FUNCTION_CHANGE_RATING } from "@/api/api";
+import api  from "@/api/api";
 import {
-  fetchMap,
-  fetchNodeContents,
-  fetchPins,
-  fetchResources
+  fetchData,
 } from "./helpers";
 import { MapNode, Point } from "@/types/graphics";
 import {
@@ -59,6 +54,7 @@ import { addVector, convertPosition } from "@/tools/graphics";
 import { DBNode } from "@/api/types";
 import { isEqual, debounce } from "lodash";
 import { printError } from "@/tools/utils";
+import firebase from "firebase";
 
 export type State = {
   // root states
@@ -557,12 +553,15 @@ export const store = createStore<State>({
      */
     async [actions.init]({ commit }: { commit: Commit }) {
       api.initFirebase();
-      const user = await api.getCurrentUser();
-      commit(`user/${userMutations.SET_USER}`, user);
-      await fetchMap(user);
-      await fetchPins(user);
-      await fetchResources();
-      await fetchNodeContents(user);
+      firebase.auth().onAuthStateChanged(user => {
+        if (user && !user.isAnonymous) {
+          commit(`user/${userMutations.SET_USER}`, user);
+          fetchData(user)
+        } else {
+          commit(`user/${userMutations.SET_USER}`, null);
+          fetchData(null)
+        }
+      })
     },
 
     /**
@@ -823,11 +822,6 @@ export const store = createStore<State>({
     nodeContent: nodeContentStore
   }
 });
-
-// reactively change tree based on user authorization event
-store.watch(state => state.user.user, fetchMap);
-// reactively change pins based on user change
-store.watch(state => state.user.user, fetchPins);
 
 // define your own `useStore` composition function
 export function useStore() {

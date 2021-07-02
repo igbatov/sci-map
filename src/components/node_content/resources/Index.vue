@@ -22,12 +22,14 @@
             @click="remove(rr.resourceID)"
             icon="pi pi-ban"
             class="p-button-rounded p-button-help p-button-outlined"
+            v-tooltip.right="'Remove rating'"
           />
           <Button
             v-else
             @click="reportSpam(rr.resourceID)"
             icon="pi pi-exclamation-circle"
             class="p-button-rounded p-button-help p-button-outlined"
+            v-tooltip.right="'Mark as spam/inappropriate'"
           />
         </div>
       </div>
@@ -41,6 +43,7 @@ import { Resource } from "@/store/resources";
 import { ResourceRating } from "../../../store/node_content";
 import Dropdown from "primevue/dropdown";
 import Button from "primevue/button";
+import Tooltip from 'primevue/tooltip';
 import { useConfirm } from "primevue/useconfirm";
 import { useToast } from "primevue/usetoast";
 import { actions, useStore } from "@/store";
@@ -56,7 +59,10 @@ export default {
   components: {
     Dropdown,
     Button,
-    AddResourceForm
+    AddResourceForm,
+  },
+  directives: {
+    'tooltip': Tooltip
   },
   setup(props: {
     nodeId: string;

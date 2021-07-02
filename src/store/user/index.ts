@@ -29,8 +29,6 @@ export const store = {
       await firebase
         .auth()
         .signInWithPopup(new firebase.auth.GoogleAuthProvider());
-      const user = await api.getCurrentUser();
-      commit(mutations.SET_USER, user);
     },
 
     async [actions.signOut]({ commit }: { commit: Commit }) {

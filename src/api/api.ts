@@ -142,18 +142,6 @@ export default {
     }
   },
 
-  async getCurrentUser(): Promise<firebase.User | null> {
-    return new Promise(resolve =>
-      firebase.auth().onAuthStateChanged(user => {
-        if (user && !user.isAnonymous) {
-          resolve(user);
-        } else {
-          resolve(null);
-        }
-      })
-    );
-  },
-
   async saveUserMap(user: firebase.User, map: Tree) {
     if (!user) {
       return;

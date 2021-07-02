@@ -219,3 +219,10 @@ export async function fetchNodeContents(user: firebase.User | null) {
     nodeContents
   );
 }
+
+export async function fetchData(user: firebase.User | null) {
+  await fetchMap(user);
+  await fetchPins(user);
+  await fetchResources();
+  await fetchNodeContents(user);
+}
