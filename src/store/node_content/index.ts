@@ -14,7 +14,7 @@ export type ResourceRatingAggregate = {
   rating: Record<RateValues, number>;
   spam: Record<
     number /* spam reason */,
-    string[] /* array of userIDs that marked this reason */
+    Record<string, number> /* hash map of userIDs that marked this reason (number always equal 1) */
   >;
 };
 
@@ -48,7 +48,7 @@ export type VacancyAggregate = {
   applicationDeadline: number; // date in UTC seconds from epoch
   spam: Record<
     number /* spam reason */,
-    string[] /* array of userIDs that marked this reason */
+    Record<string, number> /* hash map of userIDs that marked this reason (number always equal 1) */
   >;
   authorID: string;
 };
@@ -75,7 +75,7 @@ export type CrowdfundingAggregate = {
   applicationDeadline: number; // date in UTC seconds from epoch
   spam: Record<
     number /* spam reason */,
-    string[] /* array of userIDs that marked this reason */
+    Record<string, number> /* hash map of userIDs that marked this reason (number always equal 1) */
   >;
   authorID: string;
 };

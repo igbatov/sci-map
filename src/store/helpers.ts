@@ -79,10 +79,16 @@ function getTopValue(obj: Record<string, number>): string {
   return sortable[0][0] as string;
 }
 
-function aggregateSpam(spam: Record<number, string[]>): number {
+function aggregateSpam(spam: Record<number, Record<string, number>>): number {
   let spamSum = 0;
   for (const spamType in spam) {
-    spamSum = spamSum + spam[spamType].length;
+    let spamReportersCount = 0
+    for(const userID in spam[spamType]) {
+      if (spam[spamType][userID]) {
+        spamReportersCount++
+      }
+    }
+    spamSum = spamSum + spamReportersCount;
   }
 
   return spamSum;

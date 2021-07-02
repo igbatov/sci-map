@@ -12,7 +12,8 @@ exports.updateWikipedia = functions.database.ref('node_content/{userID}/{nodeID}
     if (change.before.exists()) {
       const key = `${path}/${change.before.val()}`;
       logger.info(ctx, "updateWikipedia: before", {key})
-      await utils.counterDecrease(ctx, key, key)
+      await utils.counterDecrease(ctx, key)
+      await utils.removeIfZero(ctx, key)
     }
 
     if (change.after.exists()) {
@@ -21,6 +22,7 @@ exports.updateWikipedia = functions.database.ref('node_content/{userID}/{nodeID}
       });
       const key = `${path}/${change.after.val()}`;
       logger.info(ctx, "updateWikipedia: after", {key})
-      await utils.counterIncrease(ctx, key, key)
+      await utils.counterIncrease(ctx, key)
+      await utils.removeIfZero(ctx, key)
     }
 });

@@ -5,30 +5,29 @@ const lease = require('./lease.js');
 const logger = require('./logger.js');
 
 removeAllZeroRating = async function(ctx, resourceRatingPath){
-  const [_, err] = await lease.execWithLock(ctx, async () => {
-    const oldValSnap = await admin.database().ref(`${resourceRatingPath}/rating`).get()
-    if (!oldValSnap.exists()) {
-      return
+  await admin.database().ref(resourceRatingPath).transaction( (ratingValues) => {
+    // Firebase usually returns a null value while retrieving a key for the first time
+    // but while saving it checks if the new value is similar to older value or not.
+    // If not, firebase will run the whole process again,
+    // and this time the correct value is returned by the server.
+    if (ratingValues === null) {
+      return null
     }
 
     logger.info(ctx, "removeAllZeroRating: checking if all ratings zero", {resourceRatingPath})
 
     let isForRemoval = true;
-    for (const ratingValue in oldValSnap.val()) {
-      if (oldValSnap.val()[ratingValue] > 0) {
+    for (const ratingValue in ratingValues) {
+      if (ratingValues[ratingValue] > 0) {
         isForRemoval = false;
         break;
       }
     }
     if (isForRemoval) {
       logger.info(ctx, "removeAllZeroRating:  all ratings zero - removing resourceRating", {resourceRatingPath})
-      await admin.database().ref(`${resourceRatingPath}`).set(null)
+      return null
     }
-  }, resourceRatingPath)
-
-  if (err != null) {
-    logger.error(ctx, "removeAllZeroRating: error", err)
-  }
+  });
 }
 
 exports.updateResourceRating = functions.database.ref('node_content/{userID}/{nodeID}/resourceRatings/{resourceID}/rating')
@@ -39,7 +38,7 @@ exports.updateResourceRating = functions.database.ref('node_content/{userID}/{no
     const resourceRatingPath = `node_content_aggregate/${ctx.params.nodeID}/resourceRatings/${ctx.params.resourceID}`
     if (change.before.exists()) {
       const key = `${resourceRatingPath}/rating/${change.before.val()}`
-      await utils.counterDecrease(ctx, key, key)
+      await utils.counterDecrease(ctx, key)
     }
 
     if (change.after.exists()) {
@@ -48,7 +47,7 @@ exports.updateResourceRating = functions.database.ref('node_content/{userID}/{no
         [`node_content_aggregate/${ctx.params.nodeID}/resourceRatings/${ctx.params.resourceID}/resourceID`]: ctx.params.resourceID,
       })
       const key = `${resourceRatingPath}/rating/${change.after.val()}`
-      await utils.counterIncrease(ctx, key, key)
+      await utils.counterIncrease(ctx, key)
     }
 
     // remove rating if everybody removed their ratings of this resource

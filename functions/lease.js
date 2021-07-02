@@ -1,8 +1,8 @@
 const admin = require('firebase-admin');
 const logger = require('./logger.js');
 
-const LEASE_TIMEOUT = 30*1000 // in secs
-const LEASE_RETRY = 1000 // in secs
+const LEASE_TIMEOUT = 60*1000 // in milliseconds
+const LEASE_RETRY = 1000 // in milliseconds
 const LEASES_PATH = "leases"
 const DEFAULT_MAX_TRIES = 1000
 
