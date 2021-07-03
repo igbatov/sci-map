@@ -115,11 +115,11 @@ export default {
         : ""
     );
 
-    const videoURL = computed<string>(() =>
-      tree.selectedNodeId && nodeContents.value[tree.selectedNodeId]
-        ? nodeContents.value[tree.selectedNodeId].video
-        : ""
-    );
+    // const videoURL = computed<string>(() =>
+    //   tree.selectedNodeId && nodeContents.value[tree.selectedNodeId]
+    //     ? nodeContents.value[tree.selectedNodeId].video
+    //     : ""
+    // );
 
     const comment = computed<string>(() =>
       tree.selectedNodeId && nodeContents.value[tree.selectedNodeId]
@@ -131,13 +131,13 @@ export default {
       resources,
       selectedNode,
       selectedNodeContent,
-      videoURL,
-      changeVideoURL: (value: string) => {
-        store.dispatch(`${actions.setNodeVideo}`, {
-          nodeID: selectedNode.value!.id,
-          video: value
-        });
-      },
+      // videoURL,
+      // changeVideoURL: (value: string) => {
+      //   store.dispatch(`${actions.setNodeVideo}`, {
+      //     nodeID: selectedNode.value!.id,
+      //     video: value
+      //   });
+      // },
       wikipediaURL,
       changeWikipediaURL: (value: string) => {
         store.dispatch(`${actions.setNodeWikipedia}`, {

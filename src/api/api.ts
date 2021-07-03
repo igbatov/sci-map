@@ -11,10 +11,25 @@ import { convertChildren, convertDBMapToTree } from "./helpers";
 import { Resource } from "@/store/resources";
 import { NodeContent, NodeContentAggregate } from "@/store/node_content";
 import emulatorConfig from "../../firebase.json";
+import { debounce } from "lodash";
 
 const MAP_FROM_STORAGE = false; // is storage is source for map (or database)
 let FUNCTION_DOMAIN = "https://us-central1-sci-map-1982.cloudfunctions.net/";
 export const FUNCTION_CHANGE_RATING = "changeRating";
+
+const update = async (data: Record<string, any>): Promise<ErrorKV> => {
+  try {
+    await firebase
+      .database()
+      .ref()
+      .update(data);
+    return null;
+  } catch (e) {
+    return NewErrorKV("api: error in update", { err: e });
+  }
+}
+
+const debouncedUpdate = debounce(update, 400);
 
 export default {
   ROOT_WIDTH: 1440,
@@ -278,17 +293,8 @@ export default {
     return null;
   },
 
-  async update(data: Record<string, any>): Promise<ErrorKV> {
-    try {
-      await firebase
-        .database()
-        .ref()
-        .update(data);
-      return null;
-    } catch (e) {
-      return NewErrorKV("api: error in update", { err: e });
-    }
-  },
+  update,
+  debouncedUpdate,
 
   async getResources(): Promise<[Record<string, Resource> | null, ErrorKV]> {
     const snapshot = await firebase

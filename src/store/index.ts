@@ -438,7 +438,7 @@ export const store = createStore<State>({
       commit(`nodeContent/${nodeContentMutations.SET_NODE_WIKIPEDIA}`, v);
 
       // add to DB
-      const err = await api.update({
+      const err = await api.debouncedUpdate({
         [`node_content/${state.user.user.uid}/${v.nodeID}/nodeID`]: v.nodeID,
         [`node_content/${state.user.user.uid}/${v.nodeID}/wikipedia`]: v.wikipedia
       });
