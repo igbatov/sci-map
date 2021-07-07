@@ -1,0 +1,29 @@
+{
+  "rules": {
+    "map": {
+      ".read": "auth !== null || auth === null",
+      ".write": "auth !== null"
+    },
+    "node_content": {
+      ".read": "auth !== null || auth === null",
+      ".write": "auth !== null"
+    },
+    "node_content_aggregate": {
+      ".read": "auth !== null || auth === null",
+      ".write": "auth !== null"
+    },
+    "processed_event_ids": {
+      ".read": "auth !== null || auth === null",
+      ".write": "auth !== null",
+      ".indexOn": ".value"
+    },
+    "resources": {
+      ".read": "auth !== null || auth === null",
+      ".write": "auth !== null"
+    },
+    "trash": {
+      ".read": "auth !== null || auth === null",
+      ".write": "auth !== null"
+    }
+  }
+}

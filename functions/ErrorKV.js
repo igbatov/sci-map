@@ -3,6 +3,6 @@ exports.newErrorKV = function(message, kv) {
 
   return {
     error: err,
-    kv: kv
+    kv: kv,
   };
-}
+};

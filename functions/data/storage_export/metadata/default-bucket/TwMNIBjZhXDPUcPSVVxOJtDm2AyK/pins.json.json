@@ -1,0 +1,19 @@
+{
+  "name": "TwMNIBjZhXDPUcPSVVxOJtDm2AyK/pins.json",
+  "bucket": "default-bucket",
+  "contentType": "application/json",
+  "metageneration": 1,
+  "generation": 1625475578691,
+  "storageClass": "STANDARD",
+  "etag": "someETag",
+  "contentDisposition": "inline",
+  "contentEncoding": "identity",
+  "downloadTokens": [
+    "9d74261d-d384-49e1-b5cc-c8d7b68939cd"
+  ],
+  "timeCreated": "2021-07-05T08:59:38.690Z",
+  "updated": "2021-07-05T08:59:38.690Z",
+  "size": 79,
+  "md5Hash": "NVi860bnE5QccvqRighxzQ==",
+  "crc32c": "2632900842"
+}

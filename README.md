@@ -33,6 +33,22 @@ yarn lint
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
+# Firebase commands
+You can deploy security rules for realtime database and storage as well as function definitions with following command
+## Deploy security rules
+### Storage rules
+Sits in file storage.rules
+You can deploy it in production with
+```shell
+firebase deploy --only storage
+```
+
+### Storage rules
+Sits in file database.rules.json
+You can deploy it in production with
+```shell
+firebase deploy --only database
+```
 ## Firebase function
 ### Install firebase-tools (once)
 ```shell
@@ -56,15 +72,28 @@ firebase emulators:export functions/data
 ```shell
 firebase emulators:start --import=functions/data
 ```
-### Deploy on production
+### Deploy functions on production
 ```shell
 $ firebase deploy --only functions
 ```
+### Look for logs in production
+https://console.cloud.google.com/logs/query
+https://console.firebase.google.com/project/sci-map-1982/functions/logs
+
 ### Run app on emulator
 Set in src/api/api.ts
 ```shell
 export VUE_APP_IS_EMULATOR=true
+yarn serve
 ```
+
+#### Emulate schedule function
+Emulator do not support schedule
+To imitate schedule locally you can run it in shell:
+```shell
+firebase functions:shell
+>setInterval(() => cleanProcessedEventIDs(), 60000)
+````
 
 ## Run app in docker
 ```shell script

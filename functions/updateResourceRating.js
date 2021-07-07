@@ -1,7 +1,6 @@
 const functions = require("firebase-functions");
 const admin = require('firebase-admin');
 const utils = require('./utils.js');
-const lease = require('./lease.js');
 const logger = require('./logger.js');
 
 removeAllZeroRating = async function(ctx, resourceRatingPath){
