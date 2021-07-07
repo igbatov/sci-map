@@ -2,6 +2,9 @@
   "buckets": [
     {
       "id": "default-bucket"
+    },
+    {
+      "id": "sci-map-1982.appspot.com"
     }
   ]
 }

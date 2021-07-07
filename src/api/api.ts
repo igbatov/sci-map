@@ -62,6 +62,9 @@ export default {
       firebase
         .database()
         .useEmulator("localhost", emulatorConfig.emulators.database.port);
+      firebase
+        .storage()
+        .useEmulator("localhost", emulatorConfig.emulators.storage.port);
       FUNCTION_DOMAIN = "http://localhost:5001/sci-map-1982/us-central1/";
     }
   },
