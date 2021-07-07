@@ -27,7 +27,7 @@ const update = async (data: Record<string, any>): Promise<ErrorKV> => {
   } catch (e) {
     return NewErrorKV("api: error in update", { err: e });
   }
-}
+};
 
 const debouncedUpdate = debounce(update, 400);
 

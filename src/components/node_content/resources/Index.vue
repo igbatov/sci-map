@@ -43,7 +43,7 @@ import { Resource } from "@/store/resources";
 import { ResourceRating } from "../../../store/node_content";
 import Dropdown from "primevue/dropdown";
 import Button from "primevue/button";
-import Tooltip from 'primevue/tooltip';
+import Tooltip from "primevue/tooltip";
 import { useConfirm } from "primevue/useconfirm";
 import { useToast } from "primevue/usetoast";
 import { actions, useStore } from "@/store";
@@ -59,10 +59,10 @@ export default {
   components: {
     Dropdown,
     Button,
-    AddResourceForm,
+    AddResourceForm
   },
   directives: {
-    'tooltip': Tooltip
+    tooltip: Tooltip
   },
   setup(props: {
     nodeId: string;

@@ -82,10 +82,10 @@ function getTopValue(obj: Record<string, number>): string {
 function aggregateSpam(spam: Record<number, Record<string, number>>): number {
   let spamSum = 0;
   for (const spamType in spam) {
-    let spamReportersCount = 0
-    for(const userID in spam[spamType]) {
+    let spamReportersCount = 0;
+    for (const userID in spam[spamType]) {
       if (spam[spamType][userID]) {
-        spamReportersCount++
+        spamReportersCount++;
       }
     }
     spamSum = spamSum + spamReportersCount;

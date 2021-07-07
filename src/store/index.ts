@@ -39,10 +39,8 @@ import {
   Vacancy
 } from "./node_content";
 
-import api  from "@/api/api";
-import {
-  fetchData,
-} from "./helpers";
+import api from "@/api/api";
+import { fetchData } from "./helpers";
 import { MapNode, Point } from "@/types/graphics";
 import {
   createNewNode,
@@ -556,12 +554,12 @@ export const store = createStore<State>({
       firebase.auth().onAuthStateChanged(user => {
         if (user && !user.isAnonymous) {
           commit(`user/${userMutations.SET_USER}`, user);
-          fetchData(user)
+          fetchData(user);
         } else {
           commit(`user/${userMutations.SET_USER}`, null);
-          fetchData(null)
+          fetchData(null);
         }
-      })
+      });
     },
 
     /**
