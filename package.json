@@ -23,6 +23,7 @@
     "firebase": "^8.7.0",
     "lodash": "^4.17.20",
     "mitt": "^2.1.0",
+    "normalize-url": "^6.1.0",
     "polygon-clipping": "^0.15.2",
     "primeflex": "^2.0.0",
     "primeicons": "^4.1.0",
