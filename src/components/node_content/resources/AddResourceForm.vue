@@ -4,7 +4,7 @@
       <AddResourceFormAutocomplete
         :resources="resources"
         @item-select="autoCompleteSelect($event)"
-        @update-value="autoCompleteUpdate($event)"
+        v-on:keydown="checkAuthorized"
       />
     </div>
   </div>
@@ -53,12 +53,13 @@ import InputText from "primevue/inputtext";
 import AddResourceFormAutocomplete from "./AddResourceFormAutocomplete.vue";
 import Button from "primevue/button";
 import SelectButton from "primevue/selectbutton";
-import { computed, PropType, ref, watch } from "vue";
+import { computed, PropType, ref } from "vue";
 import { actions, useStore } from "@/store";
 import { Resource, Resources, ResourceType } from "@/store/resources";
 import { clone, printError } from "@/tools/utils";
 import { EmptyResourceRating, ResourceRating } from "@/store/node_content";
 import { BRAND_NEW_RESOURCE } from "@/components/node_content/resources/AddResourceFormAutocomplete.vue";
+import { useConfirm } from "primevue/useconfirm";
 
 export default {
   name: "AddResourceForm",
@@ -76,6 +77,7 @@ export default {
     const newFormShow = ref(false);
     const selectedNode = computed(() => store.getters["tree/selectedNode"]);
     const selectedType = ref<ResourceType>("book");
+    const confirm = useConfirm();
     const types = {
       book: {
         name: "book",
@@ -125,8 +127,11 @@ export default {
     return {
       newFormShow,
       selectedType,
-      autoCompleteUpdate: (e: string) => {
-        console.log("autoCompleteUpdate", e);
+      checkAuthorized: async (e: Event) => {
+        if (!store.state.user.user || store.state.user.user.isAnonymous) {
+          await store.dispatch(`${actions.confirmSignInPopup}`, confirm);
+          e.preventDefault()
+        }
       },
       autoCompleteSelect: async (e: Resource) => {
         if (e.id == BRAND_NEW_RESOURCE) {

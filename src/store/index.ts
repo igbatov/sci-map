@@ -17,7 +17,7 @@ import { store as zoomPanStore, State as ZoomPanState } from "./zoom_pan";
 import {
   store as userStore,
   State as UserState,
-  mutations as userMutations
+  mutations as userMutations, actions as userActions
 } from "./user";
 import {
   store as historyStore,
@@ -48,11 +48,13 @@ import {
   getNewNodeCenter
 } from "@/store/tree/helpers";
 import NewErrorKV from "@/tools/errorkv";
+import { UNAUTHORIZED } from "@/tools/errorkv"
 import { addVector, convertPosition } from "@/tools/graphics";
 import { DBNode } from "@/api/types";
 import { isEqual, debounce } from "lodash";
 import { printError } from "@/tools/utils";
 import firebase from "firebase";
+import {ErrorKV} from "@/types/errorkv";
 
 export type State = {
   // root states
@@ -91,7 +93,10 @@ export const actions = {
   addVacancy: "addVacancy",
   removeVacancy: "removeVacancy",
   addCrowdfunding: "addCrowdfunding",
-  removeCrowdfunding: "removeCrowdfunding"
+  removeCrowdfunding: "removeCrowdfunding",
+
+  // confirmSignInPopup
+  confirmSignInPopup: "confirmSignInPopup"
 };
 
 export const mutations = {
@@ -134,6 +139,50 @@ export const store = createStore<State>({
     }
   },
   actions: {
+    /**
+     * confirmSignInPopup
+     * @param commit
+     * @param state
+     * @param confirm
+     */
+    async [actions.confirmSignInPopup](
+      { dispatch, state }: { dispatch: Dispatch; state: State },
+      confirm: {
+        require(args:{
+          message?: string;
+          target?: EventTarget;
+          group?: string;
+          icon?: string;
+          header?: string;
+          accept?: Function;
+          reject?: Function;
+          acceptLabel?: string;
+          rejectLabel?: string;
+          acceptIcon?: string;
+          rejectIcon?: string;
+          blockScroll?: boolean;
+          acceptClass?: string;
+          rejectClass?: string;
+        }): void
+
+        close(): void
+      }
+    ) {
+      confirm.require({
+        message:
+          "Please authorize to change node contents",
+        header: "SignIn",
+        acceptLabel: "Ok, Sign In",
+        rejectLabel: "No, thanks, just watching",
+        accept: async () => {
+          await dispatch(`user/${userActions.signIn}`)
+        },
+        reject: () => {
+          return;
+        }
+      });
+    },
+
     /**
      *
      * @param commit
@@ -360,7 +409,7 @@ export const store = createStore<State>({
     },
 
     /**
-     *
+     * setNodeComment
      * @param commit
      * @param state
      * @param v
@@ -368,10 +417,10 @@ export const store = createStore<State>({
     async [actions.setNodeComment](
       { commit, state }: { commit: Commit; state: State },
       v: { nodeID: string; comment: string }
-    ) {
+    ): Promise<ErrorKV> {
       // cannot save for unauthorized user
       if (!state.user.user || state.user.user.isAnonymous) {
-        return null;
+        return NewErrorKV("Unauthorized", {}, UNAUTHORIZED);
       }
 
       // change in local store
@@ -383,9 +432,10 @@ export const store = createStore<State>({
         [`node_content/${state.user.user.uid}/${v.nodeID}/comment`]: v.comment
       });
       if (err) {
-        printError("addNodeResource: api.update error", { err });
-        return;
+        return err;
       }
+
+      return null
     },
 
     /**
@@ -426,14 +476,18 @@ export const store = createStore<State>({
     async [actions.setNodeWikipedia](
       { commit, state }: { commit: Commit; state: State },
       v: { nodeID: string; wikipedia: string }
-    ) {
+    ): Promise<ErrorKV> {
+      const oldValue = state.nodeContent.nodeContents[v.nodeID].wikipedia
+
+      // optimistic change in local store
+      commit(`nodeContent/${nodeContentMutations.SET_NODE_WIKIPEDIA}`, v);
+
       // cannot save for unauthorized user
       if (!state.user.user || state.user.user.isAnonymous) {
-        return null;
+        // revert changes
+        commit(`nodeContent/${nodeContentMutations.SET_NODE_WIKIPEDIA}`, { nodeID: v.nodeID, wikipedia: oldValue });
+        return NewErrorKV("Unauthorized", {}, UNAUTHORIZED);
       }
-
-      // change in local store
-      commit(`nodeContent/${nodeContentMutations.SET_NODE_WIKIPEDIA}`, v);
 
       // add to DB
       const err = await api.debouncedUpdate({
@@ -441,9 +495,12 @@ export const store = createStore<State>({
         [`node_content/${state.user.user.uid}/${v.nodeID}/wikipedia`]: v.wikipedia
       });
       if (err) {
-        printError("addNodeResource: api.update error", { err });
-        return;
+        // revert changes
+        commit(`nodeContent/${nodeContentMutations.SET_NODE_WIKIPEDIA}`, { nodeID: v.nodeID, wikipedia: oldValue });
+        return err;
       }
+
+      return null;
     },
 
     /**

@@ -2,4 +2,5 @@
 export type ErrorKV = {
   error: Error;
   kv: Record<string, any>;
+  code: number | undefined;
 } | null;

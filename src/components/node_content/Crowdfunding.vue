@@ -8,6 +8,7 @@
         icon="pi pi-plus"
         class="p-button-rounded"
         @click="showForm = true"
+        @mousedown="checkAuthorized"
       />
     </div>
   </div>
@@ -110,6 +111,12 @@ export default {
       crowdfundingArray: computed(() =>
         props.crowdfundingList ? Object.values(props.crowdfundingList) : []
       ),
+      checkAuthorized: async (e: Event) => {
+        if (!store.state.user.user || store.state.user.user.isAnonymous) {
+          await store.dispatch(`${actions.confirmSignInPopup}`, confirm);
+          e.preventDefault()
+        }
+      },
       add: async () => {
         const crowdfunding = clone(EmptyCrowdfunding);
         for (const field of fields.value) {

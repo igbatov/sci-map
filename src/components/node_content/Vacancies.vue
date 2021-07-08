@@ -7,6 +7,7 @@
       <Button
         icon="pi pi-plus"
         class="p-button-rounded"
+        @mousedown="checkAuthorized"
         @click="showForm = true"
       />
     </div>
@@ -109,6 +110,12 @@ export default {
       vacancyArray: computed(() =>
         props.vacancies ? Object.values(props.vacancies) : []
       ),
+      checkAuthorized: async (e: Event) => {
+        if (!store.state.user.user || store.state.user.user.isAnonymous) {
+          await store.dispatch(`${actions.confirmSignInPopup}`, confirm);
+          e.preventDefault()
+        }
+      },
       add: async () => {
         const vacancy = clone(EmptyVacancy);
         for (const field of fields.value) {

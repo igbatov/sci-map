@@ -14,6 +14,7 @@
               placeholder="https://en.wikipedia.org/wiki/Mathematics"
               :value="wikipediaURL"
               @update:modelValue="changeWikipediaURL($event)"
+              v-on:keydown="checkAuthorized"
             />
           </div>
         </div>
@@ -27,6 +28,7 @@
               rows="2"
               :value="comment"
               @update:modelValue="changeComment($event)"
+              v-on:keydown="checkAuthorized"
             />
           </div>
         </div>
@@ -56,8 +58,8 @@
 </template>
 
 <script lang="ts">
-import { actions, useStore } from "@/store";
-import { computed } from "vue";
+import {actions, useStore} from "@/store";
+import {computed} from "vue";
 import InputText from "primevue/inputtext";
 import TextArea from "primevue/textarea";
 import SectionResources from "./resources/Index.vue";
@@ -66,7 +68,8 @@ import SectionCrowdfunding from "./Crowdfunding.vue";
 import { Tree } from "@/types/graphics";
 import { EmptyNodeContent, NodeContent } from "@/store/node_content";
 import { Resources } from "@/store/resources";
-import { clone } from "@/tools/utils";
+import {clone, printError} from "@/tools/utils";
+import { useConfirm } from "primevue/useconfirm";
 
 export default {
   name: "NodeContent",
@@ -85,6 +88,7 @@ export default {
   },
   setup() {
     const store = useStore();
+    const confirm = useConfirm();
     const tree = store.state.tree;
     const nodeContents = computed<Record<string, NodeContent>>(
       () => store.state.nodeContent.nodeContents
@@ -139,18 +143,32 @@ export default {
       //   });
       // },
       wikipediaURL,
-      changeWikipediaURL: (value: string) => {
-        store.dispatch(`${actions.setNodeWikipedia}`, {
+      checkAuthorized: async (e: Event) => {
+        if (!store.state.user.user || store.state.user.user.isAnonymous) {
+          await store.dispatch(`${actions.confirmSignInPopup}`, confirm);
+          e.preventDefault()
+        }
+      },
+      changeWikipediaURL: async (value: string) => {
+        const err = await store.dispatch(`${actions.setNodeWikipedia}`, {
           nodeID: selectedNode.value!.id,
           wikipedia: value
         });
+
+        if (err) {
+          printError(err, {})
+        }
       },
       comment,
-      changeComment: (value: string) => {
-        store.dispatch(`${actions.setNodeComment}`, {
+      changeComment: async (value: string) => {
+        const err = await store.dispatch(`${actions.setNodeComment}`, {
           nodeID: selectedNode.value!.id,
           comment: value
         });
+
+        if (err) {
+          printError(err, {})
+        }
       }
     };
   }

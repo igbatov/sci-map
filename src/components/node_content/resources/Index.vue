@@ -11,6 +11,7 @@
             :modelValue="rr.rating"
             :options="ratingList"
             @change="changeRating(rr.resourceID, $event)"
+            @mousedown="checkAuthorized"
             placeholder=""
             optionLabel="label"
             optionValue="value"
@@ -19,6 +20,7 @@
         <div class="p-col-1">
           <Button
             v-if="rr.ratedCount == -1"
+            @mousedown="checkAuthorized"
             @click="remove(rr.resourceID)"
             icon="pi pi-ban"
             class="p-button-rounded p-button-help p-button-outlined"
@@ -26,6 +28,7 @@
           />
           <Button
             v-else
+            @mousedown="checkAuthorized"
             @click="reportSpam(rr.resourceID)"
             icon="pi pi-exclamation-circle"
             class="p-button-rounded p-button-help p-button-outlined"
@@ -74,6 +77,12 @@ export default {
     const toast = useToast();
 
     return {
+      checkAuthorized: async (e: Event) => {
+        if (!store.state.user.user || store.state.user.user.isAnonymous) {
+          await store.dispatch(`${actions.confirmSignInPopup}`, confirm);
+          e.preventDefault()
+        }
+      },
       changeRating: (
         resourceID: string,
         e: { originalEvent: Event; value: string }
