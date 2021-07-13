@@ -3,6 +3,9 @@ const admin = require('firebase-admin');
 const utils = require('./utils.js');
 const logger = require('./logger.js');
 
+/**
+ * Remove rating if everybody removed their ratings of this resource
+ */
 removeAllZeroRating = async function(ctx, resourceRatingPath){
   await admin.database().ref(resourceRatingPath).transaction( (ratingValues) => {
     // Firebase usually returns a null value while retrieving a key for the first time
@@ -43,12 +46,12 @@ exports.updateResourceRating = functions.database.ref('node_content/{userID}/{no
     if (change.after.exists()) {
       await admin.database().ref().update({
         [`node_content_aggregate/${ctx.params.nodeID}/nodeID`]: ctx.params.nodeID,
-        [`node_content_aggregate/${ctx.params.nodeID}/resourceRatings/${ctx.params.resourceID}/resourceID`]: ctx.params.resourceID,
+        [`${resourceRatingPath}/resourceID`]: ctx.params.resourceID,
       })
       const key = `${resourceRatingPath}/rating/${change.after.val()}`
       await utils.counterIncrease(ctx, key)
     }
 
-    // remove rating if everybody removed their ratings of this resource
-    await removeAllZeroRating(ctx, resourceRatingPath)
+    // !!! this does not work correctly (seems to interleave somehow with previous code)
+    // await removeAllZeroRating(ctx, resourceRatingPath)
   });

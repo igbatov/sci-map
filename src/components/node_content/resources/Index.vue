@@ -1,6 +1,6 @@
 <template>
   <AddResourceForm :resources="resources" />
-  <div class="p-grid" v-for="rr of resourcesRating" :key="rr.resourceID">
+  <div class="p-grid" v-for="rr of ratings" :key="rr.resourceID">
     <div class="p-col-12" v-if="!rr.spam">
       <div class="p-grid">
         <div class="p-col-8">
@@ -19,7 +19,7 @@
         </div>
         <div class="p-col-1">
           <Button
-            v-if="rr.ratedCount == -1"
+            v-if="isRatedByCurrentUser(rr.ratedCount)"
             @mousedown="checkAuthorized"
             @click="remove(rr.resourceID)"
             icon="pi pi-ban"
@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { PropType } from "vue";
+import {computed, PropType} from "vue";
 import { Resource } from "@/store/resources";
 import { ResourceRating } from "../../../store/node_content";
 import Dropdown from "primevue/dropdown";
@@ -51,6 +51,7 @@ import { useConfirm } from "primevue/useconfirm";
 import { useToast } from "primevue/usetoast";
 import { actions, useStore } from "@/store";
 import AddResourceForm from "./AddResourceForm.vue";
+import { orderBy } from "lodash";
 
 export default {
   name: "Resources",
@@ -76,7 +77,12 @@ export default {
     const confirm = useConfirm();
     const toast = useToast();
 
+    const ratings = computed(() => orderBy(props.resourcesRating, ["rating", "ratedCount"], ["desc", "desc"]))
     return {
+      ratings,
+      isRatedByCurrentUser: (ratedCount: number) => {
+        return ratedCount == -1;
+      },
       checkAuthorized: async (e: Event) => {
         if (!store.state.user.user || store.state.user.user.isAnonymous) {
           await store.dispatch(`${actions.confirmSignInPopup}`, confirm);

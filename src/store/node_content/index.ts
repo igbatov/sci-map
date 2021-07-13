@@ -109,10 +109,14 @@ export type NodeContent = {
 };
 
 export interface State {
+  generalNodeContents: Record<string, NodeContent>;
+  userNodeContents: Record<string, NodeContent>;
   nodeContents: Record<string, NodeContent>;
 }
 
 export const mutations = {
+  SET_GENERAL_CONTENTS: "SET_GENERAL_CONTENTS",
+  SET_USER_CONTENTS: "SET_USER_CONTENTS",
   SET_CONTENTS: "SET_CONTENTS",
 
   // NodeContent fields
@@ -223,6 +227,30 @@ export const store = {
     },
 
     /**
+     * SET_USER_CONTENTS
+     * @param state
+     * @param nodeContents
+     */
+    [mutations.SET_USER_CONTENTS](
+      state: State,
+      nodeContents: Record<string, NodeContent>
+    ) {
+      state.userNodeContents = nodeContents;
+    },
+
+    /**
+     * SET_AGGREGATE_CONTENTS
+     * @param state
+     * @param nodeContents
+     */
+    [mutations.SET_GENERAL_CONTENTS](
+      state: State,
+      nodeContents: Record<string, NodeContent>
+    ) {
+      state.generalNodeContents = nodeContents;
+    },
+
+    /**
      * SET_NODE_VIDEO
      * @param state
      * @param v
@@ -290,6 +318,7 @@ export const store = {
       }
       state.nodeContents[v.nodeID].resourceRatings[v.resourceID].rating =
         v.rating;
+      state.nodeContents[v.nodeID].resourceRatings[v.resourceID].ratedCount = -1
     },
     /**
      * REMOVE_NODE_RESOURCE_RATING
@@ -303,10 +332,13 @@ export const store = {
       if (!state.nodeContents[v.nodeID]) {
         return;
       }
-      if (!state.nodeContents[v.nodeID].resourceRatings[v.resourceID]) {
+      if (typeof state.nodeContents[v.nodeID].resourceRatings[v.resourceID] === 'undefined') {
         return;
       }
       delete state.nodeContents[v.nodeID].resourceRatings[v.resourceID];
+      if (typeof state.generalNodeContents[v.nodeID].resourceRatings[v.resourceID] !== 'undefined') {
+        state.nodeContents[v.nodeID].resourceRatings[v.resourceID] = state.generalNodeContents[v.nodeID].resourceRatings[v.resourceID]
+      }
     },
 
     /**

@@ -155,7 +155,12 @@ function mergeResourceRatings(
 ): Record<string, ResourceRating> {
   const r: Record<string, ResourceRating> = {};
   for (const resourceID in generalRatings) {
-    if (userRatings && userRatings[resourceID]) {
+    if (
+      userRatings &&
+      userRatings[resourceID] &&
+      userRatings[resourceID].rating !== undefined &&
+      userRatings[resourceID].rating !== null)
+    {
       r[resourceID] = userRatings[resourceID];
     } else {
       r[resourceID] = generalRatings[resourceID];
@@ -163,6 +168,29 @@ function mergeResourceRatings(
   }
 
   return r;
+}
+
+export function mergeUserContentIntoGeneral(
+  userNodeContents: Record<string, NodeContent>,
+  nodeContents: Record<string, NodeContent>
+) {
+  for (const id in userNodeContents) {
+    nodeContents[id].video = userNodeContents[id].video;
+    nodeContents[id].wikipedia = userNodeContents[id].wikipedia;
+    nodeContents[id].comment = userNodeContents[id].comment;
+    nodeContents[id].resourceRatings = mergeResourceRatings(
+      userNodeContents[id].resourceRatings,
+      nodeContents[id].resourceRatings
+    );
+    for (const i in userNodeContents[id].vacancies) {
+      nodeContents[id].vacancies[i].spam =
+        userNodeContents[id].vacancies[i].spam;
+    }
+    for (const i in userNodeContents[id].crowdfundingList) {
+      nodeContents[id].crowdfundingList[i].spam =
+        userNodeContents[id].crowdfundingList[i].spam;
+    }
+  }
 }
 
 export async function fetchNodeContents(user: firebase.User | null) {
@@ -191,6 +219,12 @@ export async function fetchNodeContents(user: firebase.User | null) {
     } as NodeContent;
   }
 
+  // fix in store
+  store.commit(
+    `nodeContent/${nodeContentMutations.SET_GENERAL_CONTENTS}`,
+    clone(nodeContents)
+  );
+
   if (user) {
     const [userNodeContents, err] = await api.getNodeContents(user);
     if (userNodeContents == null || err) {
@@ -198,24 +232,14 @@ export async function fetchNodeContents(user: firebase.User | null) {
       return;
     }
 
+    // fix in store
+    store.commit(
+      `nodeContent/${nodeContentMutations.SET_USER_CONTENTS}`,
+      userNodeContents
+    );
+
     // "merge" into general node content
-    for (const id in userNodeContents) {
-      nodeContents[id].video = userNodeContents[id].video;
-      nodeContents[id].wikipedia = userNodeContents[id].wikipedia;
-      nodeContents[id].comment = userNodeContents[id].comment;
-      nodeContents[id].resourceRatings = mergeResourceRatings(
-        userNodeContents[id].resourceRatings,
-        nodeContents[id].resourceRatings
-      );
-      for (const i in userNodeContents[id].vacancies) {
-        nodeContents[id].vacancies[i].spam =
-          userNodeContents[id].vacancies[i].spam;
-      }
-      for (const i in userNodeContents[id].crowdfundingList) {
-        nodeContents[id].crowdfundingList[i].spam =
-          userNodeContents[id].crowdfundingList[i].spam;
-      }
-    }
+    mergeUserContentIntoGeneral(userNodeContents, nodeContents)
   }
 
   console.log("nodeContents", nodeContents);
