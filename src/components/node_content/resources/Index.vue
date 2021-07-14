@@ -1,7 +1,7 @@
 <template>
   <AddResourceForm :resources="resources" />
   <div class="p-grid" v-for="rr of ratings" :key="rr.resourceID">
-    <div class="p-col-12" v-if="!rr.spam">
+    <div class="p-col-12" :class="{'user-rated': isRatedByCurrentUser(rr.ratedCount)}" v-if="!rr.spam">
       <div class="p-grid">
         <div class="p-col-8">
           {{ resources[rr.resourceID].title }}
@@ -143,3 +143,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.user-rated {
+  background-color: #C6F68D;
+}
+</style>
