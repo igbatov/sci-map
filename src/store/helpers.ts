@@ -175,6 +175,9 @@ export function mergeUserContentIntoGeneral(
   nodeContents: Record<string, NodeContent>
 ) {
   for (const id in userNodeContents) {
+    if (!nodeContents[id]) {
+      continue
+    }
     nodeContents[id].video = userNodeContents[id].video;
     nodeContents[id].wikipedia = userNodeContents[id].wikipedia;
     nodeContents[id].comment = userNodeContents[id].comment;

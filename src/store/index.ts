@@ -477,7 +477,10 @@ export const store = createStore<State>({
       { commit, state }: { commit: Commit; state: State },
       v: { nodeID: string; wikipedia: string }
     ): Promise<ErrorKV> {
-      const oldValue = state.nodeContent.nodeContents[v.nodeID].wikipedia
+      let oldValue = ""
+      if (state.nodeContent.nodeContents[v.nodeID]) {
+        oldValue = state.nodeContent.nodeContents[v.nodeID].wikipedia
+      }
 
       // optimistic change in local store
       commit(`nodeContent/${nodeContentMutations.SET_NODE_WIKIPEDIA}`, v);
