@@ -1,5 +1,39 @@
 # sci-map-vue3-ts
 
+## Concept
+The main goal of the project is to enforce one's curiosity in science
+and channel it to practical action - job change or crowdfunding support
+
+We try to implement it with the crowdsources-based map of knowledge.
+
+Hypothesis is that one will use it to discover new knowledge as well as add her own notes
+and eventually be ready to change job or choose right crowdfunding project and support it.
+
+Specific rules that define how sci-map should work is defined by community
+
+### The first draft
+First draft of rules is based on [Barbara Minto pyramid](https://medium.com/lessons-from-mckinsey/the-pyramid-principle-f0885dd3c5c7) and
+[Zettelkasten](https://writingcooperative.com/zettelkasten-how-one-german-scholar-was-so-freakishly-productive-997e4e0ca125)
+
+Namely - node contains
+1) one's personal description of the topic (theory/fact/concept/problem)
+2) links to resources (books, videos, blog articles etc) that describes topic in details
+3) links to the jobs that let one make progress on the topic
+4) links to crowdfunding campaigns that push this topic forward
+5) children nodes that are somehow connected the described node
+
+### Process of adding new node 
+Any registered user can add new node and as well as connect/move any nodes (connected node is seen as a children node).
+User tries to categorize children nodes according to Minto principles
+When he is ready to publish her changes for public map he pushes the commit button
+New node is added to other users maps and those of them who saw the node whether moves it, deletes or does nothing.
+
+After sometime majority will have some common form of this new/connect/move. This change will be applied to maps of those who
+did not check (=looked on) those changes. And this change will also be offered to this who did their own changes (including initial user)
+making their own changes uncommited.
+
+This way every person will have its own common and uncommited version of nodes he checked and common version of nodes did not check yet.
+
 ## Project setup
 ```
 yarn install
@@ -111,14 +145,5 @@ Just ssh to your host and do
 docker system prune --all
 ```
 
-## Rules of classification
-General rule of classification is somewhat similar to Barbara Minto pyramid ([summary](https://medium.com/lessons-from-mckinsey/the-pyramid-principle-f0885dd3c5c7)):
- - parent node gives a summary of its children nodes and contains a mental picture of context, situation or complication
- - parent node is more abstract and tend to be more fun and popular - one of its main goals is to give the reader a sense of the theme and arouse curiosity
- - children nodes give mutually exclusive and completely exhaustive partition of the parent content
- - children nodes also logically connected and structured in obvious manner - by size or timeline or academic field, etc
- - number of children should be kept small, no more than 12 (ideally around 5-7)
- 
-Every node must have a link to a wikipedia article and may have links to other resources
-(articles, books chapters, online lecture, etc) that explains the same idea with different words and examples 
+
 
