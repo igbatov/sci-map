@@ -1,5 +1,5 @@
 # build stage
-FROM node:15.1.0-alpine3.12 as build-stage
+FROM node:15.3.0-alpine3.12 as build-stage
 WORKDIR /app
 COPY package.json yarn.lock ./
 RUN apk add --update --no-cache python3 g++ make\
