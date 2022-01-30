@@ -58,5 +58,8 @@
     "sass-loader": "^8.0.2",
     "typescript": "~3.9.3",
     "vue-jest": "^5.0.0-0"
+  },
+  "resolutions": {
+    "deasync": "0.1.16"
   }
 }
