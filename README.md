@@ -4,35 +4,61 @@
 The main goal of the project is to enforce one's curiosity in science
 and channel it to practical action - job change or crowdfunding support
 
-We try to implement it with the crowdsources-based map of knowledge.
+We are implementing it with the crowdsources-based map of knowledge.
 
-Hypothesis is that one will use it to discover new knowledge as well as add her own notes
-and eventually be ready to change job or choose right crowdfunding project and support it.
+Hypothesis is that such map will help discover new knowledge efficiently and one will start making her own notes
+and eventually be ready to change job to more suitable or choose crowdfunding project to support.
 
-Specific rules that define how sci-map should work is defined by community
+Specific rules that define how sci-map should be organized is defined by community.
 
-### The first draft
-First draft of rules is based on [Barbara Minto pyramid](https://medium.com/lessons-from-mckinsey/the-pyramid-principle-f0885dd3c5c7) and
-[Zettelkasten](https://writingcooperative.com/zettelkasten-how-one-german-scholar-was-so-freakishly-productive-997e4e0ca125)
+### The first draft of rules
+First draft of rules is based on [Zettelkasten](https://writingcooperative.com/zettelkasten-how-one-german-scholar-was-so-freakishly-productive-997e4e0ca125)
+but adds some structure.
 
-Namely - node contains
-1) one's personal description of the topic (theory/fact/concept/problem)
+Any registered user can add new node and as well as delete old connections and add new ones (connected node is seen as a children nodes).
+
+Node can have the following types
+- phenomena - description of some phenomena that produces facts. For example Hydrogen Atom is a phenomena that generates facts
+- fact - is a result of one or several experiments and used as an argument for or against a concept
+- concept - some definition that is helpful in description of phenomena. For example "integral" is a useful concept
+- problem - is an open question that has no yet answered. For example "Measurement Problem" in quantum mechanics
+- group - used as a category to group together some other nodes, for example "Atoms" is group for phenomena nodes "Hydrogen Atom", "Helium Atom" and so on
+
+There are some common group names, one should consider using then before any new group
+- produces - group for phenomenas that is based on the root phenomena
+- concepts - group of concepts useful for understanding phenomena under consideration
+- facts - group of known result of experiments
+- structure - description of parts and functions of phenomena
+- problems - group of questions that need to be answered
+
+```
+Example
+Say we want to add a node that describes "Godel incompleteness theorem" - this is phenomena 
+(not fact because it is not result of an experiment).
+To find node to add it, please, try to think about phenomenas that give rise to this.
+If you will think about it you will have better understanding of phenomena and better place to fit on map.
+In our case it seems that Logic and Arithmetic produces "Godel incompleteness theorem".
+
+While adding select will provide you with nodes that may already represent the one you're trying to add.
+```
+
+When one is ready to publish her changes for public map she pushes the "Сommit" button
+Modification is added to other users maps and those who edited node or subscribed to node changes will receive email on modification.
+They may also do some edits. If someone is also editing node locally, it will be visible to all viewers.
+If after commit conflict is detected, then user will see changes commited before him and his own (uncommited because of conflict)
+version and act accordingly - manually merge person edits and do commit again.
+
+Not all nodes maybe of interest for particular person. Those that are personal interest can be marked as "personal interest"
+and be more viewable than peer nodes.
+
+### Node contents
+
+Node content contains
+1) user personal description of the topic (theory/fact/concept/problem)
 2) links to resources (books, videos, blog articles etc) that describes topic in details
-3) links to the jobs that let one make progress on the topic
+3) links to the jobs that help humanity make progress on the topic
 4) links to crowdfunding campaigns that push this topic forward
 5) children nodes that are somehow connected the described node
-
-### Process of adding new node 
-Any registered user can add new node and as well as connect/move any nodes (connected node is seen as a children node).
-User tries to categorize children nodes according to Minto principles
-When he is ready to publish her changes for public map he pushes the commit button
-New node is added to other users maps and those of them who saw the node whether moves it, deletes or does nothing.
-
-After sometime majority will have some common form of this new/connect/move. This change will be applied to maps of those who
-did not check (=looked on) those changes. And this change will also be offered to this who did their own changes (including initial user)
-making their own changes uncommited.
-
-This way every person will have its own common and uncommited version of nodes he checked and common version of nodes did not check yet.
 
 ## Project setup
 ```
