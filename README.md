@@ -25,7 +25,7 @@ Node can have the following types
 - group - used as a category to group together some other nodes, for example "Atoms" is group for phenomena nodes "Hydrogen Atom", "Helium Atom" and so on
 
 There are some common group names, one should consider using then before any new group
-- produces - group for phenomenas that is based on the root phenomena
+- produces - group for phenomenas that is based on the parent phenomena (there maybe multiple parents)
 - concepts - group of concepts useful for understanding phenomena under consideration
 - facts - group of known result of experiments
 - structure - description of parts and functions of phenomena
