@@ -18,10 +18,10 @@ but adds some structure.
 Any registered user can add new node and as well as delete old connections and add new ones (connected node is seen as a children nodes).
 
 Node can have the following types
-- phenomena - description of some phenomena that produces facts. For example Hydrogen Atom is a phenomena that generates facts
+- theory - description of some phenomena that produces facts. For example Hydrogen Atom is a phenomena that generates facts. Theory may have alternatives. For example theory of strings has different alternatives.
 - fact - is a result of one or several experiments and used as an argument for or against a concept
 - concept - some definition that is helpful in description of phenomena. For example "integral" is a useful concept
-- problem - is an open question that has no yet answered. For example "Measurement Problem" in quantum mechanics
+- question - is an open question that has no yet answered. For example "Measurement Problem" in quantum mechanics
 - group - used as a category to group together some other nodes, for example "Atoms" is group for phenomena nodes "Hydrogen Atom", "Helium Atom" and so on
 
 There are some common group names, one should consider using then before any new group
@@ -59,6 +59,18 @@ Node content contains
 3) links to the jobs that help humanity make progress on the topic
 4) links to crowdfunding campaigns that push this topic forward
 5) children nodes that are somehow connected the described node
+
+## Проблема с представлением в виде mind-map
+На примере mindmeister. 
+1) Узлы хочется помечать типом утверждения (теория, факт, вопрос, концепт, группа) одновременно помечать некоторые 
+узлы как интересные лично мне, чтобы они были более заметны по сравнению с остальными (занимали 60% визуального пространства).
+Так же и неинтересные лично мне - чтобы они были менее заметные чем "интересные" и "неотмеченные".
+2) Один и тот же узел вместе со всеми потомками может находится в разных частях дерева.
+Или например, вирус "Helicobacter pylori" может быть как в "Multiatom Structures"->"Organic Compounds"->"Viruses" так и в
+Human->Science->Medicine->"Classification of Diseases"->"Cancer"->"Gastric Cancer"->"Causes" 
+и в Human->Problems->Immortality->"Causes of death and disability"
+3) Естественная структура преполагает что любой феномен (=теория) порождены несколькими разными феноменами.
+В дереве непонятно как наглядно отобразить что у одного узла несколько предков.
 
 ## Project setup
 ```
