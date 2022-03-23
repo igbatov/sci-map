@@ -1,10 +1,10 @@
 # sci-map-vue3-ts
 
 ## Concept
-The main goal of the project is to enforce one's curiosity in science
-and channel it to practical action - job change or crowdfunding support
+The main goal of the project is to enforce one's curiosity in exploring science
+and ease channeling this curiosity to practical action - job change or crowdfunding support
 
-We are implementing it with the crowdsources-based map of knowledge.
+The idea is to create crowdsources-based map that gives structure in scientific knowledge, job internships and crowdfunding projects.
 
 Hypothesis is that such map will help discover new knowledge efficiently and one will start making her own notes
 and eventually be ready to change job to more suitable or choose crowdfunding project to support.
@@ -15,32 +15,50 @@ Specific rules that define how sci-map should be organized is defined by communi
 First draft of rules is based on [Zettelkasten](https://writingcooperative.com/zettelkasten-how-one-german-scholar-was-so-freakishly-productive-997e4e0ca125)
 but adds some structure.
 
-Any registered user can add new node and as well as delete old connections and add new ones (connected node is seen as a children nodes).
+We postulate that everything in the world is the phenomena that has some internal structure is produced
+by one multiple other phenomenas.
 
-Node can have the following types
-- theory - description of some phenomena that produces facts. For example Hydrogen Atom is a phenomena that generates facts. Theory may have alternatives. For example theory of strings has different alternatives.
-- fact - is a result of one or several experiments and used as an argument for or against a concept
-- concept - some definition that is helpful in description of phenomena. For example "integral" is a useful concept
+For example fields produces atoms, atoms produces molecules, molecules produces cells, cell produces animals,
+animals produces Humans, Culture, Social groups and so on.
+
+So basically we have a graph of phenomenas that is connected by which produces which.
+
+However, number of phenomenas is enormous, so to ease exploration we organize them in groups.
+For example Human produces Science, Languages, Arts, Philosophy, Countries, Companies and so on
+And Science is just and name for group of other groups - namely Physics, Medicine, Mathematics, Economics and so on.
+
+Also, very often we do not know exactly what produces phenomena, but know correlations and have some ideas (hypothesis, theories)
+of production mechanism and some maybe some facts these ideas is based.
+This production mechanisms should be verified by further experiments.
+
+And also some phenomenas is a complex concepts that his its non-trivial structure.
+For example cell or human body is such a complex phenomenas with its structure.
+
+And last but not least we have questions that one wants to answer.
+
+Node can have the following types of nodes
+- phenomena
+- fact - is a special type of phenomena that can be described as a result of one or several experiments and used as an argument for or against a concept
+- theory (idea, hypothesis) - description of some theory that explains phenomenas (facts is also phenomenas). Theory may have alternatives. For example theory of strings has different alternatives.
+- group - used as a category to group together some other phenomenas, for example "Atoms" is group for phenomena nodes "Hydrogen Atom", "Helium Atom" and so on
 - question - is an open question that has no yet answered. For example "Measurement Problem" in quantum mechanics
-- group - used as a category to group together some other nodes, for example "Atoms" is group for phenomena nodes "Hydrogen Atom", "Helium Atom" and so on
 
-There are some common group names, one should consider using then before any new group
-- produces - group for phenomenas that is based on the parent phenomena (there maybe multiple parents)
-- concepts - group of concepts useful for understanding phenomena under consideration
-- facts - group of known result of experiments
-- structure - description of parts and functions of phenomena
-- problems - group of questions that need to be answered
+And there are following type of connections between nodes
+- produces - connect phenomena-causes to phenomena-consequences
+- structure - nodes that explains structure of phenomena
+- is a subgroup - used to connect classification of phenomenas
 
 ```
 Example
-Say we want to add a node that describes "Godel incompleteness theorem" - this is phenomena 
-(not fact because it is not result of an experiment).
-To find node to add it, please, try to think about phenomenas that give rise to this.
+Say we want to add a node that describes "Godel incompleteness theorem" - this is phenomena.
+To find node to add it, please, try to think about phenomenas that produces this phenomena, what it is based on.
 If you will think about it you will have better understanding of phenomena and better place to fit on map.
 In our case it seems that Logic and Arithmetic produces "Godel incompleteness theorem".
 
 While adding select will provide you with nodes that may already represent the one you're trying to add.
 ```
+
+Any registered user can add new node and as well as delete old connections and add new ones (connected node is seen as a children nodes).
 
 When one is ready to publish her changes for public map she pushes the "Сommit" button
 Modification is added to other users maps and those who edited node or subscribed to node changes will receive email on modification.
@@ -54,7 +72,7 @@ and be more viewable than peer nodes.
 ### Node contents
 
 Node content contains
-1) user personal description of the topic (theory/fact/concept/problem)
+1) user personal description of the topic
 2) links to resources (books, videos, blog articles etc) that describes topic in details
 3) links to the jobs that help humanity make progress on the topic
 4) links to crowdfunding campaigns that push this topic forward
