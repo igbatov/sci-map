@@ -38,10 +38,10 @@ And last but not least we have questions that one wants to answer.
 
 Node can have the following types of nodes
 - phenomena - depicts anything that can express itself somehow (atom, medicine, fish, war and so on)
+- theory (idea, hypothesis) - special case of phenomena - description of some idea that explains phenomenas (fact is special case of phenomena). Theory may have different alternatives. For example theory of strings has different alternatives.
 - fact - is a special case of phenomena that can be described as a result of experiment and may be used as an argument for or against a theory
-- group - used as a category to group together some other phenomenas, for example "Atoms" is group for phenomena nodes "Hydrogen Atom", "Helium Atom" and so on
-- theory (idea, hypothesis) - description of some idea that explains phenomenas (fact is special case of phenomena). Theory may have different alternatives. For example theory of strings has different alternatives.
 - question - is an open question that has no yet answered. For example "Measurement Problem" in quantum mechanics
+- group - used as a auxiliary node to group together other nodes - for example "Atoms" is group for phenomena nodes "Hydrogen Atom", "Helium Atom" and so on
 
 And there are following type of connections between nodes
 - produces - connect phenomena-causes to phenomena-consequences, for example fields produces atoms that produces molecules that produces cells that produces human that produces mathematics, spaceships, revolutions and so on
