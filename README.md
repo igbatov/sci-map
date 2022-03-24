@@ -44,7 +44,7 @@ Node can have the following types of nodes
 - question - is an open question that has no yet answered. For example "Measurement Problem" in quantum mechanics
 
 And there are following type of connections between nodes
-- produces - connect phenomena-causes to phenomena-consequences
+- produces - connect phenomena-causes to phenomena-consequences, for example fields produces atoms that produces molecules that produces cells that produces human that produces mathematics, spaceships, revolutions and so on
 - structure - nodes that explains structure of phenomena
 - is a subgroup - used to connect groups in a hierarchical manner
 
