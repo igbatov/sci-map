@@ -37,16 +37,16 @@ For example cell or human body is such a complex phenomenas with its structure.
 And last but not least we have questions that one wants to answer.
 
 Node can have the following types of nodes
-- phenomena
-- fact - is a special type of phenomena that can be described as a result of one or several experiments and used as an argument for or against a concept
-- theory (idea, hypothesis) - description of some theory that explains phenomenas (facts is also phenomenas). Theory may have alternatives. For example theory of strings has different alternatives.
+- phenomena - depicts anything that can express itself somehow (atom, medicine, fish, war and so on)
+- fact - is a special case of phenomena that can be described as a result of experiment and may be used as an argument for or against a theory
 - group - used as a category to group together some other phenomenas, for example "Atoms" is group for phenomena nodes "Hydrogen Atom", "Helium Atom" and so on
+- theory (idea, hypothesis) - description of some idea that explains phenomenas (fact is special case of phenomena). Theory may have different alternatives. For example theory of strings has different alternatives.
 - question - is an open question that has no yet answered. For example "Measurement Problem" in quantum mechanics
 
 And there are following type of connections between nodes
 - produces - connect phenomena-causes to phenomena-consequences
 - structure - nodes that explains structure of phenomena
-- is a subgroup - used to connect classification of phenomenas
+- is a subgroup - used to connect groups in a hierarchical manner
 
 ```
 Example
