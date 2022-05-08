@@ -1,8 +1,7 @@
 # sci-map-vue3-ts
 
 ## Concept
-The main goal of the project is to enforce one's curiosity in exploring science through ease though depth
-understanding of topics and ease channeling this curiosity to practical action - job change or crowdfunding support
+The main goal of the project is to give deep understanding of how things work and ease way to change it.
 
 The idea is to create crowdsources-based map that gives structure in scientific knowledge, job internships and crowdfunding projects.
 
