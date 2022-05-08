@@ -12,8 +12,8 @@ Specific rules that define how sci-map should be organized is defined by communi
 Below is an up-to-date formulation of these rules.
 
 ### Rules
-First draft of rules is based on [Zettelkasten](https://writingcooperative.com/zettelkasten-how-one-german-scholar-was-so-freakishly-productive-997e4e0ca125)
-but adds some structure and rules for quality of content to emerge.
+First draft is based on [Zettelkasten](https://writingcooperative.com/zettelkasten-how-one-german-scholar-was-so-freakishly-productive-997e4e0ca125)
+but adds some structure and restrictions for quality of content to emerge.
 
 Let's postulate that everything in the world is the phenomena that 
 1) has some internal mechanics/structure and 
