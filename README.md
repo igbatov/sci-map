@@ -13,7 +13,7 @@ Specific rules that define how sci-map should be organized is defined by communi
 
 ### Rules
 First draft of rules is based on [Zettelkasten](https://writingcooperative.com/zettelkasten-how-one-german-scholar-was-so-freakishly-productive-997e4e0ca125)
-but adds some structure and rules for quality content to emerge.
+but adds some structure and rules for quality of content to emerge.
 
 Let's postulate that everything in the world is the phenomena that 
 1) has some internal mechanics/structure and 
@@ -38,7 +38,7 @@ And last but not least we have questions that one wants to answer.
 
 With this in mind let's define structure of map
 
-### Structure
+### Phenomena-produces-phenomena structure
 Node can have one of the following types
 - phenomena - depicts anything that expresses itself somehow (atom, medicine, fish, war and so on)
 - theory (idea, hypothesis) - is a description of how a phenomenas functions based on other already-known phenomenas (fact is special case of phenomena).
@@ -75,31 +75,27 @@ They may also do some edits. If someone is also editing node locally, this fact 
 If after commit conflict is detected, then user will see changes commited before him and his own (uncommited because of conflict)
 version and act accordingly - manually merge person edits and do commit again.
 
-Some nodes maybe interesting only to you, and it is okay. Exclude this nodes from commit marking them as "only personal interest"
-can be marked as "personal interest".
+Some nodes maybe interesting only to you (you don't want to publish it or don't think it is useful for others) - it is okay.
+Exclude such nodes from commit marking them as "only personal interest".
 
-You can also make some nodes more visible to you, this changes will not be commited.
+You can also make some nodes more visible to you (make them bigger) - this changes also will not be commited.
+
+### Special types
+Edge science cannot be organized in a clear phenomena-produces-phenomena structures described above.
+Sometimes you have just several small pieces of huge puzzle yet to be solved.
+However, this pieces is worth to be described to ease further puzzle investigation (clear phenomena-produces-phenomena description is a final goal).
+That is why there are two special group type for node - "book" and "questions".
+"Book" is just root group node for mindmap of ideas/theories/facts/whatever described in some book/course/whatever.
+"Questions" is a root for questions on the subject that you want to find answer to.
 
 ### Node contents
 
-Node content contains
-1) user personal description of the topic
-2) links to resources (books, videos, blog articles etc) that describes topic in details
-3) links to the jobs that help humanity make progress on the topic
+Node content consists from
+1) users description of the topic
+2) connections to other nodes (see "type of connections")
+3) links to resources (books, videos, blog articles etc) that describes topic in details
 4) links to crowdfunding campaigns that push this topic forward
-5) children nodes that are somehow connected the described node
-
-## Проблема с представлением в виде mind-map
-На примере mindmeister. 
-1) Узлы хочется помечать типом утверждения (теория, факт, вопрос, концепт, группа) одновременно помечать некоторые 
-узлы как интересные лично мне, чтобы они были более заметны по сравнению с остальными (занимали 60% визуального пространства).
-Так же и неинтересные лично мне - чтобы они были менее заметные чем "интересные" и "неотмеченные".
-2) Один и тот же узел вместе со всеми потомками может находится в разных частях дерева.
-Или например, вирус "Helicobacter pylori" может быть как в "Multiatom Structures"->"Organic Compounds"->"Viruses" так и в
-Human->Science->Medicine->"Classification of Diseases"->"Cancer"->"Gastric Cancer"->"Causes" 
-и в Human->Problems->Immortality->"Causes of death and disability"
-3) Естественная структура преполагает что любой феномен (=теория) порождены несколькими разными феноменами.
-В дереве непонятно как наглядно отобразить что у одного узла несколько предков.
+5) links to the jobs that help humanity make progress on the topic
 
 ## Project setup
 ```
