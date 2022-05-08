@@ -24,15 +24,15 @@ animals produces humans, humans produce culture, science, countries and so on.
 
 So basically we have a graph of phenomenas that is connected by which produces which.
 
-However, number of phenomenas is produced may enormous, so to ease exploration we may organize them in groups.
+However, number of phenomenas is produced may enormous, so to ease exploration we organize them in groups.
 For example Human produces Science, Languages, Arts, Philosophy, Countries, Companies and so on
 And Science is just and name for group of other groups - namely Physics, Medicine, Mathematics, Economics and so on.
 
-Also, very often we do not know exactly what produces phenomena, but know correlations and have some ideas (hypothesis, theories)
-of production mechanism and maybe some facts these ideas is based on. This hypothesis should be verified by further experiments.
+Also, very often we still do not know exactly what really produces phenomena, but know correlations and have some ideas (hypothesis, theories)
+of mechanisms and maybe some facts these ideas is based on. We know that this hypothesis should be verified by further experiments.
 
 And also some phenomenas involve a complex concepts that has its non-trivial structure.
-For example cell is such a complex phenomena with its structure.
+(For example a cell is such a complex phenomena with its structure).
 
 And last but not least we have questions that one wants to answer.
 
@@ -58,7 +58,7 @@ To find node to connect, first, try to think about phenomenas that produces "God
 If you will think about it you will have better understanding of phenomena and better place to fit on map.
 In our case it seems that "Logic" and "Arithmetic" produces "Godel incompleteness theorem".
 ```
-While adding new node you will notice autoselect that provides you with hints - nodes that may already represent the one you're going to add.
+While adding new node you will notice autoselect with hints - nodes that may already represent the one you're going to add.
 If you see a hint that already describes what you want to add, then, please, take time and read it.
 If after reading you feel that your description depicts phenomena in another, maybe more understandable way - feel free to add it as an alternative description.
 Every description will be voted and most popular will be shown first.
@@ -80,13 +80,13 @@ Exclude such nodes from commit marking them as "only personal interest".
 
 You can also make some nodes more visible to you (make them bigger) - this changes also will not be commited.
 
-### Special types
+### Special type nodes
 Edge science cannot be organized in a clear phenomena-produces-phenomena structures described above.
 Sometimes you have just several small pieces of huge puzzle yet to be solved.
 However, this pieces is worth to be described to ease further puzzle investigation (clear phenomena-produces-phenomena description is a final goal).
 That is why there are two special group type for node - "book" and "questions".
-"Book" is just root group node for mindmap of ideas/theories/facts/whatever described in some book/course/whatever.
-"Questions" is a root for questions on the subject that you want to find answer to.
+"Book" is just root group node for mindmap of ideas/theories/facts/whatever somehow gathered and described in some book/course/whatever.
+"Questions" is a root for questions on the subject that you want to find answer to and connects whatever nodes that can help answer this question.
 
 ### Node contents
 
