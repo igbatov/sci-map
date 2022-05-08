@@ -3,12 +3,13 @@
 ## Concept
 The main goal of the project is to ease profound understanding of how things really work and ease way to change it.
 
-The idea is to create crowdsources-based map that gives structure in scientific knowledge, job internships and crowdfunding projects.
+The idea is to create crowdsources-based map of scientific knowledge 
+driven by such rules that give rise to structured and profound understanding of the world.
 
-Hypothesis is that such map will help discover new knowledge efficiently and one will start making her own notes
-and eventually be ready to change job to more suitable his interests or choose crowdfunding project to support.
+It also gives network of people and actions that should be taken to change the world.
 
 Specific rules that define how sci-map should be organized is defined by community.
+Below is an up-to-date formulation of these rules.
 
 ### Rules
 First draft of rules is based on [Zettelkasten](https://writingcooperative.com/zettelkasten-how-one-german-scholar-was-so-freakishly-productive-997e4e0ca125)
