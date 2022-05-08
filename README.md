@@ -1,7 +1,7 @@
 # sci-map-vue3-ts
 
 ## Concept
-The main goal of the project is to give deep understanding of how things work and ease way to change it.
+The main goal of the project is to ease profound understanding of how things really work and ease way to change it.
 
 The idea is to create crowdsources-based map that gives structure in scientific knowledge, job internships and crowdfunding projects.
 
