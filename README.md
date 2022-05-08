@@ -1,73 +1,84 @@
 # sci-map-vue3-ts
 
 ## Concept
-The main goal of the project is to enforce one's curiosity in exploring science
-and ease channeling this curiosity to practical action - job change or crowdfunding support
+The main goal of the project is to enforce one's curiosity in exploring science through ease though depth
+understanding of topics and ease channeling this curiosity to practical action - job change or crowdfunding support
 
 The idea is to create crowdsources-based map that gives structure in scientific knowledge, job internships and crowdfunding projects.
 
 Hypothesis is that such map will help discover new knowledge efficiently and one will start making her own notes
-and eventually be ready to change job to more suitable or choose crowdfunding project to support.
+and eventually be ready to change job to more suitable his interests or choose crowdfunding project to support.
 
 Specific rules that define how sci-map should be organized is defined by community.
 
-### The first draft of rules
+### Rules
 First draft of rules is based on [Zettelkasten](https://writingcooperative.com/zettelkasten-how-one-german-scholar-was-so-freakishly-productive-997e4e0ca125)
-but adds some structure.
+but adds some structure and rules for quality content to emerge.
 
-We postulate that everything in the world is the phenomena that has some internal structure is produced
-by one multiple other phenomenas.
+Let's postulate that everything in the world is the phenomena that 
+1) has some internal mechanics/structure and 
+2) is produced by one or several other phenomenas.
 
 For example fields produces atoms, atoms produces molecules, molecules produces cells, cell produces animals,
-animals produces Humans, Culture, Social groups and so on.
+animals produces humans, humans produce culture, science, countries and so on.
 
 So basically we have a graph of phenomenas that is connected by which produces which.
 
-However, number of phenomenas is enormous, so to ease exploration we organize them in groups.
+However, number of phenomenas is produced may enormous, so to ease exploration we may organize them in groups.
 For example Human produces Science, Languages, Arts, Philosophy, Countries, Companies and so on
 And Science is just and name for group of other groups - namely Physics, Medicine, Mathematics, Economics and so on.
 
 Also, very often we do not know exactly what produces phenomena, but know correlations and have some ideas (hypothesis, theories)
-of production mechanism and some maybe some facts these ideas is based.
-This production mechanisms should be verified by further experiments.
+of production mechanism and maybe some facts these ideas is based on. This hypothesis should be verified by further experiments.
 
-And also some phenomenas is a complex concepts that his its non-trivial structure.
-For example cell or human body is such a complex phenomenas with its structure.
+And also some phenomenas involve a complex concepts that has its non-trivial structure.
+For example cell is such a complex phenomena with its structure.
 
 And last but not least we have questions that one wants to answer.
 
-Node can have the following types of nodes
-- phenomena - depicts anything that can express itself somehow (atom, medicine, fish, war and so on)
-- theory (idea, hypothesis) - special case of phenomena - description of some idea that explains phenomenas (fact is special case of phenomena). Theory may have different alternatives. For example theory of strings has different alternatives.
+With this in mind let's define structure of map
+
+### Structure
+Node can have one of the following types
+- phenomena - depicts anything that expresses itself somehow (atom, medicine, fish, war and so on)
+- theory (idea, hypothesis) - is a description of how a phenomenas functions based on other already-known phenomenas (fact is special case of phenomena).
+Theory may have different alternatives. For example theory of strings has different alternatives.
 - fact - is a special case of phenomena that can be described as a result of experiment and may be used as an argument for or against a theory
 - question - is an open question that has no yet answered. For example "Measurement Problem" in quantum mechanics
-- group - used as a auxiliary node to group together other nodes - for example "Atoms" is group for phenomena nodes "Hydrogen Atom", "Helium Atom" and so on
+- group - used as an auxiliary node to group together other nodes - for example "Atoms" is group for phenomena nodes "Hydrogen Atom", "Helium Atom" and so on
 
 And there are following type of connections between nodes
 - produces - connect phenomena-causes to phenomena-consequences, for example fields produces atoms that produces molecules that produces cells that produces human that produces mathematics, spaceships, revolutions and so on
-- structure - nodes that explains structure of phenomena
 - is a subgroup - used to connect groups in a hierarchical manner
 
 ```
 Example
 Say we want to add a node that describes "Godel incompleteness theorem" - this is phenomena.
-To find node to add it, please, try to think about phenomenas that produces this phenomena, what it is based on.
+To find node to connect, first, try to think about phenomenas that produces "Godel incompleteness theorem" - i e what it is based on.
 If you will think about it you will have better understanding of phenomena and better place to fit on map.
-In our case it seems that Logic and Arithmetic produces "Godel incompleteness theorem".
-
-While adding select will provide you with nodes that may already represent the one you're trying to add.
+In our case it seems that "Logic" and "Arithmetic" produces "Godel incompleteness theorem".
 ```
+While adding new node you will notice autoselect that provides you with hints - nodes that may already represent the one you're going to add.
+If you see a hint that already describes what you want to add, then, please, take time and read it.
+If after reading you feel that your description depicts phenomena in another, maybe more understandable way - feel free to add it as an alternative description.
+Every description will be voted and most popular will be shown first.
+If you think that description is ok but need some corrections - go on and make it.
+
+Connections of node with other nodes is treated the same way as node's content. Alternative explanations of the same node
+may have different connections.
 
 Any registered user can add new node and as well as delete old connections and add new ones (connected node is seen as a children nodes).
 
 When one is ready to publish her changes for public map she pushes the "Сommit" button
 Modification is added to other users maps and those who edited node or subscribed to node changes will receive email on modification.
-They may also do some edits. If someone is also editing node locally, it will be visible to all viewers.
+They may also do some edits. If someone is also editing node locally, this fact will be visible to all viewers.
 If after commit conflict is detected, then user will see changes commited before him and his own (uncommited because of conflict)
 version and act accordingly - manually merge person edits and do commit again.
 
-Not all nodes maybe of interest for particular person. Those that are personal interest can be marked as "personal interest"
-and be more viewable than peer nodes.
+Some nodes maybe interesting only to you, and it is okay. Exclude this nodes from commit marking them as "only personal interest"
+can be marked as "personal interest".
+
+You can also make some nodes more visible to you, this changes will not be commited.
 
 ### Node contents
 
