@@ -1,15 +1,16 @@
 # sci-map-vue3-ts
 
 ## Concept
-The main goal of the project is to ease profound understanding of how things really work and ease way to change it.
+The main goal of the project is to ease profound understanding of how things really work and ease way to change the world.
 
-The idea is to create crowdsources-based map of scientific knowledge 
-driven by such rules that give rise to structured and profound understanding of the world.
+The idea is to create crowdsources-based map of scientific knowledge driven by such rules that structured and profound knowledge is eventually emerged.
 
-It also gives network of people and actions that should be taken to change the world.
+It will also rise network of people and give actions that can be taken to change the world.
 
 Specific rules that define how sci-map should be organized is defined by community.
 Below is an up-to-date formulation of these rules.
+
+We believe the people that have a profound and deep understanding of some problem can formulate it understandable and inspiring way.
 
 ### Rules
 First draft is based on [Zettelkasten](https://writingcooperative.com/zettelkasten-how-one-german-scholar-was-so-freakishly-productive-997e4e0ca125)
