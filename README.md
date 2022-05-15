@@ -1,27 +1,28 @@
 # sci-map-vue3-ts
 
 ## Concept
-The main goal of the project is to ease profound understanding of how things really work and ease way to change the world.
+The main goal of the project is to ease access to deep and profound understanding of how things work and facilitate means to change the world.
 
-The idea is to create crowdsources-based map of scientific knowledge driven by such rules that structured and profound knowledge is eventually emerged.
+The idea is to create crowdsources-based map of scientific knowledge driven by rules that raise structured and profound knowledge.
 
-It will also rise network of people and give actions that can be taken to change the world.
+It will also rise network of people and give access to action that can be taken to change the world.
 
 Specific rules that define how sci-map should be organized is defined by community.
 Below is an up-to-date formulation of these rules.
 
-We believe the people that have a profound and deep understanding of some problem can formulate it understandable and inspiring way.
+We believe that the more profound and deep understanding of a field one has the more clear explanation she can give.
 
-### Rules
-First draft is based on [Zettelkasten](https://writingcooperative.com/zettelkasten-how-one-german-scholar-was-so-freakishly-productive-997e4e0ca125)
+## Rules
+First draft is based on concept of [Zettelkasten](https://writingcooperative.com/zettelkasten-how-one-german-scholar-was-so-freakishly-productive-997e4e0ca125)
 but adds some structure and restrictions for quality of content to emerge.
 
+### General assumptions
 Let's postulate that everything in the world is the phenomena that 
 1) has some internal mechanics/structure and 
 2) is produced by one or several other phenomenas.
 
-For example fields produces atoms, atoms produces molecules, molecules produces cells, cell produces animals,
-animals produces humans, humans produce culture, science, countries and so on.
+For example quantum fields produces atoms, atoms produces molecules, molecules produces cells, cell produces animals,
+animals produce culture and so on.
 
 So basically we have a graph of phenomenas that is connected by which produces which.
 
@@ -29,24 +30,27 @@ However, number of phenomenas is produced may enormous, so to ease exploration w
 For example Human produces Science, Languages, Arts, Philosophy, Countries, Companies and so on
 And Science is just and name for group of other groups - namely Physics, Medicine, Mathematics, Economics and so on.
 
-Also, very often we still do not know exactly what really produces phenomena, but know correlations and have some ideas (hypothesis, theories)
-of mechanisms and maybe some facts these ideas is based on. We know that this hypothesis should be verified by further experiments.
+In contrast to connections between phenomenas partition of phenomenas on groups is subjective and can have multiple equally useful variants.
 
-And also some phenomenas involve a complex concepts that has its non-trivial structure.
+Also, it is important that very often we do not know yet exactly what really produces phenomena
+We know maybe some correlations and have some hypothesis or theories about it.
+We know that this hypothesis should be further verified by experiments.
+
+Also, some phenomenas involve a complex concepts that has its non-trivial structure.
 (For example a cell is such a complex phenomena with its structure).
 
-And last but not least we have questions that one wants to answer.
+And last but not least one may have questions that she seeks to answer.
 
 With this in mind let's define structure of map
 
 ### Phenomena-produces-phenomena structure
 Node can have one of the following types
-- phenomena - depicts anything that expresses itself somehow (atom, medicine, fish, war and so on)
+- phenomena - depicts anything that expresses itself somehow (atom, medicine, fish, war, etc.)
 - theory (idea, hypothesis) - is a description of how a phenomenas functions based on other already-known phenomenas (fact is special case of phenomena).
-Theory may have different alternatives. For example theory of strings has different alternatives.
+Theory may have different alternatives (for example theory of strings has different alternatives).
 - fact - is a special case of phenomena that can be described as a result of experiment and may be used as an argument for or against a theory
 - question - is an open question that has no yet answered. For example "Measurement Problem" in quantum mechanics
-- group - used as an auxiliary node to group together other nodes - for example "Atoms" is group for phenomena nodes "Hydrogen Atom", "Helium Atom" and so on
+- group - used as an auxiliary node to groups together other nodes - for example "Atoms" is group for phenomena nodes "Hydrogen Atom", "Helium Atom" and so on
 
 And there are following type of connections between nodes
 - produces - connect phenomena-causes to phenomena-consequences, for example fields produces atoms that produces molecules that produces cells that produces human that produces mathematics, spaceships, revolutions and so on
@@ -54,9 +58,8 @@ And there are following type of connections between nodes
 
 ```
 Example
-Say we want to add a node that describes "Godel incompleteness theorem" - this is phenomena.
-To find node to connect, first, try to think about phenomenas that produces "Godel incompleteness theorem" - i e what it is based on.
-If you will think about it you will have better understanding of phenomena and better place to fit on map.
+Say, we want to add a node that describes "Godel incompleteness theorem" - this is phenomena.
+To find node to connect it to, first, try to think about phenomenas that produces "Godel incompleteness theorem" - i e what it is based on.
 In our case it seems that "Logic" and "Arithmetic" produces "Godel incompleteness theorem".
 ```
 While adding new node you will notice autoselect with hints - nodes that may already represent the one you're going to add.
@@ -82,7 +85,7 @@ Exclude such nodes from commit marking them as "only personal interest".
 You can also make some nodes more visible to you (make them bigger) - this changes also will not be commited.
 
 ### Special type nodes
-Edge science cannot be organized in a clear phenomena-produces-phenomena structures described above.
+Due to our lack of knowledge many phenomenas still cannot be organized in a clear phenomena-produces-phenomena structures described above.
 Sometimes you have just several small pieces of huge puzzle yet to be solved.
 However, this pieces is worth to be described to ease further puzzle investigation (clear phenomena-produces-phenomena description is a final goal).
 That is why there are two special group type for node - "book" and "questions".
@@ -90,7 +93,6 @@ That is why there are two special group type for node - "book" and "questions".
 "Questions" is a root for questions on the subject that you want to find answer to and connects whatever nodes that can help answer this question.
 
 ### Node contents
-
 Node content consists from
 1) users description of the topic
 2) connections to other nodes (see "type of connections")
