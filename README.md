@@ -26,18 +26,18 @@ animals produce culture and so on.
 
 So basically we have a graph of phenomenas that is connected by which produces which.
 
-However, number of phenomenas is produced may enormous, so to ease exploration we organize them in groups.
+However, number of phenomenas produced may enormous, so to ease exploration of map we may organize them in groups.
 For example Human produces Science, Languages, Arts, Philosophy, Countries, Companies and so on
-And Science is just and name for group of other groups - namely Physics, Medicine, Mathematics, Economics and so on.
+And Science is just a name for group of other groups - namely Physics, Medicine, Mathematics, Economics and so on.
 
-In contrast to connections between phenomenas partition of phenomenas on groups is subjective and can have multiple equally useful variants.
+In contrast to connections between phenomenas, partition of phenomenas on groups is subjective and can have multiple equally useful variants.
 
 Also, it is important that very often we do not know yet exactly what really produces phenomena
 We know maybe some correlations and have some hypothesis or theories about it.
-We know that this hypothesis should be further verified by experiments.
+And we know that this hypothesis should be further verified by experiments.
 
 Also, some phenomenas involve a complex concepts that has its non-trivial structure.
-(For example a cell is such a complex phenomena with its structure).
+(For example a cell is such a complex phenomena with its own structure).
 
 And last but not least one may have questions that she seeks to answer.
 
@@ -55,6 +55,8 @@ Theory may have different alternatives (for example theory of strings has differ
 And there are following type of connections between nodes
 - produces - connect phenomena-causes to phenomena-consequences, for example fields produces atoms that produces molecules that produces cells that produces human that produces mathematics, spaceships, revolutions and so on
 - is a subgroup - used to connect groups in a hierarchical manner
+- structure - subgroup of nodes that describe structure of root node
+- alternative - sometimes there is no single theory that can explain all phenomenas, but we have different competitive theories that should be further verified by experiment. In such case different theories is grouped under node "Theory not exists" with connection "alternative".
 
 ```
 Example
