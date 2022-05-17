@@ -45,15 +45,15 @@ With this in mind let's define structure of map
 
 ### Phenomena-produces-phenomena structure
 Node can have one of the following types
-- phenomena - depicts anything that expresses itself somehow (atom, medicine, fish, war, etc.)
-- theory (idea, hypothesis) - is a description of how a phenomenas functions based on other already-known phenomenas (fact is special case of phenomena).
-Theory may have different alternatives (for example theory of strings has different alternatives).
-- fact - is a special case of phenomena that can be described as a result of experiment and may be used as an argument for or against a theory
+- phenomena - depicts anything that expresses itself somehow (atom, fish, war, etc.). Fact - is a special case of phenomena that can be described as a result of experiment.
+- theory (idea, hypothesis) - is a description of how a phenomena or group of phenomenas function and what attributes and consequences does it have.
+Theory may have different alternatives (for example theory of strings has different alternatives). And theory may not be totally correct. For example Einstein general relativity is more correct than Newton's theory. However maybe there exists even more correct theory.
 - question - is an open question that has no yet answered. For example "Measurement Problem" in quantum mechanics
 - group - used as an auxiliary node to groups together other nodes - for example "Atoms" is group for phenomena nodes "Hydrogen Atom", "Helium Atom" and so on
 
 And there are following type of connections between nodes
-- produces - connect phenomena-causes to phenomena-consequences, for example fields produces atoms that produces molecules that produces cells that produces human that produces mathematics, spaceships, revolutions and so on
+- produces - connect phenomena-causes to phenomena-consequences, for example fields produces atoms that produces molecules that produces cells that produces human that produces mathematics, spaceships, revolutions and so on.
+When we have theory for some phenomena we may connect theory-cause to theory-consequence instead of phenomena, just because this theory is up-to-date description of some phenomena, maybe not final, however.
 - is a subgroup - used to connect groups in a hierarchical manner
 - structure - subgroup of nodes that describe structure of root node
 - alternative - sometimes there is no single theory that can explain all phenomenas, but we have different competitive theories that should be further verified by experiment. In such case different theories is grouped under node "Theory not exists" with connection "alternative".
