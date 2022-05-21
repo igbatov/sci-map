@@ -1,6 +1,4 @@
-# sci-map-vue3-ts
-
-## Concept
+# Concept
 The main goal of the project is to ease access to deep and profound understanding of how things work and facilitate means to change the world.
 
 We want to create framework for crowdsources-based map of scientific knowledge driven by rules that raise structured and profound description of knowledge.
@@ -10,11 +8,11 @@ We expect that it will also rise network of people and give access to actions th
 Specific rules that define how sci-map should be organized is defined by community.
 Below is an up-to-date formulation of these rules.
 
-## Rules
+# Rules
 First draft is based on concept of [Zettelkasten](https://writingcooperative.com/zettelkasten-how-one-german-scholar-was-so-freakishly-productive-997e4e0ca125)
 but adds some structure and restrictions for quality of content to emerge.
 
-### General assumptions
+## General assumptions
 Let's postulate that everything in the world is the phenomena that 
 1) has some internal mechanics/structure and 
 2) is produced by one or several other phenomenas.
@@ -41,7 +39,7 @@ And last but not least one may have questions that she seeks to answer.
 
 With this in mind let's define structure of map
 
-### Phenomena-produces-phenomena structure
+## Phenomena-produces-phenomena structure
 Node can have one of the following types
 - phenomena - depicts anything that expresses itself somehow (atom, fish, war, etc.). Fact - is a special case of phenomena that can be described as a result of experiment.
 - theory (idea, hypothesis) - is a description of how a phenomena or group of phenomenas function and what attributes and consequences does it have.
@@ -84,7 +82,7 @@ Exclude such nodes from commit marking them as "only personal interest".
 
 You can also make some nodes more visible to you (make them bigger) - this changes also will not be commited.
 
-### Special type nodes
+## Special type nodes
 Due to our lack of knowledge many phenomenas still cannot be organized in a clear phenomena-produces-phenomena structures described above.
 Sometimes you have just several small pieces of huge puzzle yet to be solved.
 However, this pieces is worth to be described to ease further puzzle investigation (clear phenomena-produces-phenomena description is a final goal).
@@ -92,7 +90,7 @@ That is why there are two special group type for node - "book" and "questions".
 "Book" is just root group node for mindmap of ideas/theories/facts/whatever somehow gathered and described in some book/course/whatever.
 "Questions" is a root for questions on the subject that you want to find answer to and connects whatever nodes that can help answer this question.
 
-### Node contents
+## Node contents
 Node content consists from
 1) users description of the topic
 2) connections to other nodes (see "type of connections")
@@ -100,37 +98,37 @@ Node content consists from
 4) links to crowdfunding campaigns that push this topic forward
 5) links to the jobs that help humanity make progress on the topic
 
-## Project setup
+# Project setup
 ```
 yarn install
 ```
 
-### Compiles and hot-reloads for development
+## Compiles and hot-reloads for development
 ```
 yarn serve
 ```
 
-### Compiles and minifies for production
+## Compiles and minifies for production
 ```
 yarn build
 ```
 
-### Run your unit tests
+## Run your unit tests
 ```
 yarn test:unit
 ```
 
-### Run your end-to-end tests
+## Run your end-to-end tests
 ```
 yarn test:e2e
 ```
 
-### Lints and fixes files
+## Lints and fixes files
 ```
 yarn lint
 ```
 
-### Customize configuration
+## Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
 # Firebase commands
