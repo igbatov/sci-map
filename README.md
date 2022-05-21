@@ -52,7 +52,7 @@ And there are following type of connections between nodes
 - produces - connect phenomena-causes to phenomena-consequences, for example fields produces atoms that produces molecules that produces cells that produces human that produces mathematics, spaceships, revolutions and so on.
 When we have theory for some phenomena we may connect theory-cause to theory-consequence instead of phenomena, just because this theory is up-to-date description of some phenomena, maybe not final, however.
 - is a subgroup - used to connect groups in a hierarchical manner
-- structure - subgroup of nodes that describe structure of root node
+- structure - subtree that further explains internal mechanics/structure of root node
 - alternative - sometimes there is no single theory that can explain all phenomenas, but we have different competitive theories that should be further verified by experiment. In such case different theories is grouped under node "Theory not exists" with connection "alternative".
 
 ```
