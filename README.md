@@ -100,6 +100,9 @@ Node content consists from
 4) links to crowdfunding campaigns that push this topic forward
 5) links to the jobs that help humanity make progress on the topic
 
+## Example in form of mind-map
+https://www.mindmeister.com/map/1985564667
+
 # Project setup
 ```
 yarn install
