@@ -14,36 +14,37 @@ but adds some structure and restrictions for quality of content to emerge.
 
 ## General assumptions
 Let's postulate that everything in the world is the phenomena that 
-1) has some internal mechanics/structure and 
+1) has some internal mechanics/structure
 2) is produced by one or several other phenomenas.
+3) has some theory that describes its internal mechanics/structure (or at least hypothesis that should be verified by further experiments)
 
 For example quantum fields produces atoms, atoms produces molecules, molecules produces cells, cell produces animals,
 animals produce culture and so on.
 
 So basically we have a graph of phenomenas that is connected by which produces which.
 
-However, number of phenomenas produced may enormous, so to ease exploration of map we may organize them in groups.
-For example Human produces Science, Languages, Arts, Philosophy, Countries, Companies and so on
-And Science is just a name for group of other groups - namely Physics, Medicine, Mathematics, Economics and so on.
+However, number of phenomenas produced may enormous, so to ease exploration of map we may want to organize them in groups.
+For example Human produces Culture that consists from Science, Languages, Arts, Philosophy, Countries and so on
+And Science is just a name for group of other groups - Physics, Medicine, Mathematics, Economics and so on.
 
 In contrast to connections between phenomenas, partition of phenomenas on groups is subjective and can have multiple equally useful variants.
 
-Also, it is important that very often we do not know yet exactly what really produces phenomena
+Also, it is important that very often we do not know yet exactly what really produces phenomena and its internal mechanics is.
 We know maybe some correlations and have some hypothesis or theories about it.
 And we know that this hypothesis should be further verified by experiments.
 
-Also, some phenomenas involve a complex concepts that has its non-trivial structure.
+Also, some phenomenas involve a complex concepts that has its own non-trivial structure.
 (For example a cell is such a complex phenomena with its own structure).
 
-And last but not least one may have questions that she seeks to answer.
+And last but not least one may have questions that one seek to answer.
 
-With this in mind let's define structure of map
+With this assumptions in mind let's define structure of map
 
 ## Phenomena-produces-phenomena structure
 Node can have one of the following types
 - phenomena - depicts anything that expresses itself somehow (atom, fish, war, etc.). Fact - is a special case of phenomena that can be described as a result of experiment.
 - theory (idea, hypothesis) - is a description of how a phenomena or group of phenomenas function and what attributes and consequences does it have.
-Theory may have different alternatives (for example theory of strings has different alternatives). And theory may not be totally correct. For example Einstein general relativity is more correct than Newton's theory. However maybe there exists even more correct theory.
+Theory may have open questions and different alternatives (for example theory of strings has different alternatives). And theory may not be totally correct. For example Einstein general relativity is more correct than Newton's theory. However, maybe there exists even more correct theory.
 - question - is an open question that has no yet answered. For example "Measurement Problem" in quantum mechanics
 - group - used as an auxiliary node to groups together other nodes - for example "Atoms" is group for phenomena nodes "Hydrogen Atom", "Helium Atom" and so on
 
@@ -60,6 +61,7 @@ Say, we want to add a node that describes "Godel incompleteness theorem" - this 
 To find node to connect it to, first, try to think about phenomenas that produces "Godel incompleteness theorem" - i e what it is based on.
 In our case it seems that "Logic" and "Arithmetic" produces "Godel incompleteness theorem".
 ```
+
 While adding new node you will notice autoselect with hints - nodes that may already represent the one you're going to add.
 If you see a hint that already describes what you want to add, then, please, take time and read it.
 If after reading you feel that your description depicts phenomena in another, maybe more understandable way - feel free to add it as an alternative description.
