@@ -3,14 +3,12 @@
 ## Concept
 The main goal of the project is to ease access to deep and profound understanding of how things work and facilitate means to change the world.
 
-The idea is to create crowdsources-based map of scientific knowledge driven by rules that raise structured and profound knowledge.
+We want to create framework for crowdsources-based map of scientific knowledge driven by rules that raise structured and profound description of knowledge.
 
-It will also rise network of people and give access to action that can be taken to change the world.
+We expect that it will also rise network of people and give access to actions that change the world effectively.
 
 Specific rules that define how sci-map should be organized is defined by community.
 Below is an up-to-date formulation of these rules.
-
-We believe that the more profound and deep understanding of a field one has the more clear explanation she can give.
 
 ## Rules
 First draft is based on concept of [Zettelkasten](https://writingcooperative.com/zettelkasten-how-one-german-scholar-was-so-freakishly-productive-997e4e0ca125)
