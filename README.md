@@ -23,13 +23,13 @@ animals produce culture and so on.
 
 So basically we have a graph of phenomenas that is connected by which produces which.
 
-However, number of phenomenas produced may enormous, so to ease exploration of map we may want to organize them in groups.
+However, number of phenomenas produced may be enormous, so to ease exploration of map we may want to organize them in groups.
 For example Human produces Culture that consists from Science, Languages, Arts, Philosophy, Countries and so on
 And Science is just a name for group of other groups - Physics, Medicine, Mathematics, Economics and so on.
 
 In contrast to connections between phenomenas, partition of phenomenas on groups is subjective and can have multiple equally useful variants.
 
-Also, it is important that very often we do not know yet exactly what really produces phenomena and its internal mechanics is.
+Also, it is important that very often we do not know yet exactly what really produces phenomena and its internal mechanics.
 We know maybe some correlations and have some hypothesis or theories about it.
 And we know that this hypothesis should be further verified by experiments.
 
@@ -38,7 +38,7 @@ Also, some phenomenas involve a complex concepts that has its own non-trivial st
 
 And last but not least one may have questions that one seek to answer.
 
-With this assumptions in mind let's define structure of map
+With these assumptions in mind let's define structure of map
 
 ## Phenomena-produces-phenomena structure
 Node can have one of the following types
