@@ -1,5 +1,5 @@
 # Concept
-The main goal of the project is to ease access to deep and profound understanding of how things work and facilitate means to change the world.
+The main goal of the project is to ease access to deep and profound understanding of how things work and give access to means that change the world.
 
 We want to create framework for crowdsources-based map of scientific knowledge driven by rules that raise structured and profound description of knowledge.
 
