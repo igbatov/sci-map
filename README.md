@@ -21,7 +21,7 @@ Let's postulate that everything in the world is the phenomena that
 For example quantum fields produces atoms, atoms produces molecules, molecules produces cells, cell produces animals,
 animals produce culture and so on.
 
-So basically we have a graph of phenomenas that is connected by which produces which.
+So basically we have a graph of phenomenas that is connected by which produces which (if some phenomena influence other, we also call it "produce").
 
 However, number of phenomenas produced may be enormous, so to ease exploration of map we may want to organize them in groups.
 For example Human produces Culture that consists from Science, Languages, Arts, Philosophy, Countries and so on
