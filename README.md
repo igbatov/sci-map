@@ -10,7 +10,7 @@ Below is an up-to-date formulation of these rules.
 
 # Rules
 First draft is based on concept of [Zettelkasten](https://writingcooperative.com/zettelkasten-how-one-german-scholar-was-so-freakishly-productive-997e4e0ca125)
-but adds some structure and restrictions for quality of content to emerge.
+but adds some structure and restrictions for quality of content to emerge in a crowdsources-based way.
 
 ## General assumptions
 Let's postulate that everything in the world is the phenomena that 
