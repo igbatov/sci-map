@@ -45,7 +45,7 @@ Node can have one of the following types
 - phenomena - depicts anything that expresses itself somehow (atom, fish, war, etc.). Fact - is a special case of phenomena that can be described as a result of experiment.
 - theory (idea, hypothesis) - is a description of how a phenomena or group of phenomenas function and what attributes and consequences does it have.
 Theory may have open questions and different alternatives (for example theory of strings has different alternatives). And theory may not be totally correct. For example Einstein general relativity is more correct than Newton's theory. However, maybe there exists even more correct theory.
-- question - is an open question that has no yet answered. For example "Measurement Problem" in quantum mechanics
+- question - is an open question that has no yet answered. For example "Measurement Problem" in quantum mechanics. Questions have two types - questions that relates to everybody (like "Measurement Problem") and personal questions that relates only to the author ("What is my personal best life strategy?"). The last one only visible to question author.
 - group - used as an auxiliary node to groups together other nodes - for example "Atoms" is group for phenomena nodes "Hydrogen Atom", "Helium Atom" and so on
 
 And there are following type of connections between nodes
