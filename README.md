@@ -94,11 +94,11 @@ That is why there are two special group type for node - "book" and "questions".
 
 ## Node contents
 Node content consists from
-1) users description of the topic
+1) users description of the topic. Text of description may have links to other nodes.
 2) connections to other nodes (see "type of connections")
-3) links to resources (books, videos, blog articles etc) that describes topic in details, every resource can be marked as ["to read", "already read, rate 1/2/3/4/5 stars"]
-4) links to crowdfunding campaigns that push this topic forward
-5) links to the jobs that help humanity make progress on the topic
+3) list of links to resources (books, videos, blog articles etc) that describes topic in details, every resource can be marked as ["to read", "already read"] and have personal rating (rate 1/2/3/4/5 stars)
+4) list of links to crowdfunding campaigns that push this topic forward
+5) list of links to the jobs that help humanity make progress on the topic
 
 ## Example in form of mind-map
 https://www.mindmeister.com/map/1985564667
