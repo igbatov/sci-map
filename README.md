@@ -1,9 +1,9 @@
 # Concept
-The main goal of the project is to ease access to deep and profound understanding of how things work and give access to means that change the world.
+The main goal of the project is to ease access to deep and profound understanding of how the world arranged
+and give access to knowledge and people to change the world.
 
-We want to create framework for crowdsources-based map of scientific knowledge that is driven by such rules that structured and profound description of knowledge is emerged.
-
-We expect that it will also rise network of people and give access to actions that change the world effectively.
+We want to create framework for crowdsources-based map of scientific knowledge that is driven by
+rules that will give rise to structured and profound content.
 
 Specific rules that define how sci-map should be organized is defined by community.
 Below is an up-to-date formulation of these rules.
