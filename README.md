@@ -1,8 +1,12 @@
 # Concept
-The main goal of the project is to ease access to deep and profound understanding of how the world arranged
-and give access to knowledge and people to change the world.
+The main goal of the project is to give holistic view to most deep and profound knowledge up to date.
+The slogan is "Find only those of fundamentally importance".
 
-We want to create framework for crowdsources-based map of scientific knowledge that is driven by
+This is what distinguishes us from Google or Wikipedia. At the time I write this words "symmetry in physics" in Google gives
+many incredibly useful pieces of information. But then it is your job to filter out unnecessary ones and connect others to create holistic view.
+We think that after one does this job she can share this to others - the goal is to construct for you holistic picture from the most profound pieces.
+
+We are to create framework for crowdsources-based map of scientific knowledge that is driven by
 rules that will give rise to structured and profound content.
 
 Specific rules that define how sci-map should be organized is defined by community.
