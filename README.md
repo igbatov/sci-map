@@ -3,8 +3,9 @@ The main goal of the project is to give holistic view to most deep and profound 
 The slogan is "Find only those of fundamentally importance".
 
 This is what distinguishes us from Google or Wikipedia. At the time I write this words "symmetry in physics" in Google gives
-many incredibly useful pieces of information. But then it is your job to filter out unnecessary ones and connect others to create holistic view.
-We think that after one does this job she can share this to others - the goal is to construct for you holistic picture from the most profound pieces.
+many incredibly useful pieces of information. Books, articles, videos, courses and so on.
+But then it is your job to filter out unnecessary ones and somehow connect the rest to create holistic view.
+We think that after one does this job manually she can share this to others - the goal is to construct for you holistic picture from the most profound pieces.
 
 We are to create framework for crowdsources-based map of scientific knowledge that is driven by
 rules that will give rise to structured and profound content.
