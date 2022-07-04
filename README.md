@@ -1,11 +1,16 @@
 # Concept
-The main goal of the project is to give holistic view to most deep and profound knowledge up to date.
+Wikipedia, quora and stackoverflow is good when answer is exists.
+But think about such hard questions as "How to overthrow dictator in country ..." or " "How can one extend his healthy life" 
+or "How to end the war"v- nobody knows the answer. So the best we can do is to formulate multiple viable hypothesis and gather groups that want
+to test each one (volunteering, donation, research group contacts, experiments participation, crowdfunding etc).
+
+To attract specialists who can formulate viable hypothesis we want to present the most deep and profound knowledge up to date.
 The slogan is "Find only those of fundamentally importance".
 
 This is what distinguishes us from Google or Wikipedia. At the time I write this words "symmetry in physics" in Google gives
 many incredibly useful pieces of information. Books, articles, videos, courses and so on.
 But then it is your job to filter out unnecessary ones and somehow connect the rest to create holistic view.
-We think that after one does this job manually she can share this to others - the goal is to construct for you holistic picture from the most profound pieces.
+We think that after one does this job manually she can share this to others - the goal is to construct picture from the most profound pieces.
 
 We are to create framework for crowdsources-based map of scientific knowledge that is driven by
 rules that will give rise to structured and profound content.
