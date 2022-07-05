@@ -23,6 +23,10 @@ Some of them like writing blog posts, books and videos making their knowledge po
 
 What can attract enthusiasts? It seems they like knowledge presented in accessible, popular way (like PBS Space Time youtube channel).
 
+If we create rules that will bring easily explorable information and connections (like Google Maps, for example)
+with emphasize on necessarily formulation of viable hypothesis as possible solutions (with arguments why it is viable)
+and steps to be taken to test them it seems such platform can do the trick.
+
 # Old concept
 To attract specialists who can formulate viable hypothesis we want to present the most deep and profound knowledge up to date.
 The slogan is "Find only those of fundamentally importance".
