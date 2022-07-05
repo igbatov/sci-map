@@ -18,7 +18,8 @@ It seems that we should
 3) collectively formulate the way we can involve enthusiasts to test hypothesis
 4) do the steps to make the test, work on mistakes, iterate 
 
-What can attract specialists? It seems they like conferences (i.e. getting new knowledge and contacts) and new job opportunities.
+What can attract specialists? It seems they like conferences (i.e. sharing new knowledge and contacts) and maybe new job opportunities.
+Some of them like writing blog posts, books and videos making their knowledge popular.
 
 What can attract enthusiasts? It seems they like knowledge presented in accessible, popular way (like PBS Space Time youtube channel).
 
