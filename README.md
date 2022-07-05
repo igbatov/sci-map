@@ -1,9 +1,28 @@
 # Concept
-Wikipedia, quora and stackoverflow is good when answer is exists.
-But think about such hard questions as "How to overthrow dictator in country ..." or " "How can one extend his healthy life" 
-or "How to end the war"v- nobody knows the answer. So the best we can do is to formulate multiple viable hypothesis and gather groups that want
-to test each one (volunteering, donation, research group contacts, experiments participation, crowdfunding etc).
+"Organize people to solve hard problems"
 
+Wikipedia, quora and stackoverflow are great at subjects where the answer is known.
+But think about such hard questions as "How can one extend his healthy life",
+"How to end the war between countries ...", "How to make country ... democratic", "How to create consciousness" and so on
+- nobody knows the exact answer.
+At best, we will get a vague general advices.
+
+However, what we should get is several viable and testable hypotheses (each with doable and measurable steps) with well organized
+groups of enthusiasts around them
+participating through volunteering, research group contacts, job offers, double-blind experiment participation, crowdfunding etc.
+
+# How to build such platform?
+It seems that we should
+1) attract specialists to formulate viable hypothesis (as possible solutions) to the problem (for some problems maybe event enthusiasts is enough)
+2) attract enthusiasts that are willing to somehow take part in hypothesis testing
+3) collectively formulate the way we can involve enthusiasts to test hypothesis
+4) do the steps to make the test, work on mistakes, iterate 
+
+What can attract specialists? It seems they like conferences (i.e. getting new knowledge and contacts) and new job opportunities.
+
+What can attract enthusiasts? It seems they like knowledge presented in accessible, popular way (like PBS Space Time youtube channel).
+
+# Old concept
 To attract specialists who can formulate viable hypothesis we want to present the most deep and profound knowledge up to date.
 The slogan is "Find only those of fundamentally importance".
 
