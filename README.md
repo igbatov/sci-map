@@ -1,46 +1,29 @@
 # Concept
-"Organize people to solve hard problems"
+Slogan - "only meaningful work".
 
 Wikipedia, quora and stackoverflow are great at subjects where the answer is known.
-But think about such hard questions as "How can one extend his healthy life",
-"How to end the war between countries ...", "How to make country ... democratic", "How to create consciousness" and so on
-- nobody knows the exact answer.
-At best, we will get a vague general advices.
+But think about such hard questions as "How one can extend healthy life",
+"How to end the war between countries ...", "How to create consciousness" and so on - nobody knows the exact answer.
 
-However, what we should get is several viable and testable hypotheses (each with doable and measurable steps) with well organized
-groups of enthusiasts around them
-participating through volunteering, research group contacts, job offers, double-blind experiment participation, crowdfunding etc.
+Instead of vague general answers, it would be better to see several clear, viable and testable hypotheses, each with doable and measurable steps.
+As well as contacts of well organized testing-groups of enthusiasts around these hypotheses with clear current status and current needs of the project.
+The goal of the project is to make any kind of help needed to the testing-group easy - volunteering, equipment leasing, full-time job, specialist contacts, double-blind experiment participation, crowdfunding etc.
 
 # How to build such platform?
 It seems that we should
-1) attract specialists to formulate viable hypothesis (as possible solutions) to the problem (for some problems maybe event enthusiasts is enough)
+1) attract specialists to formulate viable hypothesis (as possible solutions) to the problem (though for some problems maybe even non-specialists is enough)
 2) attract enthusiasts that are willing to somehow take part in hypothesis testing
-3) collectively formulate the way we can involve enthusiasts to test hypothesis
-4) do the steps to make the test, work on mistakes, iterate 
+3) attract groups that are willing to test hypothesis and ready to track its current status
 
-What can attract specialists? It seems they like conferences (i.e. sharing new knowledge and contacts) and maybe new job opportunities.
-Some of them like writing blog posts, books and videos making their knowledge popular.
+What can attract specialists? It seems they like sharing knowledge in a field and maybe looking for new job opportunities.
 
-What can attract enthusiasts? It seems they like knowledge presented in accessible, popular way (like PBS Space Time youtube channel).
+What can attract non-specialist enthusiasts? It seems they like knowledge presented in accessible, popular way
+(like "PBS Space Time" or "Domain of Science" youtube channels for example).
 
-If we create rules that will bring easily explorable information and connections (like Google Maps, for example)
-with emphasize on necessarily formulation of viable hypothesis as possible solutions (with arguments why it is viable)
-and steps to be taken to test them it seems such platform can do the trick.
-
-# Old concept
-To attract specialists who can formulate viable hypothesis we want to present the most deep and profound knowledge up to date.
-The slogan is "Find only those of fundamentally importance".
-
-This is what distinguishes us from Google or Wikipedia. At the time I write this words "symmetry in physics" in Google gives
-many incredibly useful pieces of information. Books, articles, videos, courses and so on.
-But then it is your job to filter out unnecessary ones and somehow connect the rest to create holistic view.
-We think that after one does this job manually she can share this to others - the goal is to construct picture from the most profound pieces.
-
-We are to create framework for crowdsources-based map of scientific knowledge that is driven by
-rules that will give rise to structured and profound content.
-
-Specific rules that define how sci-map should be organized is defined by community.
-Below is an up-to-date formulation of these rules.
+If we create community and rules that will deliver easily explorable information and connections (in a from of something
+like Google Maps, for example) with emphasize on necessarily formulation of viable hypothesis as possible solutions
+(with arguments why it is viable) and steps to be taken to test them with current actual status of research
+- it seems such platform can do the trick.
 
 # Rules
 First draft is based on concept of [Zettelkasten](https://writingcooperative.com/zettelkasten-how-one-german-scholar-was-so-freakishly-productive-997e4e0ca125)
