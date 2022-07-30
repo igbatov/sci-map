@@ -1,5 +1,5 @@
 # Concept
-Slogan - "Only practical advices. Only reasonable knowledge. Only meaningful job".
+Slogan - "Holistic veiw. Best explanations. Practical usage.".
 
 Wikipedia, quora and stackoverflow are great at subjects where the answer is known and applicable to many people.
 But think about such hard questions as "How one can extend his/her healthy life",
