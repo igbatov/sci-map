@@ -1,18 +1,14 @@
 # Concept
 Slogan - "Holistic view. Best explanations. Practical usage.".
 
-Wikipedia, quora and stackoverflow are great at subjects where the answer is known and applicable to many people.
+Wikipedia, quora and stackoverflow are great at subjects where the answer is known.
 But think about such hard questions as "How one can extend his/her healthy life",
 "How to end the war between countries ...", "How to create consciousness" and so on - nobody knows the exact answer.
 
 For the questions with unknown answers instead of vague general answers, it would be better to see several clear, reasonable and testable hypotheses, each with doable and measurable steps.
-As well as contacts of well organized testing-groups of enthusiasts around these hypotheses with clear current status and current needs of the project.
+As well as contacts of groups of enthusiasts around these hypotheses with clear current status and current needs of the project.
 
-The goal of this project is to make any kind of help needed to the testing-group easy - volunteering, equipment leasing, full-time job, specialist contacts, double-blind experiment participation, crowdfunding etc.
-
-As for questions for which humanity knows the answer, but it has hard to get it for specific person (because of many important peculiarities of persons case)
-it would be also better to have several specific hypothesis, ordered by priority, with clear reasons for them, and with avaliable
-measurements one can take to check if select hypothesis is successful or not.
+The goal of this project is to explicitly formulate this hypothesis and make any kind of help easy - volunteering, equipment leasing, full-time job, specialist contacts, double-blind experiment participation, crowdfunding etc.
 
 # How to build such platform?
 It seems that we should
