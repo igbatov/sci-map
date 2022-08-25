@@ -1,11 +1,24 @@
 # Concept
-Slogan - "Holistic view. Best explanations. Practical usage.".
+
+Goal: aggregate and channel human activity to resolve hard questions.
+
+Slogan - "Holistic view. Best explanations. Practical actions.".
+
+We post jobs and show their connection with question that will help to solved most interesting and hard question of humanity.
+
+We understand that there are not so many vacancies in top research projects and everybody just cannot have full-time job
+directly solving these projects roadmap.
+
+However, even highly invested projects (like Altos Labs for example) will always have finite resources and therefore should
+prioritize which tasks to make first and which way of development should be postponed.
+
+Not to mention that many scientific breakthroughs where made by accident - Penicillin, Plastic, Gunpowder and Anaesthesia to name a few.
 
 Wikipedia, quora and stackoverflow are great at subjects where the answer is known.
 But think about such hard questions as "How one can extend his/her healthy life",
 "How to end the war between countries ...", "How to create consciousness" and so on - nobody knows the exact answer.
 
-For the questions with unknown answers instead of vague general answers, it would be better to see several clear, reasonable and testable hypotheses, each with doable and measurable steps.
+For the hard questions instead of vague general answers, it would be better to see well-structured clear, reasonable and testable hypotheses, each with doable and measurable steps.
 As well as contacts of groups of enthusiasts around these hypotheses with clear current status and current needs of the project.
 
 The goal of this project is to explicitly formulate this hypothesis and make any kind of help easy - volunteering, equipment leasing, full-time job, specialist contacts, double-blind experiment participation, crowdfunding etc.
