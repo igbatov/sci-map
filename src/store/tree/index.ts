@@ -13,12 +13,20 @@ import { printError, round } from "@/tools/utils";
 import api from "@/api/api";
 import { Commit } from "vuex";
 import firebase from "firebase";
-
+const XSkew = api.ROOT_WIDTH/7
 const ROOT_BORDER = [
-  { x: 0, y: 0 },
-  { x: 0, y: api.ROOT_HEIGHT },
-  { x: api.ROOT_WIDTH, y: api.ROOT_HEIGHT },
-  { x: api.ROOT_WIDTH, y: 0 }
+  { x: XSkew, y: 0 },
+  { x: 0, y: 0.3*api.ROOT_HEIGHT },
+  { x: 0, y: 0.7*api.ROOT_HEIGHT },
+  { x: XSkew, y: api.ROOT_HEIGHT },
+  { x: 0.3*(api.ROOT_WIDTH-2*XSkew)+XSkew, y: 1.1*api.ROOT_HEIGHT },
+  { x: 0.6*(api.ROOT_WIDTH-2*XSkew)+XSkew, y: 1.1*api.ROOT_HEIGHT },
+  { x: (api.ROOT_WIDTH-2*XSkew)+XSkew, y: api.ROOT_HEIGHT },
+  { x: api.ROOT_WIDTH, y: 0.7*api.ROOT_HEIGHT },
+  { x: api.ROOT_WIDTH, y: 0.3*api.ROOT_HEIGHT },
+  { x: api.ROOT_WIDTH-XSkew, y: 0 },
+  { x: (api.ROOT_WIDTH-XSkew) - 0.3*(api.ROOT_WIDTH-2*XSkew), y: -0.1*api.ROOT_HEIGHT },
+  { x: (api.ROOT_WIDTH-XSkew) - 0.7*(api.ROOT_WIDTH-2*XSkew), y: -0.1*api.ROOT_HEIGHT }
 ];
 const ROOT_CENTER = { x: api.ROOT_WIDTH / 2, y: api.ROOT_HEIGHT / 2 };
 

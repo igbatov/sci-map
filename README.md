@@ -4,7 +4,7 @@ Goal: aggregate and channel human activity to resolve hard questions.
 
 Slogan - "Holistic view. Best explanations. Practical actions.".
 
-We post jobs and show their connection with question that will help to solved most interesting and hard question of humanity.
+We post jobs and show their connection with question that will help to solve most interesting and hard question of humanity.
 
 We understand that there are not so many vacancies in top research projects and everybody just cannot have full-time job
 directly solving these projects roadmap.
