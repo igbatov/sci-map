@@ -8,9 +8,8 @@
     :viewBox="viewBox"
     :selectedNodeId="selectedNodeId"
     :pin-nodes="pinNodes"
-    @dragging-node="nodeDragging"
-    @click-node="nodeClick"
-    @click-background="bgClick"
+    @title-dragging="nodeDragging"
+    @title-click="titleClick"
     @dragging-background="mapDragging"
     @wheel="zoom"
   />
@@ -212,11 +211,8 @@ export default defineComponent({
           }
         });
       },
-      nodeClick: (e: EventClickNode) => {
+      titleClick: (e: EventClickNode) => {
         router.push({ name: "node", params: { id: e.id } });
-      },
-      bgClick: () => {
-        router.push({ path: "/" });
       },
       mapDragging: (event: EventDraggingBackground) => {
         store.commit(`zoomPan/${zoomPanMutations.ADD_PAN}`, event);

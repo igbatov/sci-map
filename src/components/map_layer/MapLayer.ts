@@ -17,11 +17,8 @@ export type MouseDownInfo = {
 
 type emitFn = (
   event:
-    | "node-mouse-down"
-    | "background-mouse-down"
-    | "dragging"
-    | "drop"
-    | "click",
+    | "title-dragging"
+    | "title-drop",
   ...args: any[]
 ) => void;
 
@@ -33,35 +30,6 @@ type TitleBox = {
   };
 };
 
-export const mouseDownListener = (
-  emit: emitFn,
-  event: MouseEvent,
-  titleBox: Ref<Record<number, TitleBox>>,
-  mouseDownInfo: MouseDownInfo
-) => {
-  let nodeFound = false;
-  for (const id in titleBox.value) {
-    const { x, y } = titleBox.value[id].position;
-    const { width, height } = titleBox.value[id].bbox;
-    if (
-      event.clientX >= x &&
-      event.clientX <= x + width &&
-      event.clientY >= y &&
-      event.clientY <= y + height
-    ) {
-      emit("node-mouse-down", { id: id });
-      mouseDownInfo.nodeId = id;
-      mouseDownInfo.dragStart = false;
-      nodeFound = true;
-      break;
-    }
-  }
-
-  if (!nodeFound) {
-    emit("background-mouse-down", {});
-  }
-};
-
 export const mouseMoveListener = (
   emit: emitFn,
   event: MouseEvent,
@@ -69,7 +37,7 @@ export const mouseMoveListener = (
 ) => {
   if (mouseDownInfo.nodeId) {
     mouseDownInfo.dragStart = true;
-    emit("dragging", {
+    emit("title-dragging", {
       nodeId: mouseDownInfo.nodeId,
       delta: {
         x: event.movementX,
@@ -82,7 +50,7 @@ export const mouseMoveListener = (
 export const mouseUpListener = (emit: emitFn, mouseDownInfo: MouseDownInfo) => {
   if (mouseDownInfo.nodeId) {
     if (mouseDownInfo.dragStart) {
-      emit("drop", { id: mouseDownInfo.nodeId });
+      emit("title-drop", { id: mouseDownInfo.nodeId });
     }
     mouseDownInfo.dragStart = false;
     mouseDownInfo.nodeId = null;

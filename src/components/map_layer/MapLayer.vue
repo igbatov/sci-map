@@ -40,17 +40,19 @@
   </text>
   <!-- Add rectangle to change cursor to pointer when hover on text -->
   <rect
-    v-for="mapNode of mapNodes"
-    :key="mapNode.id"
-    :x="titleBox[mapNode.id] ? titleBox[mapNode.id].position.x : 0"
-    :y="titleBox[mapNode.id] ? titleBox[mapNode.id].position.y : 0"
-    :width="titleBox[mapNode.id] ? titleBox[mapNode.id].bbox.width : 0"
-    :height="titleBox[mapNode.id] ? titleBox[mapNode.id].bbox.height : 0"
-    fill="transparent"
-    stroke-width="0"
-    @click="titleRectClick(mapNode.id)"
-    stroke="pink"
-    cursor="pointer"
+      v-for="mapNode of mapNodes"
+      :key="mapNode.id"
+      :x="titleBox[mapNode.id] ? titleBox[mapNode.id].position.x : 0"
+      :y="titleBox[mapNode.id] ? titleBox[mapNode.id].position.y : 0"
+      :width="titleBox[mapNode.id] ? titleBox[mapNode.id].bbox.width : 0"
+      :height="titleBox[mapNode.id] ? titleBox[mapNode.id].bbox.height : 0"
+      fill="transparent"
+      stroke-width="0"
+      @click="titleClick(mapNode.id)"
+      @mousedown="titleMouseDown(mapNode.id)"
+      stroke="pink"
+      cursor="pointer"
+      pointer-events="fill"
   />
 </template>
 
@@ -61,7 +63,6 @@ import { polygonToPath } from "@/tools/graphics";
 import {
   getTitleBoxes,
   MouseDownInfo,
-  mouseDownListener,
   mouseMoveListener,
   mouseUpListener
 } from "@/components/map_layer/MapLayer";
@@ -72,11 +73,9 @@ const TITLE_PREFIX = "title_";
 export default defineComponent({
   name: "MapLayer",
   emits: [
-    "click",
-    "drop",
-    "dragging",
-    "node-mouse-down",
-    "background-mouse-down"
+    "title-click",
+    "title-drop",
+    "title-dragging",
   ],
   props: {
     mapId: {
@@ -111,19 +110,16 @@ export default defineComponent({
     /**
      * Send event on titleBox click, drag and drop
      */
-    const mouseDownInfo: MouseDownInfo = { nodeId: null, dragStart: false };
-    const mouseDown = (event: MouseEvent) =>
-      mouseDownListener(ctx.emit, event, titleBox, mouseDownInfo);
+    const titleMouseDownInfo: MouseDownInfo = { nodeId: null, dragStart: false };
     const mouseMove = (event: MouseEvent) =>
-      mouseMoveListener(ctx.emit, event, mouseDownInfo);
-    const mouseUp = () => mouseUpListener(ctx.emit, mouseDownInfo);
+      mouseMoveListener(ctx.emit, event, titleMouseDownInfo);
+    const mouseUp = () => mouseUpListener(ctx.emit, titleMouseDownInfo);
     onMounted(() => {
       const map = document.getElementById(props.mapId);
       if (!map) {
         printError("MapLayer.vue: cannot find map id for event listener", {});
         return;
       }
-      map.addEventListener("mousedown", mouseDown);
       map.addEventListener("mousemove", mouseMove);
       map.addEventListener("mouseup", mouseUp);
     });
@@ -133,7 +129,6 @@ export default defineComponent({
         printError("MapLayer.vue: cannot find map id for event listener", {});
         return;
       }
-      map.removeEventListener("mousedown", mouseDown);
       map.removeEventListener("mousemove", mouseMove);
       map.removeEventListener("mouseup", mouseUp);
     });
@@ -141,11 +136,15 @@ export default defineComponent({
     return {
       TITLE_PREFIX,
       titleBox,
-      titleRectClick: (nodeID: string) => {
-        ctx.emit("click", {
+      titleClick: (nodeID: string) => {
+        ctx.emit("title-click", {
           id: nodeID
         });
-      }
+      },
+      titleMouseDown: (id: string) => {
+        titleMouseDownInfo.nodeId = id
+        titleMouseDownInfo.dragStart = false;
+      },
     };
   },
 

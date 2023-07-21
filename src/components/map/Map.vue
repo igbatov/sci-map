@@ -2,7 +2,6 @@
   <svg
     xmlns="http://www.w3.org/2000/svg"
     :viewBox="viewBox"
-    @click="clickMap"
     :id="mapID"
   >
     <MapLayer
@@ -15,16 +14,14 @@
       :font-size="10 * (index + 1)"
       :selectedNodeId="selectedNodeId"
       :map-id="mapID"
-      @dragging="draggingNode"
-      @click="clickNode"
-      @background-mouse-down="backgroundMouseDown(index)"
-      @node-mouse-down="nodeMouseDown(index)"
+      @title-dragging="draggingNode"
+      @title-click="titleClick"
     />
     <PinLayer
       :pinNodes="pinNodes"
       :selectedNodeId="selectedNodeId"
-      @click="clickNode"
-      @node-mouse-down="pinNodeMouseDown"
+      @click="titleClick"
+      @title-mouse-down="pinNodeMouseDown"
     />
   </svg>
 </template>
@@ -35,7 +32,7 @@ import { MapNode } from "@/types/graphics";
 import MapLayer from "@/components/map_layer/MapLayer.vue";
 import {
   EventClickNode,
-  EventDraggingNode
+  EventDraggingNode,
 } from "@/components/map_layer/MapLayer";
 import pan from "./MapPan";
 import PinLayer from "@/components/pin_layer/PinLayer.vue";
@@ -46,9 +43,8 @@ const mapID = "mapID";
 export default defineComponent({
   name: "Map",
   emits: [
-    "dragging-node",
-    "click-node",
-    "click-background",
+    "title-dragging",
+    "title-click",
     "dragging-background",
     "wheel"
   ],
@@ -73,8 +69,10 @@ export default defineComponent({
   setup(props, ctx) {
     watch(
       () => props.layers,
-      () => pan.setLayers(props.layers),
-      { immediate: true }
+      () => {
+          pan.setLayers(props.layers)
+        },
+        { immediate: true },
     );
 
     onMounted(() => {
@@ -85,6 +83,9 @@ export default defineComponent({
       }
       map.addEventListener("mousedown", async event => {
         await pan.mouseDown(event);
+      });
+      map.addEventListener("mouseup", async event => {
+        await pan.mouseUp(event);
       });
       map.addEventListener("mousemove", event => {
         pan.mouseMove(ctx.emit, event);
@@ -98,23 +99,14 @@ export default defineComponent({
     });
 
     return {
-      nodeMouseDown: (layerId: number) => {
-        pan.bgMouseDownReject(layerId);
-      },
-      backgroundMouseDown: (layerId: number) => {
-        pan.bgMouseDownResolve(layerId);
-      },
       draggingNode: (e: EventDraggingNode) => {
-        ctx.emit("dragging-node", {
+        ctx.emit("title-dragging", {
           id: e.nodeId,
           delta: e.delta
         });
       },
-      clickNode: (e: EventClickNode) => {
-        ctx.emit("click-node", { id: e.id });
-      },
-      clickMap: (e: EventClickNode) => {
-        pan.mapClick(ctx.emit);
+      titleClick: (e: EventClickNode) => {
+        ctx.emit("title-click", { id: e.id });
       },
       pinNodeMouseDown: () => {
         pan.pinNodeMouseDownHandler();

@@ -76,7 +76,7 @@ import { useToast } from "primevue/usetoast";
 export default {
   name: "Vacancies",
   props: {
-    nodeId: String,
+    nodeId: Number,
     vacancies: Object as PropType<Record<string, Vacancy>>
   },
   components: {
