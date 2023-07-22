@@ -10,6 +10,8 @@
     :pin-nodes="pinNodes"
     @title-dragging="nodeDragging"
     @title-click="titleClick"
+    @title-over="titleOver"
+    @title-leave="titleLeave"
     @dragging-background="mapDragging"
     @wheel="zoom"
   />
@@ -213,6 +215,18 @@ export default defineComponent({
       },
       titleClick: (e: EventClickNode) => {
         router.push({ name: "node", params: { id: e.id } });
+      },
+      titleOver: (e: EventClickNode) => {
+        store.commit(
+            `tree/${treeMutations.SET_SELECTED_NODE_ID}`,
+            e.id
+        );
+      },
+      titleLeave: (e: EventClickNode) => {
+        store.commit(
+            `tree/${treeMutations.SET_SELECTED_NODE_ID}`,
+            route.params.id
+        );
       },
       mapDragging: (event: EventDraggingBackground) => {
         store.commit(`zoomPan/${zoomPanMutations.ADD_PAN}`, event);

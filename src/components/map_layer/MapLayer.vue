@@ -3,7 +3,12 @@
     v-for="(mapNode, i) of mapNodes"
     :key="i"
     :stroke="borderColor"
-    fill="transparent"
+    :fill="
+      selectedNodeId && selectedNodeId == mapNode.id ? '#f3afaf' : 'transparent'
+    "
+    :fill-opacity="
+      selectedNodeId && selectedNodeId == mapNode.id ? '0.2' : '0'
+    "
     stroke-width="2"
     :points="polygonToPath(mapNode.border)"
     pointer-events="none"
@@ -48,6 +53,8 @@
       :height="titleBox[mapNode.id] ? titleBox[mapNode.id].bbox.height : 0"
       fill="transparent"
       stroke-width="0"
+      @mouseover="titleOver(mapNode.id)"
+      @mouseleave="titleLeave(mapNode.id)"
       @click="titleClick(mapNode.id)"
       @mousedown="titleMouseDown(mapNode.id)"
       stroke="pink"
@@ -73,6 +80,8 @@ const TITLE_PREFIX = "title_";
 export default defineComponent({
   name: "MapLayer",
   emits: [
+    "title-over",
+    "title-leave",
     "title-click",
     "title-drop",
     "title-dragging",
@@ -138,6 +147,16 @@ export default defineComponent({
       titleBox,
       titleClick: (nodeID: string) => {
         ctx.emit("title-click", {
+          id: nodeID
+        });
+      },
+      titleOver: (nodeID: string) => {
+        ctx.emit("title-over", {
+          id: nodeID
+        });
+      },
+      titleLeave: (nodeID: string) => {
+        ctx.emit("title-leave", {
           id: nodeID
         });
       },

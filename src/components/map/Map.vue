@@ -16,6 +16,8 @@
       :map-id="mapID"
       @title-dragging="draggingNode"
       @title-click="titleClick"
+      @title-over="titleOver"
+      @title-leave="titleLeave"
     />
     <PinLayer
       :pinNodes="pinNodes"
@@ -45,6 +47,8 @@ export default defineComponent({
   emits: [
     "title-dragging",
     "title-click",
+    "title-over",
+    "title-leave",
     "dragging-background",
     "wheel"
   ],
@@ -107,6 +111,12 @@ export default defineComponent({
       },
       titleClick: (e: EventClickNode) => {
         ctx.emit("title-click", { id: e.id });
+      },
+      titleOver: (e: EventClickNode) => {
+        ctx.emit("title-over", { id: e.id });
+      },
+      titleLeave: (e: EventClickNode) => {
+        ctx.emit("title-leave", { id: e.id });
       },
       pinNodeMouseDown: () => {
         pan.pinNodeMouseDownHandler();
