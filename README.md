@@ -5,11 +5,11 @@ Goal: attract and direct human activity to push forward science as fast as possi
 This is first draft MVP of the application for crowdsourced "Map Of Science".
 Its intent is to show concept of the map and gather feedback to build appropriate application.
 
-The goal for the map to give clear and holistic view, best explanations and direct to to practical actions.
+The goal for the map to give clear and holistic view, the best explanations and direct people to practical actions.
 
 We also post jobs and show their connection with question that will help to solve most interesting and hard question of humanity.
 
-# Why not Wikipedia, quora and stackoverflow?
+# Why not Wikipedia, Quora and StackOverflow?
 Wikipedia, quora and stackoverflow are great at subjects where the answer is known.
 But think about such hard questions as "How one can extend his/her healthy life",
 "How to end the wars between countries ...", "How to create consciousness" and so on - nobody knows the exact answer.
@@ -25,8 +25,6 @@ The goal of this project is to explicitly formulate this hypothesis and make any
 It seems that we should
 1) attract specialists to add known facts, theories and formulate viable hypothesis to the problem (for some problems non-specialists is also ok)
 2) attract enthusiasts that are willing to somehow take part in hypothesis testing
-
-What can attract specialists? It seems they like to get as well as share knowledge in a field (and gather community kudos).
 
 We are looking to create community and rules that will deliver easily explorable information and connections (in some form of a map)
 with emphasize on formulation of viable hypothesis and steps to be taken to test them with current actual status of research.
@@ -84,7 +82,13 @@ Node content consists from
 ## Example in miro
 https://miro.com/app/board/uXjVM01SlDY=/?share_link_id=351640375137
 
-# Project setup
+# Collaborative editing MVP
+Technically hard part of project is collaborative editing.
+For MVP we want most simple solution which for now is - any registered user can edit anything in realtime.
+Contributors synchronize in https://t.me/+uhbBHhzEyZRkYzRi on time, and modifications they are going to make in a map.
+For example "Hi, I am going to edit Aging in Biology this evening from 19 till 21 UTC. Want to add some companies in reprogramming section.".
+
+# Application setup for developers
 ```
 yarn install
 ```
