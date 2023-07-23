@@ -1,67 +1,57 @@
 # Concept
 
-Goal: aggregate and channel human activity to resolve hard questions.
+Goal: attract and direct human activity to push forward science as fast as possible.
 
-Slogan - "Holistic view. Best explanations. Practical actions.".
+This is first draft MVP of the application for crowdsourced "Map Of Science".
+Its intent is to show concept of the map and gather feedback to build appropriate application.
 
-We post jobs and show their connection with question that will help to solve most interesting and hard question of humanity.
+The goal for the map to give clear and holistic view, best explanations and direct to to practical actions.
 
-We understand that there are not so many vacancies in top research projects and everybody just cannot have full-time job
-directly solving these projects roadmap.
+We also post jobs and show their connection with question that will help to solve most interesting and hard question of humanity.
 
-However, even highly invested projects (like Altos Labs for example) will always have finite resources and therefore should
-prioritize which tasks to make first and which way of development should be postponed.
-
-Not to mention that many scientific breakthroughs where made by accident - Penicillin, Plastic, Gunpowder and Anaesthesia to name a few.
-
+# Why not Wikipedia, quora and stackoverflow?
 Wikipedia, quora and stackoverflow are great at subjects where the answer is known.
 But think about such hard questions as "How one can extend his/her healthy life",
-"How to end the war between countries ...", "How to create consciousness" and so on - nobody knows the exact answer.
+"How to end the wars between countries ...", "How to create consciousness" and so on - nobody knows the exact answer.
 
-For the hard questions instead of vague general answers, it would be better to see well-structured clear, reasonable and testable hypotheses, each with doable and measurable steps.
-As well as contacts of groups of enthusiasts around these hypotheses with clear current status and current needs of the project.
+For the hard questions instead of vague general answers, it would be better to see 
+ - all known facts that contributes to the puzzle
+ - well-structured clear, reasonable and testable hypotheses
+ - contacts of enthusiasts and companies that try to test  these hypotheses with clear current status and needs of the test
 
 The goal of this project is to explicitly formulate this hypothesis and make any kind of help easy - volunteering, equipment leasing, full-time job, specialist contacts, double-blind experiment participation, crowdfunding etc.
 
-# How to build such platform?
+# How to build such project?
 It seems that we should
-1) attract specialists to formulate viable hypothesis (as possible solutions) to the problem (though for some problems maybe even non-specialists is enough)
+1) attract specialists to add known facts, theories and formulate viable hypothesis to the problem (for some problems non-specialists is also ok)
 2) attract enthusiasts that are willing to somehow take part in hypothesis testing
-3) attract groups that are willing to test hypothesis and ready to track its current status
 
-What can attract specialists? It seems they like sharing knowledge in a field and maybe looking for new job opportunities.
+What can attract specialists? It seems they like to get as well as share knowledge in a field (and gather community kudos).
 
-What can attract non-specialist enthusiasts? It seems they like knowledge presented in accessible, popular way
-(like "PBS Space Time" or "Domain of Science" youtube channels for example).
-
-If we create community and rules that will deliver easily explorable information and connections (in a from of something
-like Google Maps, for example) with emphasize on necessarily formulation of viable hypothesis as possible solutions
-(with arguments why it is viable) and steps to be taken to test them with current actual status of research
-- it seems such platform can do the trick.
+We are looking to create community and rules that will deliver easily explorable information and connections (in some form of a map)
+with emphasize on formulation of viable hypothesis and steps to be taken to test them with current actual status of research.
 
 # Rules
 First draft is based on concept of [Zettelkasten](https://writingcooperative.com/zettelkasten-how-one-german-scholar-was-so-freakishly-productive-997e4e0ca125)
-but adds some structure and restrictions for quality of content to emerge in a crowdsources-based way.
+and [Hierarchical Network](https://fibery.io/blog/the-knowledge-organization/).
 
-## General assumptions
 Let's postulate that everything in the world is the phenomena that 
-1) has some internal mechanics/structure
-2) is produced by one or several other phenomenas.
-3) has some theory that describes its internal mechanics/structure (or at least hypothesis that should be verified by further experiments)
+1) is produced by one or several other phenomenas
+2) has some theory that describes its internal mechanics/structure (or at least hypothesis that should be verified by further experiments)
 
 For example quantum fields produces atoms, atoms produces molecules, molecules produces cells, cell produces animals,
 animals produce culture and so on.
 
 So basically we have a graph of phenomenas that is connected by which produces which (if some phenomena influence other, we also call it "produce").
 
-However, number of phenomenas produced may be enormous, so to ease exploration of map we may want to organize them in groups.
+However, number of phenomenas produced may be enormous, so to ease exploration of map we want to organize them in hierarchical groups.
 For example Human produces Culture that consists from Science, Languages, Arts, Philosophy, Countries and so on
 And Science is just a name for group of other groups - Physics, Medicine, Mathematics, Economics and so on.
 
-In contrast to connections between phenomenas, partition of phenomenas on groups is subjective and can have multiple equally useful variants.
+In contrast to connections between phenomenas, organization in hierarchical groups is subjective and can have multiple equally useful variants.
 
 Also, it is important that very often we do not know yet exactly what really produces phenomena and its internal mechanics.
-We know maybe some correlations and have some hypothesis or theories about it.
+We know maybe some correlations and connected facts and have some hypothesis or theories about it.
 And we know that this hypothesis should be further verified by experiments.
 
 Also, some phenomenas involve a complex concepts that has its own non-trivial structure.
@@ -71,68 +61,28 @@ And last but not least one may have questions that one seek to answer.
 
 With these assumptions in mind let's define structure of map
 
-## Phenomena-produces-phenomena structure
-Node can have one of the following types
-- phenomena - depicts anything that expresses itself somehow (atom, fish, war, etc.). Fact - is a special case of phenomena that can be described as a result of experiment.
-- theory (idea, hypothesis) - is a description of how a phenomena or group of phenomenas function and what attributes and consequences does it have.
-Theory may have open questions and different alternatives (for example theory of strings has different alternatives). And theory may not be totally correct. For example Einstein general relativity is more correct than Newton's theory. However, maybe there exists even more correct theory.
-- question - is an open question that has no yet answered. For example "Measurement Problem" in quantum mechanics. Questions have two types - questions that relates to everybody (like "Measurement Problem") and personal questions that relates only to the author ("What is my personal best life strategy?"). The last one only visible to question author.
-- group - used as an auxiliary node to groups together other nodes - for example "Atoms" is group for phenomena nodes "Hydrogen Atom", "Helium Atom" and so on
+## Phenomena-produces-phenomena hierarchical structure
+General rule of the map: every node follows from other nodes (premise nodes) by means of induction, deduction or abduction.
+Also, two nodes A and B are linked in case one should understand A to understand B.
 
-And there are following type of connections between nodes
-- produces - connect phenomena-causes to phenomena-consequences, for example fields produces atoms that produces molecules that produces cells that produces human that produces mathematics, spaceships, revolutions and so on.
-When we have theory for some phenomena we may connect theory-cause to theory-consequence instead of phenomena, just because this theory is up-to-date description of some phenomena, maybe not final, however.
-- is a subgroup - used to connect groups in a hierarchical manner
-- structure - subtree that further explains internal mechanics/structure of root node
-- alternative - sometimes there is no single theory that can explain all phenomenas, but we have different competitive theories that should be further verified by experiment. In such case different theories is grouped under node "Theory not exists" with connection "alternative".
+Every node represents an experimental fact (E) or model/concept (M).
 
-```
-Example
-Say, we want to add a node that describes "Godel incompleteness theorem" - this is phenomena.
-To find node to connect it to, first, try to think about phenomenas that produces "Godel incompleteness theorem" - i e what it is based on.
-In our case it seems that "Logic" and "Arithmetic" produces "Godel incompleteness theorem".
-```
+One node contains others if its contents describe it descendants (abstract them on a more high level).
 
-While adding new node you will notice autoselect with hints - nodes that may already represent the one you're going to add.
-If you see a hint that already describes what you want to add, then, please, take time and read it.
-If after reading you feel that your description depicts phenomena in another, maybe more understandable way - feel free to add it as an alternative description.
-Every description will be voted and most popular will be shown first.
-If you think that description is ok but need some corrections - go on and make it.
-
-Connections of node with other nodes is treated the same way as node's content. Alternative explanations of the same node
-may have different connections.
-
-Any registered user can add new node and as well as delete old connections and add new ones (connected node is seen as a children nodes).
-
-When one is ready to publish her changes for public map she pushes the "Сommit" button
-Modification is added to other users maps and those who edited node or subscribed to node changes will receive email on modification.
-They may also do some edits. If someone is also editing node locally, this fact will be visible to all viewers.
-If after commit conflict is detected, then user will see changes commited before him and his own (uncommited because of conflict)
-version and act accordingly - manually merge person edits and do commit again.
-
-Some nodes maybe interesting only to you (you don't want to publish it or don't think it is useful for others) - it is okay.
-Exclude such nodes from commit marking them as "only personal interest".
-
-You can also make some nodes more visible to you (make them bigger) - this changes also will not be commited.
-
-## Special type nodes
-Due to our lack of knowledge many phenomenas still cannot be organized in a clear phenomena-produces-phenomena structures described above.
-Sometimes you have just several small pieces of huge puzzle yet to be solved.
-However, this pieces is worth to be described to ease further puzzle investigation (clear phenomena-produces-phenomena description is a final goal).
-That is why there are two special group type for node - "book" and "questions".
-"Book" is just root group node for mindmap of ideas/theories/facts/whatever somehow gathered and described in some book/course/whatever.
-"Questions" is a root for questions on the subject that you want to find answer to and connects whatever nodes that can help answer this question.
+Description of node should be as vivid and simple as possible. 
+One should be able to understand contents of node if she understood premise nodes with no need for any additional research.
+Time to read and understand contents of one node ideally should be no more that 15 min.
 
 ## Node contents
 Node content consists from
 1) users description of the topic. Text of description may have links to other nodes.
-2) connections to other nodes (see "type of connections")
+2) connections to other nodes
 3) list of links to resources (books, videos, blog articles etc) that describes topic in details, every resource can be marked as ["to read", "already read"] and have personal rating (rate 1/2/3/4/5 stars)
 4) list of links to crowdfunding campaigns that push this topic forward
-5) list of links to the jobs that help humanity make progress on the topic
+5) list of links to the jobs that will help to make progress on the topic
 
-## Example in form of mind-map
-https://www.mindmeister.com/map/1985564667
+## Example in miro
+https://miro.com/app/board/uXjVM01SlDY=/?share_link_id=351640375137
 
 # Project setup
 ```
