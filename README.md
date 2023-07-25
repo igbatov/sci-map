@@ -82,12 +82,20 @@ Node content consists from
 ## Example in miro
 https://miro.com/app/board/uXjVM01SlDY=/?share_link_id=351640375137
 
-# Collaborative editing MVP
+# Collaborative editing in MVP
 Technically hard part of project is collaborative editing.
 For MVP we want most simple solution which for now is - any registered user can edit anything in realtime.
 Contributors synchronize in https://t.me/+uhbBHhzEyZRkYzRi on time, and modifications they are going to make in a map.
 For example "Hi, I am going to edit Aging in Biology this evening from 19 till 21 UTC. Want to add some companies in reprogramming section.".
+In this solution we also make snapshot for the whole map every hour. It some breaking changes occurs we can revert map to the version of last hour.
+All modifications during this hour (even good one will be lost).
 
+More sophisticated solution can be push map to github in json format and make version control like code developers do.
+In this solution every contributor will have buttons "clone map" and "download your version of map" (the last one will download json file).
+Then she creates new branch in github from commit from which clone was created, overwrite it with downloaded json,
+manually merge last master, manually resolve conflicts if any, open merge request is merged to master by someone with appropriate rights.
+
+This github solution gives more control on map versioning but require contributors to learn new skills - how to work in github and merge json manually.
 # Application setup for developers
 ```
 yarn install

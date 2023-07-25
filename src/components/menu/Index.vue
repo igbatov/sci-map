@@ -9,6 +9,12 @@
         <AddNode />
         <RemoveNode v-if="isNodeSelected" />
       </span>
+      <AddPrecondition
+          v-if="isNodeSelected"
+          :clickedTitleId="clickedTitleId"
+          @select-precondition-is-on="$emit('select-precondition-is-on')"
+          @select-precondition-is-off="$emit('select-precondition-is-off')"
+      />
       <PinNode v-if="isNodeSelected && !isPinned" />
       <UnpinNode v-if="isNodeSelected && isPinned" />
       <button @click="signOut">Sign Out</button>
@@ -24,6 +30,7 @@ import { useStore } from "@/store";
 import { computed } from "vue";
 import { actions as userActions } from "@/store/user";
 import PinNode from "./PinNode";
+import AddPrecondition from "./AddPrecondition";
 import AddNode from "./AddNode";
 import RemoveNode from "./RemoveNode";
 import EditMode from "./EditMode";
@@ -39,8 +46,15 @@ export default {
     UnpinNode,
     PinNode,
     AddNode,
+    AddPrecondition,
     RemoveNode,
     EditMode
+  },
+  props: {
+    clickedTitleId: {
+      type: String,
+      required: true
+    }
   },
   setup() {
     const store = useStore();

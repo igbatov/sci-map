@@ -24,7 +24,7 @@ export function zoomAndPanPolygon(
 }
 
 /**
- * CurrentNode вычисляется следующим образом.
+ * CentralNode вычисляется следующим образом.
  * Начинаем смотреть с самого верхнего слоя.
  * Для каждого узла слоя применяем zoomFactor, затем pan
  * Потом смотрим находится ли zoomCenter внутри него. Если да, то это претендент на currentNode (назовем его N).
@@ -38,7 +38,7 @@ export function zoomAndPanPolygon(
  * @param pan
  * @param zoomCenter
  */
-export function findCurrentNode(
+export function findCentralNode(
   layers: Array<Record<string, MapNode>>,
   nodeRecord: Record<string, NodeRecordItem>,
   viewport: Viewport,

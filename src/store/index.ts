@@ -7,6 +7,7 @@ import {
 } from "vuex";
 import { InjectionKey } from "vue";
 import { store as pinStore, State as PinState } from "./pin";
+import { store as preconditionStore, State as PreconditionState } from "./precondition";
 import {
   store as treeStore,
   State as TreeState,
@@ -63,6 +64,7 @@ export type State = {
 
   // module states
   pin: PinState;
+  precondition: PreconditionState;
   tree: TreeState;
   user: UserState;
   zoomPan: ZoomPanState;
@@ -872,6 +874,7 @@ export const store = createStore<State>({
   },
   modules: {
     pin: pinStore,
+    precondition: preconditionStore,
     tree: treeStore,
     user: userStore,
     zoomPan: zoomPanStore,

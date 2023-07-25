@@ -2,7 +2,11 @@
   <ConfirmDialog></ConfirmDialog>
   <Toast position="bottom-left" />
   <NodeContent :show="!editModeOn && !!selectedNodeId" />
-  <Menu />
+  <Menu
+    :clickedTitleId="clickedTitleId"
+    @select-precondition-is-on="setSelectPreconditionON"
+    @select-precondition-is-off="setSelectPreconditionOFF"
+  />
   <Map
     :layers="zoomedPanedLayers"
     :viewBox="viewBox"
@@ -37,7 +41,7 @@ import { mutations as zoomPanMutations } from "@/store/zoom_pan";
 import { actions } from "@/store/";
 import {
   filterNodesAndLayers,
-  findCurrentNode,
+  findCentralNode,
   zoomAndPanPoint,
   zoomAnPanLayers
 } from "@/views/Home";
@@ -64,6 +68,8 @@ export default defineComponent({
     const treeState = store.state.tree;
     const zoomPanState = store.state.zoomPan;
     const pinState = store.state.pin;
+    const clickedTitleId = ref(-1)
+    let selectPreconditionIsOn = false
 
     watch(
       () => route.params.id,
@@ -89,15 +95,15 @@ export default defineComponent({
     });
 
     const updateLayers = (
-      currNodeId: string,
+      centralNodeId: string,
       mapNodeLayers: Array<Record<string, MapNode>>,
       nodeRecord: Record<string, NodeRecordItem>
     ): Array<Record<number, MapNode>> => {
-      // Вычленяем слои и узлы которые мы хотим показывать учитывая что текущий узел это currentNodeId
+      // Вычленяем слои и узлы которые мы хотим показывать учитывая что текущий видимый узел это centralNodeId
       const [filteredLayers, err] = filterNodesAndLayers(
         mapNodeLayers,
         nodeRecord,
-        currNodeId
+        centralNodeId
       );
       if (err) {
         printError("Home.vue: error in filterNodesAndLayers:", { err });
@@ -106,12 +112,12 @@ export default defineComponent({
       return filteredLayers.reverse();
     };
 
-    const currentNodeId = ref<string | null>(null);
+    const centralNodeId = ref<string | null>(null);
     const layers = ref<Array<Record<string, MapNode>>>([]);
     watch(
       () => [treeState.mapNodeLayers, zoomPanState.debouncedZoom],
       () => {
-        const [currNodeId, err] = findCurrentNode(
+        const [newCentralNodeId, err] = findCentralNode(
           treeState.mapNodeLayers,
           treeState.nodeRecord,
           { width: window.innerWidth, height: window.innerHeight },
@@ -132,9 +138,9 @@ export default defineComponent({
           );
         }
 
-        currentNodeId.value = currNodeId;
+        centralNodeId.value = newCentralNodeId;
         layers.value = updateLayers(
-          currNodeId,
+          newCentralNodeId,
           treeState.mapNodeLayers,
           treeState.nodeRecord
         );
@@ -159,10 +165,10 @@ export default defineComponent({
 
     return {
       pinNodes: computed(() => {
-        if (currentNodeId.value == null) {
+        if (centralNodeId.value == null) {
           return [];
         }
-        const pinNodeIDs = pinState.pinsReverse[currentNodeId.value];
+        const pinNodeIDs = pinState.pinsReverse[centralNodeId.value];
         if (!pinNodeIDs) {
           return [];
         }
@@ -213,8 +219,19 @@ export default defineComponent({
           }
         });
       },
+      setSelectPreconditionON: () => {
+        selectPreconditionIsOn = true
+      },
+      setSelectPreconditionOFF: () => {
+        selectPreconditionIsOn = false
+      },
+      clickedTitleId,
       titleClick: (e: EventClickNode) => {
-        router.push({ name: "node", params: { id: e.id } });
+        if (!selectPreconditionIsOn) {
+          router.push({ name: "node", params: { id: e.id } });
+        } else {
+          clickedTitleId.value = e.id
+        }
       },
       titleOver: (e: EventClickNode) => {
         store.commit(

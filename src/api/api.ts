@@ -6,6 +6,7 @@ import { apiTree } from "./mocks";
 // import apiTree from "./mindmeister";
 import axios from "axios";
 import { Pins } from "@/store/pin";
+import { Preconditions } from "src/store/precondition";
 import { DBNode } from "@/api/types";
 import { convertChildren, convertDBMapToTree } from "./helpers";
 import { Resource } from "@/store/resources";
@@ -158,6 +159,30 @@ export default {
     } catch (e) {
       return [null, NewErrorKV(e.message, { e: e })];
     }
+  },
+
+  async getPreconditions(user: firebase.User | null): Promise<[Preconditions | null, ErrorKV]> {
+    try {
+      const snapshot = await firebase
+        .database()
+        .ref("precondition")
+        .get();
+      if (!snapshot.exists()) {
+        return [null, NewErrorKV("!snapshot.exists", {})];
+      }
+      const preconditions = snapshot.val();
+
+      return [preconditions, null];
+    } catch (e) {
+      return [null, NewErrorKV(e.message, { e: e })];
+    }
+  },
+
+  async savePreconditions(user: firebase.User, preconditions: { nodeId: string; preconditionIds: string[] }) {
+    if (!user) {
+      return;
+    }
+
   },
 
   async saveUserMap(user: firebase.User, map: Tree) {

@@ -2,6 +2,7 @@ import firebase from "firebase";
 import api from "@/api/api";
 import { mutations as treeMutations } from "@/store/tree";
 import { mutations as pinMutations } from "@/store/pin";
+import { mutations as preconditionMutations } from "@/store/precondition";
 import { mutations as resourcesMutations } from "@/store/resources";
 import {
   Crowdfunding,
@@ -51,6 +52,25 @@ export async function fetchPins(user: firebase.User | null) {
   }
 
   store.commit(`pin/${pinMutations.SET_PINS}`, pins);
+}
+
+export async function fetchPreconditions(user: firebase.User | null) {
+  let [preconditions, err] = await api.getPreconditions(user);
+  if (preconditions == null || err) {
+    console.error(err);
+    preconditions = {};
+  }
+
+  if (user && !preconditions) {
+    [preconditions, err] = await api.getPreconditions(null);
+    if (preconditions == null || err) {
+      console.error(err);
+      preconditions = {};
+    }
+  }
+
+  console.log("preconditions", preconditions)
+  store.commit(`precondition/${preconditionMutations.SET_PRECONDITIONS}`, preconditions);
 }
 
 export async function fetchResources() {
@@ -256,6 +276,7 @@ export async function fetchNodeContents(user: firebase.User | null) {
 export async function fetchData(user: firebase.User | null) {
   await fetchMap(user);
   await fetchPins(user);
+  await fetchPreconditions(user);
   await fetchResources();
   await fetchNodeContents(user);
 }

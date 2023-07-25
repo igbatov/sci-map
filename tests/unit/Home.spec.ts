@@ -1,4 +1,4 @@
-import { filterNodesAndLayers, findCurrentNode } from "@/views/Home.ts";
+import { filterNodesAndLayers, findCentralNode } from "@/views/Home.ts";
 import {
   fillTreePositions,
   generateTreeSkeleton,
@@ -30,7 +30,7 @@ describe("filterNodesAndLayers", () => {
     expect(layers).not.toBeNull();
     const nodeRecord = treeToNodeRecord(tree);
 
-    const [currNodeId, _] = findCurrentNode(
+    const [currNodeId, _] = findCentralNode(
       layers!,
       nodeRecord,
       viewport,
@@ -197,7 +197,7 @@ describe("findCurrentNode", () => {
     expect(layers).not.toBeNull();
     expect(err).toBeNull();
     const nodeRecord = treeToNodeRecord(tree);
-    const [nodeId, err2] = findCurrentNode(
+    const [nodeId, err2] = findCentralNode(
       layers!,
       nodeRecord,
       viewport,
