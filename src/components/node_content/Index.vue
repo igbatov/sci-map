@@ -33,24 +33,29 @@
           </div>
         </div>
 
-        <!-- Education section -->
-        <SectionResources
+        <!-- Preconditions section -->
+        <SectionPreconditions
           v-if="selectedNodeContent"
           :node-id="selectedNode.id"
-          :resources="resources"
-          :resourcesRating="selectedNodeContent.resourceRatings"
+        />
+        <!-- Education section -->
+        <SectionResources
+            v-if="selectedNodeContent"
+            :node-id="selectedNode.id"
+            :resources="resources"
+            :resourcesRating="selectedNodeContent.resourceRatings"
         />
         <!-- Job section -->
         <SectionVacancies
-          v-if="selectedNodeContent"
-          :node-id="selectedNode.id"
-          :vacancies="selectedNodeContent.vacancies"
+            v-if="selectedNodeContent"
+            :node-id="selectedNode.id"
+            :vacancies="selectedNodeContent.vacancies"
         />
         <!-- Crowdfunding section -->
         <SectionCrowdfunding
-          v-if="selectedNodeContent"
-          :node-id="selectedNode.id"
-          :crowdfunding-list="selectedNodeContent.crowdfundingList"
+            v-if="selectedNodeContent"
+            :node-id="selectedNode.id"
+            :crowdfunding-list="selectedNodeContent.crowdfundingList"
         />
       </div>
     </div>
@@ -65,6 +70,7 @@ import TextArea from "primevue/textarea";
 import SectionResources from "./resources/Index.vue";
 import SectionVacancies from "./Vacancies.vue";
 import SectionCrowdfunding from "./Crowdfunding.vue";
+import SectionPreconditions from "./Preconditions.vue";
 import { Tree } from "@/types/graphics";
 import { EmptyNodeContent, NodeContent } from "@/store/node_content";
 import { Resources } from "@/store/resources";
@@ -78,7 +84,8 @@ export default {
     TextArea,
     SectionResources,
     SectionVacancies,
-    SectionCrowdfunding
+    SectionCrowdfunding,
+    SectionPreconditions,
   },
   props: {
     show: {

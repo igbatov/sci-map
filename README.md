@@ -179,8 +179,7 @@ https://console.firebase.google.com/project/sci-map-1982/functions/logs
 ### Run app on emulator
 Set in src/api/api.ts
 ```shell
-export VUE_APP_IS_EMULATOR=true
-yarn serve
+export VUE_APP_IS_EMULATOR=true; yarn serve
 ```
 
 #### Emulate schedule function

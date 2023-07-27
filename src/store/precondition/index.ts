@@ -23,7 +23,7 @@ export const actions = {
 export const store = {
   namespaced: true,
   state: {
-    preconditions: {},
+    preconditions: {} as Record<string, string[]>,
   },
   actions: {
     [actions.AddPrecondition](
@@ -47,9 +47,9 @@ export const store = {
       }: {
         commit: Commit;
       },
-      v: { nodeId: string; parentId: string }
+      v: { nodeId: string; preconditionId: string }
     ) {
-      commit(mutations.REMOVE_FROM_PRECONDITIONS, { nodeId: v.nodeId, preconditionId: v.parentId });
+      commit(mutations.REMOVE_FROM_PRECONDITIONS, { nodeId: v.nodeId, preconditionId: v.preconditionId });
     }
   },
   mutations: {
@@ -70,7 +70,7 @@ export const store = {
       if (p.indexOf(v.preconditionId) == -1) {
         return
       }
-      delete p[p.indexOf(v.preconditionId)]
+      state.preconditions[v.nodeId].splice(p.indexOf(v.preconditionId), 1)
     },
   },
 };

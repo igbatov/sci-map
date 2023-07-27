@@ -178,7 +178,7 @@ export default {
     }
   },
 
-  async savePreconditions(user: firebase.User, preconditions: { nodeId: string; preconditionIds: string[] }) {
+  async savePreconditions(user: firebase.User | null, preconditions: { nodeId: string; preconditionIds: string[] }) {
     if (!user) {
       return;
     }

@@ -1,0 +1,19 @@
+{
+  "name": "user/TwMNIBjZhXDPUcPSVVxOJtDm2AyK/pins.json",
+  "bucket": "sci-map-1982.appspot.com",
+  "contentType": "application/json",
+  "metageneration": 1,
+  "generation": 1625641496784,
+  "storageClass": "STANDARD",
+  "etag": "someETag",
+  "contentDisposition": "inline",
+  "contentEncoding": "identity",
+  "downloadTokens": [
+    "9270ea46-2ebe-47cd-b7cb-e68ffe82bbda"
+  ],
+  "timeCreated": "2021-07-07T07:04:56.783Z",
+  "updated": "2021-07-07T07:04:56.783Z",
+  "size": 79,
+  "md5Hash": "NVi860bnE5QccvqRighxzQ==",
+  "crc32c": "2632900842"
+}
