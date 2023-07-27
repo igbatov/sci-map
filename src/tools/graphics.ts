@@ -666,6 +666,7 @@ export function convertPosition(
  *
  * @param tree
  * @param rootBorder
+ * @param rootPosition
  */
 export function treeToMapNodeLayers(
   tree: Tree,

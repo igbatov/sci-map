@@ -29,9 +29,7 @@
     :key="mapNode.id"
     font-family="Roboto"
     :font-size="fontSize"
-    :font-weight="
-      selectedNodeId && selectedNodeId == mapNode.id ? 'bold' : 'normal'
-    "
+    :font-weight="(selectedNodeId && selectedNodeId == mapNode.id) ? 'bold' : 'normal'"
     :fill="borderColor"
     class="text"
   >
@@ -92,7 +90,7 @@ export default defineComponent({
       required: true
     },
     mapNodes: {
-      type: Object as PropType<Array<MapNode>>,
+      type: Object as PropType<Record<string, MapNode>>,
       required: true
     },
     borderColor: {

@@ -2,11 +2,11 @@ import { MapNode, Point } from "@/types/graphics";
 import { nextTick, ref, Ref, watch } from "vue";
 
 export type EventClickNode = {
-  id: number;
+  id: string;
 };
 
 export type EventDraggingNode = {
-  nodeId: number;
+  nodeId: string;
   delta: Point;
 };
 
@@ -58,7 +58,7 @@ export const mouseUpListener = (emit: emitFn, mouseDownInfo: MouseDownInfo) => {
 };
 
 export const nodeToTitleBox = (
-  nodes: Array<MapNode>
+  nodes: Record<string, MapNode>
 ): Record<string, TitleBox> => {
   const titleBox: Record<string, TitleBox> = {};
   for (const i in nodes) {
@@ -78,7 +78,7 @@ export const nodeToTitleBox = (
 const updateTitleBox = (
   titleIdPrefix: string,
   position: "center" | "left",
-  mapNodes: Array<MapNode>,
+  mapNodes: Record<string, MapNode>,
   titleBox: Record<string, TitleBox>
 ) => {
   // Code that will run only after the entire view has been rendered
@@ -124,7 +124,7 @@ const updateTitleBox = (
 export const getTitleBoxes = (
   titleIdPrefix: string,
   position: "center" | "left",
-  mapNodes: Ref<Array<MapNode>>
+  mapNodes: Ref<Record<string, MapNode>>
 ): Ref<Record<string, TitleBox>> => {
   const titleBox = ref(nodeToTitleBox(mapNodes.value));
   /**

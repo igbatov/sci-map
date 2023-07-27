@@ -182,7 +182,10 @@ export default {
     if (!user) {
       return;
     }
-
+    await firebase
+      .database()
+      .ref("precondition/" + preconditions.nodeId)
+      .set(preconditions.preconditionIds);
   },
 
   async saveUserMap(user: firebase.User, map: Tree) {
@@ -219,6 +222,7 @@ export default {
           return;
         }
         const node = snap.val() as DBNode;
+        node.id = node.id.toString()
         node.children = convertChildren(node.children);
         cb(node);
       }
@@ -278,6 +282,7 @@ export default {
       .ref("map/" + nodeID)
       .get();
     const node = pr.val();
+    node.id = node.id.toString()
     node.children = convertChildren(node.children);
     return node;
   },

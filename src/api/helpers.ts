@@ -6,18 +6,17 @@ import { getVoronoiCellRecords, morphChildrenPoints } from "../tools/graphics";
 
 // convert children object to array
 export function convertChildren(children: any): string[] {
-  let result;
+  let result: string[];
 
   if (!children) {
     result = [];
   } else if (Array.isArray(children)) {
     result = children.filter(childID => !!childID).sort();
+    result.forEach((childID, i, arr) => arr[i] = childID.toString());
   } else {
-    result = Object.values(children)
-      .filter(childID => !!childID)
-      .sort() as string[];
+    result = Object.values(children).filter(childID => !!childID).sort() as string[];
+    result.forEach((childID, i, arr) => arr[i] = childID.toString());
   }
-
   return result;
 }
 
@@ -25,7 +24,7 @@ export function convertDBMapToTree(
   dbNodes: Record<string, DBNode>
 ): [Tree | null, ErrorKV] {
   const root: Tree = {
-    id: dbNodes["0"].id,
+    id: dbNodes["0"].id.toString(),
     title: dbNodes["0"].name,
     position: dbNodes["0"].position,
     children: []
@@ -50,7 +49,7 @@ export function convertDBMapToTree(
     const children: Tree[] = [];
     for (const childID of dbNodes[node.id].children) {
       children.push({
-        id: childID,
+        id: childID.toString(),
         title: dbNodes[childID].name,
         position: dbNodes[childID].position,
         children: []

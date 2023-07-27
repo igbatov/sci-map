@@ -8,6 +8,10 @@
       ".read": "auth !== null || auth === null",
       ".write": "auth !== null"
     },
+    "precondition": {
+      ".read": "auth !== null || auth === null",
+      ".write": "auth !== null"
+    },
     "node_content_aggregate": {
       ".read": "auth !== null || auth === null",
       ".write": "auth !== null"

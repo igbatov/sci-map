@@ -10,7 +10,7 @@
   >
     <template #header>
       <h3>
-          Set "{{preconditionNode ? preconditionNode.title : ''}}" as precondition for "{{targetNode ? targetNode.title : ''}}"
+          Set "{{preconditionNode.title ? preconditionNode.title : (selectedNode ? selectedNode.title : '') }}" as precondition for "{{targetNode ? targetNode.title : ''}}"
       </h3>
     </template>
 
@@ -56,6 +56,7 @@ export default {
     const addBannerVisible = ref(false);
     const targetNode = ref({}); // node where precondition must be added
     const preconditionNode = ref({}); // node where precondition must be added
+    const selectedNode = computed(() => store.getters["tree/selectedNode"]); // current selected node
 
     watch(
       () => props.clickedTitleId,
@@ -76,22 +77,25 @@ export default {
       add: () => {
         store.dispatch(`precondition/${preconditionActions.AddPrecondition}`, {
           nodeId: targetNode.value.id,
-          parentId: preconditionNode.value.id,
+          preconditionId: preconditionNode.value.id,
         });
         api.savePreconditions(store.state.user.user, {
           nodeId: targetNode.value.id,
-          preconditionIds: store.state.precondition[targetNode.value.id]
+          preconditionIds: store.state.precondition.preconditions[targetNode.value.id],
         });
         ctx.emit("select-precondition-is-off");
         addBannerVisible.value = false;
+        preconditionNode.value = {}
       },
       cancelAdd: () => {
         addBannerVisible.value = false;
+        preconditionNode.value = {}
         ctx.emit("select-precondition-is-off");
       },
       addBannerVisible,
       targetNode,
       preconditionNode,
+      selectedNode,
     };
   }
 };

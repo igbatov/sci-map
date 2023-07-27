@@ -26,14 +26,6 @@ export async function fetchMap(user: firebase.User | null) {
     printError("fetchMap: cannot api.getMap(user)", { err });
   }
 
-  //// Commented out because reading map from DB is always made from single general version
-  // if (user && !tree) {
-  //   [tree, err] = await api.getMap(null);
-  //   if (tree == null || err) {
-  //     printError("fetchMap: cannot api.getMap(null)", { err });
-  //   }
-  // }
-
   store.commit(`tree/${treeMutations.SET_TREE}`, tree);
 }
 
@@ -264,8 +256,6 @@ export async function fetchNodeContents(user: firebase.User | null) {
     // "merge" into general node content
     mergeUserContentIntoGeneral(userNodeContents, nodeContents)
   }
-
-  console.log("nodeContents", nodeContents);
 
   store.commit(
     `nodeContent/${nodeContentMutations.SET_CONTENTS}`,

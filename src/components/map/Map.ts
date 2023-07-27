@@ -1,11 +1,11 @@
 import { Point } from "@/types/graphics";
 
 export type EventClickNode = {
-  id: number;
+  id: string;
 };
 
 export type EventDraggingNode = {
-  id: number;
+  id: string;
   delta: Point;
 };
 

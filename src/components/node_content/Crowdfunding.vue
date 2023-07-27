@@ -76,7 +76,7 @@ import { useToast } from "primevue/usetoast";
 export default {
   name: "Crowdfunding",
   props: {
-    nodeId: Number,
+    nodeId: String,
     crowdfundingList: Object as PropType<Record<string, Crowdfunding>>
   },
   components: {

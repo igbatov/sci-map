@@ -56,7 +56,7 @@ import { orderBy } from "lodash";
 export default {
   name: "Resources",
   props: {
-    nodeId: Number,
+    nodeId: String,
     resources: Object as PropType<Record<string, Resource>>,
     resourcesRating: Object as PropType<ResourceRating[]>
   },

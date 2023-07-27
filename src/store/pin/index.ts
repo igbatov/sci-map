@@ -71,7 +71,7 @@ export const store = {
     }
   },
   mutations: {
-    SET_PINS(state: State, pins: Pins) {
+    [mutations.SET_PINS](state: State, pins: Pins) {
       state.pins = pins;
       state.pinsReverse = {};
       for (const pinId in pins) {
@@ -83,16 +83,16 @@ export const store = {
         }
       }
     },
-    ADD_TO_PINS(state: State, v: { nodeId: string; parentIds: string[] }) {
+    [mutations.ADD_TO_PINS](state: State, v: { nodeId: string; parentIds: string[] }) {
       state.pins[v.nodeId] = v.parentIds;
     },
-    ADD_TO_PINS_REVERSE(state: State, v: { nodeId: string; pinId: string }) {
+    [mutations.ADD_TO_PINS_REVERSE](state: State, v: { nodeId: string; pinId: string }) {
       if (!state.pinsReverse[v.nodeId]) {
         state.pinsReverse[v.nodeId] = [];
       }
       state.pinsReverse[v.nodeId].push(v.pinId);
     },
-    REMOVE_PIN(state: State, nodeId: string) {
+    [mutations.REMOVE_PIN](state: State, nodeId: string) {
       for (const parentId of state.pins[nodeId]) {
         const index = state.pinsReverse[parentId].indexOf(nodeId);
         state.pinsReverse[parentId].splice(index, 1);

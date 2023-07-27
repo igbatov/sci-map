@@ -23,7 +23,7 @@ export const actions = {
 export const store = {
   namespaced: true,
   state: {
-    parents: {},
+    preconditions: {},
   },
   actions: {
     [actions.AddPrecondition](
@@ -32,10 +32,13 @@ export const store = {
       }: {
         commit: Commit;
       },
-      v: { nodeId: string; parentId: string }
+      v: { nodeId: string; preconditionId: string }
     ) {
-      console.log("going to add premise", v.nodeId, " to node ", v.parentId)
-      commit(mutations.ADD_TO_PRECONDITIONS, { nodeId: v.nodeId, preconditionId: v.parentId });
+      if (!v.nodeId || !v.preconditionId) {
+        console.log("AddPrecondition bad arguments", "nodeId", v.nodeId, "preconditionId", v.preconditionId)
+        return
+      }
+      commit(mutations.ADD_TO_PRECONDITIONS, v);
     },
 
     [actions.RemovePrecondition](
@@ -50,14 +53,23 @@ export const store = {
     }
   },
   mutations: {
-    SET_PRECONDITIONS(state: State, preconditions: Preconditions) {
+    [mutations.SET_PRECONDITIONS](state: State, preconditions: Preconditions) {
       state.preconditions = preconditions;
     },
-    ADD_TO_PRECONDITIONS(state: State, v: { nodeId: string; preconditionId: string }) {
+    [mutations.ADD_TO_PRECONDITIONS](state: State, v: { nodeId: string; preconditionId: string }) {
+      if (!state.preconditions[v.nodeId]) {
+        state.preconditions[v.nodeId] = []
+      }
       state.preconditions[v.nodeId].push(v.preconditionId);
     },
-    REMOVE_FROM_PRECONDITIONS(state: State, v: { nodeId: string; preconditionId: string }) {
+    [mutations.REMOVE_FROM_PRECONDITIONS](state: State, v: { nodeId: string; preconditionId: string }) {
       const p = state.preconditions[v.nodeId]
+      if (!p) {
+        return
+      }
+      if (p.indexOf(v.preconditionId) == -1) {
+        return
+      }
       delete p[p.indexOf(v.preconditionId)]
     },
   },

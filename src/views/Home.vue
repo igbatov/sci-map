@@ -68,7 +68,7 @@ export default defineComponent({
     const treeState = store.state.tree;
     const zoomPanState = store.state.zoomPan;
     const pinState = store.state.pin;
-    const clickedTitleId = ref(-1)
+    const clickedTitleId = ref("-1")
     let selectPreconditionIsOn = false
 
     watch(

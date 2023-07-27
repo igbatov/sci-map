@@ -63,7 +63,7 @@ export default defineComponent({
     },
     layers: Object as PropType<Array<Record<string, MapNode>>>,
     selectedNodeId: {
-      type: String,
+      type: String || null,
       validator: (prop: string | null) =>
         typeof prop === "string" || prop === null,
       required: true

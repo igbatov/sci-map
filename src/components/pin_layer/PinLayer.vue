@@ -67,7 +67,7 @@ export default defineComponent({
   emits: ["click", "title-mouse-down"],
   props: {
     pinNodes: {
-      type: Object as PropType<Array<MapNode>>,
+      type: Object as PropType<Record<string, MapNode>>,
       required: true
     },
     selectedNodeId: {
@@ -89,7 +89,8 @@ export default defineComponent({
       titleBox,
       titleXY: computed(() => {
         const alignedXY: Record<string, Point> = {};
-        for (const node of pinNodes.value) {
+        for (const i in pinNodes.value) {
+          const node = pinNodes.value[i]
           alignedXY[node.id] = {
             x: titleBox.value[node.id]
               ? titleBox.value[node.id].position.x - PIN_MARKER_WIDTH / 2 - 1
@@ -101,10 +102,10 @@ export default defineComponent({
         }
         return alignedXY;
       }),
-      titleBoxClick: (nodeId: number) => {
+      titleBoxClick: (nodeId: string) => {
         ctx.emit("click", { id: nodeId });
       },
-      nodeMouseDown: (nodeId: number) => {
+      nodeMouseDown: (nodeId: string) => {
         ctx.emit("title-mouse-down", { id: nodeId });
       }
     };

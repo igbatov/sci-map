@@ -107,6 +107,7 @@ export const store = {
       { commit, state }: { commit: Commit; state: State },
       arg: { dbNode: DBNode; user: firebase.User | null }
     ) {
+
       const dbNodeRecord = state.nodeRecord[arg.dbNode.id];
       if (!dbNodeRecord) {
         printError("UPDATE_NODE: Cannot find dbNode in dbNodeRecord", {
