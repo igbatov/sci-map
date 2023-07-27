@@ -12,10 +12,12 @@ export function convertChildren(children: any): string[] {
     result = [];
   } else if (Array.isArray(children)) {
     result = children.filter(childID => !!childID).sort();
-    result.forEach((childID, i, arr) => arr[i] = childID.toString());
+    result.forEach((childID, i, arr) => (arr[i] = childID.toString()));
   } else {
-    result = Object.values(children).filter(childID => !!childID).sort() as string[];
-    result.forEach((childID, i, arr) => arr[i] = childID.toString());
+    result = Object.values(children)
+      .filter(childID => !!childID)
+      .sort() as string[];
+    result.forEach((childID, i, arr) => (arr[i] = childID.toString()));
   }
   return result;
 }

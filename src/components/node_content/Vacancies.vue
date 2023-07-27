@@ -113,7 +113,7 @@ export default {
       checkAuthorized: async (e: Event) => {
         if (!store.state.user.user || store.state.user.user.isAnonymous) {
           await store.dispatch(`${actions.confirmSignInPopup}`, confirm);
-          e.preventDefault()
+          e.preventDefault();
         }
       },
       add: async () => {

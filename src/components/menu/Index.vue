@@ -10,10 +10,10 @@
         <RemoveNode v-if="isNodeSelected" />
       </span>
       <AddPrecondition
-          v-if="isNodeSelected"
-          :clickedTitleId="clickedTitleId"
-          @select-precondition-is-on="$emit('select-precondition-is-on')"
-          @select-precondition-is-off="$emit('select-precondition-is-off')"
+        v-if="isNodeSelected"
+        :clickedTitleId="clickedTitleId"
+        @select-precondition-is-on="$emit('select-precondition-is-on')"
+        @select-precondition-is-off="$emit('select-precondition-is-off')"
       />
       <PinNode v-if="isNodeSelected && !isPinned" />
       <UnpinNode v-if="isNodeSelected && isPinned" />

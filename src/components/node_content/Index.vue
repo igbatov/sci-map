@@ -40,22 +40,22 @@
         />
         <!-- Education section -->
         <SectionResources
-            v-if="selectedNodeContent"
-            :node-id="selectedNode.id"
-            :resources="resources"
-            :resourcesRating="selectedNodeContent.resourceRatings"
+          v-if="selectedNodeContent"
+          :node-id="selectedNode.id"
+          :resources="resources"
+          :resourcesRating="selectedNodeContent.resourceRatings"
         />
         <!-- Job section -->
         <SectionVacancies
-            v-if="selectedNodeContent"
-            :node-id="selectedNode.id"
-            :vacancies="selectedNodeContent.vacancies"
+          v-if="selectedNodeContent"
+          :node-id="selectedNode.id"
+          :vacancies="selectedNodeContent.vacancies"
         />
         <!-- Crowdfunding section -->
         <SectionCrowdfunding
-            v-if="selectedNodeContent"
-            :node-id="selectedNode.id"
-            :crowdfunding-list="selectedNodeContent.crowdfundingList"
+          v-if="selectedNodeContent"
+          :node-id="selectedNode.id"
+          :crowdfunding-list="selectedNodeContent.crowdfundingList"
         />
       </div>
     </div>
@@ -63,8 +63,8 @@
 </template>
 
 <script lang="ts">
-import {actions, useStore} from "@/store";
-import {computed} from "vue";
+import { actions, useStore } from "@/store";
+import { computed } from "vue";
 import InputText from "primevue/inputtext";
 import TextArea from "primevue/textarea";
 import SectionResources from "./resources/Index.vue";
@@ -74,7 +74,7 @@ import SectionPreconditions from "./Preconditions.vue";
 import { Tree } from "@/types/graphics";
 import { EmptyNodeContent, NodeContent } from "@/store/node_content";
 import { Resources } from "@/store/resources";
-import {clone, printError} from "@/tools/utils";
+import { clone, printError } from "@/tools/utils";
 import { useConfirm } from "primevue/useconfirm";
 
 export default {
@@ -85,7 +85,7 @@ export default {
     SectionResources,
     SectionVacancies,
     SectionCrowdfunding,
-    SectionPreconditions,
+    SectionPreconditions
   },
   props: {
     show: {
@@ -153,7 +153,7 @@ export default {
       checkAuthorized: async (e: Event) => {
         if (!store.state.user.user || store.state.user.user.isAnonymous) {
           await store.dispatch(`${actions.confirmSignInPopup}`, confirm);
-          e.preventDefault()
+          e.preventDefault();
         }
       },
       changeWikipediaURL: async (value: string) => {
@@ -163,7 +163,7 @@ export default {
         });
 
         if (err) {
-          printError(err, {})
+          printError(err, {});
         }
       },
       comment,
@@ -174,7 +174,7 @@ export default {
         });
 
         if (err) {
-          printError(err, {})
+          printError(err, {});
         }
       }
     };

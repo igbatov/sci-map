@@ -1,9 +1,5 @@
 <template>
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    :viewBox="viewBox"
-    :id="mapID"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" :viewBox="viewBox" :id="mapID">
     <MapLayer
       v-for="(layer, index) of layers"
       :key="index"
@@ -34,7 +30,7 @@ import { MapNode } from "@/types/graphics";
 import MapLayer from "@/components/map_layer/MapLayer.vue";
 import {
   EventClickNode,
-  EventDraggingNode,
+  EventDraggingNode
 } from "@/components/map_layer/MapLayer";
 import pan from "./MapPan";
 import PinLayer from "@/components/pin_layer/PinLayer.vue";
@@ -74,9 +70,9 @@ export default defineComponent({
     watch(
       () => props.layers,
       () => {
-          pan.setLayers(props.layers)
-        },
-        { immediate: true },
+        pan.setLayers(props.layers);
+      },
+      { immediate: true }
     );
 
     onMounted(() => {

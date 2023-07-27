@@ -30,8 +30,8 @@
 import Dialog from "primevue/dialog";
 import Button from "primevue/button";
 import { useStore } from "@/store";
-import {computed, ref, watch} from "vue";
-import {actions as preconditionActions} from "@/store/precondition";
+import { computed, ref, watch } from "vue";
+import { actions as preconditionActions } from "@/store/precondition";
 import api from "@/api/api";
 import { Tree } from "@/types/graphics";
 
@@ -39,7 +39,7 @@ export default {
   name: "AddPrecondition",
   components: {
     Dialog,
-    Button,
+    Button
   },
   emits: [
     "select-precondition-is-on",
@@ -61,8 +61,12 @@ export default {
     watch(
       () => props.clickedTitleId,
       () => {
-        if (props.clickedTitleId > 0 && store.state.tree.nodeRecord[props.clickedTitleId]) {
-          preconditionNode.value = store.state.tree.nodeRecord[props.clickedTitleId].node
+        if (
+          props.clickedTitleId > 0 &&
+          store.state.tree.nodeRecord[props.clickedTitleId]
+        ) {
+          preconditionNode.value =
+            store.state.tree.nodeRecord[props.clickedTitleId].node;
         }
       },
       { immediate: true }
@@ -71,31 +75,32 @@ export default {
     return {
       showAddBanner: () => {
         ctx.emit("select-precondition-is-on");
-        targetNode.value = store.getters["tree/selectedNode"]
+        targetNode.value = store.getters["tree/selectedNode"];
         addBannerVisible.value = !addBannerVisible.value;
       },
       add: () => {
         store.dispatch(`precondition/${preconditionActions.AddPrecondition}`, {
           nodeId: targetNode.value.id,
-          preconditionId: preconditionNode.value.id,
+          preconditionId: preconditionNode.value.id
         });
         api.savePreconditions(store.state.user.user, {
           nodeId: targetNode.value.id,
-          preconditionIds: store.state.precondition.preconditions[targetNode.value.id],
+          preconditionIds:
+            store.state.precondition.preconditions[targetNode.value.id]
         });
         ctx.emit("select-precondition-is-off");
         addBannerVisible.value = false;
-        preconditionNode.value = {}
+        preconditionNode.value = {};
       },
       cancelAdd: () => {
         addBannerVisible.value = false;
-        preconditionNode.value = {}
+        preconditionNode.value = {};
         ctx.emit("select-precondition-is-off");
       },
       addBannerVisible,
       targetNode,
       preconditionNode,
-      selectedNode,
+      selectedNode
     };
   }
 };

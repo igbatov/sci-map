@@ -61,8 +61,10 @@ export async function fetchPreconditions(user: firebase.User | null) {
     }
   }
 
-  console.log("preconditions", preconditions)
-  store.commit(`precondition/${preconditionMutations.SET_PRECONDITIONS}`, preconditions);
+  store.commit(
+    `precondition/${preconditionMutations.SET_PRECONDITIONS}`,
+    preconditions
+  );
 }
 
 export async function fetchResources() {
@@ -171,8 +173,8 @@ function mergeResourceRatings(
       userRatings &&
       userRatings[resourceID] &&
       userRatings[resourceID].rating !== undefined &&
-      userRatings[resourceID].rating !== null)
-    {
+      userRatings[resourceID].rating !== null
+    ) {
       r[resourceID] = userRatings[resourceID];
     } else {
       r[resourceID] = generalRatings[resourceID];
@@ -188,7 +190,7 @@ export function mergeUserContentIntoGeneral(
 ) {
   for (const id in userNodeContents) {
     if (!nodeContents[id]) {
-      continue
+      continue;
     }
     nodeContents[id].video = userNodeContents[id].video;
     nodeContents[id].wikipedia = userNodeContents[id].wikipedia;
@@ -254,7 +256,7 @@ export async function fetchNodeContents(user: firebase.User | null) {
     );
 
     // "merge" into general node content
-    mergeUserContentIntoGeneral(userNodeContents, nodeContents)
+    mergeUserContentIntoGeneral(userNodeContents, nodeContents);
   }
 
   store.commit(

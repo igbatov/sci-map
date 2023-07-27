@@ -6,9 +6,7 @@
     :fill="
       selectedNodeId && selectedNodeId == mapNode.id ? '#f3afaf' : 'transparent'
     "
-    :fill-opacity="
-      selectedNodeId && selectedNodeId == mapNode.id ? '0.2' : '0'
-    "
+    :fill-opacity="selectedNodeId && selectedNodeId == mapNode.id ? '0.2' : '0'"
     stroke-width="2"
     :points="polygonToPath(mapNode.border)"
     pointer-events="none"
@@ -29,7 +27,9 @@
     :key="mapNode.id"
     font-family="Roboto"
     :font-size="fontSize"
-    :font-weight="(selectedNodeId && selectedNodeId == mapNode.id) ? 'bold' : 'normal'"
+    :font-weight="
+      selectedNodeId && selectedNodeId == mapNode.id ? 'bold' : 'normal'
+    "
     :fill="borderColor"
     class="text"
   >
@@ -43,21 +43,21 @@
   </text>
   <!-- Add rectangle to change cursor to pointer when hover on text -->
   <rect
-      v-for="mapNode of mapNodes"
-      :key="mapNode.id"
-      :x="titleBox[mapNode.id] ? titleBox[mapNode.id].position.x : 0"
-      :y="titleBox[mapNode.id] ? titleBox[mapNode.id].position.y : 0"
-      :width="titleBox[mapNode.id] ? titleBox[mapNode.id].bbox.width : 0"
-      :height="titleBox[mapNode.id] ? titleBox[mapNode.id].bbox.height : 0"
-      fill="transparent"
-      stroke-width="0"
-      @mouseover="titleOver(mapNode.id)"
-      @mouseleave="titleLeave(mapNode.id)"
-      @click="titleClick(mapNode.id)"
-      @mousedown="titleMouseDown(mapNode.id)"
-      stroke="pink"
-      cursor="pointer"
-      pointer-events="fill"
+    v-for="mapNode of mapNodes"
+    :key="mapNode.id"
+    :x="titleBox[mapNode.id] ? titleBox[mapNode.id].position.x : 0"
+    :y="titleBox[mapNode.id] ? titleBox[mapNode.id].position.y : 0"
+    :width="titleBox[mapNode.id] ? titleBox[mapNode.id].bbox.width : 0"
+    :height="titleBox[mapNode.id] ? titleBox[mapNode.id].bbox.height : 0"
+    fill="transparent"
+    stroke-width="0"
+    @mouseover="titleOver(mapNode.id)"
+    @mouseleave="titleLeave(mapNode.id)"
+    @click="titleClick(mapNode.id)"
+    @mousedown="titleMouseDown(mapNode.id)"
+    stroke="pink"
+    cursor="pointer"
+    pointer-events="fill"
   />
 </template>
 
@@ -82,7 +82,7 @@ export default defineComponent({
     "title-leave",
     "title-click",
     "title-drop",
-    "title-dragging",
+    "title-dragging"
   ],
   props: {
     mapId: {
@@ -117,7 +117,10 @@ export default defineComponent({
     /**
      * Send event on titleBox click, drag and drop
      */
-    const titleMouseDownInfo: MouseDownInfo = { nodeId: null, dragStart: false };
+    const titleMouseDownInfo: MouseDownInfo = {
+      nodeId: null,
+      dragStart: false
+    };
     const mouseMove = (event: MouseEvent) =>
       mouseMoveListener(ctx.emit, event, titleMouseDownInfo);
     const mouseUp = () => mouseUpListener(ctx.emit, titleMouseDownInfo);
@@ -159,9 +162,9 @@ export default defineComponent({
         });
       },
       titleMouseDown: (id: string) => {
-        titleMouseDownInfo.nodeId = id
+        titleMouseDownInfo.nodeId = id;
         titleMouseDownInfo.dragStart = false;
-      },
+      }
     };
   },
 

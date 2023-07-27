@@ -12,7 +12,7 @@ export interface State {
 export const mutations = {
   SET_PRECONDITIONS: "SET_PRECONDITIONS",
   ADD_TO_PRECONDITIONS: "ADD_TO_PRECONDITIONS",
-  REMOVE_FROM_PRECONDITIONS: "REMOVE_FROM_PRECONDITIONS",
+  REMOVE_FROM_PRECONDITIONS: "REMOVE_FROM_PRECONDITIONS"
 };
 
 export const actions = {
@@ -23,54 +23,69 @@ export const actions = {
 export const store = {
   namespaced: true,
   state: {
-    preconditions: {} as Record<string, string[]>,
+    preconditions: {} as Record<string, string[]>
   },
   actions: {
     [actions.AddPrecondition](
       {
-        commit,
+        commit
       }: {
         commit: Commit;
       },
       v: { nodeId: string; preconditionId: string }
     ) {
       if (!v.nodeId || !v.preconditionId) {
-        console.log("AddPrecondition bad arguments", "nodeId", v.nodeId, "preconditionId", v.preconditionId)
-        return
+        console.log(
+          "AddPrecondition bad arguments",
+          "nodeId",
+          v.nodeId,
+          "preconditionId",
+          v.preconditionId
+        );
+        return;
       }
       commit(mutations.ADD_TO_PRECONDITIONS, v);
     },
 
     [actions.RemovePrecondition](
       {
-        commit,
+        commit
       }: {
         commit: Commit;
       },
       v: { nodeId: string; preconditionId: string }
     ) {
-      commit(mutations.REMOVE_FROM_PRECONDITIONS, { nodeId: v.nodeId, preconditionId: v.preconditionId });
+      commit(mutations.REMOVE_FROM_PRECONDITIONS, {
+        nodeId: v.nodeId,
+        preconditionId: v.preconditionId
+      });
     }
   },
   mutations: {
     [mutations.SET_PRECONDITIONS](state: State, preconditions: Preconditions) {
       state.preconditions = preconditions;
     },
-    [mutations.ADD_TO_PRECONDITIONS](state: State, v: { nodeId: string; preconditionId: string }) {
+    [mutations.ADD_TO_PRECONDITIONS](
+      state: State,
+      v: { nodeId: string; preconditionId: string }
+    ) {
       if (!state.preconditions[v.nodeId]) {
-        state.preconditions[v.nodeId] = []
+        state.preconditions[v.nodeId] = [];
       }
       state.preconditions[v.nodeId].push(v.preconditionId);
     },
-    [mutations.REMOVE_FROM_PRECONDITIONS](state: State, v: { nodeId: string; preconditionId: string }) {
-      const p = state.preconditions[v.nodeId]
+    [mutations.REMOVE_FROM_PRECONDITIONS](
+      state: State,
+      v: { nodeId: string; preconditionId: string }
+    ) {
+      const p = state.preconditions[v.nodeId];
       if (!p) {
-        return
+        return;
       }
       if (p.indexOf(v.preconditionId) == -1) {
-        return
+        return;
       }
-      state.preconditions[v.nodeId].splice(p.indexOf(v.preconditionId), 1)
-    },
-  },
+      state.preconditions[v.nodeId].splice(p.indexOf(v.preconditionId), 1);
+    }
+  }
 };

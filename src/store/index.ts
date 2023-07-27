@@ -7,7 +7,10 @@ import {
 } from "vuex";
 import { InjectionKey } from "vue";
 import { store as pinStore, State as PinState } from "./pin";
-import { store as preconditionStore, State as PreconditionState } from "./precondition";
+import {
+  store as preconditionStore,
+  State as PreconditionState
+} from "./precondition";
 import {
   store as treeStore,
   State as TreeState,
@@ -18,7 +21,8 @@ import { store as zoomPanStore, State as ZoomPanState } from "./zoom_pan";
 import {
   store as userStore,
   State as UserState,
-  mutations as userMutations, actions as userActions
+  mutations as userMutations,
+  actions as userActions
 } from "./user";
 import {
   store as historyStore,
@@ -49,13 +53,13 @@ import {
   getNewNodeCenter
 } from "@/store/tree/helpers";
 import NewErrorKV from "@/tools/errorkv";
-import { UNAUTHORIZED } from "@/tools/errorkv"
+import { UNAUTHORIZED } from "@/tools/errorkv";
 import { addVector, convertPosition } from "@/tools/graphics";
 import { DBNode } from "@/api/types";
 import { isEqual, debounce } from "lodash";
 import { printError } from "@/tools/utils";
 import firebase from "firebase";
-import {ErrorKV} from "@/types/errorkv";
+import { ErrorKV } from "@/types/errorkv";
 
 export type State = {
   // root states
@@ -150,7 +154,7 @@ export const store = createStore<State>({
     async [actions.confirmSignInPopup](
       { dispatch, state }: { dispatch: Dispatch; state: State },
       confirm: {
-        require(args:{
+        require(args: {
           message?: string;
           target?: EventTarget;
           group?: string;
@@ -165,19 +169,18 @@ export const store = createStore<State>({
           blockScroll?: boolean;
           acceptClass?: string;
           rejectClass?: string;
-        }): void
+        }): void;
 
-        close(): void
+        close(): void;
       }
     ) {
       confirm.require({
-        message:
-          "Please authorize to change node contents",
+        message: "Please authorize to change node contents",
         header: "SignIn",
         acceptLabel: "Ok, Sign In",
         rejectLabel: "No, thanks, just watching",
         accept: async () => {
-          await dispatch(`user/${userActions.signIn}`)
+          await dispatch(`user/${userActions.signIn}`);
         },
         reject: () => {
           return;
@@ -437,7 +440,7 @@ export const store = createStore<State>({
         return err;
       }
 
-      return null
+      return null;
     },
 
     /**
@@ -479,9 +482,9 @@ export const store = createStore<State>({
       { commit, state }: { commit: Commit; state: State },
       v: { nodeID: string; wikipedia: string }
     ): Promise<ErrorKV> {
-      let oldValue = ""
+      let oldValue = "";
       if (state.nodeContent.nodeContents[v.nodeID]) {
-        oldValue = state.nodeContent.nodeContents[v.nodeID].wikipedia
+        oldValue = state.nodeContent.nodeContents[v.nodeID].wikipedia;
       }
 
       // optimistic change in local store
@@ -490,7 +493,10 @@ export const store = createStore<State>({
       // cannot save for unauthorized user
       if (!state.user.user || state.user.user.isAnonymous) {
         // revert changes
-        commit(`nodeContent/${nodeContentMutations.SET_NODE_WIKIPEDIA}`, { nodeID: v.nodeID, wikipedia: oldValue });
+        commit(`nodeContent/${nodeContentMutations.SET_NODE_WIKIPEDIA}`, {
+          nodeID: v.nodeID,
+          wikipedia: oldValue
+        });
         return NewErrorKV("Unauthorized", {}, UNAUTHORIZED);
       }
 
@@ -501,7 +507,10 @@ export const store = createStore<State>({
       });
       if (err) {
         // revert changes
-        commit(`nodeContent/${nodeContentMutations.SET_NODE_WIKIPEDIA}`, { nodeID: v.nodeID, wikipedia: oldValue });
+        commit(`nodeContent/${nodeContentMutations.SET_NODE_WIKIPEDIA}`, {
+          nodeID: v.nodeID,
+          wikipedia: oldValue
+        });
         return err;
       }
 

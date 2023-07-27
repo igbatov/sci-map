@@ -15,12 +15,7 @@ export type MouseDownInfo = {
   dragStart: boolean;
 };
 
-type emitFn = (
-  event:
-    | "title-dragging"
-    | "title-drop",
-  ...args: any[]
-) => void;
+type emitFn = (event: "title-dragging" | "title-drop", ...args: any[]) => void;
 
 type TitleBox = {
   position: Point;

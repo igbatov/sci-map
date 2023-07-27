@@ -45,5 +45,5 @@ export default {
   mouseDown,
   mouseUp,
   mouseMove,
-  pinNodeMouseDownHandler,
+  pinNodeMouseDownHandler
 };

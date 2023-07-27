@@ -83,10 +83,16 @@ export const store = {
         }
       }
     },
-    [mutations.ADD_TO_PINS](state: State, v: { nodeId: string; parentIds: string[] }) {
+    [mutations.ADD_TO_PINS](
+      state: State,
+      v: { nodeId: string; parentIds: string[] }
+    ) {
       state.pins[v.nodeId] = v.parentIds;
     },
-    [mutations.ADD_TO_PINS_REVERSE](state: State, v: { nodeId: string; pinId: string }) {
+    [mutations.ADD_TO_PINS_REVERSE](
+      state: State,
+      v: { nodeId: string; pinId: string }
+    ) {
       if (!state.pinsReverse[v.nodeId]) {
         state.pinsReverse[v.nodeId] = [];
       }

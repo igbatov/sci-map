@@ -68,8 +68,8 @@ export default defineComponent({
     const treeState = store.state.tree;
     const zoomPanState = store.state.zoomPan;
     const pinState = store.state.pin;
-    const clickedTitleId = ref("-1")
-    let selectPreconditionIsOn = false
+    const clickedTitleId = ref("-1");
+    let selectPreconditionIsOn = false;
 
     watch(
       () => route.params.id,
@@ -220,29 +220,26 @@ export default defineComponent({
         });
       },
       setSelectPreconditionON: () => {
-        selectPreconditionIsOn = true
+        selectPreconditionIsOn = true;
       },
       setSelectPreconditionOFF: () => {
-        selectPreconditionIsOn = false
+        selectPreconditionIsOn = false;
       },
       clickedTitleId,
       titleClick: (e: EventClickNode) => {
         if (!selectPreconditionIsOn) {
           router.push({ name: "node", params: { id: e.id } });
         } else {
-          clickedTitleId.value = e.id
+          clickedTitleId.value = e.id;
         }
       },
       titleOver: (e: EventClickNode) => {
-        store.commit(
-            `tree/${treeMutations.SET_SELECTED_NODE_ID}`,
-            e.id
-        );
+        store.commit(`tree/${treeMutations.SET_SELECTED_NODE_ID}`, e.id);
       },
       titleLeave: (e: EventClickNode) => {
         store.commit(
-            `tree/${treeMutations.SET_SELECTED_NODE_ID}`,
-            route.params.id
+          `tree/${treeMutations.SET_SELECTED_NODE_ID}`,
+          route.params.id
         );
       },
       mapDragging: (event: EventDraggingBackground) => {

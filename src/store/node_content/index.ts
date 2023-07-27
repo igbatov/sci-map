@@ -318,7 +318,9 @@ export const store = {
       }
       state.nodeContents[v.nodeID].resourceRatings[v.resourceID].rating =
         v.rating;
-      state.nodeContents[v.nodeID].resourceRatings[v.resourceID].ratedCount = -1
+      state.nodeContents[v.nodeID].resourceRatings[
+        v.resourceID
+      ].ratedCount = -1;
     },
     /**
      * REMOVE_NODE_RESOURCE_RATING

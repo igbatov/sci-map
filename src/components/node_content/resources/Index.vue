@@ -1,7 +1,11 @@
 <template>
   <AddResourceForm :resources="resources" />
   <div class="p-grid" v-for="rr of ratings" :key="rr.resourceID">
-    <div class="p-col-12" :class="{'user-rated': isRatedByCurrentUser(rr.ratedCount)}" v-if="!rr.spam">
+    <div
+      class="p-col-12"
+      :class="{ 'user-rated': isRatedByCurrentUser(rr.ratedCount) }"
+      v-if="!rr.spam"
+    >
       <div class="p-grid">
         <div class="p-col-8">
           {{ resources[rr.resourceID].title }}
@@ -41,7 +45,7 @@
 </template>
 
 <script lang="ts">
-import {computed, PropType} from "vue";
+import { computed, PropType } from "vue";
 import { Resource } from "@/store/resources";
 import { ResourceRating } from "../../../store/node_content";
 import Dropdown from "primevue/dropdown";
@@ -77,7 +81,9 @@ export default {
     const confirm = useConfirm();
     const toast = useToast();
 
-    const ratings = computed(() => orderBy(props.resourcesRating, ["rating", "ratedCount"], ["desc", "desc"]))
+    const ratings = computed(() =>
+      orderBy(props.resourcesRating, ["rating", "ratedCount"], ["desc", "desc"])
+    );
     return {
       ratings,
       isRatedByCurrentUser: (ratedCount: number) => {
@@ -86,7 +92,7 @@ export default {
       checkAuthorized: async (e: Event) => {
         if (!store.state.user.user || store.state.user.user.isAnonymous) {
           await store.dispatch(`${actions.confirmSignInPopup}`, confirm);
-          e.preventDefault()
+          e.preventDefault();
         }
       },
       changeRating: (
@@ -146,6 +152,6 @@ export default {
 
 <style scoped>
 .user-rated {
-  background-color: #C6F68D;
+  background-color: #c6f68d;
 }
 </style>

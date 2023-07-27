@@ -90,7 +90,7 @@ export default defineComponent({
       titleXY: computed(() => {
         const alignedXY: Record<string, Point> = {};
         for (const i in pinNodes.value) {
-          const node = pinNodes.value[i]
+          const node = pinNodes.value[i];
           alignedXY[node.id] = {
             x: titleBox.value[node.id]
               ? titleBox.value[node.id].position.x - PIN_MARKER_WIDTH / 2 - 1

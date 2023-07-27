@@ -161,7 +161,9 @@ export default {
     }
   },
 
-  async getPreconditions(user: firebase.User | null): Promise<[Preconditions | null, ErrorKV]> {
+  async getPreconditions(
+    user: firebase.User | null
+  ): Promise<[Preconditions | null, ErrorKV]> {
     try {
       const snapshot = await firebase
         .database()
@@ -178,7 +180,10 @@ export default {
     }
   },
 
-  async savePreconditions(user: firebase.User | null, preconditions: { nodeId: string; preconditionIds: string[] }) {
+  async savePreconditions(
+    user: firebase.User | null,
+    preconditions: { nodeId: string; preconditionIds: string[] }
+  ) {
     if (!user) {
       return;
     }
@@ -222,7 +227,7 @@ export default {
           return;
         }
         const node = snap.val() as DBNode;
-        node.id = node.id.toString()
+        node.id = node.id.toString();
         node.children = convertChildren(node.children);
         cb(node);
       }
@@ -282,7 +287,7 @@ export default {
       .ref("map/" + nodeID)
       .get();
     const node = pr.val();
-    node.id = node.id.toString()
+    node.id = node.id.toString();
     node.children = convertChildren(node.children);
     return node;
   },
