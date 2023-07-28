@@ -3,10 +3,8 @@
     v-for="(mapNode, i) of mapNodes"
     :key="i"
     :stroke="borderColor"
-    :fill="
-      selectedNodeId && selectedNodeId == mapNode.id ? '#f3afaf' : 'transparent'
-    "
-    :fill-opacity="selectedNodeId && selectedNodeId == mapNode.id ? '0.2' : '0'"
+    :fill="polygonFill(selectedNodeId, mapNode.id, premiseNodeIds)"
+    :fill-opacity="polygonFillOpacity(selectedNodeId, mapNode.id, premiseNodeIds)"
     stroke-width="2"
     :points="polygonToPath(mapNode.border)"
     pointer-events="none"
@@ -64,7 +62,7 @@
 <script lang="ts">
 import { defineComponent, PropType, toRef, onMounted, onUnmounted } from "vue";
 import { MapNode } from "@/types/graphics";
-import { polygonToPath } from "@/tools/graphics";
+import { polygonToPath, polygonFill, polygonFillOpacity } from "@/tools/graphics";
 import {
   getTitleBoxes,
   MouseDownInfo,
@@ -106,7 +104,8 @@ export default defineComponent({
       validator: (prop: string | null) =>
         typeof prop === "string" || prop === null,
       required: true
-    }
+    },
+    premiseNodeIds: Object as PropType<number[]>,
   },
 
   setup(props, ctx) {
@@ -169,7 +168,9 @@ export default defineComponent({
   },
 
   methods: {
-    polygonToPath: polygonToPath
+    polygonToPath: polygonToPath,
+    polygonFill: polygonFill,
+    polygonFillOpacity: polygonFillOpacity,
   }
 });
 </script>

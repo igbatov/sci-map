@@ -11,6 +11,7 @@
     :layers="zoomedPanedLayers"
     :viewBox="viewBox"
     :selectedNodeId="selectedNodeId"
+    :premiseNodeIds="premiseNodeIds"
     :pin-nodes="pinNodes"
     @title-dragging="nodeDragging"
     @title-click="titleClick"
@@ -210,6 +211,7 @@ export default defineComponent({
       viewBox,
       editModeOn: computed(() => store.state.editModeOn),
       selectedNodeId: computed(() => treeState.selectedNodeId),
+      premiseNodeIds: computed(() => treeState.selectedNodeId ? store.state.precondition.preconditions[treeState.selectedNodeId] : []),
       nodeDragging: (e: EventDraggingNode) => {
         store.dispatch(`${actions.updateNodePosition}`, {
           nodeId: e.id,

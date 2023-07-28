@@ -9,6 +9,7 @@
       "
       :font-size="10 * (index + 1)"
       :selectedNodeId="selectedNodeId"
+      :premiseNodeIds="premiseNodeIds"
       :map-id="mapID"
       @title-dragging="draggingNode"
       @title-click="titleClick"
@@ -64,6 +65,7 @@ export default defineComponent({
         typeof prop === "string" || prop === null,
       required: true
     },
+    premiseNodeIds: Object as PropType<Number[]>,
     pinNodes: Object as PropType<MapNode[]>
   },
   setup(props, ctx) {
