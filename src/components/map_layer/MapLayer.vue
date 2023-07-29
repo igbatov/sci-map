@@ -3,8 +3,8 @@
     v-for="(mapNode, i) of mapNodes"
     :key="i"
     :stroke="borderColor"
-    :fill="polygonFill(selectedNodeId, mapNode.id, premiseNodeIds)"
-    :fill-opacity="polygonFillOpacity(selectedNodeId, mapNode.id, premiseNodeIds)"
+    :fill="polygonFill(selectedNodeId, mapNode.id, preconditionNodeIds)"
+    :fill-opacity="polygonFillOpacity(selectedNodeId, mapNode.id, preconditionNodeIds)"
     stroke-width="2"
     :points="polygonToPath(mapNode.border)"
     pointer-events="none"
@@ -105,7 +105,7 @@ export default defineComponent({
         typeof prop === "string" || prop === null,
       required: true
     },
-    premiseNodeIds: Object as PropType<number[]>,
+    preconditionNodeIds: Object as PropType<string[]>,
   },
 
   setup(props, ctx) {

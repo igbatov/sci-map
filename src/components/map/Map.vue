@@ -9,7 +9,7 @@
       "
       :font-size="10 * (index + 1)"
       :selectedNodeId="selectedNodeId"
-      :premiseNodeIds="premiseNodeIds"
+      :preconditionNodeIds="preconditionNodeIds"
       :map-id="mapID"
       @title-dragging="draggingNode"
       @title-click="titleClick"
@@ -21,6 +21,10 @@
       :selectedNodeId="selectedNodeId"
       @click="titleClick"
       @title-mouse-down="pinNodeMouseDown"
+    />
+    <PreconditionLayer
+      :preconditionNodeIds="preconditionNodeIds"
+      :selectedNodeId="selectedNodeId"
     />
   </svg>
 </template>
@@ -36,6 +40,7 @@ import {
 import pan from "./MapPan";
 import PinLayer from "@/components/pin_layer/PinLayer.vue";
 import { printError } from "@/tools/utils";
+import PreconditionLayer from "@/components/precondition_layer/PreconditionLayer.vue";
 
 const mapID = "mapID";
 
@@ -50,6 +55,7 @@ export default defineComponent({
     "wheel"
   ],
   components: {
+    PreconditionLayer,
     PinLayer,
     MapLayer
   },
@@ -65,18 +71,10 @@ export default defineComponent({
         typeof prop === "string" || prop === null,
       required: true
     },
-    premiseNodeIds: Object as PropType<Number[]>,
+    preconditionNodeIds: Object as PropType<string[]>,
     pinNodes: Object as PropType<MapNode[]>
   },
   setup(props, ctx) {
-    watch(
-      () => props.layers,
-      () => {
-        pan.setLayers(props.layers);
-      },
-      { immediate: true }
-    );
-
     onMounted(() => {
       const map = document.getElementById(mapID);
       if (!map) {

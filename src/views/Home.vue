@@ -11,7 +11,7 @@
     :layers="zoomedPanedLayers"
     :viewBox="viewBox"
     :selectedNodeId="selectedNodeId"
-    :premiseNodeIds="premiseNodeIds"
+    :preconditionNodeIds="preconditionNodeIds"
     :pin-nodes="pinNodes"
     @title-dragging="nodeDragging"
     @title-click="titleClick"
@@ -116,7 +116,7 @@ export default defineComponent({
     const centralNodeId = ref<string | null>(null);
     const layers = ref<Array<Record<string, MapNode>>>([]);
     watch(
-      () => [treeState.mapNodeLayers, zoomPanState.debouncedZoom],
+      () => [treeState.mapNodeLayers, zoomPanState.debouncedZoom, zoomPanState.debouncedPan],
       () => {
         const [newCentralNodeId, err] = findCentralNode(
           treeState.mapNodeLayers,
@@ -164,6 +164,24 @@ export default defineComponent({
       { immediate: true, deep: true }
     );
 
+    const zoomedPanedLayers = ref<Array<Record<string, MapNode>>>([]);
+    watch(
+        () => [zoomPanState.pan.x,zoomPanState.pan.y,zoomPanState.zoom, layers],
+        () => {
+          // layers это всегда слои с zoom=1 и pan={0, 0} состоящий из только видимых прямо сейчас элементов.
+          // Мы применяем к этому объекту текущий zoomPanState но сам эталон не трогаем, поэтому здесь clone
+          // Это не дорогая операция так как layers всегда содержит небольшое кол-во элементов
+          // видимых только прямо сейчас
+          const layersToZoomAndPan = clone(layers.value);
+          zoomedPanedLayers.value = zoomAnPanLayers(
+              layersToZoomAndPan,
+              zoomPanState.zoom,
+              zoomPanState.pan
+          )
+        },
+        { immediate: true, deep: true }
+    )
+
     return {
       pinNodes: computed(() => {
         if (centralNodeId.value == null) {
@@ -201,17 +219,11 @@ export default defineComponent({
 
         return result;
       }),
-      zoomedPanedLayers: computed(() => {
-        return zoomAnPanLayers(
-          layers.value,
-          zoomPanState.zoom,
-          zoomPanState.pan
-        );
-      }),
       viewBox,
       editModeOn: computed(() => store.state.editModeOn),
       selectedNodeId: computed(() => treeState.selectedNodeId),
-      premiseNodeIds: computed(() => treeState.selectedNodeId ? store.state.precondition.preconditions[treeState.selectedNodeId] : []),
+      preconditionNodeIds: computed(() => treeState.selectedNodeId ? store.state.precondition.preconditions[treeState.selectedNodeId] : []),
+      zoomedPanedLayers,
       nodeDragging: (e: EventDraggingNode) => {
         store.dispatch(`${actions.updateNodePosition}`, {
           nodeId: e.id,

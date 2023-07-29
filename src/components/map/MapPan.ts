@@ -6,12 +6,6 @@ const mouseDownBg = {
 
 let pinNodeMouseDown = false;
 
-let layers: Array<Record<number, MapNode>> | undefined = [];
-
-const setLayers = (ls: Array<Record<number, MapNode>> | undefined) => {
-  layers = ls;
-};
-
 const mouseDown = async (event: MouseEvent) => {
   mouseDownBg.on = true;
 };
@@ -41,7 +35,6 @@ const mouseMove = (
 };
 
 export default {
-  setLayers,
   mouseDown,
   mouseUp,
   mouseMove,

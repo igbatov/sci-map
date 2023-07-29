@@ -262,11 +262,10 @@ export function filterNodesAndLayers(
 }
 
 export function zoomAnPanLayers(
-  inLayers: Array<Record<number, MapNode>>,
+  layers: Array<Record<number, MapNode>>,
   zoom: number,
   pan: Point
 ): Array<Record<number, MapNode>> {
-  const layers = clone(inLayers);
   if (!layers || layers.length == 0) {
     return [];
   }
