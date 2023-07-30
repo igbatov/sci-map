@@ -84,18 +84,31 @@ https://miro.com/app/board/uXjVM01SlDY=/?share_link_id=351640375137
 
 # Collaborative editing in MVP
 Technically hard part of project is collaborative editing.
-For MVP we want most simple solution which for now is - any registered user can edit anything in realtime.
+For MVP we want most simple still workable solution.
+
+Right now we will try Alternative #1 but maybe some other solution will come later.
+
+## Alternative #1 - any registered user can edit anything in realtime
 Contributors synchronize in https://t.me/+uhbBHhzEyZRkYzRi on time, and modifications they are going to make in a map.
 For example "Hi, I am going to edit Aging in Biology this evening from 19 till 21 UTC. Want to add some companies in reprogramming section.".
-In this solution we also make snapshot for the whole map every hour. It some breaking changes occurs we can revert map to the version of last hour.
-All modifications during this hour (even good one will be lost).
+In this solution we also make snapshot for the whole map every hour
+Also every registered user have button "download map" which he/she can use after editing is done
+If some breaking changes occurs we can revert map to the version of last hour or from version that contributor downloaded.
+All modifications during this hour (or time contributor downloaded his/her version) will be lost (even good one).
 
+## Alternative #2 - using github
 More sophisticated solution can be push map to github in json format and make version control like code developers do.
-In this solution every contributor will have buttons "clone map" and "download your version of map" (the last one will download json file).
-Then she creates new branch in github from commit from which clone was created, overwrite it with downloaded json,
-manually merge last master, manually resolve conflicts if any, open merge request is merged to master by someone with appropriate rights.
+In this solution every contributor has only its own version of map and button "download your version of map" (the last one will download json file).
+After editing is done contributor creates new branch from master in github, overwrite it with downloaded json,
+manually merge last master, manually resolve conflicts (if any), open merge request is merged to master by someone with appropriate rights.
 
 This github solution gives more control on map versioning but require contributors to learn new skills - how to work in github and merge json manually.
+
+# Personalization of map
+Besides users that can edit anything we can allow for everyone registered user to personalize its map 
+- add comments to nodes that visible ony to them and pin some nodes that are of the most interest only for them.
+There is no collaborative editing for such users so this is simple in developing.
+
 # Application setup for developers
 ```
 yarn install
