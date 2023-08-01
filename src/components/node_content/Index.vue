@@ -2,7 +2,12 @@
   <transition name="slide">
     <div v-if="show && selectedNode" class="wrapper">
       <h2>
-        {{ selectedNode.title }}
+        <InputText
+            type="text"
+            placeholder="Node title"
+            :value="selectedNode.title"
+            @update:modelValue="changeNodeTitle($event)"
+        />
       </h2>
       <div class="p-fluid">
 
@@ -62,6 +67,7 @@ import { actions, useStore } from "@/store";
 import { actions as nodeContentActions } from "@/store/node_content";
 import { computed } from "vue";
 import TextArea from "primevue/textarea";
+import InputText from "primevue/inputtext";
 import SectionResources from "./resources/Index.vue";
 import SectionPreconditions from "./Preconditions.vue";
 import { Tree } from "@/types/graphics";
@@ -69,11 +75,13 @@ import {EmptyNodeContent, NodeComment, NodeContent} from "@/store/node_content";
 import { Resources } from "@/store/resources";
 import { clone, printError } from "@/tools/utils";
 import { useConfirm } from "primevue/useconfirm";
+import api from "@/api/api";
 
 export default {
   name: "NodeContent",
   components: {
     TextArea,
+    InputText,
     SectionResources,
     SectionPreconditions
   },
@@ -130,6 +138,18 @@ export default {
         }
       },
       comment,
+      changeNodeTitle: async (value: string) => {
+        if (!selectedNode.value || !selectedNode.value.id) {
+          return
+        }
+        const err = await api.update({
+          [`map/${selectedNode.value.id}/name`]: value
+        });
+
+        if (err) {
+          printError(err.error.message, err.kv);
+        }
+      },
       changeContent: async (value: string) => {
         const err = await store.dispatch(`nodeContent/${nodeContentActions.setNodeContent}`, {
           nodeID: selectedNode.value!.id,

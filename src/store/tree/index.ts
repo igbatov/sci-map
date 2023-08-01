@@ -303,6 +303,11 @@ export const store = {
       // Change of name
       if (oldDBNode.name !== arg.dbNode.name) {
         dbNodeRecord.node.title = arg.dbNode.name;
+        const [node] = findMapNode(oldDBNode.id, state.mapNodeLayers);
+        if (!node) {
+          return
+        }
+        node.title = arg.dbNode.name
       }
     }
   },
