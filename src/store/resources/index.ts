@@ -1,9 +1,7 @@
 export type ResourceType =
   | "book"
   | "article"
-  | "post"
-  | "onlineCourse"
-  | "offlineCourse";
+  | "other";
 export type Resource = {
   id: string;
   type: ResourceType;

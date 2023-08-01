@@ -55,9 +55,9 @@ import Button from "primevue/button";
 import SelectButton from "primevue/selectbutton";
 import { computed, PropType, ref } from "vue";
 import { actions, useStore } from "@/store";
+import { actions as nodeContentActions } from "@/store/node_content";
 import { Resource, Resources, ResourceType } from "@/store/resources";
-import { clone, printError } from "@/tools/utils";
-import { EmptyResourceRating, ResourceRating } from "@/store/node_content";
+import { printError } from "@/tools/utils";
 import { BRAND_NEW_RESOURCE } from "@/components/node_content/resources/AddResourceFormAutocomplete.vue";
 import { useConfirm } from "primevue/useconfirm";
 
@@ -92,7 +92,7 @@ export default {
         ]
       },
       article: {
-        name: "peer-reviewed article",
+        name: "article",
         fields: [
           { title: "title" },
           { author: "author(s)" },
@@ -101,23 +101,15 @@ export default {
           { doi: "DOI" }
         ]
       },
-      post: {
-        name: "post",
+      other: {
+        name: "other",
         fields: [
           { title: "title" },
           { author: "author(s)" },
+          { url: "URL" },
           { findPhrase: "find phrase" },
-          { url: "URL" }
         ]
       },
-      onlineCourse: {
-        name: "online course",
-        fields: [{ title: "title" }, { url: "URL" }]
-      },
-      offlineCourse: {
-        name: "offline course",
-        fields: [{ title: "title" }, { url: "URL" }]
-      }
     };
     const typeKeys = Object.keys(types) as ResourceType[];
     const typeOptions = typeKeys.map(key => ({
@@ -138,13 +130,10 @@ export default {
           newFormShow.value = true;
           return;
         }
-
-        const emptyRating: ResourceRating = clone(EmptyResourceRating);
-        emptyRating.resourceID = e.id;
-        await store.dispatch(`${actions.addNodeResourceRating}`, {
-          rr: emptyRating,
-          nodeID: selectedNode.value.id
-        });
+        await store.dispatch(
+            `nodeContent/${nodeContentActions.addNodeResource}`,
+            { nodeID: selectedNode.value.id, resourceID: e.id }
+        );
       },
       save: async () => {
         if (!selectedNode.value || !selectedNode.value.id) {
@@ -177,13 +166,10 @@ export default {
           printError("Cannot add addNewResource", values);
           return;
         }
-
-        const emptyRating: ResourceRating = clone(EmptyResourceRating);
-        emptyRating.resourceID = resource.id;
-        await store.dispatch(`${actions.addNodeResourceRating}`, {
-          rr: emptyRating,
-          nodeID: selectedNode.value.id
-        });
+        await store.dispatch(
+            `nodeContent/${nodeContentActions.addNodeResource}`,
+            { nodeID: selectedNode.value.id, resourceID: resource.id }
+        );
       },
       cancel: () => {
         newFormShow.value = false;

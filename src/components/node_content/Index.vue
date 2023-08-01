@@ -5,58 +5,53 @@
         {{ selectedNode.title }}
       </h2>
       <div class="p-fluid">
-        <!-- wikipedia   -->
+
+        <!-- Content   -->
         <div class="p-field p-grid">
           <div class="p-col-12">
-            <InputText
-              id="wikipedia"
-              type="text"
-              placeholder="https://en.wikipedia.org/wiki/Mathematics"
-              :value="wikipediaURL"
-              @update:modelValue="changeWikipediaURL($event)"
-              v-on:keydown="checkAuthorized"
-            />
-          </div>
-        </div>
-        <!-- Comment -->
-        <div class="p-field p-grid">
-          <div class="p-col-12 p-md-12">
             <TextArea
-              id="comment"
-              placeholder="Your personal comment"
-              :autoResize="true"
-              rows="2"
-              :value="comment"
-              @update:modelValue="changeComment($event)"
-              v-on:keydown="checkAuthorized"
+                id="content"
+                placeholder="Description"
+                :autoResize="true"
+                rows="20"
+                :value="selectedNodeContent ? selectedNodeContent.content : ''"
+                @update:modelValue="changeContent($event)"
+                v-on:keydown="checkAuthorized"
             />
           </div>
         </div>
 
+        <!-- sources -->
+        <h3>Sources</h3>
+        <SectionResources
+            v-if="selectedNodeContent"
+            :node-id="selectedNode.id"
+            :resources="resources"
+            :resourceIds="selectedNodeContent.resourceIds"
+        />
+
         <!-- Preconditions section -->
+        <h3>Preconditions</h3>
         <SectionPreconditions
           v-if="selectedNodeContent"
           :node-id="selectedNode.id"
         />
-        <!-- Education section -->
-        <SectionResources
-          v-if="selectedNodeContent"
-          :node-id="selectedNode.id"
-          :resources="resources"
-          :resourcesRating="selectedNodeContent.resourceRatings"
-        />
-        <!-- Job section -->
-        <SectionVacancies
-          v-if="selectedNodeContent"
-          :node-id="selectedNode.id"
-          :vacancies="selectedNodeContent.vacancies"
-        />
-        <!-- Crowdfunding section -->
-        <SectionCrowdfunding
-          v-if="selectedNodeContent"
-          :node-id="selectedNode.id"
-          :crowdfunding-list="selectedNodeContent.crowdfundingList"
-        />
+
+        <!-- Comment -->
+        <h3>Your personal comment</h3>
+        <div class="p-field p-grid">
+          <div class="p-col-12 p-md-12">
+            <TextArea
+                id="comment"
+                placeholder="Your personal comment"
+                :autoResize="true"
+                rows="2"
+                :value="comment"
+                @update:modelValue="changeComment($event)"
+                v-on:keydown="checkAuthorized"
+            />
+          </div>
+        </div>
       </div>
     </div>
   </transition>
@@ -64,15 +59,13 @@
 
 <script lang="ts">
 import { actions, useStore } from "@/store";
+import { actions as nodeContentActions } from "@/store/node_content";
 import { computed } from "vue";
-import InputText from "primevue/inputtext";
 import TextArea from "primevue/textarea";
 import SectionResources from "./resources/Index.vue";
-import SectionVacancies from "./Vacancies.vue";
-import SectionCrowdfunding from "./Crowdfunding.vue";
 import SectionPreconditions from "./Preconditions.vue";
 import { Tree } from "@/types/graphics";
-import { EmptyNodeContent, NodeContent } from "@/store/node_content";
+import {EmptyNodeContent, NodeComment, NodeContent} from "@/store/node_content";
 import { Resources } from "@/store/resources";
 import { clone, printError } from "@/tools/utils";
 import { useConfirm } from "primevue/useconfirm";
@@ -80,11 +73,8 @@ import { useConfirm } from "primevue/useconfirm";
 export default {
   name: "NodeContent",
   components: {
-    InputText,
     TextArea,
     SectionResources,
-    SectionVacancies,
-    SectionCrowdfunding,
     SectionPreconditions
   },
   props: {
@@ -99,6 +89,9 @@ export default {
     const tree = store.state.tree;
     const nodeContents = computed<Record<string, NodeContent>>(
       () => store.state.nodeContent.nodeContents
+    );
+    const userNodeComments = computed<Record<string, NodeComment>>(
+      () => store.state.nodeContent.userNodeComments
     );
 
     const resources = computed<Resources>(
@@ -120,21 +113,9 @@ export default {
       return newContent;
     });
 
-    const wikipediaURL = computed<string>(() =>
-      tree.selectedNodeId && nodeContents.value[tree.selectedNodeId]
-        ? nodeContents.value[tree.selectedNodeId].wikipedia
-        : ""
-    );
-
-    // const videoURL = computed<string>(() =>
-    //   tree.selectedNodeId && nodeContents.value[tree.selectedNodeId]
-    //     ? nodeContents.value[tree.selectedNodeId].video
-    //     : ""
-    // );
-
     const comment = computed<string>(() =>
-      tree.selectedNodeId && nodeContents.value[tree.selectedNodeId]
-        ? nodeContents.value[tree.selectedNodeId].comment
+      tree.selectedNodeId && userNodeComments.value[tree.selectedNodeId]
+        ? userNodeComments.value[tree.selectedNodeId].comment
         : ""
     );
 
@@ -142,33 +123,25 @@ export default {
       resources,
       selectedNode,
       selectedNodeContent,
-      // videoURL,
-      // changeVideoURL: (value: string) => {
-      //   store.dispatch(`${actions.setNodeVideo}`, {
-      //     nodeID: selectedNode.value!.id,
-      //     video: value
-      //   });
-      // },
-      wikipediaURL,
       checkAuthorized: async (e: Event) => {
         if (!store.state.user.user || store.state.user.user.isAnonymous) {
           await store.dispatch(`${actions.confirmSignInPopup}`, confirm);
           e.preventDefault();
         }
       },
-      changeWikipediaURL: async (value: string) => {
-        const err = await store.dispatch(`${actions.setNodeWikipedia}`, {
+      comment,
+      changeContent: async (value: string) => {
+        const err = await store.dispatch(`nodeContent/${nodeContentActions.setNodeContent}`, {
           nodeID: selectedNode.value!.id,
-          wikipedia: value
+          content: value
         });
 
         if (err) {
           printError(err, {});
         }
       },
-      comment,
       changeComment: async (value: string) => {
-        const err = await store.dispatch(`${actions.setNodeComment}`, {
+        const err = await store.dispatch(`nodeContent/${nodeContentActions.setNodeComment}`, {
           nodeID: selectedNode.value!.id,
           comment: value
         });

@@ -10,7 +10,7 @@ import { Preconditions } from "src/store/precondition";
 import { DBNode } from "@/api/types";
 import { convertChildren, convertDBMapToTree } from "./helpers";
 import { Resource } from "@/store/resources";
-import { NodeContent, NodeContentAggregate } from "@/store/node_content";
+import {NodeComment, NodeContent} from "@/store/node_content";
 import emulatorConfig from "../../firebase.json";
 import { debounce } from "lodash";
 
@@ -161,6 +161,19 @@ export default {
     }
   },
 
+  async savePins(user: firebase.User, pins: Pins) {
+    if (!user) {
+      return;
+    }
+
+    const storage = firebase.storage().ref();
+    const ref = storage.child(`/user/${user.uid}/pins.json`);
+    await ref.putString(
+      btoa(unescape(encodeURIComponent(JSON.stringify(pins)))),
+      "base64"
+    );
+  },
+
   async getPreconditions(
     user: firebase.User | null
   ): Promise<[Preconditions | null, ErrorKV]> {
@@ -191,32 +204,6 @@ export default {
       .database()
       .ref("precondition/" + preconditions.nodeId)
       .set(preconditions.preconditionIds);
-  },
-
-  async saveUserMap(user: firebase.User, map: Tree) {
-    if (!user) {
-      return;
-    }
-
-    const storage = firebase.storage().ref();
-    const ref = storage.child(`/user/${user.uid}/map.json`);
-    await ref.putString(
-      btoa(unescape(encodeURIComponent(JSON.stringify(map.children)))),
-      "base64"
-    );
-  },
-
-  async savePins(user: firebase.User, pins: Pins) {
-    if (!user) {
-      return;
-    }
-
-    const storage = firebase.storage().ref();
-    const ref = storage.child(`/user/${user.uid}/pins.json`);
-    await ref.putString(
-      btoa(unescape(encodeURIComponent(JSON.stringify(pins)))),
-      "base64"
-    );
   },
 
   subscribeNodeChange(nodeID: string, cb: (a: DBNode) => any) {
@@ -347,28 +334,28 @@ export default {
     return [resources, null];
   },
 
-  async getNodeContents(
+  async getUserComments(
     user: firebase.User
-  ): Promise<[Record<string, NodeContent> | null, ErrorKV]> {
+  ): Promise<[Record<string, NodeComment> | null, ErrorKV]> {
     const userID = user.uid;
     const snapshot = await firebase
       .database()
-      .ref(`node_content/${userID}`)
+      .ref(`user_data/${userID}/comment`)
       .get();
     if (!snapshot.exists()) {
       return [null, NewErrorKV("!snapshot.exists", {})];
     }
-    const nodeContents = snapshot.val();
+    const nodeComment = snapshot.val();
 
-    return [nodeContents, null];
+    return [nodeComment, null];
   },
 
-  async getNodeContentAggregate(): Promise<
-    [Record<string, NodeContentAggregate> | null, ErrorKV]
+  async getNodeContent(): Promise<
+    [Record<string, NodeContent> | null, ErrorKV]
   > {
     const snapshot = await firebase
       .database()
-      .ref(`node_content_aggregate`)
+      .ref(`node_content`)
       .get();
 
     if (!snapshot.exists()) {

@@ -6,42 +6,51 @@ import {
   useStore as baseUseStore
 } from "vuex";
 import { InjectionKey } from "vue";
-import { store as pinStore, State as PinState } from "./pin";
+import {
+  store as pinStore,
+  State as PinState
+} from "./pin";
+
 import {
   store as preconditionStore,
   State as PreconditionState
 } from "./precondition";
+
 import {
   store as treeStore,
   State as TreeState,
   mutations as treeMutations,
   actions as treeActions
 } from "./tree";
-import { store as zoomPanStore, State as ZoomPanState } from "./zoom_pan";
+
+import {
+  store as zoomPanStore,
+  State as ZoomPanState
+} from "./zoom_pan";
+
 import {
   store as userStore,
   State as UserState,
   mutations as userMutations,
   actions as userActions
 } from "./user";
+
 import {
   store as historyStore,
   State as HistoryState,
   mutations as historyMutations
 } from "./history";
+
 import {
   store as resourcesStore,
   State as ResourcesState,
   mutations as resourcesMutations,
   Resource
 } from "./resources";
+
 import {
   store as nodeContentStore,
   State as NodeContentState,
-  mutations as nodeContentMutations,
-  ResourceRating,
-  Crowdfunding,
-  Vacancy
 } from "./node_content";
 
 import api from "@/api/api";
@@ -53,13 +62,11 @@ import {
   getNewNodeCenter
 } from "@/store/tree/helpers";
 import NewErrorKV from "@/tools/errorkv";
-import { UNAUTHORIZED } from "@/tools/errorkv";
 import { addVector, convertPosition } from "@/tools/graphics";
 import { DBNode } from "@/api/types";
 import { isEqual, debounce } from "lodash";
 import { printError } from "@/tools/utils";
 import firebase from "firebase";
-import { ErrorKV } from "@/types/errorkv";
 
 export type State = {
   // root states
@@ -89,17 +96,6 @@ export const actions = {
 
   // manipulating node contents
   addNewResource: "addNewResource",
-  addNodeResourceRating: "addNodeResourceRating",
-  setNodeWikipedia: "setNodeWikipedia",
-  setNodeComment: "setNodeComment",
-  setNodeVideo: "setNodeVideo",
-  rateNodeResource: "rateNodeResource",
-  removeNodeResource: "removeNodeResource",
-  reportSpam: "reportSpam",
-  addVacancy: "addVacancy",
-  removeVacancy: "removeVacancy",
-  addCrowdfunding: "addCrowdfunding",
-  removeCrowdfunding: "removeCrowdfunding",
 
   // confirmSignInPopup
   confirmSignInPopup: "confirmSignInPopup"
@@ -186,367 +182,6 @@ export const store = createStore<State>({
           return;
         }
       });
-    },
-
-    /**
-     *
-     * @param commit
-     * @param state
-     * @param v
-     */
-    async [actions.addVacancy](
-      { commit, state }: { commit: Commit; state: State },
-      v: { nodeID: string; vacancy: Vacancy }
-    ) {
-      // cannot save for unauthorized user
-      if (!state.user.user || state.user.user.isAnonymous) {
-        return null;
-      }
-
-      const newKey = api.generateKey();
-      if (!newKey) {
-        printError("Cannot generate new key", {});
-        return null;
-      }
-
-      v.vacancy.id = newKey;
-
-      // add to DB
-      const err = await api.update({
-        [`node_content/${state.user.user.uid}/${v.nodeID}/nodeID`]: v.nodeID,
-        [`node_content/${state.user.user.uid}/${v.nodeID}/vacancies/${v.vacancy.id}`]: v.vacancy
-      });
-      if (err) {
-        printError("addCrowdfunding: api.update error", { err });
-        return;
-      }
-
-      // add to local store
-      commit(`nodeContent/${nodeContentMutations.ADD_VACANCY}`, v);
-    },
-
-    /**
-     *
-     * @param commit
-     * @param state
-     * @param v
-     */
-    async [actions.removeVacancy](
-      { commit, state }: { commit: Commit; state: State },
-      v: { nodeID: string; vacancyID: string }
-    ) {
-      // cannot save for unauthorized user
-      if (!state.user.user || state.user.user.isAnonymous) {
-        return null;
-      }
-
-      // remove from DB
-      const err = await api.update({
-        [`node_content/${state.user.user.uid}/${v.nodeID}/vacancies/${v.vacancyID}`]: null
-      });
-      if (err) {
-        printError("addNodeResource: api.update error", { err });
-        return;
-      }
-
-      // add to local store
-      commit(`nodeContent/${nodeContentMutations.REMOVE_VACANCY}`, v);
-    },
-
-    /**
-     *
-     * @param commit
-     * @param state
-     * @param v
-     */
-    async [actions.addCrowdfunding](
-      { commit, state }: { commit: Commit; state: State },
-      v: { nodeID: string; crowdfunding: Crowdfunding }
-    ) {
-      // cannot save for unauthorized user
-      if (!state.user.user || state.user.user.isAnonymous) {
-        return null;
-      }
-
-      const newKey = api.generateKey();
-      if (!newKey) {
-        printError("Cannot generate new key", {});
-        return null;
-      }
-
-      v.crowdfunding.id = newKey;
-
-      // add to DB
-      const err = await api.update({
-        [`node_content/${state.user.user.uid}/${v.nodeID}/nodeID`]: v.nodeID,
-        [`node_content/${state.user.user.uid}/${v.nodeID}/crowdfundingList/${v.crowdfunding.id}`]: v.crowdfunding
-      });
-      if (err) {
-        printError("addCrowdfunding: api.update error", { err });
-        return;
-      }
-
-      // add to local store
-      commit(`nodeContent/${nodeContentMutations.ADD_CROWDFUNDING}`, v);
-    },
-
-    /**
-     *
-     * @param commit
-     * @param state
-     * @param v
-     */
-    async [actions.removeCrowdfunding](
-      { commit, state }: { commit: Commit; state: State },
-      v: { nodeID: string; crowdfundingID: string }
-    ) {
-      // cannot save for unauthorized user
-      if (!state.user.user || state.user.user.isAnonymous) {
-        return null;
-      }
-
-      // remove from DB
-      const err = await api.update({
-        [`node_content/${state.user.user.uid}/${v.nodeID}/crowdfundingList/${v.crowdfundingID}`]: null
-      });
-      if (err) {
-        printError("addNodeResource: api.update error", { err });
-        return;
-      }
-
-      // add to local store
-      commit(`nodeContent/${nodeContentMutations.REMOVE_CROWDFUNDING}`, v);
-    },
-
-    /**
-     *
-     * @param commit
-     * @param state
-     * @param v
-     */
-    async [actions.removeNodeResource](
-      { commit, state }: { commit: Commit; state: State },
-      v: { nodeID: string; resourceID: string }
-    ) {
-      // cannot save for unauthorized user
-      if (!state.user.user || state.user.user.isAnonymous) {
-        return null;
-      }
-
-      // remove from DB
-      const err = await api.update({
-        [`node_content/${state.user.user.uid}/${v.nodeID}/resourceRatings/${v.resourceID}/rating`]: null
-      });
-      if (err) {
-        printError("removeNodeResource: api.update error", { err });
-        return;
-      }
-
-      // add to local store
-      commit(
-        `nodeContent/${nodeContentMutations.REMOVE_NODE_RESOURCE_RATING}`,
-        v
-      );
-    },
-
-    /**
-     *
-     * @param commit
-     * @param state
-     * @param v
-     */
-    async [actions.reportSpam](
-      { commit, state }: { commit: Commit; state: State },
-      v: {
-        nodeID: string;
-        type: "resourceRatings" | "vacancies" | "crowdfundingList";
-        id: string;
-        spam: number;
-      }
-    ) {
-      // cannot save for unauthorized user
-      if (!state.user.user || state.user.user.isAnonymous) {
-        return null;
-      }
-
-      // mark as spam
-      const err = await api.update({
-        [`node_content/${state.user.user.uid}/${v.nodeID}/${v.type}/${v.id}/spam`]: v.spam
-      });
-      if (err) {
-        printError("addNodeResource: api.update error", { err });
-        return;
-      }
-
-      // add to local store
-      commit(`nodeContent/${nodeContentMutations.REPORT_SPAM}`, v);
-    },
-
-    /**
-     *
-     * @param commit
-     * @param state
-     * @param v
-     */
-    async [actions.rateNodeResource](
-      { commit, state }: { commit: Commit; state: State },
-      v: { nodeID: string; resourceID: string; rating: number }
-    ) {
-      // cannot save for unauthorized user
-      if (!state.user.user || state.user.user.isAnonymous) {
-        return null;
-      }
-
-      // add to DB
-      const err = await api.update({
-        [`node_content/${state.user.user.uid}/${v.nodeID}/resourceRatings/${v.resourceID}/rating`]: v.rating
-      });
-      if (err) {
-        printError("rateNodeResource: api.update error", { err });
-        return;
-      }
-
-      // change in local store
-      commit(
-        `nodeContent/${nodeContentMutations.RATE_NODE_RESOURCE_RATING}`,
-        v
-      );
-    },
-
-    /**
-     * setNodeComment
-     * @param commit
-     * @param state
-     * @param v
-     */
-    async [actions.setNodeComment](
-      { commit, state }: { commit: Commit; state: State },
-      v: { nodeID: string; comment: string }
-    ): Promise<ErrorKV> {
-      // cannot save for unauthorized user
-      if (!state.user.user || state.user.user.isAnonymous) {
-        return NewErrorKV("Unauthorized", {}, UNAUTHORIZED);
-      }
-
-      // change in local store
-      commit(`nodeContent/${nodeContentMutations.SET_NODE_COMMENT}`, v);
-
-      // add to DB
-      const err = await api.update({
-        [`node_content/${state.user.user.uid}/${v.nodeID}/nodeID`]: v.nodeID,
-        [`node_content/${state.user.user.uid}/${v.nodeID}/comment`]: v.comment
-      });
-      if (err) {
-        return err;
-      }
-
-      return null;
-    },
-
-    /**
-     *
-     * @param commit
-     * @param state
-     * @param v
-     */
-    async [actions.setNodeVideo](
-      { commit, state }: { commit: Commit; state: State },
-      v: { nodeID: string; video: string }
-    ) {
-      // cannot save for unauthorized user
-      if (!state.user.user || state.user.user.isAnonymous) {
-        return null;
-      }
-
-      // change in local store
-      commit(`nodeContent/${nodeContentMutations.SET_NODE_VIDEO}`, v);
-
-      // add to DB
-      const err = await api.update({
-        [`node_content/${state.user.user.uid}/${v.nodeID}/nodeID`]: v.nodeID,
-        [`node_content/${state.user.user.uid}/${v.nodeID}/video`]: v.video
-      });
-      if (err) {
-        printError("addNodeResource: api.update error", { err });
-        return;
-      }
-    },
-
-    /**
-     *
-     * @param commit
-     * @param state
-     * @param v
-     */
-    async [actions.setNodeWikipedia](
-      { commit, state }: { commit: Commit; state: State },
-      v: { nodeID: string; wikipedia: string }
-    ): Promise<ErrorKV> {
-      let oldValue = "";
-      if (state.nodeContent.nodeContents[v.nodeID]) {
-        oldValue = state.nodeContent.nodeContents[v.nodeID].wikipedia;
-      }
-
-      // optimistic change in local store
-      commit(`nodeContent/${nodeContentMutations.SET_NODE_WIKIPEDIA}`, v);
-
-      // cannot save for unauthorized user
-      if (!state.user.user || state.user.user.isAnonymous) {
-        // revert changes
-        commit(`nodeContent/${nodeContentMutations.SET_NODE_WIKIPEDIA}`, {
-          nodeID: v.nodeID,
-          wikipedia: oldValue
-        });
-        return NewErrorKV("Unauthorized", {}, UNAUTHORIZED);
-      }
-
-      // add to DB
-      const err = await api.debouncedUpdate({
-        [`node_content/${state.user.user.uid}/${v.nodeID}/nodeID`]: v.nodeID,
-        [`node_content/${state.user.user.uid}/${v.nodeID}/wikipedia`]: v.wikipedia
-      });
-      if (err) {
-        // revert changes
-        commit(`nodeContent/${nodeContentMutations.SET_NODE_WIKIPEDIA}`, {
-          nodeID: v.nodeID,
-          wikipedia: oldValue
-        });
-        return err;
-      }
-
-      return null;
-    },
-
-    /**
-     *
-     * @param commit
-     * @param state
-     * @param v
-     */
-    async [actions.addNodeResourceRating](
-      { commit, state }: { commit: Commit; state: State },
-      v: { rr: ResourceRating; nodeID: string }
-    ) {
-      // cannot save for unauthorized user
-      if (!state.user.user || state.user.user.isAnonymous) {
-        return null;
-      }
-
-      // add to DB
-      const err = await api.update({
-        [`node_content/${state.user.user.uid}/${v.nodeID}/nodeID`]: v.nodeID,
-        [`node_content/${state.user.user.uid}/${v.nodeID}/resourceRatings/${v.rr.resourceID}`]: v.rr
-      });
-      if (err) {
-        printError("addNodeResource: api.update error", { err });
-        return;
-      }
-
-      // add to local store
-      commit(
-        `nodeContent/${nodeContentMutations.ADD_TO_NODE_RESOURCE_RATINGS}`,
-        v
-      );
     },
 
     /**
