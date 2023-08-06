@@ -81,7 +81,7 @@ export async function fetchNodeContents(user: firebase.User | null) {
     nodeContents[i] = {
       nodeID: nodeContent[i].nodeID,
       content: nodeContent[i].content,
-      resourceIds: Object.keys(nodeContent[i].resourceIds)
+      resourceIds: nodeContent[i].resourceIds ? Object.keys(nodeContent[i].resourceIds) : []
     } as NodeContent;
   }
 

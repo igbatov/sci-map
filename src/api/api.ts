@@ -55,7 +55,7 @@ export default {
     firebase.initializeApp(firebaseConfig);
     firebase.analytics();
 
-    if (process.env.VUE_APP_IS_EMULATOR) {
+    if (process.env.VUE_APP_IS_EMULATOR === "true") {
       console.log("Starting in emulator mode");
       firebase
         .auth()

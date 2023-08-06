@@ -2,7 +2,13 @@
 const admin = require('firebase-admin');
 const { getAuth } = require('firebase-admin/auth');
 
-admin.initializeApp()
+const serviceAccount = require("../scripts/private-key.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://sci-map-1982.firebaseio.com"
+});
+
 getAuth()
   .getUserByEmail('igbatov@gmail.com')
   .then((user) => {

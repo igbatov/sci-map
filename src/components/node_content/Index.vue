@@ -187,7 +187,7 @@ export default {
 <style scoped>
 .wrapper {
   position: absolute;
-  width: 40%;
+  width: 33%;
   height: 100%;
   padding: 8px;
   background-color: rgba(255, 255, 255, 1);

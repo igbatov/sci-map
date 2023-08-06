@@ -8,7 +8,7 @@ import {getVoronoiCells, morphChildrenPoints} from "../src/tools/graphics";
 import { Tree, Polygon, Point } from "../src/types/graphics";
 // this file can be downloaded at Firebase Settings > Service Accounts: https://console.firebase.google.com/u/0/project/sci-map-1982/settings/serviceaccounts/adminsdk
 // (see also https://firebase.google.com/docs/admin/setup?hl=en#prerequisites)
-import serviceAccount from "./sci-map-1982-firebase-adminsdk-s5ytq-8a913139ae.json";
+import serviceAccount from "./private-key.json";
 // @ts-ignore
 import {printError} from "../src/tools/utils";
 // @ts-ignore

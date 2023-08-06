@@ -182,6 +182,9 @@ firebase emulators:export functions/data
 firebase emulators:start --import=functions/data
 ```
 ### Deploy functions on production
+Generate private key in firebase console as described here https://firebase.google.com/docs/admin/setup#initialize_the_sdk_in_non-google_environments
+Move this file to /scripts/private-key.json
+Then 
 ```shell
 $ firebase deploy --only functions
 ```
