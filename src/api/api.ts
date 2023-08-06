@@ -10,7 +10,7 @@ import { Preconditions } from "src/store/precondition";
 import { DBNode } from "@/api/types";
 import { convertChildren, convertDBMapToTree } from "./helpers";
 import { Resource } from "@/store/resources";
-import {NodeComment, NodeContent} from "@/store/node_content";
+import { NodeComment, NodeContent } from "@/store/node_content";
 import emulatorConfig from "../../firebase.json";
 import { debounce } from "lodash";
 

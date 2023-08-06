@@ -116,7 +116,11 @@ export default defineComponent({
     const centralNodeId = ref<string | null>(null);
     const layers = ref<Array<Record<string, MapNode>>>([]);
     watch(
-      () => [treeState.mapNodeLayers, zoomPanState.debouncedZoom, zoomPanState.debouncedPan],
+      () => [
+        treeState.mapNodeLayers,
+        zoomPanState.debouncedZoom,
+        zoomPanState.debouncedPan
+      ],
       () => {
         const [newCentralNodeId, err] = findCentralNode(
           treeState.mapNodeLayers,
@@ -166,21 +170,21 @@ export default defineComponent({
 
     const zoomedPanedLayers = ref<Array<Record<string, MapNode>>>([]);
     watch(
-        () => [zoomPanState.pan.x,zoomPanState.pan.y,zoomPanState.zoom, layers],
-        () => {
-          // layers это всегда слои с zoom=1 и pan={0, 0} состоящий из только видимых прямо сейчас элементов.
-          // Мы применяем к этому объекту текущий zoomPanState но сам эталон не трогаем, поэтому здесь clone
-          // Это не дорогая операция так как layers всегда содержит небольшое кол-во элементов
-          // видимых только прямо сейчас
-          const layersToZoomAndPan = clone(layers.value);
-          zoomedPanedLayers.value = zoomAnPanLayers(
-              layersToZoomAndPan,
-              zoomPanState.zoom,
-              zoomPanState.pan
-          )
-        },
-        { immediate: true, deep: true }
-    )
+      () => [zoomPanState.pan.x, zoomPanState.pan.y, zoomPanState.zoom, layers],
+      () => {
+        // layers это всегда слои с zoom=1 и pan={0, 0} состоящий из только видимых прямо сейчас элементов.
+        // Мы применяем к этому объекту текущий zoomPanState но сам эталон не трогаем, поэтому здесь clone
+        // Это не дорогая операция так как layers всегда содержит небольшое кол-во элементов
+        // видимых только прямо сейчас
+        const layersToZoomAndPan = clone(layers.value);
+        zoomedPanedLayers.value = zoomAnPanLayers(
+          layersToZoomAndPan,
+          zoomPanState.zoom,
+          zoomPanState.pan
+        );
+      },
+      { immediate: true, deep: true }
+    );
 
     return {
       pinNodes: computed(() => {
@@ -222,7 +226,11 @@ export default defineComponent({
       viewBox,
       editModeOn: computed(() => store.state.editModeOn),
       selectedNodeId: computed(() => treeState.selectedNodeId),
-      preconditionNodeIds: computed(() => treeState.selectedNodeId ? store.state.precondition.preconditions[treeState.selectedNodeId] : []),
+      preconditionNodeIds: computed(() =>
+        treeState.selectedNodeId
+          ? store.state.precondition.preconditions[treeState.selectedNodeId]
+          : []
+      ),
       zoomedPanedLayers,
       nodeDragging: (e: EventDraggingNode) => {
         store.dispatch(`${actions.updateNodePosition}`, {

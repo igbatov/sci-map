@@ -11,15 +11,15 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from "vue";
-import {Point} from "@/types/graphics";
+import { defineComponent, PropType } from "vue";
+import { Point } from "@/types/graphics";
 
 export default defineComponent({
   name: "PreconditionArrow",
   props: {
     markerId: String,
     from: Object as PropType<Point>,
-    to: Object as PropType<Point>,
+    to: Object as PropType<Point>
   }
-})
+});
 </script>

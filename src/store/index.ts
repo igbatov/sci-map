@@ -6,10 +6,7 @@ import {
   useStore as baseUseStore
 } from "vuex";
 import { InjectionKey } from "vue";
-import {
-  store as pinStore,
-  State as PinState
-} from "./pin";
+import { store as pinStore, State as PinState } from "./pin";
 
 import {
   store as preconditionStore,
@@ -23,10 +20,7 @@ import {
   actions as treeActions
 } from "./tree";
 
-import {
-  store as zoomPanStore,
-  State as ZoomPanState
-} from "./zoom_pan";
+import { store as zoomPanStore, State as ZoomPanState } from "./zoom_pan";
 
 import {
   store as userStore,
@@ -50,7 +44,7 @@ import {
 
 import {
   store as nodeContentStore,
-  State as NodeContentState,
+  State as NodeContentState
 } from "./node_content";
 
 import api from "@/api/api";

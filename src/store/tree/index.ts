@@ -305,9 +305,9 @@ export const store = {
         dbNodeRecord.node.title = arg.dbNode.name;
         const [node] = findMapNode(oldDBNode.id, state.mapNodeLayers);
         if (!node) {
-          return
+          return;
         }
-        node.title = arg.dbNode.name
+        node.title = arg.dbNode.name;
       }
     }
   },

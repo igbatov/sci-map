@@ -3,25 +3,24 @@
     <div v-if="show && selectedNode" class="wrapper">
       <h2>
         <InputText
-            type="text"
-            placeholder="Node title"
-            :value="selectedNode.title"
-            @update:modelValue="changeNodeTitle($event)"
+          type="text"
+          placeholder="Node title"
+          :value="selectedNode.title"
+          @update:modelValue="changeNodeTitle($event)"
         />
       </h2>
       <div class="p-fluid">
-
         <!-- Content   -->
         <div class="p-field p-grid">
           <div class="p-col-12">
             <TextArea
-                id="content"
-                placeholder="Description"
-                :autoResize="true"
-                rows="20"
-                :value="selectedNodeContent ? selectedNodeContent.content : ''"
-                @update:modelValue="changeContent($event)"
-                v-on:keydown="checkAuthorized"
+              id="content"
+              placeholder="Description"
+              :autoResize="true"
+              rows="20"
+              :value="selectedNodeContent ? selectedNodeContent.content : ''"
+              @update:modelValue="changeContent($event)"
+              v-on:keydown="checkAuthorized"
             />
           </div>
         </div>
@@ -29,10 +28,10 @@
         <!-- sources -->
         <h3>Sources</h3>
         <SectionResources
-            v-if="selectedNodeContent"
-            :node-id="selectedNode.id"
-            :resources="resources"
-            :resourceIds="selectedNodeContent.resourceIds"
+          v-if="selectedNodeContent"
+          :node-id="selectedNode.id"
+          :resources="resources"
+          :resourceIds="selectedNodeContent.resourceIds"
         />
 
         <!-- Preconditions section -->
@@ -47,13 +46,13 @@
         <div class="p-field p-grid">
           <div class="p-col-12 p-md-12">
             <TextArea
-                id="comment"
-                placeholder="Your personal comment"
-                :autoResize="true"
-                rows="2"
-                :value="comment"
-                @update:modelValue="changeComment($event)"
-                v-on:keydown="checkAuthorized"
+              id="comment"
+              placeholder="Your personal comment"
+              :autoResize="true"
+              rows="2"
+              :value="comment"
+              @update:modelValue="changeComment($event)"
+              v-on:keydown="checkAuthorized"
             />
           </div>
         </div>
@@ -71,7 +70,11 @@ import InputText from "primevue/inputtext";
 import SectionResources from "./resources/Index.vue";
 import SectionPreconditions from "./Preconditions.vue";
 import { Tree } from "@/types/graphics";
-import {EmptyNodeContent, NodeComment, NodeContent} from "@/store/node_content";
+import {
+  EmptyNodeContent,
+  NodeComment,
+  NodeContent
+} from "@/store/node_content";
 import { Resources } from "@/store/resources";
 import { clone, printError } from "@/tools/utils";
 import { useConfirm } from "primevue/useconfirm";
@@ -140,7 +143,7 @@ export default {
       comment,
       changeNodeTitle: async (value: string) => {
         if (!selectedNode.value || !selectedNode.value.id) {
-          return
+          return;
         }
         const err = await api.update({
           [`map/${selectedNode.value.id}/name`]: value
@@ -151,20 +154,26 @@ export default {
         }
       },
       changeContent: async (value: string) => {
-        const err = await store.dispatch(`nodeContent/${nodeContentActions.setNodeContent}`, {
-          nodeID: selectedNode.value!.id,
-          content: value
-        });
+        const err = await store.dispatch(
+          `nodeContent/${nodeContentActions.setNodeContent}`,
+          {
+            nodeID: selectedNode.value!.id,
+            content: value
+          }
+        );
 
         if (err) {
           printError(err, {});
         }
       },
       changeComment: async (value: string) => {
-        const err = await store.dispatch(`nodeContent/${nodeContentActions.setNodeComment}`, {
-          nodeID: selectedNode.value!.id,
-          comment: value
-        });
+        const err = await store.dispatch(
+          `nodeContent/${nodeContentActions.setNodeComment}`,
+          {
+            nodeID: selectedNode.value!.id,
+            comment: value
+          }
+        );
 
         if (err) {
           printError(err, {});

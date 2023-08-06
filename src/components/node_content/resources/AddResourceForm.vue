@@ -107,9 +107,9 @@ export default {
           { title: "title" },
           { author: "author(s)" },
           { url: "URL" },
-          { findPhrase: "find phrase" },
+          { findPhrase: "find phrase" }
         ]
-      },
+      }
     };
     const typeKeys = Object.keys(types) as ResourceType[];
     const typeOptions = typeKeys.map(key => ({
@@ -131,8 +131,8 @@ export default {
           return;
         }
         await store.dispatch(
-            `nodeContent/${nodeContentActions.addNodeResource}`,
-            { nodeID: selectedNode.value.id, resourceID: e.id }
+          `nodeContent/${nodeContentActions.addNodeResource}`,
+          { nodeID: selectedNode.value.id, resourceID: e.id }
         );
       },
       save: async () => {
@@ -167,8 +167,8 @@ export default {
           return;
         }
         await store.dispatch(
-            `nodeContent/${nodeContentActions.addNodeResource}`,
-            { nodeID: selectedNode.value.id, resourceID: resource.id }
+          `nodeContent/${nodeContentActions.addNodeResource}`,
+          { nodeID: selectedNode.value.id, resourceID: resource.id }
         );
       },
       cancel: () => {

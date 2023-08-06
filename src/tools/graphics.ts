@@ -267,24 +267,32 @@ export function getVoronoiCellRecords(
   return [result, null];
 }
 
-export function polygonFill(selectedNodeId: string, currentNodeId: string, preconditionNodeIds: string[]): string {
-  if (selectedNodeId && selectedNodeId == currentNodeId ) {
-    return '#f3afaf'
+export function polygonFill(
+  selectedNodeId: string,
+  currentNodeId: string,
+  preconditionNodeIds: string[]
+): string {
+  if (selectedNodeId && selectedNodeId == currentNodeId) {
+    return "#f3afaf";
   }
   if (preconditionNodeIds && preconditionNodeIds.indexOf(currentNodeId) != -1) {
-    return '#62f363'
+    return "#62f363";
   }
-  return 'transparent';
+  return "transparent";
 }
 
-export function polygonFillOpacity(selectedNodeId: string, currentNodeId: string, preconditionNodeIds: string[]): string {
-  if (selectedNodeId && selectedNodeId == currentNodeId ) {
-    return '0.2'
+export function polygonFillOpacity(
+  selectedNodeId: string,
+  currentNodeId: string,
+  preconditionNodeIds: string[]
+): string {
+  if (selectedNodeId && selectedNodeId == currentNodeId) {
+    return "0.2";
   }
   if (preconditionNodeIds && preconditionNodeIds.indexOf(currentNodeId) != -1) {
-    return '0.2'
+    return "0.2";
   }
-  return '0';
+  return "0";
 }
 
 export function polygonToPath(polygon: Polygon): string {

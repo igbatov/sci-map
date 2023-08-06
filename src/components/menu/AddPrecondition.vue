@@ -10,7 +10,13 @@
   >
     <template #header>
       <h3>
-          Set "{{preconditionNode.title ? preconditionNode.title : (selectedNode ? selectedNode.title : '') }}" as precondition for "{{targetNode ? targetNode.title : ''}}"
+        Set "{{
+          preconditionNode.title
+            ? preconditionNode.title
+            : selectedNode
+            ? selectedNode.title
+            : ""
+        }}" as precondition for "{{ targetNode ? targetNode.title : "" }}"
       </h3>
     </template>
 
@@ -41,10 +47,7 @@ export default {
     Dialog,
     Button
   },
-  emits: [
-    "select-precondition-is-on",
-    "select-precondition-is-off",
-  ],
+  emits: ["select-precondition-is-on", "select-precondition-is-off"],
   props: {
     clickedTitleId: {
       type: String,

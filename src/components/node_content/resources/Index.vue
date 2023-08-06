@@ -1,10 +1,6 @@
 <template>
   <AddResourceForm :resources="resources" />
-  <div
-      v-for="resourceId of resourceIds"
-      class="p-grid"
-      :key="resourceId"
-  >
+  <div v-for="resourceId of resourceIds" class="p-grid" :key="resourceId">
     <div class="p-col-12">
       <div class="p-grid">
         <div class="p-col-11">
@@ -12,9 +8,9 @@
         </div>
         <div class="p-col-1">
           <Button
-              @click="remove(resourceId)"
-              icon="pi pi-ban"
-              class="p-button-rounded p-button-help p-button-outlined"
+            @click="remove(resourceId)"
+            icon="pi pi-ban"
+            class="p-button-rounded p-button-help p-button-outlined"
           />
         </div>
       </div>
@@ -37,7 +33,7 @@ export default {
   props: {
     nodeId: String,
     resources: Object as PropType<Record<string, Resource>>,
-    resourceIds: Object as PropType<Array<string>>,
+    resourceIds: Object as PropType<Array<string>>
   },
   components: {
     Button,
@@ -46,10 +42,7 @@ export default {
   directives: {
     tooltip: Tooltip
   },
-  setup(props: {
-    nodeId: string;
-    resources: Record<string, Resource>;
-  }) {
+  setup(props: { nodeId: string; resources: Record<string, Resource> }) {
     const store = useStore();
     const confirm = useConfirm();
 
@@ -65,7 +58,7 @@ export default {
           nodeID: props.nodeId,
           resourceID: resourceID
         });
-      },
+      }
     };
   }
 };

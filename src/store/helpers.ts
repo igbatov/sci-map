@@ -6,7 +6,7 @@ import { mutations as preconditionMutations } from "@/store/precondition";
 import { mutations as resourcesMutations } from "@/store/resources";
 import {
   mutations as nodeContentMutations,
-  NodeContent,
+  NodeContent
 } from "@/store/node_content";
 import { store } from "@/store/index";
 import { printError } from "@/tools/utils";
@@ -81,7 +81,7 @@ export async function fetchNodeContents(user: firebase.User | null) {
     nodeContents[i] = {
       nodeID: nodeContent[i].nodeID,
       content: nodeContent[i].content,
-      resourceIds: Object.keys(nodeContent[i].resourceIds),
+      resourceIds: Object.keys(nodeContent[i].resourceIds)
     } as NodeContent;
   }
 

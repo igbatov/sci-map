@@ -4,7 +4,9 @@
     :key="i"
     :stroke="borderColor"
     :fill="polygonFill(selectedNodeId, mapNode.id, preconditionNodeIds)"
-    :fill-opacity="polygonFillOpacity(selectedNodeId, mapNode.id, preconditionNodeIds)"
+    :fill-opacity="
+      polygonFillOpacity(selectedNodeId, mapNode.id, preconditionNodeIds)
+    "
     stroke-width="2"
     :points="polygonToPath(mapNode.border)"
     pointer-events="none"
@@ -62,7 +64,11 @@
 <script lang="ts">
 import { defineComponent, PropType, toRef, onMounted, onUnmounted } from "vue";
 import { MapNode } from "@/types/graphics";
-import { polygonToPath, polygonFill, polygonFillOpacity } from "@/tools/graphics";
+import {
+  polygonToPath,
+  polygonFill,
+  polygonFillOpacity
+} from "@/tools/graphics";
 import {
   getTitleBoxes,
   MouseDownInfo,
@@ -105,7 +111,7 @@ export default defineComponent({
         typeof prop === "string" || prop === null,
       required: true
     },
-    preconditionNodeIds: Object as PropType<string[]>,
+    preconditionNodeIds: Object as PropType<string[]>
   },
 
   setup(props, ctx) {
@@ -170,7 +176,7 @@ export default defineComponent({
   methods: {
     polygonToPath: polygonToPath,
     polygonFill: polygonFill,
-    polygonFillOpacity: polygonFillOpacity,
+    polygonFillOpacity: polygonFillOpacity
   }
 });
 </script>

@@ -1,8 +1,8 @@
-import {clone, printError} from "@/tools/utils";
-import {Commit} from "vuex";
+import { clone, printError } from "@/tools/utils";
+import { Commit } from "vuex";
 import api from "@/api/api";
-import {ErrorKV} from "@/types/errorkv";
-import {State as UserState} from "@/store/user";
+import { ErrorKV } from "@/types/errorkv";
+import { State as UserState } from "@/store/user";
 
 export type NodeContent = {
   nodeID: string;
@@ -27,7 +27,7 @@ export const mutations = {
   SET_NODE_CONTENT: "SET_NODE_CONTENT",
   SET_NODE_COMMENT: "SET_NODE_COMMENT",
   REMOVE_NODE_RESOURCE: "REMOVE_NODE_RESOURCE",
-  ADD_NODE_RESOURCE: "ADD_NODE_RESOURCE",
+  ADD_NODE_RESOURCE: "ADD_NODE_RESOURCE"
 };
 
 export const actions = {
@@ -35,13 +35,13 @@ export const actions = {
   setNodeContent: "setNodeContent",
   setNodeComment: "setNodeComment",
   removeNodeResource: "removeNodeResource",
-  addNodeResource: "addNodeResource",
+  addNodeResource: "addNodeResource"
 };
 
 export const EmptyNodeContent = {
   nodeID: "",
   content: "",
-  resourceIds: [],
+  resourceIds: []
 } as NodeContent;
 
 function createContentIfNotExist(
@@ -56,7 +56,7 @@ function createContentIfNotExist(
 
 export const EmptyNodeComment = {
   nodeID: "",
-  comment: "",
+  comment: ""
 } as NodeComment;
 
 function createCommentIfNotExist(
@@ -68,7 +68,6 @@ function createCommentIfNotExist(
     userNodeComments[nodeID].nodeID = nodeID;
   }
 }
-
 
 export const store = {
   namespaced: true,
@@ -104,10 +103,7 @@ export const store = {
       }
 
       // add to local store
-      commit(
-        `${mutations.REMOVE_NODE_RESOURCE}`,
-        v
-      );
+      commit(`${mutations.REMOVE_NODE_RESOURCE}`, v);
     },
 
     /**
@@ -130,10 +126,7 @@ export const store = {
       }
 
       // add to local store
-      commit(
-        `${mutations.ADD_NODE_RESOURCE}`,
-        v
-      );
+      commit(`${mutations.ADD_NODE_RESOURCE}`, v);
     },
 
     /**
@@ -143,7 +136,7 @@ export const store = {
      * @param v
      */
     async [actions.setNodeComment](
-      { commit, rootState }: { commit: Commit; rootState: {user: UserState} },
+      { commit, rootState }: { commit: Commit; rootState: { user: UserState } },
       v: { nodeID: string; comment: string }
     ): Promise<ErrorKV> {
       // cannot save for unauthorized user
@@ -176,7 +169,6 @@ export const store = {
       { commit, state }: { commit: Commit; state: State },
       v: { nodeID: string; content: string }
     ): Promise<ErrorKV> {
-
       // add to DB
       const err = await api.update({
         [`node_content/${v.nodeID}/nodeID`]: v.nodeID,
@@ -190,8 +182,7 @@ export const store = {
       commit(`${mutations.SET_NODE_CONTENT}`, v);
 
       return null;
-    },
-
+    }
   },
   mutations: {
     /**
@@ -253,14 +244,19 @@ export const store = {
       state: State,
       v: { nodeID: string; resourceID: string }
     ) {
-      if (!state.nodeContents[v.nodeID] || !state.nodeContents[v.nodeID].resourceIds) {
-        return
+      if (
+        !state.nodeContents[v.nodeID] ||
+        !state.nodeContents[v.nodeID].resourceIds
+      ) {
+        return;
       }
-      const ind = state.nodeContents[v.nodeID].resourceIds.indexOf(v.resourceID)
+      const ind = state.nodeContents[v.nodeID].resourceIds.indexOf(
+        v.resourceID
+      );
       if (ind == -1) {
-        return
+        return;
       }
-      state.nodeContents[v.nodeID].resourceIds.splice(ind, 1)
+      state.nodeContents[v.nodeID].resourceIds.splice(ind, 1);
     },
     /**
      * ADD_NODE_RESOURCE
@@ -272,7 +268,7 @@ export const store = {
       v: { nodeID: string; resourceID: string }
     ) {
       createContentIfNotExist(state.nodeContents, v.nodeID);
-      state.nodeContents[v.nodeID].resourceIds.push(v.resourceID)
-    },
+      state.nodeContents[v.nodeID].resourceIds.push(v.resourceID);
+    }
   }
 };
