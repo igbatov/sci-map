@@ -1,4 +1,3 @@
-import { MapNode } from "@/types/graphics";
 
 const mouseDownBg = {
   on: false
@@ -6,10 +5,10 @@ const mouseDownBg = {
 
 let pinNodeMouseDown = false;
 
-const mouseDown = async (event: MouseEvent) => {
+const mouseDown = (event: MouseEvent) => {
   mouseDownBg.on = true;
 };
-const mouseUp = async (event: MouseEvent) => {
+const mouseUp = (event: MouseEvent) => {
   mouseDownBg.on = false;
   pinNodeMouseDown = false;
 };

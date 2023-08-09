@@ -34,6 +34,38 @@ describe("getNewNodeCenter", () => {
     expect(err).toBeNull();
   });
 
+  it("for parent with no children with complex border", () => {
+    const tree = {
+      id: "1",
+      title: "root",
+      position: { x: 372, y: 367 },
+      resources: [],
+      children: []
+    };
+
+    const mapNodeLayers = [
+      {
+        "1": {
+          id: "1",
+          title: "root",
+          center: { x: 372, y: 367 },
+          border: [
+            { x: 242, y: 333 },
+            { x: 511, y: 316 },
+            { x: 543, y: 358 },
+            { x: 508, y: 430 },
+            { x: 257, y: 365 }
+          ]
+        }
+      }
+    ] as Array<Record<string, MapNode>>;
+
+    const [newNodeCenter, oldNode, err] = getNewNodeCenter(tree, mapNodeLayers);
+    expect(newNodeCenter).toEqual({ x: 457.5, y: 362.5 });
+    expect(oldNode).toBeNull();
+    expect(err).toBeNull();
+  });
+
   it("special for case when edge is longer than every diagonal", () => {
     const tree = {
       id: "1",

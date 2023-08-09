@@ -9,7 +9,7 @@ import api from "@/api/api";
 import { isEqual } from "lodash";
 import { DBNode } from "@/api/types";
 
-const MIN_VISIBLE_NUM_IN_LAYER = 2;
+const MIN_VISIBLE_NUM_IN_LAYER = 3;
 
 export function zoomAndPanPoint(p: Point, zoom: number, pan: Point): Point {
   return { x: p.x * zoom + pan.x, y: p.y * zoom + pan.y };

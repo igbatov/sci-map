@@ -169,6 +169,9 @@ export const store = {
       { commit, state }: { commit: Commit; state: State },
       v: { nodeID: string; content: string }
     ): Promise<ErrorKV> {
+      // change in local store before adding to DB for comfortable textbox editing experience
+      commit(`${mutations.SET_NODE_CONTENT}`, v);
+
       // add to DB
       const err = await api.update({
         [`node_content/${v.nodeID}/nodeID`]: v.nodeID,
@@ -177,9 +180,6 @@ export const store = {
       if (err) {
         return err;
       }
-
-      // change in local store
-      commit(`${mutations.SET_NODE_CONTENT}`, v);
 
       return null;
     }

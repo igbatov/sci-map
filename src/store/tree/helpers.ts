@@ -91,9 +91,10 @@ export function getNewNodeCenter(
       })
     ];
   }
+
   if (parent.children.length === 0) {
     const fromCenterVectors = parentMapNode.border.map(p => ({
-      from: parent.position,
+      from: parentMapNode.center,
       to: p
     }));
     let maxFromCenterVector = fromCenterVectors[0];

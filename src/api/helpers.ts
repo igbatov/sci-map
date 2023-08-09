@@ -50,6 +50,12 @@ export function convertDBMapToTree(
     }
     const children: Tree[] = [];
     for (const childID of dbNodes[node.id].children) {
+      if (!dbNodes[childID]) {
+        return [
+          null,
+          NewErrorKV("Cannot find child id in dbNodes", { childID, "parentID":node.id })
+        ];
+      }
       children.push({
         id: childID.toString(),
         title: dbNodes[childID].name,

@@ -369,7 +369,7 @@ export const store = createStore<State>({
         state.tree.mapNodeLayers
       );
       if (err2) {
-        printError("createNode: cannot create new center", {
+        printError("cutPasteNode: cannot create new center", {
           err: err2,
           parent,
           "state.tree.mapNodeLayers": state.tree.mapNodeLayers

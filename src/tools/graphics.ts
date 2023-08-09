@@ -632,6 +632,7 @@ export function convertPosition(
           null,
           NewErrorKV("convertPosition: position outside parentMapNode.border", {
             "parentMapNode.border": parentMapNode.border,
+            "parentMapNode.center": parentMapNode.center,
             position,
             parentID
           })

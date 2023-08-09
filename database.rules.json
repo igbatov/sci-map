@@ -18,6 +18,7 @@
     },
     "trash": {
       ".read": "auth !== null || auth === null",
+      ".write": "auth !== null && auth.token.role === 'map_editor'"
     },
     "user_data": {
       "$uid": {

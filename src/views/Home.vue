@@ -71,6 +71,7 @@ export default defineComponent({
     const pinState = store.state.pin;
     const clickedTitleId = ref("-1");
     let selectPreconditionIsOn = false;
+    let titleOver = false;
 
     watch(
       () => route.params.id,
@@ -256,15 +257,21 @@ export default defineComponent({
         }
       },
       titleOver: (e: EventClickNode) => {
+        titleOver = true
         store.commit(`tree/${treeMutations.SET_SELECTED_NODE_ID}`, e.id);
       },
       titleLeave: (e: EventClickNode) => {
+        titleOver = false
         store.commit(
           `tree/${treeMutations.SET_SELECTED_NODE_ID}`,
           route.params.id
         );
       },
       mapDragging: (event: EventDraggingBackground) => {
+        if (store.state.editModeOn && titleOver) {
+          // to prevent pan while node position editing ( = title dragging in edit mode)
+          return
+        }
         store.commit(`zoomPan/${zoomPanMutations.ADD_PAN}`, event);
       },
       zoom: (event: EventWheel) => {
