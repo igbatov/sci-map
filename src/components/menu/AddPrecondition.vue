@@ -1,5 +1,5 @@
 <template>
-  <button @click="showAddBanner">Add Premise</button>
+  <button @click="showAddBanner">Add precondition</button>
   <Dialog
     v-model:visible="addBannerVisible"
     :dismissableMask="false"
@@ -65,7 +65,7 @@ export default {
       () => props.clickedTitleId,
       () => {
         if (
-          props.clickedTitleId > 0 &&
+          props.clickedTitleId !== "-1" &&
           store.state.tree.nodeRecord[props.clickedTitleId]
         ) {
           preconditionNode.value =

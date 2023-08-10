@@ -33,8 +33,8 @@ const update = async (data: Record<string, any>): Promise<ErrorKV> => {
 const debouncedUpdate = debounce(update, 400);
 
 export default {
-  ROOT_WIDTH: 1440,
-  ROOT_HEIGHT: 821,
+  ROOT_WIDTH: window.innerWidth,
+  ROOT_HEIGHT: window.innerHeight - window.innerHeight/100,
   ST_WIDTH: 1000,
   ST_HEIGHT: 1000,
   initFirebase() {
@@ -311,7 +311,7 @@ export default {
     }
 
     for (const key in node.children) {
-      if (node.children[key] === childID) {
+      if (node.children[key].toString() === childID) {
         return key;
       }
     }

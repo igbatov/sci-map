@@ -1,63 +1,63 @@
 <template>
   <transition name="slide">
-    <div v-if="show && selectedNode" class="wrapper">
-      <h2>
-        <InputText
-          type="text"
-          placeholder="Node title"
-          :value="selectedNode.title"
-          @update:modelValue="changeNodeTitle($event)"
-        />
-      </h2>
-      <div class="p-fluid">
-        <!-- Content   -->
-        <div class="p-field p-grid">
-          <div class="p-col-12">
+      <div v-if="show && selectedNode" class="wrapper">
+        <div class="p-fluid">
+          <!-- Content   -->
+          <div class="p-field p-grid">
+            <div class="p-col-12">
             <TextArea
-              id="content"
-              placeholder="Description"
-              :autoResize="true"
-              rows="20"
-              :value="selectedNodeContent ? selectedNodeContent.content : ''"
-              @update:modelValue="changeContent($event)"
-              v-on:keydown="checkAuthorized"
+                rows="1"
+                :autoResize="true"
+                placeholder="Node title"
+                :value="selectedNode.title"
+                @update:modelValue="changeNodeTitle($event)"
             />
-          </div>
-        </div>
-
-        <!-- sources -->
-        <h3>Sources</h3>
-        <SectionResources
-          v-if="selectedNodeContent"
-          :node-id="selectedNode.id"
-          :resources="resources"
-          :resourceIds="selectedNodeContent.resourceIds"
-        />
-
-        <!-- Preconditions section -->
-        <h3>Preconditions</h3>
-        <SectionPreconditions
-          v-if="selectedNodeContent"
-          :node-id="selectedNode.id"
-        />
-
-        <!-- Comment -->
-        <h3>Your personal comment</h3>
-        <div class="p-field p-grid">
-          <div class="p-col-12 p-md-12">
+            </div>
+            <div class="p-col-12">
             <TextArea
-              id="comment"
-              placeholder="Your personal comment"
-              :autoResize="true"
-              rows="2"
-              :value="comment"
-              @update:modelValue="changeComment($event)"
-              v-on:keydown="checkAuthorized"
+                id="content"
+                placeholder="Description"
+                :autoResize="true"
+                rows="20"
+                :value="selectedNodeContent ? selectedNodeContent.content : ''"
+                @update:modelValue="changeContent($event)"
+                v-on:keydown="checkAuthorized"
             />
+            </div>
           </div>
+
+          <!-- Comment -->
+          <div class="p-field p-grid">
+            <div class="p-col-12 p-md-12">
+            <TextArea
+                id="comment"
+                placeholder="Your notes (visible only to you)"
+                :autoResize="true"
+                rows="2"
+                :value="comment"
+                @update:modelValue="changeComment($event)"
+                v-on:keydown="checkAuthorized"
+            />
+            </div>
+          </div>
+          <!-- sources -->
+<!--          <h3>Sources</h3>-->
+<!--          <SectionResources-->
+<!--              v-if="selectedNodeContent"-->
+<!--              :node-id="selectedNode.id"-->
+<!--              :resources="resources"-->
+<!--              :resourceIds="selectedNodeContent.resourceIds"-->
+<!--          />-->
+
+          <!-- Preconditions section -->
+          <h3>Preconditions</h3>
+          <SectionPreconditions
+              v-if="selectedNodeContent"
+              :node-id="selectedNode.id"
+          />
         </div>
       </div>
-    </div>
+
   </transition>
 </template>
 
@@ -66,8 +66,8 @@ import { actions, useStore } from "@/store";
 import { actions as nodeContentActions } from "@/store/node_content";
 import { computed } from "vue";
 import TextArea from "primevue/textarea";
-import InputText from "primevue/inputtext";
-import SectionResources from "./resources/Index.vue";
+// import ScrollPanel from 'primevue/scrollpanel';
+// import SectionResources from "./resources/Index.vue";
 import SectionPreconditions from "./Preconditions.vue";
 import { Tree } from "@/types/graphics";
 import {
@@ -84,8 +84,8 @@ export default {
   name: "NodeContent",
   components: {
     TextArea,
-    InputText,
-    SectionResources,
+    // ScrollPanel,
+    // SectionResources,
     SectionPreconditions
   },
   props: {
@@ -187,9 +187,10 @@ export default {
 <style scoped>
 .wrapper {
   position: absolute;
-  width: 33%;
+  width: 30%;
   height: 100%;
-  padding: 8px;
+  padding: 10px 20px 10px 10px;
+  overflow-y: scroll;
   background-color: rgba(255, 255, 255, 1);
   font-family: Roboto;
   color: rgb(73, 80, 87);
