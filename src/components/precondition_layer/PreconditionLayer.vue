@@ -41,7 +41,6 @@ export default defineComponent({
   components: { PreconditionArrow },
   props: {
     selectedNodeId: String,
-    preconditionNodeIds: Object as PropType<string[]>
   },
   setup(props, ctx) {
     const store = useStore();

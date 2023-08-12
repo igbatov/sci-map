@@ -30,7 +30,7 @@ import api from "@/api/api";
 import { Tree } from "@/types/graphics";
 
 export default {
-  name: "Vacancies",
+  name: "Preconditions",
   props: {
     nodeId: String
   },

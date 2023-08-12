@@ -271,12 +271,12 @@ export function getVoronoiCellRecords(
 export function polygonFill(
   selectedNodeId: string,
   currentNodeId: string,
-  preconditionNodeIds: string[]
+  selectedNodePreconditionIds: string[]
 ): string {
   if (selectedNodeId && selectedNodeId == currentNodeId) {
     return "#f3afaf";
   }
-  if (preconditionNodeIds && preconditionNodeIds.indexOf(currentNodeId) != -1) {
+  if (selectedNodePreconditionIds && selectedNodePreconditionIds.indexOf(currentNodeId) != -1) {
     return "#62f363";
   }
   return "transparent";
@@ -285,12 +285,12 @@ export function polygonFill(
 export function polygonFillOpacity(
   selectedNodeId: string,
   currentNodeId: string,
-  preconditionNodeIds: string[]
+  selectedNodePreconditionIds: string[]
 ): string {
   if (selectedNodeId && selectedNodeId == currentNodeId) {
     return "0.2";
   }
-  if (preconditionNodeIds && preconditionNodeIds.indexOf(currentNodeId) != -1) {
+  if (selectedNodePreconditionIds && selectedNodePreconditionIds.indexOf(currentNodeId) != -1) {
     return "0.2";
   }
   return "0";

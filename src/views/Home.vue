@@ -11,7 +11,7 @@
     :layers="zoomedPanedLayers"
     :viewBox="viewBox"
     :selectedNodeId="selectedNodeId"
-    :preconditionNodeIds="preconditionNodeIds"
+    :selectedNodePreconditionIds="selectedNodePreconditionIds"
     :pin-nodes="pinNodes"
     @title-dragging="nodeDragging"
     @title-click="titleClick"
@@ -227,7 +227,7 @@ export default defineComponent({
       viewBox,
       editModeOn: computed(() => store.state.editModeOn),
       selectedNodeId: computed(() => treeState.selectedNodeId),
-      preconditionNodeIds: computed(() =>
+      selectedNodePreconditionIds: computed(() =>
         treeState.selectedNodeId
           ? store.state.precondition.preconditions[treeState.selectedNodeId]
           : []

@@ -9,7 +9,7 @@
       "
       :font-size="7 * (index + 1)"
       :selectedNodeId="selectedNodeId"
-      :preconditionNodeIds="preconditionNodeIds"
+      :selectedNodePreconditionIds="selectedNodePreconditionIds"
       :map-id="mapID"
       @title-dragging="draggingNode"
       @title-click="titleClick"
@@ -23,7 +23,6 @@
       @title-mouse-down="pinNodeMouseDown"
     />
     <PreconditionLayer
-      :preconditionNodeIds="preconditionNodeIds"
       :selectedNodeId="selectedNodeId"
     />
   </svg>
@@ -71,7 +70,7 @@ export default defineComponent({
         typeof prop === "string" || prop === null,
       required: true
     },
-    preconditionNodeIds: Object as PropType<string[]>,
+    selectedNodePreconditionIds: Object as PropType<string[]>,
     pinNodes: Object as PropType<MapNode[]>
   },
   setup(props, ctx) {
