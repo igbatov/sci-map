@@ -8,7 +8,7 @@
     @select-precondition-is-off="setSelectPreconditionOFF"
   />
   <Map
-    :layers="zoomedPanedLayers"
+    :layers="visibleZoomedPanedLayers"
     :viewBox="viewBox"
     :selectedNodeId="selectedNodeId"
     :selectedNodePreconditionIds="selectedNodePreconditionIds"
@@ -96,6 +96,13 @@ export default defineComponent({
       }
     });
 
+    /**
+     * From mapNodeLayers method updateLayers determines visibleLayers and nodes
+     * that will be shown to user (which is always just a small part of all nodes and visibleLayers of the map)
+     * @param centralNodeId
+     * @param mapNodeLayers
+     * @param nodeRecord
+     */
     const updateLayers = (
       centralNodeId: string,
       mapNodeLayers: Array<Record<string, MapNode>>,
@@ -115,7 +122,8 @@ export default defineComponent({
     };
 
     const centralNodeId = ref<string | null>(null);
-    const layers = ref<Array<Record<string, MapNode>>>([]);
+    // visibleLayers consists only from user visible nodes and visibleLayers of all (which is treeState.mapNodeLayers)
+    const visibleLayers = ref<Array<Record<string, MapNode>>>([]);
     watch(
       () => [
         treeState.mapNodeLayers,
@@ -136,7 +144,7 @@ export default defineComponent({
         }
 
         const oldVisibleNodeIDs = [];
-        for (const layer of layers.value) {
+        for (const layer of visibleLayers.value) {
           oldVisibleNodeIDs.push(
             ...Object.values(layer)
               .filter((n: MapNode) => !!n.title)
@@ -145,14 +153,14 @@ export default defineComponent({
         }
 
         centralNodeId.value = newCentralNodeId;
-        layers.value = updateLayers(
+        visibleLayers.value = updateLayers(
           newCentralNodeId,
           treeState.mapNodeLayers,
           treeState.nodeRecord
         );
 
         const newVisibleNodeIDs = [];
-        for (const layer of layers.value) {
+        for (const layer of visibleLayers.value) {
           newVisibleNodeIDs.push(
             ...Object.values(layer)
               .filter((n: MapNode) => !!n.title)
@@ -169,16 +177,16 @@ export default defineComponent({
       { immediate: true, deep: true }
     );
 
-    const zoomedPanedLayers = ref<Array<Record<string, MapNode>>>([]);
+    const visibleZoomedPanedLayers = ref<Array<Record<string, MapNode>>>([]);
     watch(
-      () => [zoomPanState.pan.x, zoomPanState.pan.y, zoomPanState.zoom, layers],
+      () => [zoomPanState.pan.x, zoomPanState.pan.y, zoomPanState.zoom, visibleLayers],
       () => {
-        // layers это всегда слои с zoom=1 и pan={0, 0} состоящий из только видимых прямо сейчас элементов.
+        // visibleLayers это всегда слои с zoom=1 и pan={0, 0} состоящий из только видимых прямо сейчас элементов.
         // Мы применяем к этому объекту текущий zoomPanState но сам эталон не трогаем, поэтому здесь clone
-        // Это не дорогая операция так как layers всегда содержит небольшое кол-во элементов
+        // Это не дорогая операция так как visibleLayers всегда содержит небольшое кол-во элементов
         // видимых только прямо сейчас
-        const layersToZoomAndPan = clone(layers.value);
-        zoomedPanedLayers.value = zoomAnPanLayers(
+        const layersToZoomAndPan = clone(visibleLayers.value);
+        visibleZoomedPanedLayers.value = zoomAnPanLayers(
           layersToZoomAndPan,
           zoomPanState.zoom,
           zoomPanState.pan
@@ -197,8 +205,8 @@ export default defineComponent({
           return [];
         }
 
-        // remove pins that already exists on layers
-        for (const layer of layers.value) {
+        // remove pins that already exists on visibleLayers
+        for (const layer of visibleLayers.value) {
           for (const nodeID in layer) {
             const node = layer[nodeID];
             if (node.title != "") {
@@ -232,7 +240,7 @@ export default defineComponent({
           ? store.state.precondition.preconditions[treeState.selectedNodeId]
           : []
       ),
-      zoomedPanedLayers,
+      visibleZoomedPanedLayers: visibleZoomedPanedLayers,
       nodeDragging: (e: EventDraggingNode) => {
         store.dispatch(`${actions.updateNodePosition}`, {
           nodeId: e.id,

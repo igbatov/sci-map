@@ -24,9 +24,7 @@
 import {
   computed,
   defineComponent,
-  PropType,
   ref,
-  watch,
   watchEffect
 } from "vue";
 import PreconditionArrow from "@/components/precondition_layer/PreconditionArrow.vue";
