@@ -1,5 +1,8 @@
 <template>
   <svg xmlns="http://www.w3.org/2000/svg" :viewBox="viewBox" :id="mapID">
+    <PreconditionLayer
+        :selectedNodeId="selectedNodeId"
+    />
     <MapLayer
       v-for="(layer, index) of layers"
       :key="index"
@@ -21,9 +24,6 @@
       :selectedNodeId="selectedNodeId"
       @click="titleClick"
       @title-mouse-down="pinNodeMouseDown"
-    />
-    <PreconditionLayer
-      :selectedNodeId="selectedNodeId"
     />
   </svg>
 </template>

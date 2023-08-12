@@ -64,8 +64,8 @@ export const store = {
   state() {
     return {
       tree: null,
-      nodeRecord: {}, // id => NodeRecordItem
-      mapNodeLayers: [],
+      nodeRecord: {} as Record<string, NodeRecordItem>, // id => NodeRecordItem
+      mapNodeLayers: [] as Array<Record<string, MapNode>>,
       selectedNodeId: null
     };
   },

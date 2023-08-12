@@ -12,12 +12,20 @@
     </marker>
   </defs>
   <PreconditionArrow
-    v-for="precondition of preconditions"
+    v-for="precondition of selectedNodePreconditions"
     :key="precondition.id"
     markerId="preconditionArrow"
     :from="precondition.center"
     :to="selectedNode.center"
   />
+  <PreconditionArrow
+    v-for="(precondition, index) in allPreconditions"
+    :key="index"
+    markerId="preconditionArrow"
+    :from="precondition.from"
+    :to="precondition.to"
+  />
+
 </template>
 
 <script lang="ts">
@@ -29,7 +37,7 @@ import {
 } from "vue";
 import PreconditionArrow from "@/components/precondition_layer/PreconditionArrow.vue";
 import { useStore } from "@/store";
-import { MapNode } from "@/types/graphics";
+import {MapNode, Vector} from "@/types/graphics";
 import { findMapNode, findMapNodes } from "@/store/tree/helpers";
 import { clone } from "@/tools/utils";
 import { zoomAndPanPoint, zoomAnPanLayers } from "@/views/Home";
@@ -42,8 +50,11 @@ export default defineComponent({
   },
   setup(props, ctx) {
     const store = useStore();
-    const preconditions = ref<Array<MapNode>>([]);
     const zoomPanState = store.state.zoomPan;
+
+    /**
+     * compute selectedNode
+     */
     const selectedNode = computed(() => {
       if (props.selectedNodeId && store.state.tree.mapNodeLayers) {
         const [mapNode] = findMapNode(
@@ -61,8 +72,13 @@ export default defineComponent({
         return null;
       }
     });
+
+    /**
+     * compute selectedNodePreconditions
+     */
+    const selectedNodePreconditions = ref<Array<MapNode>>([]);
     watchEffect(() => {
-      preconditions.value = [];
+      selectedNodePreconditions.value = [];
       if (
         props.selectedNodeId &&
         store.state.precondition.preconditions[props.selectedNodeId] &&
@@ -80,13 +96,55 @@ export default defineComponent({
             zoomPanState.zoom,
             zoomPanState.pan
           );
-          preconditions.value.push(node);
+          selectedNodePreconditions.value.push(node);
         }
       }
     });
+
+    /**
+     * compute all nodes all precondition arrows
+     */
+    const allPreconditions = ref<Array<Vector>>([]);
+    watchEffect(() => {
+      allPreconditions.value = [];
+      if (
+          store.state.precondition.preconditions &&
+          store.state.tree.mapNodeLayers
+      ) {
+        for (const layer of store.state.tree.mapNodeLayers) {
+          for (const i in layer) {
+            const to = zoomAndPanPoint(
+                layer[i].center,
+                zoomPanState.zoom,
+                zoomPanState.pan
+            );
+            if (!store.state.precondition.preconditions[layer[i].id]) {
+              continue
+            }
+            const nodes = findMapNodes(
+                store.state.precondition.preconditions[layer[i].id],
+                store.state.tree.mapNodeLayers
+            )
+            for (const node of nodes) {
+              const from = zoomAndPanPoint(
+                  node.center,
+                  zoomPanState.zoom,
+                  zoomPanState.pan
+              );
+              allPreconditions.value.push({
+                from: from,
+                to: to,
+              })
+            }
+          }
+        }
+      }
+    });
+
     return {
       selectedNode,
-      preconditions
+      selectedNodePreconditions: selectedNodePreconditions,
+      allPreconditions: allPreconditions,
     };
   }
 });
