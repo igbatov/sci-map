@@ -10,20 +10,32 @@
     >
       <polygon fill="#aae3b9" stroke="#aae3b9" points="0 0, 6 3.5, 0 7" />
     </marker>
+    <marker
+      id="preconditionArrowHeadForSelectedNode"
+      markerWidth="6"
+      markerHeight="7"
+      refX="3"
+      refY="3.5"
+      orient="auto"
+    >
+      <polygon fill="#000" stroke="#000" points="0 0, 6 3.5, 0 7" />
+    </marker>
   </defs>
   <PreconditionArrow
-    v-for="precondition of selectedNodePreconditions"
-    :key="precondition.id"
-    markerId="preconditionArrow"
-    :from="precondition.center"
-    :to="selectedNode.center"
-  />
-  <PreconditionArrow
-    v-for="(precondition, index) in allPreconditions"
+    v-for="(precondition, index) in selectedNodePreconditions"
     :key="index"
-    markerId="preconditionArrow"
+    markerId="preconditionArrowHeadForSelectedNode"
     :from="precondition.from"
     :to="precondition.to"
+    color="#000"
+  />
+  <PreconditionArrow
+    v-for="(precondition, index) in layerPreconditions"
+    :key="index"
+    markerId="preconditionArrowHead"
+    :from="precondition.from"
+    :to="precondition.to"
+    color="#aae3b9"
   />
 
 </template>
@@ -31,7 +43,7 @@
 <script lang="ts">
 import {
   computed,
-  defineComponent,
+  defineComponent, PropType,
   ref,
   watchEffect
 } from "vue";
@@ -41,12 +53,14 @@ import {MapNode, Vector} from "@/types/graphics";
 import { findMapNode, findMapNodes } from "@/store/tree/helpers";
 import { clone } from "@/tools/utils";
 import { zoomAndPanPoint, zoomAnPanLayers } from "@/views/Home";
+import {getAllChildren} from "@/store/helpers";
 
 export default defineComponent({
   name: "PreconditionLayer",
   components: { PreconditionArrow },
   props: {
     selectedNodeId: String,
+    layer: Object as PropType<Record<string, MapNode>>,
   },
   setup(props, ctx) {
     const store = useStore();
@@ -74,55 +88,52 @@ export default defineComponent({
     });
 
     /**
-     * compute selectedNodePreconditions
+     * For every node N of the props.layer get all its children preconditions
+     * that are external to N and show them
      */
-    const selectedNodePreconditions = ref<Array<MapNode>>([]);
+    const selectedNodePreconditions = ref<Array<Vector>>([]);
+    const layerPreconditions = ref<Array<Vector>>([]);
     watchEffect(() => {
       selectedNodePreconditions.value = [];
-      if (
-        props.selectedNodeId &&
-        store.state.precondition.preconditions[props.selectedNodeId] &&
-        store.state.tree.mapNodeLayers
-      ) {
-        const nodes = clone(
-          findMapNodes(
-            store.state.precondition.preconditions[props.selectedNodeId],
-            store.state.tree.mapNodeLayers
-          )
-        );
-        for (const node of nodes) {
-          node.center = zoomAndPanPoint(
-            node.center,
-            zoomPanState.zoom,
-            zoomPanState.pan
-          );
-          selectedNodePreconditions.value.push(node);
-        }
-      }
-    });
-
-    /**
-     * compute all nodes all precondition arrows
-     */
-    const allPreconditions = ref<Array<Vector>>([]);
-    watchEffect(() => {
-      allPreconditions.value = [];
+      layerPreconditions.value = [];
       if (
           store.state.precondition.preconditions &&
-          store.state.tree.mapNodeLayers
+          props.layer
       ) {
-        for (const layer of store.state.tree.mapNodeLayers) {
-          for (const i in layer) {
-            const to = zoomAndPanPoint(
-                layer[i].center,
-                zoomPanState.zoom,
-                zoomPanState.pan
-            );
-            if (!store.state.precondition.preconditions[layer[i].id]) {
+        let children
+        let childrenIds
+        for (const nodeId in props.layer) {
+          const [node] = findMapNode(
+              nodeId,
+              store.state.tree.mapNodeLayers
+          )
+          const to = zoomAndPanPoint(
+              node!.center,
+              zoomPanState.zoom,
+              zoomPanState.pan
+          );
+          children = getAllChildren(store.state.tree.nodeRecord[nodeId].node)
+          children.push(store.state.tree.nodeRecord[nodeId].node)
+          childrenIds = children.map(n => n.id)
+          for (const child of children) {
+            const [node] = findMapNode(
+                child.id,
+                store.state.tree.mapNodeLayers
+            )
+            if (!node) {
               continue
             }
+            if (!store.state.precondition.preconditions[child.id]) {
+              continue
+            }
+            const externalPreconditions = []
+            for (const id of store.state.precondition.preconditions[child.id]) {
+              if (childrenIds.indexOf(id) == -1) {
+                externalPreconditions.push(id)
+              }
+            }
             const nodes = findMapNodes(
-                store.state.precondition.preconditions[layer[i].id],
+                externalPreconditions,
                 store.state.tree.mapNodeLayers
             )
             for (const node of nodes) {
@@ -131,10 +142,17 @@ export default defineComponent({
                   zoomPanState.zoom,
                   zoomPanState.pan
               );
-              allPreconditions.value.push({
-                from: from,
-                to: to,
-              })
+              if (nodeId == selectedNode.value.id) {
+                selectedNodePreconditions.value.push({
+                  from: from,
+                  to: to,
+                });
+              } else {
+                layerPreconditions.value.push({
+                  from: from,
+                  to: to,
+                })
+              }
             }
           }
         }
@@ -144,7 +162,7 @@ export default defineComponent({
     return {
       selectedNode,
       selectedNodePreconditions: selectedNodePreconditions,
-      allPreconditions: allPreconditions,
+      layerPreconditions: layerPreconditions,
     };
   }
 });

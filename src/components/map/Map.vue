@@ -2,6 +2,7 @@
   <svg xmlns="http://www.w3.org/2000/svg" :viewBox="viewBox" :id="mapID">
     <PreconditionLayer
         :selectedNodeId="selectedNodeId"
+        :layer="layers ? layers[1] : {}"
     />
     <MapLayer
       v-for="(layer, index) of layers"

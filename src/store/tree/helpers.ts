@@ -46,6 +46,20 @@ export function findMapNodes(
   return result;
 }
 
+export function findTreeNodes(
+  ids: string[],
+  nodeRecord: Record<string, NodeRecordItem>
+): Tree[] {
+  const result: Tree[] = [];
+  for (const id of ids) {
+    if (nodeRecord[id]) {
+      result.push(nodeRecord[id].node);
+    }
+  }
+
+  return result;
+}
+
 export function createNewNode(title: string, center: Point): Tree {
   return {
     id: uuidv4(),

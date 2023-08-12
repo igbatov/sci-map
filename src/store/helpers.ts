@@ -10,6 +10,7 @@ import {
 } from "@/store/node_content";
 import { store } from "@/store/index";
 import { printError } from "@/tools/utils";
+import {Tree} from "@/types/graphics";
 
 export async function fetchMap(user: firebase.User | null) {
   const [tree, err] = await api.getMap(user);
@@ -111,4 +112,22 @@ export async function fetchData(user: firebase.User | null) {
   await fetchPreconditions(user);
   await fetchResources();
   await fetchNodeContents(user);
+}
+
+/**
+ * Recursively get all children from node
+ * @param node
+ */
+export function getAllChildren(node: Tree): Tree[] {
+  const result = [] as Tree[]
+  const stack = [node]
+  let currNode
+  while (stack.length != 0) {
+    currNode = stack.pop()
+    for (const node of currNode!.children) {
+      result.push(node)
+      stack.push(node)
+    }
+  }
+  return result
 }

@@ -4,9 +4,9 @@
     :y1="from.y"
     :x2="to.x"
     :y2="to.y"
-    stroke="#aae3b9"
+    :stroke="color"
     stroke-width="1"
-    marker-end="url(#preconditionArrowHead)"
+    :marker-end="markerEnd"
   />
 </template>
 
@@ -18,8 +18,14 @@ export default defineComponent({
   name: "PreconditionArrow",
   props: {
     markerId: String,
+    color: String,
     from: Object as PropType<Point>,
     to: Object as PropType<Point>
+  },
+  setup(props, ctx) {
+    return {
+      markerEnd: "url(#"+props.markerId+")"
+    }
   }
 });
 </script>
