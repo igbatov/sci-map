@@ -222,5 +222,12 @@ Just ssh to your host and do
 docker system prune --all
 ```
 
+# Alternative visualizations
+Here is some other approaches to visualize the same structure (which is called "hierarchical network" or "hierarchical graph")
+Bubbles
+https://www.figma.com/proto/gdsTx92knJmXZjSUAmYeO7/scimap?node-id=2-753&starting-point-node-id=2%3A753&scaling=scale-down
+Chord diagram
+https://onlinelibrary.wiley.com/cms/asset/e8bfe23d-0499-4a11-a4a4-58647afc9d58/cgf13610-fig-0010-m.jpg
+https://miro.medium.com/v2/resize:fit:1400/format:webp/1*FBaB_aGUcWbfrLr1Ric5bQ.png
 
 

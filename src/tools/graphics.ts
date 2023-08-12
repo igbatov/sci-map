@@ -148,7 +148,8 @@ export function getVoronoiCellsInSquare(
         NewErrorKV("getVoronoiCellsInSquare: undefined cell", {
           centers,
           leftBottom,
-          rightTop
+          rightTop,
+          cells
         })
       ];
     }

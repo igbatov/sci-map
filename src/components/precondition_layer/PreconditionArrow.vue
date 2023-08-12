@@ -4,8 +4,8 @@
     :y1="from.y"
     :x2="to.x"
     :y2="to.y"
-    stroke="#000"
-    stroke-width="2"
+    stroke="#aae3b9"
+    stroke-width="1"
     marker-end="url(#preconditionArrowHead)"
   />
 </template>

@@ -7,7 +7,7 @@
       :border-color="
         `rgb(${200 - 100 * index},${200 - 100 * index},${200 - 100 * index})`
       "
-      :font-size="10 * (index + 1)"
+      :font-size="7 * (index + 1)"
       :selectedNodeId="selectedNodeId"
       :preconditionNodeIds="preconditionNodeIds"
       :map-id="mapID"

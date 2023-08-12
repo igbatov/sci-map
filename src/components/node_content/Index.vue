@@ -17,7 +17,7 @@
             <TextArea
                 id="content"
                 placeholder="Description"
-                :autoResize="true"
+                :autoResize="false"
                 rows="20"
                 :value="selectedNodeContent ? selectedNodeContent.content : ''"
                 @update:modelValue="changeContent($event)"

@@ -2,13 +2,13 @@
   <defs>
     <marker
       id="preconditionArrowHead"
-      markerWidth="10"
+      markerWidth="6"
       markerHeight="7"
-      refX="9"
+      refX="3"
       refY="3.5"
       orient="auto"
     >
-      <polygon points="0 0, 10 3.5, 0 7" />
+      <polygon fill="#aae3b9" stroke="#aae3b9" points="0 0, 6 3.5, 0 7" />
     </marker>
   </defs>
   <PreconditionArrow
