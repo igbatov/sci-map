@@ -12,20 +12,21 @@
     </marker>
   </defs>
   <PreconditionArrow
-    v-for="precondition of selectedNodePreconditions"
-    :key="precondition.id"
-    markerId="preconditionArrow"
-    :from="precondition.center"
-    :to="selectedNode.center"
-  />
-  <PreconditionArrow
     v-for="(precondition, index) in allPreconditions"
     :key="index"
     markerId="preconditionArrow"
     :from="precondition.from"
     :to="precondition.to"
+    color="#aae3b9"
   />
-
+  <PreconditionArrow
+      v-for="precondition of selectedNodePreconditions"
+      :key="precondition.id"
+      markerId="preconditionArrow"
+      :from="precondition.center"
+      :to="selectedNode.center"
+      color="#000"
+  />
 </template>
 
 <script lang="ts">
