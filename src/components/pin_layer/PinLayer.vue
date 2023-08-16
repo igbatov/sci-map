@@ -21,9 +21,10 @@
     :text="node.title"
     :id="`${TITLE_PREFIX}${node.id}`"
     :key="node.id"
+    :useLineBreak="true"
     :x="titleXY[node.id].x"
     :y="titleXY[node.id].y"
-    line-height="8"
+    :line-height="8"
     :max-char-per-line="10"
     font-family="Roboto"
     :font-size="8"
@@ -42,7 +43,7 @@
     cursor="pointer"
     fill="transparent"
     @click="titleBoxClick(node.id)"
-    @mousedown="nodeMouseDown(node.id)"
+    @mousedown="titleBoxMouseDown(node.id)"
     stroke-width="0"
     stroke="pink"
   />
@@ -64,7 +65,7 @@ const TITLE_PREFIX = "pin_title_";
 export default defineComponent({
   name: "PinLayer",
   components: { SVGTextBox, PinMarker },
-  emits: ["click", "title-mouse-down"],
+  emits: ["title-click", "title-mouse-down"],
   props: {
     pinNodes: {
       type: Object as PropType<Record<string, MapNode>>,
@@ -103,9 +104,9 @@ export default defineComponent({
         return alignedXY;
       }),
       titleBoxClick: (nodeId: string) => {
-        ctx.emit("click", { id: nodeId });
+        ctx.emit("title-click", { id: nodeId });
       },
-      nodeMouseDown: (nodeId: string) => {
+      titleBoxMouseDown: (nodeId: string) => {
         ctx.emit("title-mouse-down", { id: nodeId });
       }
     };

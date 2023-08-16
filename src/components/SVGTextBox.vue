@@ -5,6 +5,7 @@
     :font-size="fontSize"
     :font-weight="fontWeight"
     :fill="color"
+    class="text"
   >
     <tspan
       v-for="(line, i) of lines"
@@ -29,6 +30,10 @@ export default defineComponent({
       type: String,
       required: true
     },
+    useLineBreak: {
+      type: Boolean,
+      required: true
+    },
     text: {
       type: String,
       required: true
@@ -42,7 +47,7 @@ export default defineComponent({
       required: true
     },
     lineHeight: {
-      type: String,
+      type: Number,
       required: true
     },
     maxCharPerLine: {
@@ -67,9 +72,26 @@ export default defineComponent({
     }
   },
   setup(props) {
+    let lines = []
+    if (props.useLineBreak) {
+      lines = splitLines(props.text, props.maxCharPerLine)
+    } else {
+      lines = [props.text]
+    }
     return {
-      lines: splitLines(props.text, props.maxCharPerLine)
+      lines,
     };
   }
 });
 </script>
+
+
+<style scoped>
+.text {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  pointer-events: none;
+}
+</style>

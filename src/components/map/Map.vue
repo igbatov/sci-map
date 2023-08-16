@@ -2,6 +2,10 @@
   <svg xmlns="http://www.w3.org/2000/svg" :viewBox="viewBox" :id="mapID">
     <PreconditionLayer
         :selectedNodeId="selectedNodeId"
+        :visibleTitleIds="visibleTitleIds"
+        @title-click="titleClick"
+        @title-over="titleOver"
+        @title-leave="titleLeave"
     />
     <MapLayer
       v-for="(layer, index) of layers"
@@ -22,14 +26,14 @@
     <PinLayer
       :pinNodes="pinNodes"
       :selectedNodeId="selectedNodeId"
-      @click="titleClick"
+      @title-click="titleClick"
       @title-mouse-down="pinNodeMouseDown"
     />
   </svg>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, PropType, watch } from "vue";
+import {computed, defineComponent, onMounted, PropType } from "vue";
 import { MapNode } from "@/types/graphics";
 import MapLayer from "@/components/map_layer/MapLayer.vue";
 import {
@@ -98,6 +102,20 @@ export default defineComponent({
     });
 
     return {
+      visibleTitleIds: computed(() => {
+        if (!props.layers) {
+          return []
+        }
+        const ids = []
+        for (const layer of props.layers) {
+          for (const idx in layer) {
+            if (layer[idx].title != "") {
+              ids.push(idx)
+            }
+          }
+        }
+        return ids
+      }),
       draggingNode: (e: EventDraggingNode) => {
         ctx.emit("title-dragging", {
           id: e.nodeId,

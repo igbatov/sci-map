@@ -21,6 +21,7 @@
   <!--      stroke-width="1"-->
   <!--      fill="red"-->
   <!--    />-->
+<!--  <SVGTextBox> components works bad here (with unpredictable behaviour) I don't dig the reason and just use <text> here -->
   <text
     v-for="mapNode of mapNodes"
     :id="`${TITLE_PREFIX}${mapNode.id}`"
@@ -31,6 +32,7 @@
       selectedNodeId && selectedNodeId == mapNode.id ? 'bold' : 'normal'
     "
     :fill="borderColor"
+    :color="(selectedNodeId && selectedNodeId == mapNode.id) || (selectedNodePreconditionIds?.length>0 && selectedNodePreconditionIds?.indexOf(mapNode.id) != -1) ? '#ffa500' : borderColor"
     class="text"
   >
     <tspan
