@@ -31,8 +31,7 @@
     :font-weight="
       selectedNodeId && selectedNodeId == mapNode.id ? 'bold' : 'normal'
     "
-    :fill="borderColor"
-    :color="(selectedNodeId && selectedNodeId == mapNode.id) || (selectedNodePreconditionIds?.length>0 && selectedNodePreconditionIds?.indexOf(mapNode.id) != -1) ? '#ffa500' : borderColor"
+    :fill="(selectedNodeId && selectedNodeId == mapNode.id) || (selectedNodePreconditionIds?.length>0 && selectedNodePreconditionIds?.indexOf(mapNode.id) != -1) ? '#ffa500' : borderColor"
     class="text"
   >
     <tspan
