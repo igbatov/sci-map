@@ -21,25 +21,26 @@
   <!--      stroke-width="1"-->
   <!--      fill="red"-->
   <!--    />-->
-<!--  <SVGTextBox> components works bad here (with unpredictable behaviour) I don't dig the reason and just use <text> here -->
+<!--  <SVGTextBox> component shows unpredictable behaviour here and I didn't dig the reason so just used copy of SVGTextBox here -->
   <text
-    v-for="mapNode of mapNodes"
-    :id="`${TITLE_PREFIX}${mapNode.id}`"
-    :key="mapNode.id"
-    font-family="Roboto"
-    :font-size="fontSize"
-    :font-weight="
-      selectedNodeId && selectedNodeId == mapNode.id ? 'bold' : 'normal'
-    "
-    :fill="(selectedNodeId && selectedNodeId == mapNode.id) || (selectedNodePreconditionIds?.length>0 && selectedNodePreconditionIds?.indexOf(mapNode.id) != -1) ? '#ffa500' : borderColor"
-    class="text"
+      v-for="mapNode of mapNodes"
+      :id="`${TITLE_PREFIX}${mapNode.id}`"
+      :key="mapNode.id"
+      font-family="Roboto"
+      :font-size="fontSize"
+      :font-weight="selectedNodeId && selectedNodeId == mapNode.id ? 'bold' : 'normal'"
+      :fill="(selectedNodeId && selectedNodeId == mapNode.id) || (selectedNodePreconditionIds?.length>0 && selectedNodePreconditionIds?.indexOf(mapNode.id) != -1) ? '#ffa500' : fontColor"
+      :fill-opacity="fontOpacity"
+      class="text"
   >
     <tspan
-      :x="titleBox[mapNode.id] ? titleBox[mapNode.id].position.x : 0"
-      :y="titleBox[mapNode.id] ? titleBox[mapNode.id].position.y : 0"
-      alignment-baseline="hanging"
+        v-for="(line, i) of splitLines(mapNode.title, 20)"
+        :key="i"
+        :x="titleBox[mapNode.id] ? titleBox[mapNode.id].position.x : 0"
+        :y="titleBox[mapNode.id] ? titleBox[mapNode.id].position.y + i*fontSize : 0"
+        alignment-baseline="hanging"
     >
-      {{ mapNode.title }}
+      {{ line }}
     </tspan>
   </text>
   <!-- Add rectangle to change cursor to pointer when hover on text -->
@@ -77,6 +78,7 @@ import {
   mouseUpListener
 } from "@/components/map_layer/MapLayer";
 import { printError } from "@/tools/utils";
+import {splitLines} from "@/components/SVGTextBox";
 
 const TITLE_PREFIX = "title_";
 
@@ -103,6 +105,14 @@ export default defineComponent({
       required: true
     },
     fontSize: {
+      type: Number,
+      required: true
+    },
+    fontColor: {
+      type: String,
+      required: true
+    },
+    fontOpacity: {
       type: Number,
       required: true
     },
@@ -175,6 +185,7 @@ export default defineComponent({
   },
 
   methods: {
+    splitLines,
     polygonToPath: polygonToPath,
     polygonFill: polygonFill,
     polygonFillOpacity: polygonFillOpacity

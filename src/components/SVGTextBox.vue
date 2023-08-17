@@ -11,7 +11,7 @@
       v-for="(line, i) of lines"
       :key="i"
       :x="x"
-      :y="y + i * lineHeight"
+      :y="y > 0 ? y + i * lineHeight : 0"
       alignment-baseline="hanging"
     >
       {{ line }}

@@ -11,10 +11,10 @@
       v-for="(layer, index) of layers"
       :key="index"
       :map-nodes="layer"
-      :border-color="
-        `rgb(${200 - 100 * index},${200 - 100 * index},${200 - 100 * index})`
-      "
-      :font-size="7 * (index + 1)"
+      :border-color="borderColor(index)"
+      :font-color="fontColor(index)"
+      :font-size="fontSize(index)"
+      :font-opacity="fontOpacity(index)"
       :selectedNodeId="selectedNodeId"
       :selectedNodePreconditionIds="selectedNodePreconditionIds"
       :map-id="mapID"
@@ -134,7 +134,64 @@ export default defineComponent({
       pinNodeMouseDown: () => {
         pan.pinNodeMouseDownHandler();
       },
-      mapID: mapID
+      mapID: mapID,
+      fontSize: (index: number): number => {
+        let size = 0
+        const levelSizes: Record<number, number> = {
+          0: 6,
+          1: 11,
+          2: 21,
+          3: 28,
+        }
+        if (props.layers!.length >= 4) {
+          size = levelSizes[index]
+        }
+        if (props.layers!.length == 3) {
+          size = levelSizes[index+1]
+        }
+        return size
+      },
+      fontOpacity: (index: number): number => {
+        let val = 0
+        const levelSizes: Record<number, number> = {
+          0: 1,
+          1: 1,
+          2: 0.2,
+          3: 1,
+        }
+        if (props.layers!.length >= 4) {
+          val = levelSizes[index]
+        }
+        if (props.layers!.length == 3) {
+          val = levelSizes[index+1]
+        }
+        return val
+      },
+      fontColor: (index: number): string => {
+        if (props.layers!.length >= 4) {
+          return `rgb(${200 - 100 * index},${200 - 100 * index},${200 - 100 * index})`
+        }
+        if (props.layers!.length == 3) {
+          return `rgb(${200 - 100 * (index+1)},${200 - 100 * (index+1)},${200 - 100 * (index+1)})`
+        }
+        return ''
+      },
+      borderColor: (index: number): string => {
+        let color = 0
+        const levelColors: Record<number, number> = {
+          0: 240,
+          1: 200,
+          2: 100,
+          3: 90,
+        }
+        if (props.layers!.length >= 4) {
+          color = levelColors[index]
+        }
+        if (props.layers!.length == 3) {
+          color = levelColors[index+1]
+        }
+        return `rgb(${color},${color},${color})`
+      },
     };
   }
 });
