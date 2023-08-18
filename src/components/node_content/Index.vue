@@ -14,6 +14,8 @@
             />
             </div>
             <div class="p-col-12">
+              <span v-html="katexStr"></span>
+
             <TextArea
                 id="content"
                 placeholder="Description"
@@ -62,6 +64,7 @@
 </template>
 
 <script lang="ts">
+import katex from 'katex';
 import { actions, useStore } from "@/store";
 import { actions as nodeContentActions } from "@/store/node_content";
 import { computed } from "vue";
@@ -131,6 +134,7 @@ export default {
     );
 
     return {
+      katexStr: katex.renderToString('\\frac{a_i}{1+x}'),
       resources,
       selectedNode,
       selectedNodeContent,
@@ -185,6 +189,7 @@ export default {
 </script>
 
 <style scoped>
+@import "../../../node_modules/katex/dist/katex.min.css";
 .wrapper {
   position: absolute;
   width: 30%;
