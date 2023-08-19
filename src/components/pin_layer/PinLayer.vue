@@ -10,11 +10,11 @@
   <!--    fill="red"-->
   <!--  />-->
   <PinMarker
-    v-for="node of pinNodes"
+    v-for="node of visiblePinNodes"
     :key="node.id"
     :x="node.center.x"
     :y="node.center.y"
-    color="#ffa500"
+    color="pink"
   />
   <SVGTextBox
     v-for="node of visiblePinNodes"
@@ -29,10 +29,10 @@
     font-family="Roboto"
     :font-size="8"
     font-weight="normal"
-    color="#ffa500"
+    color="pink"
   />
   <rect
-    v-for="node of visiblePinNodes"
+    v-for="node of pinNodes"
     :key="node.id"
     :x="titleXY[node.id].x"
     :y="titleXY[node.id].y"
@@ -82,6 +82,13 @@ export default defineComponent({
     }
   },
   setup(props, ctx) {
+    const allPinNodes = computed(() => {
+      const result:Record<string, MapNode> = {}
+      for (const node of props.pinNodes) {
+        result[node.id] = node
+      }
+      return result
+    })
     const visiblePinNodes = computed(() => {
       const result:Record<string, MapNode> = {}
       for (const node of props.pinNodes) {
@@ -92,7 +99,7 @@ export default defineComponent({
       return result
     })
 
-    const titleBox = getTitleBoxes(TITLE_PREFIX, "left", visiblePinNodes);
+    const titleBox = getTitleBoxes(TITLE_PREFIX, "left", allPinNodes);
 
     return {
       TITLE_PREFIX,
@@ -102,8 +109,8 @@ export default defineComponent({
       titleBox,
       titleXY: computed(() => {
         const alignedXY: Record<string, Point> = {};
-        for (const i in visiblePinNodes.value) {
-          const node = visiblePinNodes.value[i];
+        for (const i in allPinNodes.value) {
+          const node = allPinNodes.value[i];
           alignedXY[node.id] = {
             x: titleBox.value[node.id]
               ? titleBox.value[node.id].position.x

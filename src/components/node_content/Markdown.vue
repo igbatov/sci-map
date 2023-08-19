@@ -3,6 +3,7 @@
     v-show="!editOn"
     v-html="renderedContent"
     @click="setEditOn(true)"
+    class="content"
   />
   <textarea
       class="p-inputtextarea p-inputtext p-component p-inputtextarea-resizable"
@@ -69,3 +70,17 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.content {
+  color: rgb(32, 33, 36);
+  font-family: Roboto, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: normal;
+  line-height: 20px;
+  margin-right: 4px;
+  text-align: left;
+  text-wrap: wrap;
+}
+</style>

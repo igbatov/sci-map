@@ -185,10 +185,10 @@ export default {
   position: absolute;
   width: 30%;
   height: 100%;
-  padding: 10px 20px 10px 10px;
+  padding: 24px;
   overflow-y: scroll;
   background-color: rgba(255, 255, 255, 1);
-  font-family: Roboto;
+  font-family: Roboto, Arial, sans-serif;
   color: rgb(73, 80, 87);
 }
 
