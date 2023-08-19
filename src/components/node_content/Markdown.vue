@@ -18,13 +18,12 @@
 </template>
 
 <script lang="ts">
+import { computed, ref } from "vue";
 import MarkdownIt from 'markdown-it';
-import TextArea from "primevue/textarea";
-import {computed, ref, getCurrentInstance, watchEffect, onMounted} from "vue";
-const katex = require('markdown-it-katex'); // eslint-disable-line
-const imsize = require('markdown-it-imsize'); // eslint-disable-line
+const mdKatex = require('markdown-it-katex'); // eslint-disable-line
+const mdImsize = require('markdown-it-imsize'); // eslint-disable-line
 const md = new MarkdownIt();
-md.use(katex).use(imsize);
+md.use(mdKatex, {output: 'html'}).use(mdImsize);
 
 export default {
   name: "Markdown",
@@ -72,6 +71,7 @@ export default {
 </script>
 
 <style scoped>
+@import "../../../node_modules/katex/dist/katex.min.css";
 .content {
   color: rgb(32, 33, 36);
   font-family: Roboto, Arial, sans-serif;
