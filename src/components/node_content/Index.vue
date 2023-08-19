@@ -5,24 +5,20 @@
           <!-- Content   -->
           <div class="p-field p-grid">
             <div class="p-col-12">
-            <TextArea
+              <TextArea
                 rows="1"
                 :autoResize="true"
                 placeholder="Node title"
                 :value="selectedNode.title"
                 @update:modelValue="changeNodeTitle($event)"
-            />
+              />
             </div>
             <div class="p-col-12">
-            <TextArea
-                id="content"
-                placeholder="Description"
-                :autoResize="false"
-                rows="20"
-                :value="selectedNodeContent ? selectedNodeContent.content : ''"
-                @update:modelValue="changeContent($event)"
-                v-on:keydown="checkAuthorized"
-            />
+              <Markdown
+                :content = "selectedNodeContent ? selectedNodeContent.content : ''"
+                :rows="20"
+                @content-changed="changeContent($event)"
+              />
             </div>
           </div>
 
@@ -79,13 +75,13 @@ import { Resources } from "@/store/resources";
 import { clone, printError } from "@/tools/utils";
 import { useConfirm } from "primevue/useconfirm";
 import api from "@/api/api";
+import Markdown from "./Markdown.vue";
 
 export default {
   name: "NodeContent",
   components: {
+    Markdown,
     TextArea,
-    // ScrollPanel,
-    // SectionResources,
     SectionPreconditions
   },
   props: {

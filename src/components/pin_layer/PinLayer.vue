@@ -17,7 +17,7 @@
     color="#ffa500"
   />
   <SVGTextBox
-    v-for="node of pinNodes"
+    v-for="node of visiblePinNodes"
     :text="node.title"
     :id="`${TITLE_PREFIX}${node.id}`"
     :key="node.id"
@@ -28,13 +28,11 @@
     :max-char-per-line="10"
     font-family="Roboto"
     :font-size="8"
-    :font-weight="
-      selectedNodeId && selectedNodeId === node.id ? 'bold' : 'normal'
-    "
+    font-weight="normal"
     color="#ffa500"
   />
   <rect
-    v-for="node of pinNodes"
+    v-for="node of visiblePinNodes"
     :key="node.id"
     :x="titleXY[node.id].x"
     :y="titleXY[node.id].y"
@@ -43,7 +41,8 @@
     cursor="pointer"
     fill="transparent"
     @click="titleBoxClick(node.id)"
-    @mousedown="titleBoxMouseDown(node.id)"
+    @mouseover="titleOver(node.id)"
+    @mouseleave="titleLeave(node.id)"
     stroke-width="0"
     stroke="pink"
   />
@@ -65,10 +64,14 @@ const TITLE_PREFIX = "pin_title_";
 export default defineComponent({
   name: "PinLayer",
   components: { SVGTextBox, PinMarker },
-  emits: ["title-click", "title-mouse-down"],
+  emits: [
+    "title-click",
+    "title-over",
+    "title-leave",
+  ],
   props: {
     pinNodes: {
-      type: Object as PropType<Record<string, MapNode>>,
+      type: Object as PropType<MapNode[]>,
       required: true
     },
     selectedNodeId: {
@@ -79,25 +82,34 @@ export default defineComponent({
     }
   },
   setup(props, ctx) {
-    const pinNodes = toRef(props, "pinNodes");
+    const visiblePinNodes = computed(() => {
+      const result:Record<string, MapNode> = {}
+      for (const node of props.pinNodes) {
+        if (node.id != props.selectedNodeId) {
+          result[node.id] = node
+        }
+      }
+      return result
+    })
 
-    const titleBox = getTitleBoxes(TITLE_PREFIX, "left", pinNodes);
+    const titleBox = getTitleBoxes(TITLE_PREFIX, "left", visiblePinNodes);
 
     return {
       TITLE_PREFIX,
       PIN_MARKER_HEIGHT,
       PIN_MARKER_WIDTH,
+      visiblePinNodes,
       titleBox,
       titleXY: computed(() => {
         const alignedXY: Record<string, Point> = {};
-        for (const i in pinNodes.value) {
-          const node = pinNodes.value[i];
+        for (const i in visiblePinNodes.value) {
+          const node = visiblePinNodes.value[i];
           alignedXY[node.id] = {
             x: titleBox.value[node.id]
-              ? titleBox.value[node.id].position.x - PIN_MARKER_WIDTH / 2 - 1
+              ? titleBox.value[node.id].position.x
               : 0,
             y: titleBox.value[node.id]
-              ? titleBox.value[node.id].position.y - PIN_MARKER_HEIGHT / 2
+              ? titleBox.value[node.id].position.y
               : 0
           };
         }
@@ -106,9 +118,12 @@ export default defineComponent({
       titleBoxClick: (nodeId: string) => {
         ctx.emit("title-click", { id: nodeId });
       },
-      titleBoxMouseDown: (nodeId: string) => {
-        ctx.emit("title-mouse-down", { id: nodeId });
-      }
+      titleOver: (nodeId: string) => {
+        ctx.emit("title-over", { id: nodeId });
+      },
+      titleLeave: (nodeId: string) => {
+        ctx.emit("title-leave", { id: nodeId });
+      },
     };
   }
 });

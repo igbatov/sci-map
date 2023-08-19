@@ -13,7 +13,7 @@
       </h3>
     </template>
 
-    <Listbox v-model="selectedParent" :options="parents" optionLabel="title" />
+    <Listbox v-model="selectedParent" :options="parents" multiple optionLabel="title" />
 
     <template #footer>
       <Button

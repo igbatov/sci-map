@@ -9,7 +9,7 @@ export type Pins = Record<
 export interface State {
   pins: Pins;
   pinsReverse: Record<
-    string /* node_id of node where some pinned nodes must be visible */,
+    string /* node_id of parent whose children contain pinned nodes (that must be visible) */,
     string[] /* array of pins (= node ids) that is visible in this node_id */
   >;
 }

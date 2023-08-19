@@ -3,18 +3,11 @@ const mouseDownBg = {
   on: false
 };
 
-let pinNodeMouseDown = false;
-
 const mouseDown = (event: MouseEvent) => {
   mouseDownBg.on = true;
 };
 const mouseUp = (event: MouseEvent) => {
   mouseDownBg.on = false;
-  pinNodeMouseDown = false;
-};
-
-const pinNodeMouseDownHandler = () => {
-  pinNodeMouseDown = true;
 };
 
 const mouseMove = (
@@ -37,5 +30,4 @@ export default {
   mouseDown,
   mouseUp,
   mouseMove,
-  pinNodeMouseDownHandler
 };

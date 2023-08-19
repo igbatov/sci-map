@@ -12,7 +12,7 @@
     </marker>
   </defs>
   <PreconditionArrow
-      v-for="precondition of selectedNodeAndPreconditions"
+      v-for="precondition of preconditions"
       :key="precondition.id"
       markerId="preconditionArrow"
       :from="precondition.center"
@@ -79,7 +79,7 @@ export default defineComponent({
   components: {SVGTextBox, PreconditionArrow},
   props: {
     selectedNodeId: String,
-    visibleTitleIds: Object as PropType<Array<string>>
+    visibleTitleIds: Object as PropType<Array<string>> // all visible titles on page
   },
   setup(props, ctx) {
     const store = useStore();
@@ -112,18 +112,12 @@ export default defineComponent({
     /**
      * compute selectedNodePreconditions
      */
-    const selectedNodeAndPreconditions = ref<Record<string, MapNode>>({});
+    const preconditions = ref<Record<string, MapNode>>({});
     const visibleTitleNodes = ref<Record<string, MapNode>>({});
     const visibleTitleNodeBoxes = getTitleBoxes(TITLE_PREFIX, "left", visibleTitleNodes);
     watchEffect(() => {
-      selectedNodeAndPreconditions.value = {};
+      preconditions.value = {};
       visibleTitleNodes.value = {}
-      if (props.selectedNodeId &&
-          selectedNode.value &&
-          store.state.tree.mapNodeLayers
-      ) {
-        selectedNodeAndPreconditions.value[selectedNode.value.id] = selectedNode.value;
-      }
       if (
         props.selectedNodeId &&
         store.state.precondition.preconditions[props.selectedNodeId] &&
@@ -141,20 +135,27 @@ export default defineComponent({
             zoomPanState.zoom,
             zoomPanState.pan
           );
-          selectedNodeAndPreconditions.value[node.id] = node;
+          preconditions.value[node.id] = node;
         }
       }
-      for (const id in selectedNodeAndPreconditions.value) {
+      for (const id in preconditions.value) {
         if (props.visibleTitleIds?.indexOf(id) == -1) {
-          visibleTitleNodes.value[id] = selectedNodeAndPreconditions.value[id]
+          visibleTitleNodes.value[id] = preconditions.value[id]
         }
+      }
+      if (props.selectedNodeId &&
+          selectedNode.value &&
+          store.state.tree.mapNodeLayers &&
+          props.visibleTitleIds?.indexOf(props.selectedNodeId) == -1
+      ) {
+        visibleTitleNodes.value[props.selectedNodeId] = selectedNode.value;
       }
     });
 
     return {
       TITLE_PREFIX,
       selectedNode,
-      selectedNodeAndPreconditions,
+      preconditions,
       visibleTitleNodes,
       visibleTitleNodeBoxes,
       titleBoxClick: (nodeId: string) => {

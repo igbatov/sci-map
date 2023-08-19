@@ -1,12 +1,5 @@
 <template>
   <svg xmlns="http://www.w3.org/2000/svg" :viewBox="viewBox" :id="mapID">
-    <PreconditionLayer
-        :selectedNodeId="selectedNodeId"
-        :visibleTitleIds="visibleTitleIds"
-        @title-click="titleClick"
-        @title-over="titleOver"
-        @title-leave="titleLeave"
-    />
     <MapLayer
       v-for="(layer, index) of layers"
       :key="index"
@@ -23,11 +16,19 @@
       @title-over="titleOver"
       @title-leave="titleLeave"
     />
+    <PreconditionLayer
+        :selectedNodeId="selectedNodeId"
+        :visibleTitleIds="visibleTitleIds"
+        @title-click="titleClick"
+        @title-over="titleOver"
+        @title-leave="titleLeave"
+    />
     <PinLayer
       :pinNodes="pinNodes"
       :selectedNodeId="selectedNodeId"
       @title-click="titleClick"
-      @title-mouse-down="pinNodeMouseDown"
+      @title-over="titleOver"
+      @title-leave="titleLeave"
     />
   </svg>
 </template>
@@ -130,9 +131,6 @@ export default defineComponent({
       },
       titleLeave: (e: EventClickNode) => {
         ctx.emit("title-leave", { id: e.id });
-      },
-      pinNodeMouseDown: () => {
-        pan.pinNodeMouseDownHandler();
       },
       mapID: mapID,
       fontSize: (index: number): number => {
