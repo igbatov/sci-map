@@ -3,12 +3,11 @@
     v-show="!editOn"
     v-html="renderedContent"
     @click="setEditOn(true)"
-    class="content"
+    class="renderedContent"
   />
   <textarea
-      class="p-inputtextarea p-inputtext p-component p-inputtextarea-resizable"
+      class="rawContent p-inputtextarea p-inputtext p-component p-inputtextarea-resizable"
       style="display: none"
-      id="content"
       ref="txtarea"
       :rows="rows"
       :value="content"
@@ -72,7 +71,7 @@ export default {
 
 <style scoped>
 @import "../../../node_modules/katex/dist/katex.min.css";
-.content {
+.renderedContent {
   color: rgb(32, 33, 36);
   font-family: Roboto, Arial, sans-serif;
   font-size: 14px;
@@ -82,5 +81,11 @@ export default {
   margin-right: 4px;
   text-align: left;
   text-wrap: wrap;
+  overflow-y: scroll;
+  height: 400px;
+}
+.rawContent {
+  overflow-y: scroll;
+  height: 100%;
 }
 </style>

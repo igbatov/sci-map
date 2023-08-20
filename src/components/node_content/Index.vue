@@ -46,7 +46,7 @@
 <!--          />-->
 
           <!-- Preconditions section -->
-          <h3>Preconditions</h3>
+          <h3>background</h3>
           <SectionPreconditions
               v-if="selectedNodeContent"
               :node-id="selectedNode.id"
