@@ -85,13 +85,13 @@ export default defineComponent({
         printError("Map.vue: cannot find map id for event listener", {});
         return;
       }
-      map.addEventListener("mousedown", event => {
+      map.addEventListener("pointerdown", event => {
         pan.mouseDown(event);
       });
-      map.addEventListener("mouseup", event => {
+      map.addEventListener("pointerup", event => {
         pan.mouseUp(event);
       });
-      map.addEventListener("mousemove", event => {
+      map.addEventListener("pointermove", event => {
         pan.mouseMove(ctx.emit, event);
       });
       map.addEventListener("wheel", event => {
