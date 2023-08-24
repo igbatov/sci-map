@@ -1,5 +1,5 @@
 <template>
-  <svg xmlns="http://www.w3.org/2000/svg" :viewBox="viewBox" :id="mapID">
+  <svg xmlns="http://www.w3.org/2000/svg" :viewBox="viewBox" :id="mapID" style="touch-action: none;">
     <MapLayer
       v-for="(layer, index) of layers"
       :key="index"
