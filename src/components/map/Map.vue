@@ -85,19 +85,50 @@ export default defineComponent({
         printError("Map.vue: cannot find map id for event listener", {});
         return;
       }
+
+      let prevDist = Infinity
+
       map.addEventListener("pointerdown", event => {
         pan.mouseDown(event);
       });
       map.addEventListener("pointerup", event => {
+        prevDist = Infinity
         pan.mouseUp(event);
       });
       map.addEventListener("pointermove", event => {
         pan.mouseMove(ctx.emit, event);
       });
+
+      // zoom with mouse
       map.addEventListener("wheel", event => {
         ctx.emit("wheel", {
           delta: event.deltaY,
           center: { x: event.clientX, y: event.clientY }
+        });
+      });
+
+      // mobile zoom
+      map.addEventListener("touchmove", e => {
+        if (e.touches.length !== 2) {
+          return
+        }
+        const dist = Math.hypot(
+            e.touches[0].pageX - e.touches[1].pageX,
+            e.touches[0].pageY - e.touches[1].pageY)
+        let delta = dist
+        if (prevDist != Infinity) {
+          delta = prevDist - dist
+        } else {
+          prevDist = delta
+          return
+        }
+
+        ctx.emit("wheel", {
+          delta: delta,
+          center: {
+            x: (e.touches[0].pageX - e.touches[1].pageX)/2,
+            y: (e.touches[0].pageY - e.touches[1].pageY)/2,
+          }
         });
       });
     });
