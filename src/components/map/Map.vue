@@ -99,7 +99,7 @@ export default defineComponent({
         pan.mouseMove(ctx.emit, event);
       });
 
-      // zoom with mouse
+      // zoom with mouse wheel
       map.addEventListener("wheel", event => {
         ctx.emit("wheel", {
           delta: event.deltaY,
@@ -109,19 +109,17 @@ export default defineComponent({
 
       // mobile zoom
       map.addEventListener("touchmove", e => {
+        let delta = 0
         if (e.touches.length !== 2) {
           return
         }
         const dist = Math.hypot(
             e.touches[0].pageX - e.touches[1].pageX,
             e.touches[0].pageY - e.touches[1].pageY)
-        let delta = dist
-        if (prevDist != Infinity) {
-          delta = prevDist - dist
-        } else {
-          prevDist = delta
-          return
+        if (prevDist !== Infinity) {
+          delta = dist - prevDist
         }
+        prevDist = dist
 
         ctx.emit("wheel", {
           delta: delta,
