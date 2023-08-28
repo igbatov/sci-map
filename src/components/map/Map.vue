@@ -86,17 +86,20 @@ export default defineComponent({
         return;
       }
 
-      let prevDist = Infinity
-
-      map.addEventListener("pointerdown", event => {
-        pan.mouseDown(event);
+      map.addEventListener("mousedown", event => {
+        pan.mouseDown();
       });
-      map.addEventListener("pointerup", event => {
-        prevDist = Infinity
-        pan.mouseUp(event);
+      map.addEventListener("mouseup", event => {
+        pan.mouseUp();
       });
-      map.addEventListener("pointermove", event => {
-        pan.mouseMove(ctx.emit, event);
+      map.addEventListener("mousemove", event => {
+        pan.mouseMove(ctx.emit, {
+          from: {
+            x: event.clientX - event.movementX,
+            y: event.clientY - event.movementY
+          },
+          to: { x: event.clientX, y: event.clientY }
+        });
       });
 
       // zoom with mouse wheel
@@ -107,28 +110,52 @@ export default defineComponent({
         });
       });
 
+      let prevDist = Infinity
+      const prevPoint = {x:Infinity, y:Infinity}
+      map.addEventListener("touchstart", event => {
+        if (event.touches.length == 1) {
+          prevPoint.x = event.touches[0].clientX
+          prevPoint.y = event.touches[0].clientY
+          pan.mouseDown();
+        }
+      });
+      map.addEventListener("touchend", event => {
+        prevPoint.x = Infinity
+        prevPoint.y = Infinity
+        pan.mouseUp();
+      });
+
       // mobile zoom
       map.addEventListener("touchmove", e => {
-        let delta = 0
-        if (e.touches.length !== 2) {
-          return
-        }
-        const dist = Math.hypot(
-            e.touches[0].pageX - e.touches[1].pageX,
-            e.touches[0].pageY - e.touches[1].pageY)
-        if (prevDist !== Infinity) {
-          delta = prevDist - dist
-        }
-        prevDist = dist
+        if (e.touches.length === 1) {
+          pan.mouseMove(ctx.emit, {
+            from: prevPoint,
+            to: { x: e.touches[0].clientX, y: e.touches[0].clientY }
+          });
+          prevPoint.x = e.touches[0].clientX
+          prevPoint.y = e.touches[0].clientY
+        } else if (e.touches.length === 2) {
+          let delta = 0
 
-        ctx.emit("wheel", {
-          delta: delta,
-          center: {
-            x: (e.touches[0].pageX - e.touches[1].pageX)/2,
-            y: (e.touches[0].pageY - e.touches[1].pageY)/2,
+          const dist = Math.hypot(
+              e.touches[0].pageX - e.touches[1].pageX,
+              e.touches[0].pageY - e.touches[1].pageY)
+          if (prevDist !== Infinity) {
+            delta = prevDist - dist
           }
-        });
+          prevDist = dist
+
+          ctx.emit("wheel", {
+            delta: delta,
+            center: {
+              x: (e.touches[0].pageX - e.touches[1].pageX) / 2,
+              y: (e.touches[0].pageY - e.touches[1].pageY) / 2,
+            }
+          });
+        }
       });
+
+
     });
 
     return {

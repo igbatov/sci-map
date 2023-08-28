@@ -1,29 +1,24 @@
+import {Vector} from "@/types/graphics";
 
 const mouseDownBg = {
   on: false
 };
 
-const mouseDown = (event: MouseEvent) => {
+const mouseDown = () => {
   mouseDownBg.on = true;
 };
-const mouseUp = (event: MouseEvent) => {
+const mouseUp = () => {
   mouseDownBg.on = false;
 };
 
 const mouseMove = (
   emit: (name: "dragging-background", o: any) => void,
-  event: MouseEvent
+  vector: Vector
 ) => {
   if (!mouseDownBg.on) {
     return;
   }
-  emit("dragging-background", {
-    from: {
-      x: event.clientX - event.movementX,
-      y: event.clientY - event.movementY
-    },
-    to: { x: event.clientX, y: event.clientY }
-  });
+  emit("dragging-background", vector);
 };
 
 export default {
