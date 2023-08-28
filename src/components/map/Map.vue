@@ -117,7 +117,7 @@ export default defineComponent({
             e.touches[0].pageX - e.touches[1].pageX,
             e.touches[0].pageY - e.touches[1].pageY)
         if (prevDist !== Infinity) {
-          delta = dist - prevDist
+          delta = prevDist - dist
         }
         prevDist = dist
 
