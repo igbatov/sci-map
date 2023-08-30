@@ -125,7 +125,7 @@ export default defineComponent({
       // mobile zoom
       map.addEventListener("touchmove", e => {
         if (e.touches.length === 1) {
-          if (prevPoint.x != Infinity && prevPoint.y != Infinity {
+          if (prevPoint.x != Infinity && prevPoint.y != Infinity) {
             pan.mouseMove(ctx.emit, {
               from: prevPoint,
               to: { x: e.touches[0].clientX, y: e.touches[0].clientY }
