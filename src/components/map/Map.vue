@@ -113,13 +113,10 @@ export default defineComponent({
       let prevDist = Infinity
       const prevPoint = {x:Infinity, y:Infinity}
       map.addEventListener("touchstart", event => {
-        if (event.touches.length == 1) {
-          prevPoint.x = event.touches[0].clientX
-          prevPoint.y = event.touches[0].clientY
           pan.mouseDown();
-        }
       });
       map.addEventListener("touchend", event => {
+        prevDist = Infinity
         prevPoint.x = Infinity
         prevPoint.y = Infinity
         pan.mouseUp();
@@ -128,15 +125,16 @@ export default defineComponent({
       // mobile zoom
       map.addEventListener("touchmove", e => {
         if (e.touches.length === 1) {
-          pan.mouseMove(ctx.emit, {
-            from: prevPoint,
-            to: { x: e.touches[0].clientX, y: e.touches[0].clientY }
-          });
+          if (prevPoint.x != Infinity && prevPoint.y != Infinity {
+            pan.mouseMove(ctx.emit, {
+              from: prevPoint,
+              to: { x: e.touches[0].clientX, y: e.touches[0].clientY }
+            });
+          }
           prevPoint.x = e.touches[0].clientX
           prevPoint.y = e.touches[0].clientY
         } else if (e.touches.length === 2) {
           let delta = 0
-
           const dist = Math.hypot(
               e.touches[0].pageX - e.touches[1].pageX,
               e.touches[0].pageY - e.touches[1].pageY)
