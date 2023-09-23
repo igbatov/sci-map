@@ -5,14 +5,19 @@ Goal: attract and direct human activity to push forward science as fast as possi
 This is first draft MVP of the application for crowdsourced "Map Of Science".
 Its intent is to show concept of the map and gather feedback to build appropriate application.
 
-The goal for the map to give clear and holistic view, the best explanations and direct people to practical actions.
+The goal for the map is to 
+ - give clear and holistic view, the best explanations available
+ - direct people into group for practical actions
 
 We also post jobs and show their connection with question that will help to solve most interesting and hard question of humanity.
 
+We intend to create search platform where one can select its skills and we will find companies from our list that
+are searching for candidates with such skills.
+
 # Why not Wikipedia, Quora and StackOverflow?
 Wikipedia, quora and stackoverflow are great at subjects where the answer is known.
-But think about such hard questions as "How one can extend his/her healthy life",
-"How to end the wars between countries ...", "How to create consciousness" and so on - nobody knows the exact answer.
+But think about such hard questions as "How to extend healthy life",
+"How to end the wars", "How to create [AI-complete](https://en.wikipedia.org/wiki/AI-complete)" and so on - nobody knows the exact answer.
 
 For the hard questions instead of vague general answers, it would be better to see 
  - all known facts that contributes to the puzzle
@@ -37,8 +42,8 @@ Let's postulate that everything in the world is the phenomena that
 1) is produced by one or several other phenomenas
 2) has some theory that describes its internal mechanics/structure (or at least hypothesis that should be verified by further experiments)
 
-For example quantum fields produces atoms, atoms produces molecules, molecules produces cells, cell produces animals,
-animals produce culture and so on.
+For example quantum fields produces particles, particles produce atoms, atoms produces molecules, molecules produces cells, cell produces animals,
+animals produce social hierarchies, which produce artifacts and so on.
 
 So basically we have a graph of phenomenas that is connected by which produces which (if some phenomena influence other, we also call it "produce").
 
@@ -46,7 +51,7 @@ However, number of phenomenas produced may be enormous, so to ease exploration o
 For example Human produces Culture that consists from Science, Languages, Arts, Philosophy, Countries and so on
 And Science is just a name for group of other groups - Physics, Medicine, Mathematics, Economics and so on.
 
-In contrast to connections between phenomenas, organization in hierarchical groups is subjective and can have multiple equally useful variants.
+In contrast to causal connections between phenomenas, organization in hierarchical groups is subjective and can have multiple equally useful variants.
 
 Also, it is important that very often we do not know yet exactly what really produces phenomena and its internal mechanics.
 We know maybe some correlations and connected facts and have some hypothesis or theories about it.
@@ -61,7 +66,7 @@ With these assumptions in mind let's define structure of map
 
 ## Phenomena-produces-phenomena hierarchical structure
 General rule of the map: every node follows from other nodes (premise nodes) by means of induction, deduction or abduction.
-Also, two nodes A and B are linked in case one should understand A to understand B.
+Also, two nodes A and B are linked in case one should understand A to understand B (A use concept B).
 
 Every node represents an experimental fact (E) or model/concept (M).
 
@@ -73,28 +78,28 @@ Time to read and understand contents of one node ideally should be no more that 
 
 ## Node contents
 Node content consists from
-1) users description of the topic. Text of description may have links to other nodes.
-2) connections to other nodes
+1) users description of the topic
+2) connections to other nodes (see explanation above)
 3) list of links to resources (books, videos, blog articles etc) that describes topic in details, every resource can be marked as ["to read", "already read"] and have personal rating (rate 1/2/3/4/5 stars)
 4) list of links to crowdfunding campaigns that push this topic forward
 5) list of links to the jobs that will help to make progress on the topic
 
-## Example in miro
-https://miro.com/app/board/uXjVM01SlDY=/?share_link_id=351640375137
+## Example
+https://scimap.org/
 
 # Collaborative editing in MVP
 Technically hard part of project is collaborative editing.
 For MVP we want most simple still workable solution.
 
-Right now we will try Alternative #1 but maybe some other solution will come later.
+Right now we will try Alternative #1 (see below) but maybe some other solution will come later.
 
 ## Alternative #1 - any registered user can edit anything in realtime
 Contributors synchronize in https://t.me/+uhbBHhzEyZRkYzRi on time, and modifications they are going to make in a map.
 For example "Hi, I am going to edit Aging in Biology this evening from 19 till 21 UTC. Want to add some companies in reprogramming section.".
-In this solution we also make snapshot for the whole map every hour
-Also every registered user have button "download map" which he/she can use after editing is done
+We also make snapshot for the whole map every hour
+Every registered user have button "download map" to save map locally in json format.
 If some breaking changes occurs we can revert map to the version of last hour or from version that contributor downloaded.
-All modifications during this hour (or time contributor downloaded his/her version) will be lost (even good one).
+All modifications during this hour (or time contributor downloaded his/her version) will be lost (yes, even good one).
 
 ## Alternative #2 - using github
 More sophisticated solution can be push map to github in json format and make version control like code developers do.

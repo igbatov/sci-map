@@ -108,13 +108,13 @@ export default defineComponent({
           delta: event.deltaY,
           center: { x: event.clientX, y: event.clientY }
         });
-      });
+      }, {passive:true});
 
       let prevDist = Infinity
       const prevPoint = {x:Infinity, y:Infinity}
       map.addEventListener("touchstart", event => {
           pan.mouseDown();
-      });
+      }, {passive:true});
       map.addEventListener("touchend", event => {
         prevDist = Infinity
         prevPoint.x = Infinity
@@ -151,7 +151,7 @@ export default defineComponent({
             }
           });
         }
-      });
+      }, {passive:true});
 
 
     });
