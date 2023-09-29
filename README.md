@@ -217,6 +217,11 @@ docker build -t sci-map .
 docker run -d -p 80:80 --rm --name sci-map sci-map
 ```
 
+## Uploud picture on cdn
+```shell
+gcloud storage cp ~/Downloads/wave1rope.png     gs://sci-map-cdn/images/
+```
+
 ## Deploy on gitlab
 https://blog.logrocket.com/how-to-auto-deploy-a-vue-application-using-gitlab-ci-cd-on-ubuntu/
 Don't forget to disable shared runners in your gitlab.com account (section Ruuners in https://gitlab.com/<username>/sci-map/-/settings/ci_cd)
