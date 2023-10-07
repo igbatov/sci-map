@@ -222,7 +222,7 @@ docker run -d -p 80:80 --rm --name sci-map sci-map
 gcloud storage cp ~/Downloads/wave1rope.png     gs://sci-map-cdn/images/
 ```
 
-## Deploy on gitlab
+## Deploy with gitlab
 https://blog.logrocket.com/how-to-auto-deploy-a-vue-application-using-gitlab-ci-cd-on-ubuntu/
 Don't forget to disable shared runners in your gitlab.com account (section Ruuners in https://gitlab.com/<username>/sci-map/-/settings/ci_cd)
 
@@ -231,6 +231,9 @@ Just ssh to your host and do
 ```shell
 docker system prune --all
 ```
+
+## Deploy with github and firebase
+https://firebase.google.com/docs/hosting/github-integration?hl=ru
 
 # Alternative visualizations
 Here is some other approaches to visualize the same structure (which is called "hierarchical network" or "hierarchical graph")
