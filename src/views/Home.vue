@@ -36,7 +36,7 @@ import {
 } from "@/components/map/Map.ts";
 import Menu from "@/components/menu/Index.vue";
 import { useStore } from "@/store";
-import { useRouter, useRoute } from "vue-router";
+import { useRouter, useRoute, onBeforeRouteUpdate } from "vue-router";
 import { mutations as treeMutations, NodeRecordItem } from "@/store/tree";
 import { mutations as zoomPanMutations } from "@/store/zoom_pan";
 import { actions } from "@/store/";
@@ -48,7 +48,7 @@ import {
 } from "@/views/Home";
 import { clone, printError } from "@/tools/utils";
 import { MapNode } from "@/types/graphics";
-import { findMapNodes } from "@/store/tree/helpers";
+import {findMapNode, findMapNodes} from "@/store/tree/helpers";
 import { DBNode } from "@/api/types";
 
 export default defineComponent({
@@ -73,6 +73,7 @@ export default defineComponent({
     let selectPreconditionIsOn = false;
     let titleOver = false;
 
+    // Set node from URL as selected
     watch(
       () => route.params.id,
       () => {
@@ -124,8 +125,33 @@ export default defineComponent({
     const centralNodeId = ref<string | null>(null);
     // visibleLayers consists only from user visible nodes and visibleLayers of all (which is treeState.mapNodeLayers)
     const visibleLayers = ref<Array<Record<string, MapNode>>>([]);
+
+    // Ugly hack to determine first load of page
+    let isFirstPageLoad = true;
+    onBeforeRouteUpdate(async (to, from) => {
+      isFirstPageLoad = false
+    })
+    // If this is isFirstPageLoad then pan map to node in URL
     watch(
-      () => [
+    () => [
+          treeState.mapNodeLayers,
+        ],
+    () => {
+      if (isFirstPageLoad && route.params.id.length > 0 && treeState.mapNodeLayers.length>0) {
+        const [firstNode] = findMapNode(route.params.id as string, treeState.mapNodeLayers)
+        if (firstNode != null) {
+          store.commit(
+              `zoomPan/${zoomPanMutations.SET_PAN}`,
+              {x: -firstNode.center.x + treeState.mapNodeLayers[0]["0"].center.x, y: -firstNode.center.y + treeState.mapNodeLayers[0]["0"].center.y},
+          );
+        }
+      }
+    })
+
+
+    // Determine which nodes to show based on current pan and zoom
+    watch(
+  () => [
         treeState.mapNodeLayers,
         zoomPanState.debouncedZoom,
         zoomPanState.debouncedPan

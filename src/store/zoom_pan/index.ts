@@ -13,6 +13,7 @@ export interface State {
 export const mutations = {
   ADD_ZOOM: "ADD_ZOOM",
   ADD_PAN: "ADD_PAN",
+  SET_PAN: "SET_PAN",
   SET_ZOOM_CENTER: "SET_ZOOM_CENTER"
 };
 
@@ -54,6 +55,10 @@ export const store = {
         { from: { x: 0, y: 0 }, to: state.pan },
         vectorOnNumber(delta, PAN_SENSITIVITY)
       ).to;
+      panDebounce(state, state.pan);
+    },
+    [mutations.SET_PAN](state: State, point: Point) {
+      state.pan = point;
       panDebounce(state, state.pan);
     }
   }

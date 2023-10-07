@@ -7,7 +7,7 @@
     <div class="p-col-12">
       <div class="p-grid">
         <div class="p-col-11">
-          {{ precondition.title }}
+          <a :href=precondition.id >{{ precondition.title }}</a>
         </div>
         <div class="p-col-1">
           <Button
