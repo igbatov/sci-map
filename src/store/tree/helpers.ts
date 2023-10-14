@@ -110,7 +110,7 @@ export function getNewNodeCenter(
 
     let coeff = 1/2
     if (addRandom) {
-      coeff = Math.floor(Math.random() * (1/2) + 1/4)
+      coeff = Math.random() * (1/2) + 1/4
     }
 
     return [
@@ -180,7 +180,7 @@ export function getNewNodeCenter(
 
     let coeff = 3 / 4
     if (addRandom) {
-      coeff = Math.floor(Math.random() * (1/4) + 2.5/4)
+      coeff = Math.random() * (1/4) + 2.5/4
     }
 
     const [finalMaxDiag] = getMaxDiagonal(maxDiagChildMapNode.border);
