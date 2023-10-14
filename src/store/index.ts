@@ -278,7 +278,8 @@ export const store = createStore<State>({
       const parent = state.tree.nodeRecord[v.parentID].node;
       const [newCenter, changedNode, err1] = getNewNodeCenter(
         parent,
-        state.tree.mapNodeLayers
+        state.tree.mapNodeLayers,
+        true
       );
       if (err1 !== null) {
         printError("Cannot create new center", {
@@ -356,7 +357,8 @@ export const store = createStore<State>({
       const newParent = state.tree.nodeRecord[v.parentID].node;
       const [newCenter, changedNode, err1] = getNewNodeCenter(
         newParent,
-        state.tree.mapNodeLayers
+        state.tree.mapNodeLayers,
+        true
       );
       if (err1) {
         printError("cutPasteNode: cannot getNewNodeCenter", { err: err1 });

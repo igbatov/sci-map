@@ -1,8 +1,7 @@
 import { DBNode } from "@/api/types";
-import { Point, Polygon, Tree } from "@/types/graphics";
+import { Tree } from "@/types/graphics";
 import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "../tools/errorkv";
-import { getVoronoiCellRecords, morphChildrenPoints } from "../tools/graphics";
 
 // convert children object to array
 export function convertChildren(children: any): string[] {

@@ -68,13 +68,17 @@ export function createNewNode(title: string, center: Point): Tree {
  *
  * Если в узле есть подузлы, берем подузел с наибольшей диагональю,
  * находим в нем наибольшую диагональ соединяющую 2 вершины границы,
- * делим ее пополам, старый центр ставим в центре одной половины, новый в центре другой
+ * делим ее пополам, старый центр ставим в центре одной половины, новый в центре другой.
+ *
+ * Добавляем рандом (см баг https://sci-map.atlassian.net/browse/SM-118)
  * @param parent
  * @param mapNodeLayers
+ * @param addRandom
  */
 export function getNewNodeCenter(
   parent: Tree,
-  mapNodeLayers: Array<Record<number, MapNode>>
+  mapNodeLayers: Array<Record<number, MapNode>>,
+  addRandom: boolean,
 ): [
   Point | null, // new node center
   Tree | null, // existing node with corrected center (if any)
@@ -103,14 +107,20 @@ export function getNewNodeCenter(
         maxFromCenterVector = v;
       }
     }
+
+    let coeff = 1/2
+    if (addRandom) {
+      coeff = Math.floor(Math.random() * (1/2) + 1/4)
+    }
+
     return [
       {
         x:
           maxFromCenterVector.from.x +
-          (maxFromCenterVector.to.x - maxFromCenterVector.from.x) / 2,
+          coeff * (maxFromCenterVector.to.x - maxFromCenterVector.from.x),
         y:
           maxFromCenterVector.from.y +
-          (maxFromCenterVector.to.y - maxFromCenterVector.from.y) / 2
+          coeff * (maxFromCenterVector.to.y - maxFromCenterVector.from.y)
       },
       null,
       null
@@ -168,8 +178,13 @@ export function getNewNodeCenter(
       }
     }
 
+    let coeff = 3 / 4
+    if (addRandom) {
+      coeff = Math.floor(Math.random() * (1/4) + 2.5/4)
+    }
+
     const [finalMaxDiag] = getMaxDiagonal(maxDiagChildMapNode.border);
-    const newNodeCenter = vectorOnNumber(finalMaxDiag!, 3 / 4).to;
+    const newNodeCenter = vectorOnNumber(finalMaxDiag!, coeff).to;
     const modifiedNode = clone(maxDiagChild);
     modifiedNode.position = vectorOnNumber(finalMaxDiag!, 1 / 4).to;
     return [newNodeCenter, modifiedNode, null];

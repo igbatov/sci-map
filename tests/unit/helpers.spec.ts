@@ -28,7 +28,7 @@ describe("getNewNodeCenter", () => {
       }
     ] as Array<Record<string, MapNode>>;
 
-    const [newNodeCenter, oldNode, err] = getNewNodeCenter(tree, mapNodeLayers);
+    const [newNodeCenter, oldNode, err] = getNewNodeCenter(tree, mapNodeLayers, false);
     expect(newNodeCenter).toEqual({ x: 50, y: 50 });
     expect(oldNode).toBeNull();
     expect(err).toBeNull();
@@ -60,7 +60,7 @@ describe("getNewNodeCenter", () => {
       }
     ] as Array<Record<string, MapNode>>;
 
-    const [newNodeCenter, oldNode, err] = getNewNodeCenter(tree, mapNodeLayers);
+    const [newNodeCenter, oldNode, err] = getNewNodeCenter(tree, mapNodeLayers, false);
     expect(newNodeCenter).toEqual({ x: 457.5, y: 362.5 });
     expect(oldNode).toBeNull();
     expect(err).toBeNull();
@@ -114,7 +114,7 @@ describe("getNewNodeCenter", () => {
       }
     ] as Array<Record<string, MapNode>>;
 
-    const [newCenter, changedNode, err] = getNewNodeCenter(tree, mapNodeLayers);
+    const [newCenter, changedNode, err] = getNewNodeCenter(tree, mapNodeLayers, false);
     expect(err).toBeNull();
     expect(newCenter).toEqual({ x: 885.75, y: 204.75 });
     expect(changedNode!.id).toEqual("2");
@@ -187,7 +187,7 @@ describe("getNewNodeCenter", () => {
         }
       }
     ] as Array<Record<string, MapNode>>;
-    const [newNodeCenter, oldNode, err] = getNewNodeCenter(tree, mapNodeLayers);
+    const [newNodeCenter, oldNode, err] = getNewNodeCenter(tree, mapNodeLayers, false);
     expect(newNodeCenter).toEqual({ x: 75, y: 150 });
     expect(oldNode!).toEqual({
       id: "2",

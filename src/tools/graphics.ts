@@ -157,7 +157,7 @@ export function getVoronoiCellsInSquare(
       x: p[0],
       y: p[1]
     }));
-    cellBorder.pop(); // удаляем последную точку полигона потому что она всегда совпадает с первой
+    cellBorder.pop(); // удаляем последнюю точку полигона потому что она всегда совпадает с первой
     cellMap[index] = cellBorder;
     index++;
   }
@@ -735,6 +735,25 @@ export function treeToMapNodeLayers(
       if (!treeNode.children.length) {
         continue;
       }
+
+      // check that no two children have the same center
+      const tmpMap = {} as Record<string, string>
+      let strPos = ""
+      for (const i in treeNode.children) {
+        strPos = JSON.stringify(treeNode.children[i].position)
+        if (tmpMap[strPos] && tmpMap[strPos].length > 0) {
+          return [
+            null,
+            NewErrorKV("two children has the same center", {
+              firstId: tmpMap[strPos],
+              secondId: treeNode.children[i].id
+            })
+          ];
+        } else {
+          tmpMap[strPos] = treeNode.children[i].id
+        }
+      }
+
       newTreeLayer.push(...treeNode.children);
       if (!lastMapNodeLayer[treeNode.id]) {
         return [

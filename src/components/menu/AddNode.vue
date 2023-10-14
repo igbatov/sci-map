@@ -60,7 +60,7 @@ export default {
       toggleAddDialog: () => (addDialogVisible.value = !addDialogVisible.value),
       add: () => {
         store.dispatch(`${actions.createNode}`, {
-          parentID: selectedNode.value ? selectedNode.value.id : null,
+          parentID: selectedNode.value ? selectedNode.value.id : 0,
           title: newNodeTitle.value
         });
         newNodeTitle.value = "";
