@@ -5,37 +5,17 @@ Goal: attract and direct human activity to push forward science as fast as possi
 This is first draft MVP of the application for crowdsourced "Map Of Science".
 Its intent is to show concept of the map and gather feedback to build appropriate application.
 
-The goal for the map is to 
- - give clear and holistic view, the best explanations available
- - direct people into group for practical actions
+The goal for the project is to 
+ - give clear and holistic view of all knowledge and problems that we have with the best explanations available
+ - direct people into groups and companies for practical actions to solve this problems
 
-We also post jobs and show their connection with question that will help to solve most interesting and hard question of humanity.
+We post jobs and show their connection with question that will help to solve most interesting and hard question of humanity.
 
-We intend to create search platform where one can select its skills and we will find companies from our list that
+We want to create search platform where one can select its skills and will find companies from our list that
 are searching for candidates with such skills.
 
-# Why not Wikipedia, Quora and StackOverflow?
-Wikipedia, quora and stackoverflow are great at subjects where the answer is known.
-But think about such hard questions as "How to extend healthy life",
-"How to end the wars", "How to create [AI-complete](https://en.wikipedia.org/wiki/AI-complete)" and so on - nobody knows the exact answer.
-
-For the hard questions instead of vague general answers, it would be better to see 
- - all known facts that contributes to the puzzle
- - well-structured clear, reasonable and testable hypotheses
- - contacts of enthusiasts and companies that try to test  these hypotheses with clear current status and needs of the test
-
-The goal of this project is to explicitly formulate this hypothesis and make any kind of help easy - volunteering, equipment leasing, full-time job, specialist contacts, double-blind experiment participation, crowdfunding etc.
-
-# How to build such project?
-It seems that we should
-1) attract specialists to add known facts, theories and formulate viable hypothesis to the problem (for some problems non-specialists is also ok)
-2) attract enthusiasts that are willing to somehow take part in hypothesis testing
-
-We are looking to create community and rules that will deliver easily explorable information and connections (in some form of a map)
-with emphasize on formulation of viable hypothesis and steps to be taken to test them with current actual status of research.
-
 # Rules
-First draft is based on concept of [Zettelkasten](https://writingcooperative.com/zettelkasten-how-one-german-scholar-was-so-freakishly-productive-997e4e0ca125)
+First draft of map is based on concept of [Zettelkasten](https://writingcooperative.com/zettelkasten-how-one-german-scholar-was-so-freakishly-productive-997e4e0ca125)
 and [Hierarchical Network](https://fibery.io/blog/the-knowledge-organization/).
 
 Let's postulate that everything in the world is the phenomena that 
@@ -60,13 +40,11 @@ And we know that this hypothesis should be further verified by experiments.
 Also, some phenomenas involve a complex concepts that has its own non-trivial structure.
 (For example a cell is such a complex phenomena with its own structure).
 
-And last but not least one may have questions that one seek to answer.
-
 With these assumptions in mind let's define structure of map
 
 ## Phenomena-produces-phenomena hierarchical structure
-General rule of the map: every node follows from other nodes (premise nodes) by means of induction, deduction or abduction.
-Also, two nodes A and B are linked in case one should understand A to understand B (A use concept B).
+General rule of the map: every node follows from the other nodes (premise nodes) by means of induction, deduction or abduction.
+Also, two nodes A and B are linked in case one should understand model of A to understand B (we can say that A uses concept B).
 
 Every node represents an experimental fact (E) or model/concept (M).
 
@@ -74,7 +52,7 @@ One node contains others if its contents describe it descendants (abstract them 
 
 Description of node should be as vivid and simple as possible. 
 One should be able to understand contents of node if she understood premise nodes with no need for any additional research.
-Time to read and understand contents of one node ideally should be no more that 15 min.
+Time to read and understand contents of one node ideally should be no more than 15 min.
 
 ## Node contents
 Node content consists from
@@ -86,6 +64,20 @@ Node content consists from
 
 ## Example
 https://scimap.org/
+
+# How to build such project?
+
+There are 3 phases
+
+1) (we are currently here) MVP of map and its content - just enough to assess that such map can be constructed in a way that makes sense
+
+2) If step 1) will be successful we want to find people that think this project is interesting to them and they are ready to add facts, 
+theories and formulate viable hypothesis to the problem.
+Value for people to invest in project - is to to share their knowledge in a graphically clear manner, to put together puzzle and attract enthusiasts to work with.
+We are looking to create community and rules that will deliver easily explorable information and connections (in a form of a map)
+with emphasize on formulation of viable hypothesis and steps to be taken to test them.
+
+3) If step 2) will be successful we need to find investments to scale project.
 
 # Collaborative editing in MVP
 Technically hard part of project is collaborative editing.
@@ -224,7 +216,7 @@ gcloud storage cp ~/Downloads/wave1rope.png     gs://sci-map-cdn/images/
 
 ## Deploy with gitlab
 https://blog.logrocket.com/how-to-auto-deploy-a-vue-application-using-gitlab-ci-cd-on-ubuntu/
-Don't forget to disable shared runners in your gitlab.com account (section Ruuners in https://gitlab.com/<username>/sci-map/-/settings/ci_cd)
+Don't forget to disable shared runners in your gitlab.com account (section Runners in https://gitlab.com/<username>/sci-map/-/settings/ci_cd)
 
 ### If deploy job fails with "no space left on device"
 Just ssh to your host and do
