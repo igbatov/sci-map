@@ -92,9 +92,9 @@ After that EU can give NU tag "experienced".
 With this tag NU becomes EU and all his modifications goes to scimap.org instantly.
 
 Any user can report that some content is inappropriate.
-This report will go to EU other that author of last version of reported content.
-After check EU can drop tag "experienced" from the author of last version of reported content
-(or even ban it on some time).
+This report will go to EU other than author of last version of reported content.
+After check EU can drop tag "experienced" from the author of inappropriate content
+(or even ban him for some time).
 
 There can be rare event that after approve new content cannot be merged into scimap automatically because edited content
 already changed. If this is the case EU should change new content manually.
