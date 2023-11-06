@@ -83,17 +83,31 @@ with emphasize on formulation of viable hypothesis and steps to be taken to test
 Technically hard part of project is collaborative editing.
 For MVP we want most simple still workable solution.
 
-Right now we will try Alternative #1 (see below) but maybe some other solution will come later.
+Right now we will try Alternative #1 (see below) but maybe some other solution will come up later.
 
-## Alternative #1 - any registered user can edit anything in realtime
-Contributors synchronize in https://t.me/+uhbBHhzEyZRkYzRi on time, and modifications they are going to make in a map.
+## Alternative #1 - any registered user can edit anything in realtime with pre-approve for several first modifications
+Every new user (NU) can do everything, but to see his modifications on scimap.org
+they should be approved by any experienced user (EU) for the first several times.
+After that EU can give NU tag "experienced".
+With this tag NU becomes EU and all his modifications goes to scimap.org instantly.
+
+Any user can report that some content is inappropriate.
+This report will go to EU other that author of last version of reported content.
+After check EU can drop tag "experienced" from the author of last version of reported content
+(or even ban it on some time).
+
+There can be rare event that after approve new content cannot be merged into scimap automatically because edited content
+already changed. If this is the case EU should change new content manually.
+
+## Alternative #2 - any registered user can edit anything with sync in chat
+Contributors synchronize in https://discord.com/channels/1171118046543347782/1171118047105396749 on time, and modifications they are going to make in a map.
 For example "Hi, I am going to edit Aging in Biology this evening from 19 till 21 UTC. Want to add some companies in reprogramming section.".
 We also make snapshot for the whole map every hour
 Every registered user have button "download map" to save map locally in json format.
 If some breaking changes occurs we can revert map to the version of last hour or from version that contributor downloaded.
 All modifications during this hour (or time contributor downloaded his/her version) will be lost (yes, even good one).
 
-## Alternative #2 - using github
+## Alternative #3 - using github
 More sophisticated solution can be push map to github in json format and make version control like code developers do.
 In this solution every contributor has only its own version of map and button "download your version of map" (the last one will download json file).
 After editing is done contributor creates new branch from master in github, overwrite it with downloaded json,
