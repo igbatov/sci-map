@@ -10,23 +10,66 @@ const functions = require('firebase-functions/v1');
 admin.initializeApp();
 const firestore = admin.firestore();
 let date = new Date();
+// if delta between previous change and current change is less than NEW_RECORD_GAP
+// then two changes will be merged into one
+// (NEW_RECORD_GAP is in milliseconds)
+const NEW_RECORD_GAP = 60*60*1000 // minutes*seconds*1000
+
+const upsertChange = function (change, context, action){
+  firestore
+    .collection('changes')
+    .where('node_id', '==', change.after.ref.parent.getKey())
+    .where('user_id', '==', context.auth.token["user_id"])
+    .where('action', '==', action)
+    .orderBy('timestamp', 'desc').limit(1)
+    .get()
+    .then((result) => {
+
+      if ( result.docs.length === 0  || result.docs[0].data()['timestamp'] < date.getTime() - NEW_RECORD_GAP){
+        // if no history for this user or only old one - create new record
+        firestore
+          .collection('changes')
+          .add({
+            user_id: context.auth.token["user_id"],
+            node_id: change.after.ref.parent.getKey(),
+            action: action,
+            attributes: {
+              value: change.after.val(),
+            },
+            timestamp: date.getTime(),
+          })
+      } else {
+        // merge current change into latest one
+        firestore
+          .collection('changes')
+          .doc(result.docs[0].id)
+          .update({
+            attributes: {
+              value: change.after.val(),
+            },
+            timestamp: date.getTime(),
+          })
+      }
+    });
+}
 
 // [START onNodeContentChange]
-// Listens for changes in /node_content/{nodeId}/content and log it to firestore "changes collection"
+// Listens for changes in /node_content/{nodeId}/content and log them to firestore "changes" collection
 exports.onNodeContentChange = functions.database.ref('/node_content/{nodeId}/content')
   .onWrite((change, context) => {
-    // insert row to changes
-    firestore.collection('changes').add({
-      user_id: context.auth.token["user_id"],
-      node_id: change.after.ref.parent.getKey(),
-      action: "content",
-      attributes: {
-        value: change.after.val(),
-      },
-      timestamp: date.getTime(),
-    })
+    // find last record for this node_id and user_id
+    upsertChange(change, context, 'content')
   });
 // [END onNodeContentChange]
+
+// [START onNodeNameChange]
+// Listens for changes in /node_content/{nodeId}/content and log them to firestore "changes" collection
+exports.onNodeNameChange = functions.database.ref('/map/{nodeId}/name')
+  .onWrite((change, context) => {
+    // find last record for this node_id and user_id
+    upsertChange(change, context, 'name')
+  });
+// [END onNodeNameChange]
 
 // [START onUserRoleChange]
 // Listens for changes in /node_content/{nodeId}/content and log it to firestore "changes collection"
