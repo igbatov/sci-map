@@ -72,45 +72,28 @@ exports.onNodeNameChange = functions.database.ref('/map/{nodeId}/name')
 // [END onNodeNameChange]
 
 // [START onUserRoleChange]
-// Listens for changes in /node_content/{nodeId}/content and log it to firestore "changes collection"
-
-// exports.onUserRoleChange = query
-//   .onSnapshot(querySnapshot => {
-//     querySnapshot.docChanges().forEach(change => {
-//       if (change.type === 'added') {
-//         logger.log('New city: ', change.doc.data());
-//       }
-//       if (change.type === 'modified') {
-//         logger.log('Modified city: ', change.doc.data());
-//       }
-//       if (change.type === 'removed') {
-//         logger.log('Removed city: ', change.doc.data());
-//       }
-//     });
-//   });
+// Listens for changes in /user_role/{uid} and set roles
 exports.onUserRoleChange = functions.firestore
   .document('/user_role/{uid}')
   .onWrite((change, context) => {
-    logger.log("change.after", change.after)
+    // get user and set roles from /user_role/{uid}/roles
     getAuth()
-      .getUser(change.after.ref["user_id"])
+      .getUser(change.after.get("user_id"))
       .then((user) => {
         // Confirm user is verified.
-        logger.log("user", user)
         if (user.emailVerified) {
           // Add custom claims for every role
           // This will be picked up by the user on token refresh or next sign in on new device.
-          for (const role of change.after.ref["roles"]) {
+          for (const role of change.after.get("roles")) {
+            logger.log("set role for user", user.uid, role)
             getAuth().setCustomUserClaims(user.uid, {
               role: role,
-            }).finally((event) => {
-              logger.log(event)
-            });
+            }).finally(() => {});
           }
         }
       })
       .catch((error) => {
-        console.log(error);
+        logger.log(error);
       });
   });
 // [END onUserRoleChange]
