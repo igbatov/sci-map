@@ -17,7 +17,7 @@ const firestore = admin.firestore();
 const NEW_RECORD_GAP = 60*60*1000 // minutes*seconds*1000
 
 const upsertChange = function (change, context, action){
-  firestore
+  return firestore
     .collection('changes')
     .where('node_id', '==', change.after.ref.parent.getKey())
     .where('user_id', '==', context.auth.token["user_id"])
@@ -28,7 +28,7 @@ const upsertChange = function (change, context, action){
       const now = new Date().getTime();
       if ( result.docs.length === 0 || result.docs[0].data()['timestamp'] < now - NEW_RECORD_GAP ){
         // if no history for this user or only old one - create new record
-        firestore
+        return firestore
           .collection('changes')
           .add({
             user_id: context.auth.token["user_id"],
@@ -41,7 +41,7 @@ const upsertChange = function (change, context, action){
           })
       } else {
         // merge current change into latest one
-        firestore
+        return firestore
           .collection('changes')
           .doc(result.docs[0].id)
           .update({
@@ -59,7 +59,7 @@ const upsertChange = function (change, context, action){
 exports.onNodeContentChange = functions.database.ref('/node_content/{nodeId}/content')
   .onWrite((change, context) => {
     // find last record for this node_id and user_id
-    upsertChange(change, context, 'content')
+    return upsertChange(change, context, 'content')
   });
 // [END onNodeContentChange]
 
@@ -68,7 +68,7 @@ exports.onNodeContentChange = functions.database.ref('/node_content/{nodeId}/con
 exports.onNodeNameChange = functions.database.ref('/map/{nodeId}/name')
   .onWrite((change, context) => {
     // find last record for this node_id and user_id
-    upsertChange(change, context, 'name')
+    return upsertChange(change, context, 'name')
   });
 // [END onNodeNameChange]
 
@@ -109,8 +109,6 @@ exports.onUserRoleChange = functions.firestore
               // (see https://firebase.google.com/docs/auth/admin/manage-sessions)
               return realtimeDatabase.ref(`/user_data/${user.uid}/revokeTime`).set(revokeTime)
             })
-
-
         })
       })
       .catch((error) => {
