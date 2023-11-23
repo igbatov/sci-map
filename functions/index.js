@@ -6,8 +6,10 @@ const {setGlobalOptions} = require("firebase-functions/v2");
 setGlobalOptions({maxInstances: 10});
 
 const functions = require('firebase-functions/v1');
+const { getDatabase } = require('firebase-admin/database');
 
 admin.initializeApp();
+const realtimeDatabase =  getDatabase();
 const firestore = admin.firestore();
 let date = new Date();
 // if delta between previous change and current change is less than NEW_RECORD_GAP
@@ -80,17 +82,37 @@ exports.onUserRoleChange = functions.firestore
     getAuth()
       .getUser(change.after.get("user_id"))
       .then((user) => {
-        // Confirm user is verified.
-        if (user.emailVerified) {
-          // Add custom claims for every role
-          // This will be picked up by the user on token refresh or next sign in on new device.
-          for (const role of change.after.get("roles")) {
-            logger.log("set role for user", user.uid, role)
-            getAuth().setCustomUserClaims(user.uid, {
-              role: role,
-            }).finally(() => {});
-          }
+        const roleMap = {}
+        for (const role in user.customClaims) {
+          roleMap[role] = null
         }
+        for (const role of change.after.get("roles")) {
+          roleMap[role] = true
+        }
+        return getAuth().setCustomUserClaims(user.uid, {roles: roleMap}).then(() => {
+
+          // revoke token after claims change
+          let revokeTime
+          getAuth()
+            .revokeRefreshTokens(user.uid)
+            .then(() => {
+              return getAuth().getUser(user.uid);
+            })
+            .then((userRecord) => {
+              revokeTime = new Date(userRecord.tokensValidAfterTime).getTime() / 1000
+              return revokeTime;
+            })
+            .then((timestamp) => {
+              logger.log('Tokens revoked', timestamp, user.uid);
+
+              // update revokeTime in realtime database /user_data/{uid}/revokeTime
+              // so that security rules can detect the time token was revoked
+              // (see https://firebase.google.com/docs/auth/admin/manage-sessions)
+              return realtimeDatabase.ref(`/user_data/${user.uid}/revokeTime`).set(revokeTime)
+            })
+
+
+        })
       })
       .catch((error) => {
         logger.log(error);

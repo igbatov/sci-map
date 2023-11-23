@@ -2,23 +2,23 @@
   "rules": {
     "map": {
       ".read": "auth !== null || auth === null",
-      ".write": "auth !== null && auth.token.role === 'map_editor'"
+      ".write": "auth !== null && auth.token.roles['map_editor'] === true && auth.token.auth_time > root.child('user_data').child(auth.uid).child('revokeTime').val()"
     },
     "node_content": {
       ".read": "auth !== null || auth === null",
-      ".write": "auth !== null && auth.token.role === 'map_editor'"
+      ".write": "auth !== null && auth.token.roles['map_editor'] === true && auth.token.auth_time > root.child('user_data').child(auth.uid).child('revokeTime').val()"
     },
     "precondition": {
       ".read": "auth !== null || auth === null",
-      ".write": "auth !== null && auth.token.role === 'map_editor'"
+      ".write": "auth !== null && auth.token.roles['map_editor'] === true && auth.token.auth_time > root.child('user_data').child(auth.uid).child('revokeTime').val()"
     },
     "resources": {
       ".read": "auth !== null || auth === null",
-      ".write": "auth !== null && auth.token.role === 'map_editor'"
+      ".write": "auth !== null && auth.token.roles['map_editor'] === true && auth.token.auth_time > root.child('user_data').child(auth.uid).child('revokeTime').val()"
     },
     "trash": {
       ".read": "auth !== null || auth === null",
-      ".write": "auth !== null && auth.token.role === 'map_editor'"
+      ".write": "auth !== null && auth.token.roles['map_editor'] === true && auth.token.auth_time > root.child('user_data').child(auth.uid).child('revokeTime').val()"
     },
     "user_data": {
       "$uid": {
