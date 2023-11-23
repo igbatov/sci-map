@@ -92,6 +92,11 @@ Any experienced user who noticed intentional abuse of node content he can revoke
 inexperienced one after public discuss of this case in a sci-map chat.
 Node content can be easily restored from history by experienced user who banned inexperienced.
 
+Nodes can be moved and deleted only by experienced users.
+Move and removal of node also can be reverted from history of map change.
+
+User can be granted tag 'experienced' by any other already experienced user.
+
 ## Alternative #1 (pessimistic update) - any registered user can edit anything in realtime with pre-approve for several first modifications
 Every new user (NU) can do everything, but to see his modifications on scimap.org
 they should be approved by any experienced user (EU) for the first several times.
