@@ -141,7 +141,7 @@ export default {
         if (!selectedNode.value || !selectedNode.value.id) {
           return;
         }
-        const err = await api.update({
+        const err = await api.debouncedUpdate({
           [`map/${selectedNode.value.id}/name`]: value
         });
 

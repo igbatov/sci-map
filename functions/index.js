@@ -11,7 +11,6 @@ const { getDatabase } = require('firebase-admin/database');
 admin.initializeApp();
 const realtimeDatabase =  getDatabase();
 const firestore = admin.firestore();
-let date = new Date();
 // if delta between previous change and current change is less than NEW_RECORD_GAP
 // then two changes will be merged into one
 // (NEW_RECORD_GAP is in milliseconds)
@@ -26,8 +25,8 @@ const upsertChange = function (change, context, action){
     .orderBy('timestamp', 'desc').limit(1)
     .get()
     .then((result) => {
-
-      if ( result.docs.length === 0  || result.docs[0].data()['timestamp'] < date.getTime() - NEW_RECORD_GAP){
+      const now = new Date().getTime();
+      if ( result.docs.length === 0 || result.docs[0].data()['timestamp'] < now - NEW_RECORD_GAP ){
         // if no history for this user or only old one - create new record
         firestore
           .collection('changes')
@@ -38,7 +37,7 @@ const upsertChange = function (change, context, action){
             attributes: {
               value: change.after.val(),
             },
-            timestamp: date.getTime(),
+            timestamp: now,
           })
       } else {
         // merge current change into latest one
@@ -49,7 +48,7 @@ const upsertChange = function (change, context, action){
             attributes: {
               value: change.after.val(),
             },
-            timestamp: date.getTime(),
+            timestamp: now,
           })
       }
     });

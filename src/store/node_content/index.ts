@@ -145,7 +145,7 @@ export const store = {
       }
 
       // add to DB
-      const err = await api.update({
+      const err = await api.debouncedUpdate({
         [`user_data/${rootState.user.user.uid}/comment/${v.nodeID}/nodeID`]: v.nodeID,
         [`user_data/${rootState.user.user.uid}/comment/${v.nodeID}/comment`]: v.comment
       });
@@ -173,7 +173,7 @@ export const store = {
       commit(`${mutations.SET_NODE_CONTENT}`, v);
 
       // add to DB
-      const err = await api.update({
+      const err = await api.debouncedUpdate({
         [`node_content/${v.nodeID}/nodeID`]: v.nodeID,
         [`node_content/${v.nodeID}/content`]: v.content
       });
