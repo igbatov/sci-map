@@ -83,9 +83,16 @@ with emphasize on formulation of viable hypothesis and steps to be taken to test
 Technically hard part of project is collaborative editing.
 For MVP we want most simple still workable solution.
 
-Right now we will try Alternative #1 (see below) but maybe some other solution will come up later.
+Right now we will try Alternative #0 (see below) but maybe some other solution will come up later.
 
-## Alternative #1 - any registered user can edit anything in realtime with pre-approve for several first modifications
+## Alternative #0 (optimistic update) - any new user has tag 'map_editor' and can edit anything in realtime
+These updates will be send to watchers of node
+(users with tags 'map_editor' and 'experienced' who subscribed to updated of node).
+Any experienced user who noticed intentional abuse of node content he can revoke tag 'map_editor' for
+inexperienced one after public discuss of this case in a sci-map chat.
+Node content can be easily restored from history by experienced user who banned inexperienced.
+
+## Alternative #1 (pessimistic update) - any registered user can edit anything in realtime with pre-approve for several first modifications
 Every new user (NU) can do everything, but to see his modifications on scimap.org
 they should be approved by any experienced user (EU) for the first several times.
 After that EU can give NU tag "experienced".
@@ -99,15 +106,7 @@ After check EU can drop tag "experienced" from the author of inappropriate conte
 There can be rare event that after approve new content cannot be merged into scimap automatically because edited content
 already changed. If this is the case EU should change new content manually.
 
-## Alternative #2 - any registered user can edit anything with sync in chat
-Contributors synchronize in https://discord.com/channels/1171118046543347782/1171118047105396749 on time, and modifications they are going to make in a map.
-For example "Hi, I am going to edit Aging in Biology this evening from 19 till 21 UTC. Want to add some companies in reprogramming section.".
-We also make snapshot for the whole map every hour
-Every registered user have button "download map" to save map locally in json format.
-If some breaking changes occurs we can revert map to the version of last hour or from version that contributor downloaded.
-All modifications during this hour (or time contributor downloaded his/her version) will be lost (yes, even good one).
-
-## Alternative #3 - using github
+## Alternative #3 (version control) - using github
 More sophisticated solution can be push map to github in json format and make version control like code developers do.
 In this solution every contributor has only its own version of map and button "download your version of map" (the last one will download json file).
 After editing is done contributor creates new branch from master in github, overwrite it with downloaded json,
