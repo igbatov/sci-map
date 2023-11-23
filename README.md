@@ -86,9 +86,9 @@ For MVP we want most simple still workable solution.
 Right now we will try Alternative #0 (see below) but maybe some other solution will come up later.
 
 ## Alternative #0 (optimistic update) - any new user has tag 'map_editor' and can edit anything in realtime
-These updates will be send to watchers of node
-(users with tags 'map_editor' and 'experienced' who subscribed to updated of node).
-Any experienced user who noticed intentional abuse of node content he can revoke tag 'map_editor' for
+These updates will be sent to watchers of node
+(users with tags 'map_editor' and 'experienced' who subscribed to updates of node content).
+If sny experienced user noticed intentional abuse of node content he can revoke tag 'map_editor' from
 inexperienced one after public discuss of this case in a sci-map chat.
 Node content can be easily restored from history by experienced user who banned inexperienced.
 
