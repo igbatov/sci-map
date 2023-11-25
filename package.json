@@ -24,6 +24,7 @@
     "firebase": "^8.7.0",
     "lodash": "^4.17.20",
     "markdown-it": "^13.0.1",
+    "markdown-it-container": "^3.0.0",
     "markdown-it-imsize": "^2.0.1",
     "markdown-it-katex": "https://github.com/igbatov/markdown-it-katex.git",
     "mitt": "^2.1.0",
@@ -47,7 +48,7 @@
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-plugin-router": "~4.5.0",
     "@vue/cli-plugin-typescript": "~4.5.0",
-    "@vue/cli-plugin-unit-jest": "~4.5.9",
+    "@vue/cli-plugin-unit-jest": "^5.0.8",
     "@vue/cli-plugin-vuex": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "@vue/compiler-sfc": "^3.0.0",
@@ -60,8 +61,7 @@
     "prettier": "^1.19.1",
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
-    "typescript": "~3.9.3",
-    "vue-jest": "^5.0.0-0"
+    "typescript": "~3.9.3"
   },
   "resolutions": {
     "deasync": "0.1.16"

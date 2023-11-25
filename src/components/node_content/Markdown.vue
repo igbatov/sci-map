@@ -21,8 +21,24 @@ import { computed, ref } from "vue";
 import MarkdownIt from 'markdown-it';
 const mdKatex = require('markdown-it-katex'); // eslint-disable-line
 const mdImsize = require('markdown-it-imsize'); // eslint-disable-line
+const mdContainer = require('markdown-it-container'); // eslint-disable-line
 const md = new MarkdownIt();
-md.use(mdKatex, {output: 'html'}).use(mdImsize);
+md.use(mdKatex, {output: 'html'}).use(mdImsize).use(mdContainer, 'warning', {
+  validate: function(params: any) {
+    console.log("validate", params.trim(), params.trim() == 'warning')
+    return params.trim().match(/^warning$/);
+  },
+  render: function (tokens: any, idx: any) {
+    const m = tokens[idx].info.trim().match(/^warning(.*)$/);
+    if (tokens[idx].nesting === 1) {
+      // opening tag
+      return '<div style="background-color: #c6f68d; padding: 8px;">' + md.utils.escapeHtml(m[1]) + '\n';
+    } else {
+      // closing tag
+      return '</div>\n';
+    }
+  }
+});
 
 export default {
   name: "Markdown",
