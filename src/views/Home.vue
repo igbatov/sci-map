@@ -169,36 +169,12 @@ export default defineComponent({
           printError("filterNodesAndLayers: error in findCurrentNode", { err });
         }
 
-        const oldVisibleNodeIDs = [];
-        for (const layer of visibleLayers.value) {
-          oldVisibleNodeIDs.push(
-            ...Object.values(layer)
-              .filter((n: MapNode) => !!n.title)
-              .map((n: MapNode) => n.id)
-          );
-        }
-
         centralNodeId.value = newCentralNodeId;
         visibleLayers.value = updateLayers(
           newCentralNodeId,
           treeState.mapNodeLayers,
           treeState.nodeRecord
         );
-
-        const newVisibleNodeIDs = [];
-        for (const layer of visibleLayers.value) {
-          newVisibleNodeIDs.push(
-            ...Object.values(layer)
-              .filter((n: MapNode) => !!n.title)
-              .map((n: MapNode) => n.id)
-          );
-        }
-
-        store.dispatch(actions.subscribeDBChange, {
-          oldNodeIDs: oldVisibleNodeIDs,
-          newNodeIDs: newVisibleNodeIDs,
-          cb: (dbNode: DBNode) => store.dispatch(actions.handleDBUpdate, dbNode)
-        });
       },
       { immediate: true, deep: true }
     );

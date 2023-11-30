@@ -91,7 +91,7 @@ export default {
     }
   },
 
-  async getMapFromDB(): Promise<[Tree | null, ErrorKV]> {
+  async getMapFromDB(): Promise<[Record<string, DBNode> | null, ErrorKV]> {
     const snapshot = await firebase
       .database()
       .ref("map")
@@ -101,13 +101,7 @@ export default {
     }
     const map = snapshot.val();
 
-    // create Tree with denormalized positions
-    const [tree, err] = convertDBMapToTree(map);
-    if (err !== null) {
-      return [null, err];
-    }
-
-    return [tree, null];
+    return [map, null];
   },
 
   async getMapFromStorage(
@@ -133,13 +127,9 @@ export default {
     ];
   },
 
-  async getMap(user: firebase.User | null): Promise<[Tree | null, ErrorKV]> {
+  async getMap(user: firebase.User | null): Promise<[Record<string, DBNode> | null, ErrorKV]> {
     try {
-      if (MAP_FROM_STORAGE) {
-        return this.getMapFromStorage(user);
-      } else {
-        return this.getMapFromDB();
-      }
+      return await this.getMapFromDB();
     } catch (e) {
       return [null, NewErrorKV(e.message, { e: e })];
     }
@@ -206,9 +196,25 @@ export default {
       .set(preconditions.preconditionIds);
   },
 
-  subscribeNodeChange(nodeID: string, cb: (a: DBNode) => any) {
+  subscribeMapNodeChange(nodeID: string, cb: (a: DBNode) => any) {
     this.subscribeDBChange(
       `map/${nodeID}`,
+      (snap: firebase.database.DataSnapshot) => {
+        if (!snap.exists()) {
+          return;
+        }
+        const node = snap.val() as DBNode;
+        console.log('got update for node', node)
+        node.id = node.id.toString();
+        node.children = convertChildren(node.children);
+        cb(node);
+      }
+    );
+  },
+
+  subscribeContentChange(nodeID: string, cb: (a: DBNode) => any) {
+    this.subscribeDBChange(
+      `node_content/${nodeID}`,
       (snap: firebase.database.DataSnapshot) => {
         if (!snap.exists()) {
           return;
@@ -221,7 +227,7 @@ export default {
     );
   },
 
-  unsubscribeNodeChange(nodeID: string) {
+  unsubscribeMapNodeChange(nodeID: string) {
     firebase
       .database()
       .ref(`map/${nodeID}`)

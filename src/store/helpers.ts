@@ -8,16 +8,33 @@ import {
   mutations as nodeContentMutations,
   NodeContent
 } from "@/store/node_content";
-import { store } from "@/store/index";
+import { store, actions } from "@/store/index";
 import { printError } from "@/tools/utils";
+import { convertDBMapToTree } from "@/api/helpers";
+import { DBNode } from "@/api/types";
 
-export async function fetchMap(user: firebase.User | null) {
-  const [tree, err] = await api.getMap(user);
-  if (tree == null || err) {
+/**
+ * 1) fetch map
+ * 2) subscribe to changes
+ * 3) convert to tree and set to internal store
+ * @param user
+ */
+export async function initMap(user: firebase.User | null) {
+  const [map, err] = await api.getMap(user);
+  if (map === null || err) {
     printError("fetchMap: cannot api.getMap(user)", { err });
   }
-
+  // create Tree with denormalized positions
+  const [tree, convErr] = convertDBMapToTree(map!);
+  if (convErr !== null) {
+    return [null, convErr];
+  }
   store.commit(`tree/${treeMutations.SET_TREE}`, tree);
+
+  // subscribe on changes for every node in map
+  for (const id in map) {
+    api.subscribeMapNodeChange(id, (dbNode: DBNode) => store.dispatch(actions.handleDBUpdate, dbNode))
+  }
 }
 
 export async function fetchPins(user: firebase.User | null) {
@@ -105,8 +122,8 @@ export async function fetchNodeContents(user: firebase.User | null) {
   }
 }
 
-export async function fetchData(user: firebase.User | null) {
-  await fetchMap(user);
+export async function initData(user: firebase.User | null) {
+  await initMap(user);
   await fetchPins(user);
   await fetchPreconditions(user);
   await fetchResources();

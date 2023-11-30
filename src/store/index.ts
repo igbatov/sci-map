@@ -48,7 +48,7 @@ import {
 } from "./node_content";
 
 import api from "@/api/api";
-import { fetchData } from "./helpers";
+import { initData } from "./helpers";
 import { MapNode, Point } from "@/types/graphics";
 import {
   createNewNode,
@@ -58,7 +58,7 @@ import {
 import NewErrorKV from "@/tools/errorkv";
 import { addVector, convertPosition } from "@/tools/graphics";
 import { DBNode } from "@/api/types";
-import { isEqual, debounce } from "lodash";
+import { debounce } from "lodash";
 import { printError } from "@/tools/utils";
 import firebase from "firebase";
 
@@ -254,10 +254,10 @@ export const store = createStore<State>({
       firebase.auth().onAuthStateChanged(user => {
         if (user && !user.isAnonymous) {
           commit(`user/${userMutations.SET_USER}`, user);
-          fetchData(user);
+          initData(user);
         } else {
           commit(`user/${userMutations.SET_USER}`, null);
-          fetchData(null);
+          initData(null);
         }
       });
     },
@@ -420,15 +420,38 @@ export const store = createStore<State>({
         return;
       }
       const parentID = parent.id;
+      const node = (await api.getNode(nodeID)) as DBNode;
+      // collect all children id recursively
+      const allChildrenID = node.children
+      const allChildrenIDMap = {} as Record<string, DBNode>
+      while (allChildrenID.length > 0) {
+        const id = allChildrenID.pop()
+        if (!state.tree.nodeRecord[id!] || !state.tree.nodeRecord[id!].node || !state.tree.nodeRecord[id!].parent) {
+          continue
+        }
+        allChildrenIDMap[id!] = {
+          id: id!,
+          parentID: state.tree.nodeRecord[id!].parent!.id,
+          name: state.tree.nodeRecord[id!].node.title,
+          children: state.tree.nodeRecord[id!].node.children.map((node)=>node.id),
+          position: state.tree.nodeRecord[id!].node.position,
+        }
+        allChildrenID.push(...state.tree.nodeRecord[id!].node.children.map((node)=>node.id));
+      }
       // move node from /map to /trash
-      const node = (await api.getNode(nodeID)) as any;
-      node.removedAt = Date.now();
       const oldKey = await api.findKeyOfChild(parent.id, nodeID);
       await api.update({
         [`trash/${nodeID}`]: node,
         [`map/${parent.id}/children/${oldKey}`]: null,
         [`map/${nodeID}`]: null
       });
+      // move all children to /trash
+      const moveChildrenToTrash = {} as Record<string, any>
+      for (const id in allChildrenIDMap) {
+        moveChildrenToTrash[`trash/${id}`] = allChildrenIDMap[id]
+        moveChildrenToTrash[`map/${id}`] = null
+      }
+      await api.update(moveChildrenToTrash);
 
       commit(`history/${historyMutations.ADD_REMOVE}`, {
         parentNodeID: parentID,
@@ -479,38 +502,6 @@ export const store = createStore<State>({
         );
       }
     },
-
-    /**
-     *
-     * @param commit
-     * @param state
-     * @param v
-     */
-    [actions.subscribeDBChange](
-      { commit, state }: { commit: Commit; state: State },
-      v: {
-        oldNodeIDs: string[];
-        newNodeIDs: string[];
-        cb: (dbNode: DBNode) => void;
-      }
-    ) {
-      // check we really need unsubscribe/subscribe
-      if (isEqual(v.oldNodeIDs.sort(), v.newNodeIDs.sort())) {
-        return;
-      }
-
-      // unsubscribe old nodes that have visible titles
-      v.oldNodeIDs.forEach(id => api.unsubscribeNodeChange(id));
-
-      // subscribe new nodes that have visible titles
-      v.newNodeIDs.forEach(id =>
-        api.subscribeNodeChange(id, node => {
-          v.cb(node);
-        })
-      );
-
-      commit(mutations.SET_SUBSCRIBED_NODE_IDS, v.newNodeIDs);
-    }
   },
   modules: {
     pin: pinStore,

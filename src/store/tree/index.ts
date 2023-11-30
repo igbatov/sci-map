@@ -11,7 +11,7 @@ import NewErrorKV from "@/tools/errorkv";
 import { DBNode } from "@/api/types";
 import { printError, round } from "@/tools/utils";
 import api from "@/api/api";
-import { Commit } from "vuex";
+import {Commit, Dispatch} from "vuex";
 import firebase from "firebase";
 const XSkew = api.ROOT_WIDTH / 7;
 const ROOT_BORDER = [
@@ -86,19 +86,19 @@ export const store = {
     /**
      * Update tree and dependant structures on DBNode change
      *
-     * После добавления нового узла мы не вносим изменения а сохраняем в базу и ждем пока оттуда придет обновление
+     * После добавления нового узла мы не вносим изменения локально, а сохраняем в базу и ждем пока оттуда придет обновление
      *
      * Маппинг изменений в виде снэпшотов на изменения в формате store/history выглядит следующим образом.
      * Мы сравниваем наш узел и пришедший новый снэпшот этого узла
      *
-     * Если видим удаление child, то это либо перенос либо удаление узла.
+     * Если видим удаление child, то это либо перенос, либо удаление узла.
      * В любом случае мы можем у себя удалить этот узел (мы не удаляем всю информацию, только из дерева - 'fake removal').
-     * Если это перенос, то мы либо получили событие добавления в другой узел,
-     * до этого события, либо получим его после. Если мы его уже получили до, то мы из этого узла уже должны были его удалить,
+     * Если это перенос, то мы либо получили событие добавления в другой узел
+     * до этого события, либо получим его после. Если получили до, то из этого узла уже должны были его удалить,
      * так что остается вариант когда мы еще получим событие о добавлении. В этом случаем для нас это будет добавление нового узла.
      * То есть мы запросим из базы этот узел и вставим его
      *
-     * Если видим добавление child то это либо перенос либо добавление нового узла. Если мы не находим у себя child с таким id
+     * Если видим добавление child, то это либо перенос, либо добавление нового узла. Если мы не находим у себя child с таким id,
      * то это добавление - нам нужно запросить из базы node с таким id и добавить его к себе.
      * Если в nodeRecord есть такой узел, то это перенос - мы удаляем его из старого родителя и вставляем в новый
      *
@@ -107,10 +107,11 @@ export const store = {
      *
      * @param commit
      * @param state
+     * @param dispatch
      * @param arg
      */
     async [actions.handleDBUpdate](
-      { commit, state }: { commit: Commit; state: State },
+      { commit, state, dispatch }: { commit: Commit; state: State; dispatch: Dispatch },
       arg: { dbNode: DBNode; user: firebase.User | null }
     ) {
       const dbNodeRecord = state.nodeRecord[arg.dbNode.id];
@@ -188,8 +189,6 @@ export const store = {
               title: inProcessNode.name,
               position: inProcessNode.position,
               children: [],
-              wikipedia: "",
-              resources: []
             } as Tree;
             if (!state.nodeRecord[inProcessNode.parentID]) {
               printError("Cannot find nodeID in nodeRecord", {
@@ -212,6 +211,8 @@ export const store = {
               parent: state.nodeRecord[inProcessNode.parentID].node,
               node: treeNode
             };
+            // subscribe to new node changes
+            api.subscribeMapNodeChange(treeNode.id, (dbNode: DBNode) => dispatch(actions.handleDBUpdate, dbNode,{root:true}))
             for (const childID of inProcessNode.children) {
               const childNode = await api.getNode(childID);
               if (!childNode) {
@@ -227,17 +228,6 @@ export const store = {
               toProcess.push(childNode);
             }
           }
-
-          const [ls, err2] = treeToMapNodeLayers(
-            state.tree!,
-            ROOT_BORDER,
-            ROOT_CENTER
-          );
-          if (err2) {
-            printError("Cannot treeToMapNodeLayers", { err: err2 });
-            return;
-          }
-          state.mapNodeLayers = ls!;
         }
       }
 
@@ -267,7 +257,22 @@ export const store = {
               id: childID
             });
           }
+          // unsubscribe from removed node changes
+          api.unsubscribeMapNodeChange(childID)
         }
+      }
+
+      if (removedChildren.length || newChildren.length) {
+        const [ls, err2] = treeToMapNodeLayers(
+          state.tree!,
+          ROOT_BORDER,
+          ROOT_CENTER
+        );
+        if (err2) {
+          printError("Cannot treeToMapNodeLayers", { err: err2 });
+          return;
+        }
+        state.mapNodeLayers = ls!;
       }
 
       // Change of position
@@ -355,19 +360,6 @@ export const store = {
       // remove from parent's children
       const ind = parent.children.findIndex(node => node.id === v.nodeID);
       parent.children.splice(ind, 1);
-
-      // update layers
-      const [ls, err2] = treeToMapNodeLayers(
-        state.tree,
-        ROOT_BORDER,
-        ROOT_CENTER
-      );
-      if (ls == null || err2 != null) {
-        v.returnError = err2;
-        return;
-      }
-
-      state.mapNodeLayers = ls;
     },
 
     /**
