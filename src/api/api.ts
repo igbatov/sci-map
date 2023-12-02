@@ -9,7 +9,6 @@ import { Pins } from "@/store/pin";
 import { Preconditions } from "src/store/precondition";
 import { DBNode } from "@/api/types";
 import { convertChildren } from "./helpers";
-import { Resource } from "@/store/resources";
 import { NodeComment, NodeContent } from "@/store/node_content";
 import emulatorConfig from "../../firebase.json";
 import { debounce } from "lodash";
@@ -212,16 +211,15 @@ export default {
     );
   },
 
-  subscribeContentChange(nodeID: string, cb: (a: DBNode) => any) {
+  subscribeNodeContentChange(nodeID: string, cb: (a: { nodeID: string; content: string }) => any) {
     this.subscribeDBChange(
       `node_content/${nodeID}`,
       (snap: firebase.database.DataSnapshot) => {
         if (!snap.exists()) {
           return;
         }
-        const node = snap.val() as DBNode;
+        const node = snap.val() as { nodeID: string; content: string };
         console.log('got update for node content', node)
-        node.id = node.id.toString();
         cb(node);
       }
     );
@@ -235,7 +233,7 @@ export default {
           return;
         }
         const preconditionIDs = snap.val() as Array<string>;
-        console.log('got update for node precondition', preconditionIDs)
+        console.log('got update for node precondition', 'nodeID', nodeID, 'preconditionIDs', preconditionIDs)
         cb(nodeID, preconditionIDs);
       }
     );
@@ -340,19 +338,6 @@ export default {
 
   update,
   debouncedUpdate,
-
-  async getResources(): Promise<[Record<string, Resource> | null, ErrorKV]> {
-    const snapshot = await firebase
-      .database()
-      .ref("resources")
-      .get();
-    if (!snapshot.exists()) {
-      return [null, NewErrorKV("!snapshot.exists", {})];
-    }
-    const resources = snapshot.val();
-
-    return [resources, null];
-  },
 
   async getUserComments(
     user: firebase.User

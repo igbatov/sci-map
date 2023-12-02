@@ -17,7 +17,6 @@ import {
   store as treeStore,
   State as TreeState,
   mutations as treeMutations,
-  actions as treeActions
 } from "./tree";
 
 import { store as zoomPanStore, State as ZoomPanState } from "./zoom_pan";
@@ -34,13 +33,6 @@ import {
   State as HistoryState,
   mutations as historyMutations
 } from "./history";
-
-import {
-  store as resourcesStore,
-  State as ResourcesState,
-  mutations as resourcesMutations,
-  Resource
-} from "./resources";
 
 import {
   store as nodeContentStore,
@@ -74,7 +66,6 @@ export type State = {
   user: UserState;
   zoomPan: ZoomPanState;
   history: HistoryState;
-  resources: ResourcesState;
   nodeContent: NodeContentState;
 };
 
@@ -86,9 +77,6 @@ export const actions = {
   removeNode: "removeNode",
   setEditMode: "setEditMode",
   subscribeDBChange: "subscribeDBChange",
-
-  // manipulating node contents
-  addNewResource: "addNewResource",
 
   // confirmSignInPopup
   confirmSignInPopup: "confirmSignInPopup"
@@ -175,38 +163,6 @@ export const store = createStore<State>({
           return;
         }
       });
-    },
-
-    /**
-     *
-     * @param commit
-     * @param state
-     * @param rs
-     */
-    async [actions.addNewResource](
-      { commit, state }: { commit: Commit; state: State },
-      rs: Resource
-    ): Promise<Resource | null> {
-      // save to DB
-      const newKey = api.generateKey();
-      if (!newKey) {
-        printError("addNewResource: Cannot api.generateKey", {});
-        return null;
-      }
-      rs.id = newKey;
-      const updateMap: Record<string, any> = {
-        [`resources/${newKey}`]: rs
-      };
-      const err = await api.update(updateMap);
-      if (err) {
-        printError("addNewResource: cannot update", { err });
-        return null;
-      }
-
-      // add to local resources
-      commit(`resources/${resourcesMutations.ADD_TO_RESOURCES}`, rs);
-
-      return rs;
     },
 
     /**
@@ -493,7 +449,6 @@ export const store = createStore<State>({
     user: userStore,
     zoomPan: zoomPanStore,
     history: historyStore,
-    resources: resourcesStore,
     nodeContent: nodeContentStore
   }
 });

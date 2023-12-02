@@ -86,7 +86,11 @@ export async function initPreconditions(user: firebase.User | null) {
   );
 }
 
-export async function fetchNodeContents(user: firebase.User | null) {
+/**
+ * Fetch all node content and subscribe for content change for each node
+ * @param user
+ */
+export async function initNodeContents(user: firebase.User | null) {
   // fetch node_content from general map
   const [nodeContent, err] = await api.getNodeContent();
   if (nodeContent == null || err) {
@@ -100,6 +104,12 @@ export async function fetchNodeContents(user: firebase.User | null) {
       nodeID: nodeContent[i].nodeID,
       content: nodeContent[i].content,
     } as NodeContent;
+
+    api.subscribeNodeContentChange(nodeContents[i].nodeID, (v: { nodeID: string; content: string }) =>  store.commit(
+        `nodeContent/${nodeContentMutations.SET_NODE_CONTENT}`,
+        v
+      )
+    )
   }
 
   store.commit(
@@ -109,9 +119,12 @@ export async function fetchNodeContents(user: firebase.User | null) {
 
   if (user) {
     const [userComments, err] = await api.getUserComments(user);
-    if (userComments == null || err) {
-      printError("fetchNodeContents error", { err, user });
+    if (err) {
+      printError("fetch userComments error", { err, user });
       return;
+    }
+    if (userComments === null) {
+      return
     }
 
     // fix in store
@@ -126,5 +139,5 @@ export async function initData(user: firebase.User | null) {
   await initMap(user);
   await fetchPins(user);
   await initPreconditions(user);
-  await fetchNodeContents(user);
+  await initNodeContents(user);
 }

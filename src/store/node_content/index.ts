@@ -25,16 +25,12 @@ export const mutations = {
   SET_USER_COMMENTS: "SET_USER_COMMENTS",
   SET_NODE_CONTENT: "SET_NODE_CONTENT",
   SET_NODE_COMMENT: "SET_NODE_COMMENT",
-  REMOVE_NODE_RESOURCE: "REMOVE_NODE_RESOURCE",
-  ADD_NODE_RESOURCE: "ADD_NODE_RESOURCE"
 };
 
 export const actions = {
   getNodeContent: "getNodeContent",
   setNodeContent: "setNodeContent",
   setNodeComment: "setNodeComment",
-  removeNodeResource: "removeNodeResource",
-  addNodeResource: "addNodeResource"
 };
 
 export const EmptyNodeContent = {

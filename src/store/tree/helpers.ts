@@ -51,8 +51,6 @@ export function createNewNode(title: string, center: Point): Tree {
     id: uuidv4(),
     position: center,
     title: title,
-    wikipedia: "",
-    resources: [],
     children: []
   } as Tree;
 }

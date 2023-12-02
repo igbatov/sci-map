@@ -24,12 +24,12 @@ export const store = {
     },
     [mutations.UPDATE_PRECONDITIONS](
       state: State,
-      v: { nodeId: string; preconditionIDs: Array<string> }
+      v: { nodeID: string; preconditionIDs: Array<string> }
     ) {
-      if (!state.preconditions[v.nodeId]) {
-        state.preconditions[v.nodeId] = [];
+      if (!state.preconditions[v.nodeID]) {
+        state.preconditions[v.nodeID] = [];
       }
-      state.preconditions[v.nodeId] = v.preconditionIDs;
+      state.preconditions[v.nodeID] = v.preconditionIDs;
     },
   }
 };

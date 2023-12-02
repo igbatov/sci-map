@@ -54,8 +54,6 @@ import { actions, useStore } from "@/store";
 import { actions as nodeContentActions } from "@/store/node_content";
 import { computed } from "vue";
 import TextArea from "primevue/textarea";
-// import ScrollPanel from 'primevue/scrollpanel';
-// import SectionResources from "./resources/Index.vue";
 import SectionPreconditions from "./Preconditions.vue";
 import { Tree } from "@/types/graphics";
 import {
@@ -63,7 +61,6 @@ import {
   NodeComment,
   NodeContent
 } from "@/store/node_content";
-import { Resources } from "@/store/resources";
 import { clone, printError } from "@/tools/utils";
 import { useConfirm } from "primevue/useconfirm";
 import api from "@/api/api";
@@ -93,10 +90,6 @@ export default {
       () => store.state.nodeContent.userNodeComments
     );
 
-    const resources = computed<Resources>(
-      () => store.state.resources.resources
-    );
-
     const selectedNode = computed<Tree | null>(() =>
       tree.selectedNodeId && tree.nodeRecord[tree.selectedNodeId]
         ? tree.nodeRecord[tree.selectedNodeId].node
@@ -119,7 +112,6 @@ export default {
     );
 
     return {
-      resources,
       selectedNode,
       selectedNodeContent,
       checkAuthorized: async (e: Event) => {
