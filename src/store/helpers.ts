@@ -1,14 +1,13 @@
 import firebase from "firebase";
 import api from "@/api/api";
-import { mutations as treeMutations } from "@/store/tree";
+import { mutations as treeMutations, actions as treeActions } from "@/store/tree";
 import { mutations as pinMutations } from "@/store/pin";
 import { mutations as preconditionMutations } from "@/store/precondition";
-import { mutations as resourcesMutations } from "@/store/resources";
 import {
   mutations as nodeContentMutations,
   NodeContent
 } from "@/store/node_content";
-import { store, actions } from "@/store/index";
+import { store } from "@/store/index";
 import { printError } from "@/tools/utils";
 import { convertDBMapToTree } from "@/api/helpers";
 import { DBNode } from "@/api/types";
@@ -33,7 +32,7 @@ export async function initMap(user: firebase.User | null) {
 
   // subscribe on changes for every node in map
   for (const id in map) {
-    api.subscribeMapNodeChange(id, (dbNode: DBNode) => store.dispatch(actions.handleDBUpdate, dbNode))
+    api.subscribeMapNodeChange(id, (dbNode: DBNode) => store.dispatch(`tree/${treeActions.handleMapNodeUpdate}`, dbNode))
   }
 }
 
@@ -69,20 +68,22 @@ export async function fetchPreconditions(user: firebase.User | null) {
     }
   }
 
+  // subscribe on precondition changes for every node
+  for (const id in preconditions) {
+    api.subscribePreconditionNodeChange(
+      id,
+      (nodeID, preconditionIDs) => {
+        return store.commit(
+          `precondition/${preconditionMutations.UPDATE_PRECONDITIONS}`,
+          {nodeID:nodeID, preconditionIDs: preconditionIDs},
+        )
+      })
+  }
+
   store.commit(
     `precondition/${preconditionMutations.SET_PRECONDITIONS}`,
     preconditions
   );
-}
-
-export async function fetchResources() {
-  const [resources, err] = await api.getResources();
-  if (resources == null || err) {
-    printError("fetchResources error", { err });
-    return;
-  }
-
-  store.commit(`resources/${resourcesMutations.SET_RESOURCES}`, resources);
 }
 
 export async function fetchNodeContents(user: firebase.User | null) {
@@ -126,6 +127,5 @@ export async function initData(user: firebase.User | null) {
   await initMap(user);
   await fetchPins(user);
   await fetchPreconditions(user);
-  await fetchResources();
   await fetchNodeContents(user);
 }

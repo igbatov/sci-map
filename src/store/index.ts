@@ -10,7 +10,7 @@ import { store as pinStore, State as PinState } from "./pin";
 
 import {
   store as preconditionStore,
-  State as PreconditionState
+  State as PreconditionState,
 } from "./precondition";
 
 import {
@@ -84,7 +84,6 @@ export const actions = {
   createNode: "createNode",
   cutPasteNode: "cutPasteNode",
   removeNode: "removeNode",
-  handleDBUpdate: "handleDBUpdate", // apply external update from server
   setEditMode: "setEditMode",
   subscribeDBChange: "subscribeDBChange",
 
@@ -227,22 +226,6 @@ export const store = createStore<State>({
         );
         commit(mutations.SET_SUBSCRIBED_NODE_IDS, []);
       }
-    },
-
-    /**
-     *
-     * @param dispatch
-     * @param state
-     * @param node
-     */
-    async [actions.handleDBUpdate](
-      { dispatch, state }: { dispatch: Dispatch; state: State },
-      node: DBNode
-    ) {
-      await dispatch(`tree/${treeActions.handleDBUpdate}`, {
-        dbNode: node,
-        user: state.user.user
-      });
     },
 
     /**

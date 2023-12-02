@@ -12,7 +12,6 @@ import { DBNode } from "@/api/types";
 import { printError, round } from "@/tools/utils";
 import api from "@/api/api";
 import {Commit, Dispatch} from "vuex";
-import firebase from "firebase";
 const XSkew = api.ROOT_WIDTH / 7;
 const ROOT_BORDER = [
   { x: XSkew, y: 0 },
@@ -56,7 +55,7 @@ export const mutations = {
 };
 
 export const actions = {
-  handleDBUpdate: "handleDBUpdate"
+  handleMapNodeUpdate: "handleMapNodeUpdate"
 };
 
 export const store = {
@@ -108,16 +107,16 @@ export const store = {
      * @param commit
      * @param state
      * @param dispatch
-     * @param arg
+     * @param dbNode
      */
-    async [actions.handleDBUpdate](
+    async [actions.handleMapNodeUpdate](
       { commit, state, dispatch }: { commit: Commit; state: State; dispatch: Dispatch },
-      arg: { dbNode: DBNode; user: firebase.User | null }
+      dbNode: DBNode
     ) {
-      const dbNodeRecord = state.nodeRecord[arg.dbNode.id];
+      const dbNodeRecord = state.nodeRecord[dbNode.id];
       if (!dbNodeRecord) {
         printError("UPDATE_NODE: Cannot find dbNode in dbNodeRecord", {
-          "dbNode.id": arg.dbNode.id
+          "dbNode.id": dbNode.id
         });
         return;
       }
@@ -130,11 +129,11 @@ export const store = {
         position: dbNodeRecord.node.position
       };
 
-      const newChildren = arg.dbNode.children.filter(
+      const newChildren = dbNode.children.filter(
         x => !oldDBNode.children.includes(x)
       );
       const removedChildren = oldDBNode.children.filter(
-        x => !arg.dbNode.children.includes(x)
+        x => !dbNode.children.includes(x)
       );
 
       // Add/move of new child
@@ -172,7 +171,7 @@ export const store = {
           const toProcess = [addedDBNode];
           if (!addedDBNode) {
             // we cannot find node for addition, remove it from parent
-            arg.dbNode.children = arg.dbNode.children.filter(
+            dbNode.children = dbNode.children.filter(
               id => id != childID
             );
             printError("Cannot find node for addition", { nodeID: childID });
@@ -212,7 +211,7 @@ export const store = {
               node: treeNode
             };
             // subscribe to new node changes
-            api.subscribeMapNodeChange(treeNode.id, (dbNode: DBNode) => dispatch(actions.handleDBUpdate, dbNode,{root:true}))
+            api.subscribeMapNodeChange(treeNode.id, (dbNode: DBNode) => dispatch(actions.handleMapNodeUpdate, dbNode))
             for (const childID of inProcessNode.children) {
               const childNode = await api.getNode(childID);
               if (!childNode) {
@@ -240,7 +239,7 @@ export const store = {
           }
           if (
             state.nodeRecord[childID] &&
-            state.nodeRecord[childID].parent!.id !== arg.dbNode.id
+            state.nodeRecord[childID].parent!.id !== dbNode.id
           ) {
             // node was already removed from this parent (this is cut-and-paste operation)
             continue;
@@ -277,20 +276,20 @@ export const store = {
 
       // Change of position
       if (
-        round(arg.dbNode.position.x) !== round(oldDBNode.position.x) ||
-        round(arg.dbNode.position.y) !== round(oldDBNode.position.y)
+        round(dbNode.position.x) !== round(oldDBNode.position.x) ||
+        round(dbNode.position.y) !== round(oldDBNode.position.y)
       ) {
         // calculate denormalized position of dbNode
         const [denormalizedPosition] = convertPosition(
           "denormalize",
-          arg.dbNode.position,
+          dbNode.position,
           dbNodeRecord.parent ? dbNodeRecord.parent.id : null,
           state.mapNodeLayers
         );
-        if (oldDBNode.parentID == arg.dbNode.parentID) {
+        if (oldDBNode.parentID == dbNode.parentID) {
           // we do not want to process position change due to parent change - it is already processed by ADD_NODE
           const v = {
-            nodeId: arg.dbNode.id,
+            nodeId: dbNode.id,
             newCenter: denormalizedPosition,
             returnError: null
           };
@@ -298,7 +297,7 @@ export const store = {
           if (v.returnError !== null) {
             printError(
               "actions.handleDBUpdate: cannot update node's position",
-              { "arg.dbNode": arg.dbNode, err: v.returnError }
+              { "dbNode": dbNode, err: v.returnError }
             );
             return;
           }
@@ -306,13 +305,13 @@ export const store = {
       }
 
       // Change of name
-      if (oldDBNode.name !== arg.dbNode.name) {
-        dbNodeRecord.node.title = arg.dbNode.name;
+      if (oldDBNode.name !== dbNode.name) {
+        dbNodeRecord.node.title = dbNode.name;
         const [node] = findMapNode(oldDBNode.id, state.mapNodeLayers);
         if (!node) {
           return;
         }
-        node.title = arg.dbNode.name;
+        node.title = dbNode.name;
       }
     }
   },

@@ -37,7 +37,6 @@ import Dialog from "primevue/dialog";
 import Button from "primevue/button";
 import { useStore } from "@/store";
 import { computed, ref, watch } from "vue";
-import { actions as preconditionActions } from "@/store/precondition";
 import api from "@/api/api";
 import { Tree } from "@/types/graphics";
 
@@ -82,14 +81,15 @@ export default {
         addBannerVisible.value = !addBannerVisible.value;
       },
       add: () => {
-        store.dispatch(`precondition/${preconditionActions.AddPrecondition}`, {
-          nodeId: targetNode.value.id,
-          preconditionId: preconditionNode.value.id
-        });
+        let preconditionsIDs = []
+        if (store.state.precondition.preconditions[targetNode.value.id]) {
+          preconditionsIDs = store.state.precondition.preconditions[targetNode.value.id];
+        }
+        preconditionsIDs.push(preconditionNode.value.id);
+
         api.savePreconditions(store.state.user.user, {
           nodeId: targetNode.value.id,
-          preconditionIds:
-            store.state.precondition.preconditions[targetNode.value.id]
+          preconditionIds: preconditionsIDs,
         });
         ctx.emit("select-precondition-is-off");
         addBannerVisible.value = false;

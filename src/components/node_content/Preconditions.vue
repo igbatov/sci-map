@@ -25,7 +25,6 @@
 import Button from "primevue/button";
 import { ref, watchEffect } from "vue";
 import { useStore } from "@/store";
-import { actions as preconditionActions } from "@/store/precondition";
 import api from "@/api/api";
 import { Tree } from "@/types/graphics";
 
@@ -55,16 +54,17 @@ export default {
     return {
       preconditions,
       remove: (id: string) => {
-        store.dispatch(
-          `precondition/${preconditionActions.RemovePrecondition}`,
-          {
-            nodeId: props.nodeId,
-            preconditionId: id
-          }
-        );
+        const p = store.state.precondition.preconditions[props.nodeId];
+        if (!p) {
+          return;
+        }
+        if (p.indexOf(id) == -1) {
+          return;
+        }
+
         api.savePreconditions(store.state.user.user, {
           nodeId: props.nodeId,
-          preconditionIds: store.state.precondition.preconditions[props.nodeId]
+          preconditionIds: p.splice(p.indexOf(id), 1),
         });
       }
     };

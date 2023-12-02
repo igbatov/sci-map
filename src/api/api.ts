@@ -8,7 +8,7 @@ import axios from "axios";
 import { Pins } from "@/store/pin";
 import { Preconditions } from "src/store/precondition";
 import { DBNode } from "@/api/types";
-import { convertChildren, convertDBMapToTree } from "./helpers";
+import { convertChildren } from "./helpers";
 import { Resource } from "@/store/resources";
 import { NodeComment, NodeContent } from "@/store/node_content";
 import emulatorConfig from "../../firebase.json";
@@ -204,7 +204,7 @@ export default {
           return;
         }
         const node = snap.val() as DBNode;
-        console.log('got update for node', node)
+        console.log('got update for map node', node)
         node.id = node.id.toString();
         node.children = convertChildren(node.children);
         cb(node);
@@ -220,9 +220,23 @@ export default {
           return;
         }
         const node = snap.val() as DBNode;
+        console.log('got update for node content', node)
         node.id = node.id.toString();
-        node.children = convertChildren(node.children);
         cb(node);
+      }
+    );
+  },
+
+  subscribePreconditionNodeChange(nodeID: string, cb: (nodeID: string, preconditionIDs: Array<string>) => any) {
+    this.subscribeDBChange(
+      `precondition/${nodeID}`,
+      (snap: firebase.database.DataSnapshot) => {
+        if (!snap.exists()) {
+          return;
+        }
+        const preconditionIDs = snap.val() as Array<string>;
+        console.log('got update for node precondition', preconditionIDs)
+        cb(nodeID, preconditionIDs);
       }
     );
   },
