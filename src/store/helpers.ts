@@ -11,6 +11,7 @@ import { store } from "@/store/index";
 import { printError } from "@/tools/utils";
 import { convertDBMapToTree } from "@/api/helpers";
 import { DBNode } from "@/api/types";
+import { add as textSearchAdd } from "@/tools/textsearch";
 
 /**
  * 1) fetch map
@@ -105,10 +106,12 @@ export async function initNodeContents(user: firebase.User | null) {
       content: nodeContent[i].content,
     } as NodeContent;
 
-    api.subscribeNodeContentChange(nodeContents[i].nodeID, (v: { nodeID: string; content: string }) =>  store.commit(
-        `nodeContent/${nodeContentMutations.SET_NODE_CONTENT}`,
-        v
-      )
+    api.subscribeNodeContentChange(
+      nodeContents[i].nodeID,
+      (v: { nodeID: string; content: string }) =>  {
+        textSearchAdd(v.nodeID, v.content);
+        store.commit(`nodeContent/${nodeContentMutations.SET_NODE_CONTENT}`, v);
+      }
     )
   }
 

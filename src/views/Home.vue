@@ -2,6 +2,7 @@
   <ConfirmDialog></ConfirmDialog>
   <Toast position="bottom-left" />
   <NodeContent :show="!editModeOn && !!selectedNodeId" />
+  <TextSearch/>
   <Menu
     :clickedTitleId="clickedTitleId"
     @select-precondition-is-on="setSelectPreconditionON"
@@ -49,12 +50,13 @@ import {
 import { clone, printError } from "@/tools/utils";
 import { MapNode } from "@/types/graphics";
 import {findMapNode, findMapNodes} from "@/store/tree/helpers";
-import { DBNode } from "@/api/types";
+import TextSearch from "@/components/textsearch/Index.vue";
 
 export default defineComponent({
   name: "Home",
 
   components: {
+    TextSearch,
     Map,
     Menu,
     NodeContent,

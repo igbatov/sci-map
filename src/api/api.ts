@@ -2,8 +2,6 @@ import firebase from "firebase";
 import { Tree } from "@/types/graphics";
 import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "../tools/errorkv";
-import { apiTree } from "./mocks";
-// import apiTree from "./mindmeister";
 import axios from "axios";
 import { Pins } from "@/store/pin";
 import { Preconditions } from "src/store/precondition";

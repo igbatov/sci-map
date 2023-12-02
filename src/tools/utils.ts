@@ -179,38 +179,3 @@ export function printError(msg: string, kv: any) {
   console.error(msg, ...kvArr);
 }
 
-type MindMeisterNode = {
-  id: number;
-  title: string;
-  link: string | null;
-  note: string | null;
-  children: MindMeisterNode[];
-};
-
-export function mindMeisterToTree(mm: MindMeisterNode): TreeSkeleton | null {
-  let tree = null;
-  const parents: Record<string, TreeSkeleton> = {}; // key id, value - parent
-  const stack = [mm];
-  while (stack.length) {
-    const mmNode = stack.pop();
-    if (!mmNode) {
-      return null;
-    }
-    const treeNode: TreeSkeleton = {
-      id: String(mmNode.id),
-      title: mmNode.title,
-      children: []
-    };
-    if (parents[mmNode.id]) {
-      parents[mmNode.id].children!.push(treeNode);
-    } else {
-      tree = treeNode;
-    }
-    for (const child of mmNode.children) {
-      stack.push(child);
-      parents[child.id] = treeNode;
-    }
-  }
-
-  return tree;
-}
