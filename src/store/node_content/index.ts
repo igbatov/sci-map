@@ -7,7 +7,6 @@ import { State as UserState } from "@/store/user";
 export type NodeContent = {
   nodeID: string;
   content: string;
-  resourceIds: Array<string>;
 };
 
 // user private comment
@@ -41,7 +40,6 @@ export const actions = {
 export const EmptyNodeContent = {
   nodeID: "",
   content: "",
-  resourceIds: []
 } as NodeContent;
 
 function createContentIfNotExist(
@@ -81,52 +79,6 @@ export const store = {
       nodeID: string
     ): NodeContent {
       return state.nodeContents[nodeID];
-    },
-
-    /**
-     *
-     * @param commit
-     * @param state
-     * @param v
-     */
-    async [actions.removeNodeResource](
-      { commit, state }: { commit: Commit; state: State },
-      v: { nodeID: string; resourceID: string }
-    ) {
-      // remove from DB
-      const err = await api.update({
-        [`node_content/${v.nodeID}/resourceIds/${v.resourceID}`]: null
-      });
-      if (err) {
-        printError("removeNodeResource: api.update error", { err });
-        return;
-      }
-
-      // add to local store
-      commit(`${mutations.REMOVE_NODE_RESOURCE}`, v);
-    },
-
-    /**
-     *
-     * @param commit
-     * @param state
-     * @param v
-     */
-    async [actions.addNodeResource](
-      { commit, state }: { commit: Commit; state: State },
-      v: { nodeID: string; resourceID: string }
-    ) {
-      // remove from DB
-      const err = await api.update({
-        [`node_content/${v.nodeID}/resourceIds/${v.resourceID}`]: true
-      });
-      if (err) {
-        printError("addNodeResource: api.update error", { err });
-        return;
-      }
-
-      // add to local store
-      commit(`${mutations.ADD_NODE_RESOURCE}`, v);
     },
 
     /**
@@ -234,41 +186,5 @@ export const store = {
       createCommentIfNotExist(state.userNodeComments, v.nodeID);
       state.userNodeComments[v.nodeID].comment = v.comment;
     },
-
-    /**
-     * REMOVE_NODE_RESOURCE
-     * @param state
-     * @param v
-     */
-    [mutations.REMOVE_NODE_RESOURCE](
-      state: State,
-      v: { nodeID: string; resourceID: string }
-    ) {
-      if (
-        !state.nodeContents[v.nodeID] ||
-        !state.nodeContents[v.nodeID].resourceIds
-      ) {
-        return;
-      }
-      const ind = state.nodeContents[v.nodeID].resourceIds.indexOf(
-        v.resourceID
-      );
-      if (ind == -1) {
-        return;
-      }
-      state.nodeContents[v.nodeID].resourceIds.splice(ind, 1);
-    },
-    /**
-     * ADD_NODE_RESOURCE
-     * @param state
-     * @param v
-     */
-    [mutations.ADD_NODE_RESOURCE](
-      state: State,
-      v: { nodeID: string; resourceID: string }
-    ) {
-      createContentIfNotExist(state.nodeContents, v.nodeID);
-      state.nodeContents[v.nodeID].resourceIds.push(v.resourceID);
-    }
   }
 };

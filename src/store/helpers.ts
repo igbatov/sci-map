@@ -53,7 +53,7 @@ export async function fetchPins(user: firebase.User | null) {
   store.commit(`pin/${pinMutations.SET_PINS}`, pins);
 }
 
-export async function fetchPreconditions(user: firebase.User | null) {
+export async function initPreconditions(user: firebase.User | null) {
   let [preconditions, err] = await api.getPreconditions(user);
   if (preconditions == null || err) {
     console.error(err);
@@ -99,7 +99,6 @@ export async function fetchNodeContents(user: firebase.User | null) {
     nodeContents[i] = {
       nodeID: nodeContent[i].nodeID,
       content: nodeContent[i].content,
-      resourceIds: nodeContent[i].resourceIds ? Object.keys(nodeContent[i].resourceIds) : []
     } as NodeContent;
   }
 
@@ -126,6 +125,6 @@ export async function fetchNodeContents(user: firebase.User | null) {
 export async function initData(user: firebase.User | null) {
   await initMap(user);
   await fetchPins(user);
-  await fetchPreconditions(user);
+  await initPreconditions(user);
   await fetchNodeContents(user);
 }

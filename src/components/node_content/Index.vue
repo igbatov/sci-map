@@ -36,14 +36,6 @@
             />
             </div>
           </div>
-          <!-- sources -->
-<!--          <h3>Sources</h3>-->
-<!--          <SectionResources-->
-<!--              v-if="selectedNodeContent"-->
-<!--              :node-id="selectedNode.id"-->
-<!--              :resources="resources"-->
-<!--              :resourceIds="selectedNodeContent.resourceIds"-->
-<!--          />-->
 
           <!-- Preconditions section -->
           <h3><i>based on</i></h3>
