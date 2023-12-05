@@ -8,17 +8,21 @@
 <script lang="ts">
 import InputText from "primevue/inputtext";
 import { search } from "@/tools/textsearch";
+import { mutations as searchMutations } from "@/store/search_result";
+import {actions, useStore} from "@/store";
 
 export default {
   name: "TextSearch",
   components: {
     InputText,
   },
+
   setup() {
+    const store = useStore();
     return {
       doSearch: async (value: string) => {
         const res = await search(value)
-        console.log(res)
+        store.commit(`searchResult/${searchMutations.SET_NODE_IDS}`, res);
         return res
       },
     }

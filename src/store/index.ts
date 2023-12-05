@@ -39,6 +39,10 @@ import {
   State as NodeContentState
 } from "./node_content";
 
+import {
+  store as searchResult,
+} from "./search_result";
+
 import api from "@/api/api";
 import { initData } from "./helpers";
 import { MapNode, Point } from "@/types/graphics";
@@ -449,7 +453,8 @@ export const store = createStore<State>({
     user: userStore,
     zoomPan: zoomPanStore,
     history: historyStore,
-    nodeContent: nodeContentStore
+    nodeContent: nodeContentStore,
+    searchResult: searchResult,
   }
 });
 
