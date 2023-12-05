@@ -1,23 +1,32 @@
 <template>
   <div :class="$style.wrapper">
     <div v-if="email">
-      {{ email }}
-      <Feedback />
-      <EditMode />
-      <span v-if="editModeOn">
-        <CutPaste v-if="isNodeSelected" />
-        <AddNode />
-        <RemoveNode v-if="isNodeSelected" />
-      </span>
-      <AddPrecondition
-        v-if="isNodeSelected"
-        :clickedTitleId="clickedTitleId"
-        @select-precondition-is-on="$emit('select-precondition-is-on')"
-        @select-precondition-is-off="$emit('select-precondition-is-off')"
-      />
-      <PinNode v-if="isNodeSelected && !isPinned" />
-      <UnpinNode v-if="isNodeSelected && isPinned" />
-      <button @click="signOut">Sign Out</button>
+      <div class="p-grid">
+        <div class="p-col">
+          <TextSearch />
+        </div>
+        <div class="p-col">
+          {{ email }}
+        </div>
+      </div>
+      <div class="p-grid">
+        <Feedback />
+        <EditMode />
+        <span v-if="editModeOn">
+          <CutPaste v-if="isNodeSelected" />
+          <AddNode />
+          <RemoveNode v-if="isNodeSelected" />
+        </span>
+        <AddPrecondition
+          v-if="isNodeSelected"
+          :clickedTitleId="clickedTitleId"
+          @select-precondition-is-on="$emit('select-precondition-is-on')"
+          @select-precondition-is-off="$emit('select-precondition-is-off')"
+        />
+        <PinNode v-if="isNodeSelected && !isPinned" />
+        <UnpinNode v-if="isNodeSelected && isPinned" />
+        <button @click="signOut">Sign Out</button>
+      </div>
     </div>
     <button v-else @click="signIn">
       Sign In
@@ -37,6 +46,7 @@ import EditMode from "./EditMode";
 import UnpinNode from "@/components/menu/UnpinNode";
 import CutPaste from "@/components/menu/CutPaste";
 import Feedback from "@/components/menu/Feedback";
+import TextSearch from "@/components/menu/Textsearch";
 
 export default {
   name: "Menu",
@@ -48,7 +58,8 @@ export default {
     AddNode,
     AddPrecondition,
     RemoveNode,
-    EditMode
+    EditMode,
+    TextSearch
   },
   props: {
     clickedTitleId: {

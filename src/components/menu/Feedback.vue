@@ -2,10 +2,10 @@
   <Button iconPos="right" @click="send">
     <img
       alt="logo"
-      src="../../assets/images/telegram.svg"
+      src="../../assets/images/discord-icon-svgrepo-com.svg"
       style="width: 20px"
     />
-    <span class="p-ml-2 p-text-bold">give us feedback!</span>
+    <span class="p-ml-2 p-text-bold">chat</span>
   </Button>
 </template>
 
