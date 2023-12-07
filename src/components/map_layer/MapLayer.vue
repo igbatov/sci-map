@@ -28,9 +28,10 @@
       :key="mapNode.id"
       font-family="Roboto"
       :font-size="fontSize"
-      :font-weight="selectedNodeId && selectedNodeId == mapNode.id ? 'bold' : 'normal'"
-      :fill="(selectedNodeId && selectedNodeId == mapNode.id) || (selectedNodePreconditionIds?.length>0 && selectedNodePreconditionIds?.indexOf(mapNode.id) != -1) ? '#ffa500' : fontColor"
+      :font-weight="textWeight(mapNode.id, selectedNodeId)"
+      :fill="textColor(mapNode.id, selectedNodeId)"
       :fill-opacity="fontOpacity"
+      :text-decoration="textDecoration(mapNode.id)"
       class="text"
   >
     <tspan
@@ -64,7 +65,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, toRef, onMounted, onUnmounted } from "vue";
+import {defineComponent, PropType, toRef, onMounted, onUnmounted, computed} from "vue";
 import { MapNode } from "@/types/graphics";
 import {
   polygonToPath,
@@ -122,7 +123,8 @@ export default defineComponent({
         typeof prop === "string" || prop === null,
       required: true
     },
-    selectedNodePreconditionIds: Object as PropType<string[]>
+    selectedNodePreconditionIds: Object as PropType<string[]>,
+    searchResultNodeIDs: Object as PropType<string[]>,
   },
 
   setup(props, ctx) {
@@ -159,9 +161,50 @@ export default defineComponent({
       map.removeEventListener("mouseup", mouseUp);
     });
 
+    const searchResultNodeIDsMap = computed(() =>{
+      const map = {} as Record<string, boolean>
+      if (!props.searchResultNodeIDs) {
+        return map
+      }
+      for (const id of props.searchResultNodeIDs) {
+        map[id] = true
+      }
+      return map;
+    });
+
     return {
       TITLE_PREFIX,
       titleBox,
+      textColor: (nodeID: string, selectedNodeId: string) => {
+        if (selectedNodeId && selectedNodeId == nodeID) {
+          return '#ffa500'
+        }
+        if (props.selectedNodePreconditionIds && props.selectedNodePreconditionIds?.indexOf(nodeID) != -1) {
+          return '#ffa500'
+        }
+        if (searchResultNodeIDsMap.value[nodeID]) {
+          return 'red'
+        }
+
+        return props.fontColor
+      },
+      textWeight: (nodeID: string, selectedNodeId: string) => {
+        if (selectedNodeId && selectedNodeId == nodeID) {
+          return 'bold'
+        }
+        if (searchResultNodeIDsMap.value[nodeID]) {
+          return 'bold'
+        }
+
+        return 'normal'
+      },
+      textDecoration: (nodeID: string) => {
+        if (searchResultNodeIDsMap.value[nodeID]) {
+          return 'underline'
+        }
+
+        return 'none'
+      },
       titleClick: (nodeID: string) => {
         ctx.emit("title-click", {
           id: nodeID

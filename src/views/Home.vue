@@ -13,6 +13,8 @@
     :selectedNodeId="selectedNodeId"
     :selectedNodePreconditionIds="selectedNodePreconditionIds"
     :pin-nodes="pinNodes"
+    :searchResultPinNodes="searchResultPinNodes"
+    :searchResultNodeIDs="searchResultNodeIDs"
     @title-dragging="nodeDragging"
     @title-click="titleClick"
     @title-over="titleOver"
@@ -68,6 +70,7 @@ export default defineComponent({
     const treeState = store.state.tree;
     const zoomPanState = store.state.zoomPan;
     const pinState = store.state.pin;
+    const searchResultState = store.state.searchResult;
     const clickedTitleId = ref("-1");
     let selectPreconditionIsOn = false;
     let titleOver = false;
@@ -197,6 +200,9 @@ export default defineComponent({
     );
 
     return {
+      /**
+       * pinNodes
+       */
       pinNodes: computed(() => {
         if (centralNodeId.value == null) {
           return [];
@@ -233,6 +239,54 @@ export default defineComponent({
 
         return result;
       }),
+
+      /**
+       * searchResultNodeIDs
+       */
+      searchResultNodeIDs: computed(()=>{
+        return searchResultState.nodeIDs
+      }),
+
+      /**
+       * searchResultPinNodes
+       */
+      searchResultPinNodes: computed(() => {
+        if (centralNodeId.value == null) {
+          return [];
+        }
+        const searchResultNodeIDs = clone(searchResultState.nodeIDs);
+        if (!searchResultNodeIDs) {
+          return [];
+        }
+
+        // remove pins that already exists on visibleLayers
+        for (const layer of visibleLayers.value) {
+          for (const nodeID in layer) {
+            const node = layer[nodeID];
+            if (node.title != "") {
+              const ind = searchResultNodeIDs.indexOf(node.id);
+              if (ind != -1) {
+                searchResultNodeIDs.splice(ind, 1);
+              }
+            }
+          }
+        }
+
+        const searchResultMapNodes = findMapNodes(searchResultNodeIDs, treeState.mapNodeLayers);
+        const result = [];
+        for (const searchResultMapNode of searchResultMapNodes) {
+          const cl = clone(searchResultMapNode);
+          cl.center = zoomAndPanPoint(
+            searchResultMapNode.center,
+            zoomPanState.zoom,
+            zoomPanState.pan
+          );
+          result.push(cl);
+        }
+
+        return result;
+      }),
+
       viewBox,
       editModeOn: computed(() => store.state.editModeOn),
       selectedNodeId: computed(() => treeState.selectedNodeId),

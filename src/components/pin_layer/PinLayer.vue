@@ -14,7 +14,7 @@
     :key="node.id"
     :x="node.center.x"
     :y="node.center.y"
-    color="pink"
+    :color="color"
   />
   <SVGTextBox
     v-for="node of visiblePinNodes"
@@ -27,9 +27,10 @@
     :line-height="8"
     :max-char-per-line="10"
     font-family="Roboto"
-    :font-size="8"
-    font-weight="normal"
-    color="pink"
+    :font-size=fontSize
+    :font-weight="fontWeight"
+    :color="color"
+    :text-decoration="textDecoration"
   />
   <rect
     v-for="node of pinNodes"
@@ -79,7 +80,19 @@ export default defineComponent({
       validator: (prop: string | null) =>
         typeof prop === "string" || prop === null,
       required: true
-    }
+    },
+    color: {
+      type: String,
+    },
+    fontWeight: {
+      type: String,
+    },
+    fontSize: {
+      type: Number,
+    },
+    textDecoration: {
+      type: String,
+    },
   },
   setup(props, ctx) {
     const allPinNodes = computed(() => {

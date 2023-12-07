@@ -10,6 +10,7 @@
       :font-opacity="fontOpacity(index)"
       :selectedNodeId="selectedNodeId"
       :selectedNodePreconditionIds="selectedNodePreconditionIds"
+      :searchResultNodeIDs="searchResultNodeIDs"
       :map-id="mapID"
       @title-dragging="draggingNode"
       @title-click="titleClick"
@@ -25,6 +26,21 @@
     />
     <PinLayer
       :pinNodes="pinNodes"
+      color="pink"
+      :font-size=8
+      font-weight="normal"
+      text-decoration="none"
+      :selectedNodeId="selectedNodeId"
+      @title-click="titleClick"
+      @title-over="titleOver"
+      @title-leave="titleLeave"
+    />
+    <PinLayer
+      :pinNodes="searchResultPinNodes"
+      color="red"
+      :font-size=10
+      font-weight="bold"
+      text-decoration="underline"
       :selectedNodeId="selectedNodeId"
       @title-click="titleClick"
       @title-over="titleOver"
@@ -76,7 +92,9 @@ export default defineComponent({
       required: true
     },
     selectedNodePreconditionIds: Object as PropType<string[]>,
-    pinNodes: Object as PropType<MapNode[]>
+    pinNodes: Object as PropType<MapNode[]>,
+    searchResultPinNodes: Object as PropType<MapNode[]>,
+    searchResultNodeIDs: Object as PropType<string[]>,
   },
   setup(props, ctx) {
     onMounted(() => {

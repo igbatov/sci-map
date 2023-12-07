@@ -14,9 +14,13 @@ export const store = {
   },
   mutations: {
     [mutations.SET_NODE_IDS](state: State, nodeIDs: Array<string>) {
-      console.log(nodeIDs)
-
-      state.nodeIDs = nodeIDs;
+      // show only first 20 results
+      if (nodeIDs.length>20) {
+        // TODO: show notification that only first 20 results are shown
+        state.nodeIDs = nodeIDs.slice(0, 20)
+      } else {
+        state.nodeIDs = nodeIDs;
+      }
     },
   },
 }

@@ -40,7 +40,8 @@ import {
 } from "./node_content";
 
 import {
-  store as searchResult,
+  store as searchResultStore,
+  State as SearchResultState
 } from "./search_result";
 
 import api from "@/api/api";
@@ -71,6 +72,7 @@ export type State = {
   zoomPan: ZoomPanState;
   history: HistoryState;
   nodeContent: NodeContentState;
+  searchResult: SearchResultState;
 };
 
 export const actions = {
@@ -454,7 +456,7 @@ export const store = createStore<State>({
     zoomPan: zoomPanStore,
     history: historyStore,
     nodeContent: nodeContentStore,
-    searchResult: searchResult,
+    searchResult: searchResultStore,
   }
 });
 
