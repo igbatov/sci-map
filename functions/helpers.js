@@ -3,7 +3,22 @@
 // (NEW_RECORD_GAP is in milliseconds)
 const NEW_RECORD_GAP = 7*24*60*60*1000 // days*hours*minutes*seconds*1000
 
-exports.upsertChange = function (change, context, action, firestore){
+// add new change
+exports.insertChange = function (firestore, context, change, action, attributes){
+  const now = new Date().getTime();
+  return firestore
+    .collection('changes')
+    .add({
+      user_id: context.auth.token["user_id"],
+      node_id: change.after.ref.parent.getKey(),
+      action: action,
+      attributes: attributes,
+      timestamp: now,
+    })
+}
+
+// update last record for this node_id and user_id or create new one
+exports.upsertChange = function (firestore, context, change, action, attributes){
   return firestore
     .collection('changes')
     .where('node_id', '==', change.after.ref.parent.getKey())
@@ -15,28 +30,18 @@ exports.upsertChange = function (change, context, action, firestore){
       const now = new Date().getTime();
       if ( result.docs.length === 0 || result.docs[0].data()['timestamp'] < now - NEW_RECORD_GAP ){
         // if no history for this user or only old one - create new record
-        return firestore
-          .collection('changes')
-          .add({
-            user_id: context.auth.token["user_id"],
-            node_id: change.after.ref.parent.getKey(),
-            action: action,
-            attributes: {
-              value: change.after.val(),
-            },
-            timestamp: now,
-          })
+        exports.insertChange(firestore, context, change, action, attributes)
       } else {
         // merge current change into latest one
         return firestore
           .collection('changes')
           .doc(result.docs[0].id)
           .update({
-            attributes: {
-              value: change.after.val(),
-            },
+            attributes: attributes,
             timestamp: now,
           })
       }
     });
 }
+
+

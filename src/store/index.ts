@@ -55,7 +55,7 @@ import {
 import NewErrorKV from "@/tools/errorkv";
 import { addVector, convertPosition } from "@/tools/graphics";
 import { DBNode } from "@/api/types";
-import { debounce } from "lodash";
+import {clone, debounce} from "lodash";
 import { printError } from "@/tools/utils";
 import firebase from "firebase";
 
@@ -367,21 +367,21 @@ export const store = createStore<State>({
       const parentID = parent.id;
       const node = (await api.getNode(nodeID)) as DBNode;
       // collect all children id recursively
-      const allChildrenID = node.children
+      const allChildrenID = clone(node.children)
       const allChildrenIDMap = {} as Record<string, DBNode>
       while (allChildrenID.length > 0) {
         const id = allChildrenID.pop()
-        if (!state.tree.nodeRecord[id!] || !state.tree.nodeRecord[id!].node || !state.tree.nodeRecord[id!].parent) {
+        if (!id || !state.tree.nodeRecord[id!] || !state.tree.nodeRecord[id!].node || !state.tree.nodeRecord[id!].parent) {
           continue
         }
-        allChildrenIDMap[id!] = {
-          id: id!,
-          parentID: state.tree.nodeRecord[id!].parent!.id,
-          name: state.tree.nodeRecord[id!].node.title,
-          children: state.tree.nodeRecord[id!].node.children.map((node)=>node.id),
-          position: state.tree.nodeRecord[id!].node.position,
+        allChildrenIDMap[id] = {
+          id: id,
+          parentID: state.tree.nodeRecord[id].parent!.id,
+          name: state.tree.nodeRecord[id].node.title,
+          children: state.tree.nodeRecord[id].node.children.map((node)=>node.id),
+          position: state.tree.nodeRecord[id].node.position,
         }
-        allChildrenID.push(...state.tree.nodeRecord[id!].node.children.map((node)=>node.id));
+        allChildrenID.push(...state.tree.nodeRecord[id].node.children.map((node)=>node.id));
       }
       // move node from /map to /trash
       const oldKey = await api.findKeyOfChild(parent.id, nodeID);
