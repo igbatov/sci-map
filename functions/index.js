@@ -9,11 +9,13 @@ const firestore = admin.firestore();
 
 const { upsertChange } = require('./helpers');
 const { GetOnNodeChildrenChange, GetOnNodeParentChange} = require('./map_change');
+const { GetOnPreconditionChange } = require('./precondition_change');
 const { onUserRoleChange } = require('./user_role');
 
 exports.onUserRoleChange = onUserRoleChange
 exports.onNodeChildrenChange = GetOnNodeChildrenChange(firestore)
 exports.onNodeParentChange = GetOnNodeParentChange(firestore)
+exports.onPreconditionChange = GetOnPreconditionChange(firestore)
 
 // [START onNodeContentChange]
 // Listens for changes in /node_content/{nodeId}/content and log them to firestore "changes" collection

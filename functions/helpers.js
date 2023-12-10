@@ -1,6 +1,7 @@
 // if delta between previous change and current change is less than NEW_RECORD_GAP
 // then two changes will be merged into one
 // (NEW_RECORD_GAP is in milliseconds)
+const {logger} = require("firebase-functions");
 const NEW_RECORD_GAP = 7*24*60*60*1000 // days*hours*minutes*seconds*1000
 
 // add new change
@@ -42,6 +43,31 @@ exports.upsertChange = function (firestore, context, change, action, attributes)
           })
       }
     });
+}
+
+exports.getArrayDiff = function(arr1, arr2) {
+  const beforeMap = {}
+  for (const idx in arr1) {
+    beforeMap[arr1[idx]] = true
+  }
+  const afterMap = {}
+  for (const idx in arr2) {
+    afterMap[arr2[idx]] = true
+  }
+  const added = []
+  for (const id in afterMap) {
+    if (!beforeMap[id]) {
+      added.push(id)
+    }
+  }
+  const removed = []
+  for (const id in beforeMap) {
+    if (!afterMap[id]) {
+      removed.push(id)
+    }
+  }
+
+  return [added, removed]
 }
 
 
