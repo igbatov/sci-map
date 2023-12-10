@@ -167,13 +167,36 @@ You can deploy it in production with
 firebase deploy --only storage
 ```
 
-### Storage rules
+### Realtime database rules
 Sits in file database.rules.json
 You can deploy it in production with
 ```shell
 firebase deploy --only database
 ```
+
+### Firestore rules
+Sits in file firestore.rules
+You can deploy it in production with
+```shell
+firebase deploy --only firestore
+```
+### Firestore indexes
+Sits in file firestore.indexes.json
+You sync it from production with
+```shell
+firebase firestore:indexes > firestore.indexes.json
+```
+
 ## Firebase function
+Sits in ./function index.js (and included in it files)
+For now we use them mainly to log in "firestore" changes that was made in "realtime database"
+### Production logs
+[Google Cloud UI](https://console.cloud.google.com/logs/query;query=resource.type%3D%22cloud_function%22;storageScope=storage,projects%2Fsci-map-1982%2Flocations%2Fglobal%2Fbuckets%2F_Default%2Fviews%2F_Default,projects%2Fsci-map-1982%2Flocations%2Fglobal%2Fbuckets%2F_Required%2Fviews%2F_AllLogs,projects%2Fsci-map-1982%2Flocations%2Fglobal%2Fbuckets%2F_Default%2Fviews%2F_AllLogs;cursorTimestamp=2023-12-10T06:55:34.484210558Z;duration=PT1H?project=sci-map-1982)
+or 
+```shell
+firebase functions:log
+```
+
 ### Install firebase-tools (once)
 ```shell
 $ npm install -g firebase-tools

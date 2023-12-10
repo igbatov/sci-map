@@ -14,7 +14,7 @@
     },
     "trash": {
       ".read": true,
-      ".write": false
+      ".write": "newData.exists() && !data.exists()"
     },
     "user_data": {
       "$uid": {
