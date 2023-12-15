@@ -45,12 +45,11 @@ export default {
         collapsed.value = true
       }
       unsubscribe()
+      unsubscribe = ()=>{ /**/ }
       if (collapsed.value == false) {
         unsubscribe = await api.subscribeNodeChangeLog(props.nodeId, (changeLogs)=>{
           changes.splice(0, changes.length, ...changeLogs)
         })
-      } else {
-        unsubscribe = ()=>{ /**/ }
       }
     });
     return {
