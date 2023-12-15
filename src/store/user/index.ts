@@ -1,4 +1,4 @@
-import firebase from "firebase";
+import firebase from "firebase/compat";
 import api from "@/api/api";
 import { Commit } from "vuex";
 

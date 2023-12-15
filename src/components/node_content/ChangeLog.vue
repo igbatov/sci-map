@@ -1,5 +1,5 @@
 <template>
-  <Fieldset legend="History" :toggleable="true" :collapsed="collapsed" @update:collapsed="toggle($event)">
+  <Fieldset legend="change log" :toggleable="true" :collapsed="collapsed" @update:collapsed="toggle($event)">
     <div class="m-0">
       <Card
           v-for="(event, i) of changes"
@@ -10,7 +10,7 @@
           {{ event.userID }}
         </template>
         <template #subtitle>
-          {{ event.timestamp }}
+          {{ event.timestamp }} / {{ event.action }}
         </template>
         <template #content>
           {{ event.attributes.value }}
@@ -47,7 +47,7 @@ export default {
       unsubscribe()
       unsubscribe = ()=>{ /**/ }
       if (collapsed.value == false) {
-        unsubscribe = await api.subscribeNodeChangeLog(props.nodeId, (changeLogs)=>{
+        unsubscribe = await api.subscribeChangeLog(['name', 'content'], [props.nodeId], (changeLogs)=>{
           changes.splice(0, changes.length, ...changeLogs)
         })
       }

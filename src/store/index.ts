@@ -57,7 +57,7 @@ import { addVector, convertPosition } from "@/tools/graphics";
 import { DBNode } from "@/api/types";
 import {clone, debounce} from "lodash";
 import { printError } from "@/tools/utils";
-import firebase from "firebase";
+import firebase from "firebase/compat";
 
 export type State = {
   // root states

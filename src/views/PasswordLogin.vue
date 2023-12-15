@@ -9,7 +9,7 @@
 import { defineComponent } from "vue";
 import api from "@/api/api";
 import { mutations } from "@/store/user";
-import firebase from "firebase";
+import firebase from "firebase/compat";
 import { useStore } from "@/store";
 
 export default defineComponent({

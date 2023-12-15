@@ -25,6 +25,7 @@
         />
         <PinNode v-if="isNodeSelected && !isPinned" />
         <UnpinNode v-if="isNodeSelected && isPinned" />
+        <MapChangeLog/>
         <button @click="signOut">Sign Out</button>
       </div>
     </div>
@@ -47,6 +48,7 @@ import UnpinNode from "@/components/menu/UnpinNode";
 import CutPaste from "@/components/menu/CutPaste";
 import Feedback from "@/components/menu/Feedback";
 import TextSearch from "@/components/menu/Textsearch";
+import MapChangeLog from "@/components/menu/MapChangeLog";
 
 export default {
   name: "Menu",
@@ -59,7 +61,8 @@ export default {
     AddPrecondition,
     RemoveNode,
     EditMode,
-    TextSearch
+    TextSearch,
+    MapChangeLog,
   },
   props: {
     clickedTitleId: {

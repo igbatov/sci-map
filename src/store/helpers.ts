@@ -1,4 +1,4 @@
-import firebase from "firebase";
+import firebase from "firebase/compat";
 import api from "@/api/api";
 import { mutations as treeMutations, actions as treeActions } from "@/store/tree";
 import { mutations as pinMutations } from "@/store/pin";
