@@ -10,6 +10,7 @@ import { convertChildren } from "./helpers";
 import { NodeComment, NodeContent } from "@/store/node_content";
 import emulatorConfig from "../../firebase.json";
 import { debounce } from "lodash";
+import {ChangeLog} from "@/store/change_log";
 
 const MAP_FROM_STORAGE = false; // is storage is source for map (or database)
 let FUNCTION_DOMAIN = "https://us-central1-sci-map-1982.cloudfunctions.net/";
@@ -63,6 +64,9 @@ export default {
       firebase
         .storage()
         .useEmulator("localhost", emulatorConfig.emulators.storage.port);
+      firebase
+        .firestore()
+        .useEmulator("localhost", emulatorConfig.emulators.firestore.port);
       FUNCTION_DOMAIN = "http://localhost:5001/sci-map-1982/us-central1/";
     }
   },
@@ -366,5 +370,32 @@ export default {
     }
 
     return [snapshot.val(), null];
+  },
+
+  async subscribeNodeChangeLog(nodeID: string, cb:(changeLogs: Array<ChangeLog>)=>void) {
+    return firebase
+      .firestore()
+      .collection(`changes`)
+      .where("node_id", "==", nodeID)
+      .orderBy("timestamp", "desc")
+      .onSnapshot((snapshot) => {
+        const changeLogs = [] as Array<ChangeLog>
+        snapshot.forEach((doc) => {
+          changeLogs.push({
+            nodeID: doc.get('node_id'),
+            userID: doc.get('user_id'),
+            timestamp: doc.get('timestamp'),
+            action: doc.get('action'),
+            attributes: {
+              value: doc.get('attributes.value'),
+              valueBefore: doc.get('attributes.valueBefore'),
+              valueAfter: doc.get('attributes.valueAfter'),
+              added: doc.get('attributes.added'),
+              removed: doc.get('attributes.removed'),
+            },
+          })
+        })
+        cb(changeLogs)
+      });
   }
 };

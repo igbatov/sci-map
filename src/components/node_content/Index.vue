@@ -43,6 +43,9 @@
               v-if="selectedNodeContent"
               :node-id="selectedNode.id"
           />
+
+          <!-- ChangeLog section -->
+          <ChangeLog :node-id="selectedNode.id" />
         </div>
       </div>
 
@@ -65,13 +68,15 @@ import { clone, printError } from "@/tools/utils";
 import { useConfirm } from "primevue/useconfirm";
 import api from "@/api/api";
 import Markdown from "./Markdown.vue";
+import ChangeLog from "./ChangeLog.vue";
 
 export default {
   name: "NodeContent",
   components: {
     Markdown,
     TextArea,
-    SectionPreconditions
+    SectionPreconditions,
+    ChangeLog,
   },
   props: {
     show: {

@@ -38,7 +38,6 @@ import Button from "primevue/button";
 import { useStore } from "@/store";
 import { computed, ref, watch } from "vue";
 import api from "@/api/api";
-import { Tree } from "@/types/graphics";
 
 export default {
   name: "AddPrecondition",
