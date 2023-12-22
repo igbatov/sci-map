@@ -22,10 +22,10 @@
         {{ event.userID }}
       </template>
       <template #subtitle>
-        {{ event.timestamp }} / {{ event.action }}
+        {{ event.timestamp }}
       </template>
       <template #content>
-        {{ event.attributes.value }}
+        {{ event.attributes.valueAfter }}
       </template>
     </Card>
 
@@ -36,8 +36,8 @@
 <script lang="ts">
 import Dialog from "primevue/dialog";
 import {reactive, ref} from "vue";
-import {ChangeLog} from "@/store/change_log";
-import api from "@/api/api";
+import {ActionType, ChangeLog} from "@/store/change_log";
+import {subscribeChangeLog} from "@/api/change_log";
 import Card from "primevue/card";
 
 export default {
@@ -49,7 +49,7 @@ export default {
   setup() {
     const addDialogVisible = ref(false);
     const changes = reactive([]) as Array<ChangeLog>
-    api.subscribeChangeLog(['parentID'], [], (changeLogs)=>{
+    subscribeChangeLog([ActionType.ParentID], [], (changeLogs)=>{
       changes.splice(0, changes.length, ...changeLogs)
     })
     return {

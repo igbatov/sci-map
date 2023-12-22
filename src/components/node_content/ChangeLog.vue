@@ -23,9 +23,9 @@
 <script lang="ts">
 import Fieldset from 'primevue/fieldset';
 import Card from 'primevue/card';
-import api from "@/api/api";
+import {subscribeChangeLog} from "@/api/change_log";
 import {ref, reactive, watch} from "vue";
-import { ChangeLog } from '@/store/change_log';
+import {ActionType, ChangeLog} from '@/store/change_log';
 
 export default {
   name: "ChangeLog",
@@ -47,7 +47,7 @@ export default {
       unsubscribe()
       unsubscribe = ()=>{ /**/ }
       if (collapsed.value == false) {
-        unsubscribe = await api.subscribeChangeLog(['name', 'content'], [props.nodeId], (changeLogs)=>{
+        unsubscribe = await subscribeChangeLog([ActionType.Name, ActionType.Content], [props.nodeId], (changeLogs)=>{
           changes.splice(0, changes.length, ...changeLogs)
         })
       }

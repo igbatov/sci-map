@@ -21,6 +21,12 @@
         ".read": "$uid === auth.uid",
         ".write": false
       }
+    },
+    "public_user_data": {
+      "$uid": {
+        ".read": true,
+        ".write": "$uid === auth.uid"
+      }
     }
   }
 }

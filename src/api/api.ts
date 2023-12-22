@@ -1,17 +1,20 @@
 import firebase from "firebase/compat";
-import { Tree } from "@/types/graphics";
-import { ErrorKV } from "@/types/errorkv";
+import {Tree} from "@/types/graphics";
+import {ErrorKV} from "@/types/errorkv";
 import NewErrorKV from "../tools/errorkv";
 import axios from "axios";
-import { Pins } from "@/store/pin";
-import { Preconditions } from "src/store/precondition";
-import { DBNode } from "@/api/types";
-import { convertChildren } from "./helpers";
-import { NodeComment, NodeContent } from "@/store/node_content";
+import {Pins} from "@/store/pin";
+import {Preconditions} from "src/store/precondition";
+import {DBNode} from "@/api/types";
+import {convertChildren} from "./helpers";
+import {NodeComment, NodeContent} from "@/store/node_content";
 import emulatorConfig from "../../firebase.json";
-import { debounce } from "lodash";
-import {ChangeLog} from "@/store/change_log";
-import { collection, query, where, and, orderBy, getFirestore, onSnapshot, connectFirestoreEmulator } from "firebase/firestore";
+import {debounce} from "lodash";
+
+import {
+  connectFirestoreEmulator,
+  getFirestore,
+} from "firebase/firestore";
 import {QueryFilterConstraint} from "@firebase/firestore";
 
 const MAP_FROM_STORAGE = false; // is storage is source for map (or database)
@@ -104,6 +107,10 @@ export default {
     return [map, null];
   },
 
+  /**
+   * TODO: use it to cut costs on DB reads from read-only users
+   * @param user
+   */
   async getMapFromStorage(
     user: firebase.User | null
   ): Promise<[Tree | null, ErrorKV]> {
@@ -204,7 +211,7 @@ export default {
           return;
         }
         const node = snap.val() as DBNode;
-        console.log('got update for map node', node)
+        // console.log('got update for map node', node)
         node.id = node.id.toString();
         node.children = convertChildren(node.children);
         cb(node);
@@ -220,7 +227,7 @@ export default {
           return;
         }
         const node = snap.val() as { nodeID: string; content: string };
-        console.log('got update for node content', node)
+        // console.log('got update for node content', node)
         cb(node);
       }
     );
@@ -234,7 +241,7 @@ export default {
           return;
         }
         const preconditionIDs = snap.val() as Array<string>;
-        console.log('got update for node precondition', 'nodeID', nodeID, 'preconditionIDs', preconditionIDs)
+        // console.log('got update for node precondition', 'nodeID', nodeID, 'preconditionIDs', preconditionIDs)
         cb(nodeID, preconditionIDs);
       }
     );
@@ -285,6 +292,21 @@ export default {
       .database()
       .ref("map/" + node.id)
       .set(node);
+  },
+
+  async setPublicUserData(userID: string, displayName: string | null, discordName: string | null) {
+    try {
+      const res = await firebase
+        .database()
+        .ref("public_user_data/" + userID)
+        .set({
+          displayName,
+          discordName,
+        });
+    } catch(e) {
+      console.log(e)
+    }
+
   },
 
   async getNode(nodeID: string): Promise<DBNode | null> {
@@ -370,39 +392,4 @@ export default {
 
     return [snapshot.val(), null];
   },
-
-  async subscribeChangeLog(actions: Array<string>, nodeIDs: Array<string>, cb:(changeLogs: Array<ChangeLog>)=>void) {
-    const andConditions = [] as Array<QueryFilterConstraint>
-    if (nodeIDs.length) {
-      andConditions.push(where("node_id", "in", nodeIDs))
-    }
-    if (actions.length) {
-      andConditions.push(where("action", "in", actions))
-    }
-    const q = query(
-      collection(getFirestore(), "changes"),
-      and(...andConditions),
-      orderBy("timestamp", "desc")
-    );
-
-    return  onSnapshot(q, (snapshot) => {
-      const changeLogs = [] as Array<ChangeLog>
-      snapshot.forEach((doc) => {
-        changeLogs.push({
-          nodeID: doc.get('node_id'),
-          userID: doc.get('user_id'),
-          timestamp: doc.get('timestamp'),
-          action: doc.get('action'),
-          attributes: {
-            value: doc.get('attributes.value'),
-            valueBefore: doc.get('attributes.valueBefore'),
-            valueAfter: doc.get('attributes.valueAfter'),
-            added: doc.get('attributes.added'),
-            removed: doc.get('attributes.removed'),
-          },
-        })
-      })
-      cb(changeLogs)
-    });
-  }
 };

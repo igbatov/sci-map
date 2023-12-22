@@ -198,6 +198,7 @@ export const store = createStore<State>({
       api.initFirebase();
       firebase.auth().onAuthStateChanged(user => {
         if (user && !user.isAnonymous) {
+          api.setPublicUserData(user.uid, user.displayName, null)
           commit(`user/${userMutations.SET_USER}`, user);
           initData(user);
         } else {

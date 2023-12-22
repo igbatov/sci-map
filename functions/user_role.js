@@ -1,6 +1,6 @@
 
 // [START onUserRoleChange]
-// Listens for changes in /user_role/{uid} and set roles
+// Listens for changes in firestore /user_role/{uid} and set roles
 const {getAuth} = require("firebase-admin/auth");
 const { logger, firestore} = require("firebase-functions");
 const { getDatabase } = require('firebase-admin/database');
