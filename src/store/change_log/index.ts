@@ -8,7 +8,7 @@ export enum ActionType {
 export type ChangeLog = {
   nodeID: string;
   userID: string;
-  timestamp: bigint;
+  timestamp: number;
   action: ActionType;
   attributes: {
     value: any;
@@ -20,7 +20,8 @@ export type ChangeLog = {
 };
 
 export type ChangeLogNodeContent = {
-  timestamp: bigint;
+  timestamp: number;
+  action: ActionType;
 
   userID: string;
   userDisplayName: string;
@@ -33,7 +34,8 @@ export type ChangeLogNodeContent = {
 }
 
 export type ChangeLogNodeName = {
-  timestamp: bigint;
+  timestamp: number;
+  action: ActionType;
 
   userID: string;
   userDisplayName: string;
@@ -46,7 +48,8 @@ export type ChangeLogNodeName = {
 }
 
 export type ChangeLogNodeParent = {
-  timestamp: bigint;
+  timestamp: number;
+  action: ActionType;
 
   userID: string;
   userDisplayName: string;

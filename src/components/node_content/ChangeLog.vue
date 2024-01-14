@@ -7,13 +7,13 @@
           class="mt-3"
       >
         <template #title>
-          {{ event.userID }}
+          {{ (new Date(event.timestamp)).toLocaleDateString() }} {{ (new Date(event.timestamp)).toLocaleTimeString() }}
         </template>
         <template #subtitle>
-          {{ event.timestamp }} / {{ event.action }}
+          {{ event.userDisplayName }} / {{ event.action }} change
         </template>
         <template #content>
-          {{ event.attributes.value }}
+          {{ event.action == ActionType.Name ? event.newName : (event.action == ActionType.Content ? event.newContent : '') }}
         </template>
       </Card>
     </div>
@@ -23,12 +23,17 @@
 <script lang="ts">
 import Fieldset from 'primevue/fieldset';
 import Card from 'primevue/card';
-import {subscribeChangeLog} from "@/api/change_log";
+import {subscribeChangeLogEnriched} from "@/api/change_log";
 import {ref, reactive, watch} from "vue";
-import {ActionType, ChangeLog} from '@/store/change_log';
+import {ActionType, ChangeLogEnriched, ChangeLogNodeParent} from '@/store/change_log';
 
 export default {
   name: "ChangeLog",
+  computed: {
+    ActionType() {
+      return ActionType
+    }
+  },
   props: {
     nodeId: String
   },
@@ -38,7 +43,7 @@ export default {
   },
   setup(props: { nodeId: string }) {
     const collapsed = ref(true)
-    const changes = reactive([]) as Array<ChangeLog>
+    const changes = reactive([]) as Array<ChangeLogEnriched>
     let unsubscribe = ()=>{ /**/ }
     watch(() => [props.nodeId, collapsed.value], async (newArgs, oldArgs) => {
       if (newArgs[0] != oldArgs[0]) {
@@ -47,7 +52,7 @@ export default {
       unsubscribe()
       unsubscribe = ()=>{ /**/ }
       if (collapsed.value == false) {
-        unsubscribe = await subscribeChangeLog([ActionType.Name, ActionType.Content], [props.nodeId], (changeLogs)=>{
+        unsubscribe = await subscribeChangeLogEnriched([ActionType.Name, ActionType.Content], [props.nodeId], (changeLogs)=>{
           changes.splice(0, changes.length, ...changeLogs)
         })
       }
@@ -57,7 +62,7 @@ export default {
       collapsed,
       toggle: (event: any) => {
         collapsed.value = event
-      }
+      },
     }
   }
 }

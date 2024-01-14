@@ -2,7 +2,6 @@ import {ActionType, ChangeLog, ChangeLogEnriched} from "@/store/change_log";
 import {QueryFilterConstraint} from "@firebase/firestore";
 import {and, collection, getFirestore, onSnapshot, orderBy, query, where} from "firebase/firestore";
 import firebase from "firebase/compat";
-import {result} from "lodash";
 
 /**
  * TODO: add limit
@@ -70,8 +69,36 @@ export async function getNodeName(nodeID: string): Promise<Record<string,string>
   return nodeName
 }
 
+/**
+ * @param userID
+ */
+export async function getUserDisplayName(userID: string): Promise<Record<string,string>> {
+  const userName = {} as Record<string, string>;
+  const pr = await firebase
+    .database()
+    .ref(`public_user_data/${userID}/displayName`)
+    .get();
+  if (pr.exists()) {
+    userName[`${userID}`] = pr.val()
+  }
+  return userName
+}
+
+export async function getUserDisplayNames(userIDs: Array<string>): Promise<Record<string, string>> {
+  const fetches = []
+  for (const userID of userIDs) {
+    fetches.push(getUserDisplayName(userID))
+  }
+  const responses = await Promise.all(fetches)
+  const result = {} as Record<string, string>
+  for (const response of responses) {
+    result[Object.keys(response)[0]] = Object.values(response)[0]
+  }
+  return result
+}
+
 // Note: realtime database charges for bandwidth and does not have batch fetch for multiple paths
-// If we someday we switch to Firestore this must be implemented in other way
+// If someday we switch to Firestore this must be implemented in other way
 export async function getNodeNames(nodeIDs: Array<string>): Promise<Record<string, string>> {
   const fetches = []
   for (const nodeID of nodeIDs) {
@@ -104,7 +131,7 @@ function getPathFromNodeName(nodeID: string | null, nodeNames: Record<string, st
  * @param nodeIDs
  * @param cb
  */
-export async function subscribeEnrichedChangeLogEnriched(
+export async function subscribeChangeLogEnriched(
   actions: Array<ActionType>,
   nodeIDs: Array<string>,
   cb:(changeLogsEnriched: Array<ChangeLogEnriched>)=>void,
@@ -126,21 +153,28 @@ export async function subscribeEnrichedChangeLogEnriched(
         }
       }
     }
-    // fetch node user names
+    // fetch node and user names
     const nodeIDs = []
     for (const nodeID in nodeNames) {
       nodeIDs.push(nodeID)
     }
-    getNodeNames(nodeIDs).then((nodeNames)=>{
+    const userIDs = []
+    for (const userID in userNames) {
+      userIDs.push(userID)
+    }
+    Promise.all([getNodeNames(nodeIDs), getUserDisplayNames(userIDs)]).then((resp)=>{
+      const nodeNames = resp[0]
+      const userNames = resp[1]
       const changeLogsEnriched = [] as Array<ChangeLogEnriched>
       changeLogs.forEach((log) => {
         const nodePath = getPathFromNodeName(log.nodeID, nodeNames)
         if (log.action == ActionType.Name) {
           changeLogsEnriched.push({
             timestamp: log.timestamp,
+            action: log.action,
 
             userID: log.userID,
-            userDisplayName: '',
+            userDisplayName: userNames[log.userID],
 
             nodeID: log.nodeID,
             nodeIDPath: nodePath,
@@ -151,9 +185,10 @@ export async function subscribeEnrichedChangeLogEnriched(
         } else if (log.action == ActionType.Content) {
           changeLogsEnriched.push({
             timestamp: log.timestamp,
+            action: log.action,
 
             userID: log.userID,
-            userDisplayName: '',
+            userDisplayName: userNames[log.userID],
 
             nodeID: log.nodeID,
             nodeIDPath: nodePath,
@@ -166,9 +201,10 @@ export async function subscribeEnrichedChangeLogEnriched(
           const afterPath = getPathFromNodeName(log.attributes.valueAfter, nodeNames)
           changeLogsEnriched.push({
             timestamp: log.timestamp,
+            action: log.action,
 
             userID: log.userID,
-            userDisplayName: '',
+            userDisplayName: userNames[log.userID],
 
             nodeID: log.nodeID,
             nodeIDPath: nodePath,
