@@ -2,7 +2,7 @@
 // then two changes will be merged into one
 // (NEW_RECORD_GAP is in milliseconds)
 const {logger} = require("firebase-functions");
-const NEW_RECORD_GAP = 7*24*60*60*1000 // days*hours*minutes*seconds*1000
+const NEW_RECORD_GAP = 1*24*60*60*1000 // days*hours*minutes*seconds*1000
 
 // add new change
 exports.insertChange = function (firestore, context, change, action, attributes){

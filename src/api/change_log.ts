@@ -27,6 +27,7 @@ export async function subscribeChangeLog(actions: Array<ActionType>, nodeIDs: Ar
     const changeLogs = [] as Array<ChangeLog>
     snapshot.forEach((doc) => {
       changeLogs.push({
+        changeLogID: doc.id,
         nodeID: doc.get('node_id'),
         userID: doc.get('user_id'),
         timestamp: doc.get('timestamp'),
@@ -170,6 +171,8 @@ export async function subscribeChangeLogEnriched(
         const nodePath = getPathFromNodeName(log.nodeID, nodeNames)
         if (log.action == ActionType.Name) {
           changeLogsEnriched.push({
+            changeLogID: log.changeLogID,
+
             timestamp: log.timestamp,
             action: log.action,
 
@@ -184,6 +187,8 @@ export async function subscribeChangeLogEnriched(
           })
         } else if (log.action == ActionType.Content) {
           changeLogsEnriched.push({
+            changeLogID: log.changeLogID,
+
             timestamp: log.timestamp,
             action: log.action,
 
@@ -200,6 +205,8 @@ export async function subscribeChangeLogEnriched(
           const beforePath = getPathFromNodeName(log.attributes.valueBefore, nodeNames)
           const afterPath = getPathFromNodeName(log.attributes.valueAfter, nodeNames)
           changeLogsEnriched.push({
+            changeLogID: log.changeLogID,
+
             timestamp: log.timestamp,
             action: log.action,
 

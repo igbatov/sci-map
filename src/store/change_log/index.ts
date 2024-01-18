@@ -6,6 +6,7 @@ export enum ActionType {
 }
 
 export type ChangeLog = {
+  changeLogID: string;
   nodeID: string;
   userID: string;
   timestamp: number;
@@ -20,6 +21,8 @@ export type ChangeLog = {
 };
 
 export type ChangeLogNodeContent = {
+  changeLogID: string;
+
   timestamp: number;
   action: ActionType;
 
@@ -34,6 +37,8 @@ export type ChangeLogNodeContent = {
 }
 
 export type ChangeLogNodeName = {
+  changeLogID: string;
+
   timestamp: number;
   action: ActionType;
 
@@ -48,6 +53,8 @@ export type ChangeLogNodeName = {
 }
 
 export type ChangeLogNodeParent = {
+  changeLogID: string;
+
   timestamp: number;
   action: ActionType;
 
