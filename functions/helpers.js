@@ -10,7 +10,7 @@ exports.insertChange = function (firestore, context, change, action, attributes)
   return firestore
     .collection('changes')
     .add({
-      user_id: context.auth.token["user_id"],
+      user_id: context.auth ? context.auth.token["user_id"] : 'admin',
       node_id: change.after.ref.parent.getKey(),
       action: action,
       attributes: attributes,
@@ -23,7 +23,7 @@ exports.upsertChange = function (firestore, context, change, action, attributes)
   return firestore
     .collection('changes')
     .where('node_id', '==', change.after.ref.parent.getKey())
-    .where('user_id', '==', context.auth.token["user_id"])
+    .where('user_id', '==', context.auth ? context.auth.token["user_id"] : 'admin')
     .where('action', '==', action)
     .orderBy('timestamp', 'desc').limit(1)
     .get()

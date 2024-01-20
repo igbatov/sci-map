@@ -7,15 +7,24 @@ const admin = require('firebase-admin');
 admin.initializeApp();
 const firestore = admin.firestore();
 
-const { upsertChange } = require('./helpers');
-const { GetOnNodeChildrenChange, GetOnNodeParentChange} = require('./map_change');
+const { upsertChange, insertChange } = require('./helpers');
+const {
+  GetOnNodeChildrenChange,
+  GetOnNodeParentChange,
+  GetOnNodeNameChange,
+  GetOnNodePositionChange,
+  GetOnNodeMapIDChange,
+} = require('./map_change');
 const { GetOnPreconditionChange } = require('./precondition_change');
 const { onUserRoleChange } = require('./user_role');
 
 exports.onUserRoleChange = onUserRoleChange
 exports.onNodeChildrenChange = GetOnNodeChildrenChange(firestore)
 exports.onNodeParentChange = GetOnNodeParentChange(firestore)
+exports.onNodeNameChange = GetOnNodeNameChange(firestore)
 exports.onPreconditionChange = GetOnPreconditionChange(firestore)
+exports.onNodePositionChange = GetOnNodePositionChange(firestore)
+exports.onNodeMapIDChange = GetOnNodeMapIDChange(firestore)
 
 // [START onNodeContentChange]
 // Listens for changes in /node_content/{nodeId}/content and log them to firestore "changes" collection
@@ -33,21 +42,25 @@ exports.onNodeContentChange = functions.database.ref('/node_content/{nodeId}/con
   });
 // [END onNodeContentChange]
 
-// [START onNodeNameChange]
-// Listens for changes in /node_content/{nodeId}/content and log them to firestore "changes" collection
-exports.onNodeNameChange = functions.database.ref('/map/{nodeId}/name')
+// [START onNodeContentIDChange]
+// Listens for changes in /node_content/{nodeId}/nodeID and log them to firestore "changes" collection
+// (it must be changed only on node creation anr removal)
+exports.onNodeContentIDChange = functions.database.ref('/node_content/{nodeId}/nodeID')
   .onWrite((change, context) => {
-    return upsertChange(
+    return insertChange(
       firestore,
       context,
       change,
-      'name',
+      'content_id',
       {
-        value: change.after.val(),
+        after: change.after.val(),
+        before: change.before.val(),
       }
     )
   });
-// [END onNodeNameChange]
+// [END onNodeContentIDChange]
+
+
 
 
 
