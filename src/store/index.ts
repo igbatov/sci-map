@@ -387,31 +387,32 @@ export const store = createStore<State>({
       // move node and its children to /trash atomically
       const moveToTrash = {} as Record<string, any>
       const oldKey = await api.findKeyOfChild(parent.id, nodeID);
-      moveToTrash[`trash/map/${nodeID}`] = node;
+      moveToTrash[`trash/${nodeID}/map`] = node;
       moveToTrash[`map/${nodeID}`] = null;
       moveToTrash[`map/${parent.id}/children/${oldKey}`] = null;
       if (state.nodeContent.nodeContents[nodeID]) {
-        moveToTrash[`trash/node_content/${nodeID}`] = state.nodeContent.nodeContents[nodeID];
+        moveToTrash[`trash/${nodeID}/node_content`] = state.nodeContent.nodeContents[nodeID];
         moveToTrash[`node_content/${nodeID}`] = null;
       }
       if (state.precondition.preconditions[nodeID]) {
-        moveToTrash[`trash/precondition/${nodeID}`] = state.precondition.preconditions[nodeID];
+        moveToTrash[`trash/${nodeID}/precondition`] = state.precondition.preconditions[nodeID];
         moveToTrash[`precondition/${nodeID}`] = null;
       }
 
       // move also all children to /trash
       for (const id in allChildrenIDMap) {
-        moveToTrash[`trash/map/${id}`] = allChildrenIDMap[id]
+        moveToTrash[`trash/${id}/map`] = allChildrenIDMap[id]
         moveToTrash[`map/${id}`] = null
         if (state.nodeContent.nodeContents[id]) {
-          moveToTrash[`trash/node_content/${id}`] = state.nodeContent.nodeContents[id]
+          moveToTrash[`trash/${id}/node_content`] = state.nodeContent.nodeContents[id]
           moveToTrash[`node_content/${id}`] = null
         }
         if (state.precondition.preconditions[id]) {
-          moveToTrash[`trash/precondition/${id}`] = state.precondition.preconditions[id]
+          moveToTrash[`trash/${id}/precondition`] = state.precondition.preconditions[id]
           moveToTrash[`precondition/${id}`] = null
         }
       }
+
       await api.update(moveToTrash);
 
       commit(`history/${historyMutations.ADD_REMOVE}`, {
