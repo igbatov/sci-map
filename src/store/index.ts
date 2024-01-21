@@ -14,6 +14,11 @@ import {
 } from "./precondition";
 
 import {
+  store as positionChangePermitsStore,
+  State as positionChangePermitsState,
+} from "./position_change_permits";
+
+import {
   store as treeStore,
   State as TreeState,
   mutations as treeMutations,
@@ -67,6 +72,7 @@ export type State = {
   // module states
   pin: PinState;
   precondition: PreconditionState;
+  positionChangePermits: positionChangePermitsState;
   tree: TreeState;
   user: UserState;
   zoomPan: ZoomPanState;
@@ -280,6 +286,8 @@ export const store = createStore<State>({
         nodeID: node.id,
         parentID: v.parentID
       });
+
+      return node.id
     },
 
     /**
@@ -468,6 +476,7 @@ export const store = createStore<State>({
   modules: {
     pin: pinStore,
     precondition: preconditionStore,
+    positionChangePermits: positionChangePermitsStore,
     tree: treeStore,
     user: userStore,
     zoomPan: zoomPanStore,

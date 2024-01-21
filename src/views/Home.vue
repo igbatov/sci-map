@@ -51,6 +51,7 @@ import {
 import { clone, printError } from "@/tools/utils";
 import { MapNode } from "@/types/graphics";
 import {findMapNode, findMapNodes} from "@/store/tree/helpers";
+import {actions as positionChangePermitsActions} from "@/store/position_change_permits";
 
 export default defineComponent({
   name: "Home",
@@ -296,8 +297,12 @@ export default defineComponent({
           : []
       ),
       visibleZoomedPanedLayers: visibleZoomedPanedLayers,
-      nodeDragging: (e: EventDraggingNode) => {
-        store.dispatch(`${actions.updateNodePosition}`, {
+      nodeDragging: async (e: EventDraggingNode) => {
+        const hasDragPermit = await store.dispatch(`positionChangePermits/${positionChangePermitsActions.CheckNodeID}`, e.id);
+        if (!hasDragPermit) {
+          return
+        }
+        await store.dispatch(`${actions.updateNodePosition}`, {
           nodeId: e.id,
           delta: {
             x: e.delta.x / zoomPanState.zoom,

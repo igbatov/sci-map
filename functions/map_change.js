@@ -28,8 +28,8 @@ exports.GetOnNodeChildrenChange = (firestore) => database.ref('/map/{nodeId}/chi
       change,
       'children',
       {
-        valueBefore: change.before.val(),
-        valueAfter: change.after.val(),
+        valueBefore: change.before ? change.before.val() : null,
+        valueAfter:  change.after ? change.after.val() : null,
         added: added,
         removed: removed,
       }
@@ -47,8 +47,8 @@ exports.GetOnNodeParentChange = (firestore) => database.ref('/map/{nodeId}/paren
       change,
       'parentID',
       {
-        valueBefore: change.before.val(),
-        valueAfter: change.after.val(),
+        valueBefore: change.before ? change.before.val() : null,
+        valueAfter:  change.after ? change.after.val() : null,
       }
     )
   });
@@ -64,7 +64,7 @@ exports.GetOnNodeNameChange = (firestore) => database.ref('/map/{nodeId}/name')
       change,
       'name',
       {
-        value: change.after.val(),
+        value: change.after ? change.after.val() : null,
       }
     )
   });
@@ -81,8 +81,8 @@ exports.GetOnNodeMapIDChange = (firestore) => database.ref('/map/{nodeId}/id')
       change,
       'map_id',
       {
-        value: change.after.val(),
-        before: change.before.val(),
+        valueBefore: change.before ? change.before.val() : null,
+        valueAfter:  change.after ? change.after.val() : null,
       }
     )
   });

@@ -39,6 +39,7 @@ import Input from "primevue/inputtext";
 import { useStore } from "@/store";
 import { computed, ref } from "vue";
 import { actions } from "@/store";
+import { mutations as positionChangePermitMutations } from "@/store/position_change_permits";
 
 export default {
   name: "AddNode",
@@ -58,11 +59,15 @@ export default {
         selectedNode.value ? selectedNode.value.title : ""
       ),
       toggleAddDialog: () => (addDialogVisible.value = !addDialogVisible.value),
-      add: () => {
-        store.dispatch(`${actions.createNode}`, {
+      add: async () => {
+        const newNodeID = await store.dispatch(`${actions.createNode}`, {
           parentID: selectedNode.value ? selectedNode.value.id : 0,
           title: newNodeTitle.value
         });
+        store.commit(
+            `positionChangePermits/${positionChangePermitMutations.ADD_NODES}`,
+            [newNodeID, ...store.state.tree.nodeRecord[selectedNode.value.id].node.children.map((node)=>node.id)]
+        );
         newNodeTitle.value = "";
         addDialogVisible.value = false;
       },

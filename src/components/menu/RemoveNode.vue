@@ -31,6 +31,7 @@ import Button from "primevue/button";
 import { useStore } from "@/store";
 import { computed, ref } from "vue";
 import { actions } from "@/store";
+import {mutations as positionChangePermitMutations} from "@/store/position_change_permits";
 
 export default {
   name: "RemoveNode",
@@ -51,6 +52,10 @@ export default {
       remove: () => {
         addDialogVisible.value = false;
         store.dispatch(`${actions.removeNode}`, selectedNode.value.id);
+        store.commit(
+            `positionChangePermits/${positionChangePermitMutations.ADD_NODES}`,
+            store.state.tree.nodeRecord[selectedNode.value.id].parent.children.map((node)=>node.id)
+        );
       },
       cancel: () => {
         addDialogVisible.value = false;
