@@ -2,12 +2,18 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import PasswordLogin from "../views/PasswordLogin.vue";
 import Home from "../views/Home.vue";
 import Change from "../views/Change.vue";
+import NodeDescription from "../views/NodeDescription.vue";
 import NotFound from "../views/NotFound.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/passwordLogin",
     component: PasswordLogin
+  },
+  {
+    path: "/node_description/:id?",
+    name: "node_description",
+    component: NodeDescription
   },
   {
     path: "/change/:id?",

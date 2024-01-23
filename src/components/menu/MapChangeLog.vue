@@ -25,7 +25,7 @@
         {{ event.userDisplayName }}
       </template>
       <template #content>
-        {{ getActionDescription(event) }}
+        <div v-html="getActionDescription(event)"></div>
       </template>
     </Card>
 
@@ -58,13 +58,13 @@ export default {
       changes,
       getActionDescription: (event: ChangeLogNodeParent): string => {
         if (event.isAdded) {
-          return `node ${event.nodeName} was added to ${event.parentNodeAfterName}`
+          return `node <a target="_blank" href="/node_description/${event.nodeID}">${event.nodeName}</a> was added to <a target="_blank" href="/node_description/${event.parentNodeIDAfter}">${event.parentNodeAfterName}</a>`
         }
         if (event.isRemoved) {
-          return `node ${event.nodeName} was removed from ${event.parentNodeBeforeName}`
+          return `node <a target="_blank" href="/node_description/${event.nodeID}">${event.nodeName}</a> was removed from <a target="_blank" href="/node_description/${event.parentNodeIDBefore}">${event.parentNodeBeforeName}</a>`
         }
 
-        return `node ${event.nodeName} was moved from ${event.parentNodeBeforeName} to ${event.parentNodeAfterName}`
+        return `node <a target="_blank" href="/node_description/${event.nodeID}">${event.nodeName}</a> was moved from <a target="_blank" href="/node_description/${event.parentNodeIDBefore}">${event.parentNodeBeforeName}</a> to <a target="_blank" href="/node_description/${event.parentNodeIDAfter}">${event.parentNodeAfterName}</a>`
       },
     }
   }

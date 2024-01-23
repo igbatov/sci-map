@@ -60,7 +60,7 @@ export async function getNodeName(nodeID: string): Promise<Record<string,string>
   } else {
     const prTrash = await firebase
       .database()
-      .ref(`trash/${nodeID}/name`)
+      .ref(`trash/${nodeID}/map/name`)
       .get();
     if (prTrash.exists()) {
       nodeName[`trash/${nodeID}`] = prTrash.val()

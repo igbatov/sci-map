@@ -1,6 +1,6 @@
 <template>
   <h1 v-if="!isAuthorized">Only authorized users can view changes</h1>
-  <div v-if="isAuthorized">
+  <div v-else>
     <div><b>id:</b> {{route.params.id}}</div>
     <div><b>timestamp:</b> {{ (new Date(change['timestamp'])).toLocaleDateString() }} {{ (new Date(change['timestamp'])).toLocaleTimeString() }}</div>
     <div><b>action:</b> {{change['action']}}</div>
