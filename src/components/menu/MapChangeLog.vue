@@ -1,4 +1,9 @@
 <template>
+  <ChangeLogComplain
+      :show="complainModalVisible"
+      :complainChangeLink="complainChangeLink"
+      @hide="complainModalVisible = false"
+  />
   <button @click="toggleAddDialog">Log</button>
   <Dialog
       v-model:visible="addDialogVisible"
@@ -22,7 +27,7 @@
         {{ (new Date(event.timestamp)).toLocaleDateString() }} {{ (new Date(event.timestamp)).toLocaleTimeString() }}
       </template>
       <template #subtitle>
-        {{ event.userDisplayName }}
+        {{ event.userDisplayName }} / <a href="#" @click="showComplain(event.changeLogID)">Complain</a>
       </template>
       <template #content>
         <div v-html="getActionDescription(event)"></div>
@@ -39,14 +44,18 @@ import {reactive, ref} from "vue";
 import {ActionType, ChangeLogNodeParent} from "@/store/change_log";
 import {subscribeChangeLogEnriched} from "@/api/change_log";
 import Card from "primevue/card";
+import ChangeLogComplain from "@/components/node_content/ChangeLogComplain.vue";
 
 export default {
   name: "MapChangeLog",
   components: {
+    ChangeLogComplain,
     Card,
     Dialog,
   },
   setup() {
+    const complainChangeLink = ref('')
+    const complainModalVisible = ref(false);
     const addDialogVisible = ref(false);
     const changes = reactive([]) as Array<ChangeLogNodeParent>
     subscribeChangeLogEnriched([ActionType.ParentID], [], (changeLogs)=>{
@@ -60,6 +69,12 @@ export default {
       }
     }
     return {
+      complainChangeLink,
+      complainModalVisible,
+      showComplain: (id: string) => {
+        complainModalVisible.value = true
+        complainChangeLink.value = 'https://scimap.org/change/'+id
+      },
       toggleAddDialog: () => (addDialogVisible.value = !addDialogVisible.value),
       addDialogVisible,
       changes,

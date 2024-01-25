@@ -1,31 +1,9 @@
 <template>
-  <Dialog
-      v-model:visible="complainModalVisible"
-      :dismissableMask="true"
-      :closable="true"
-      :modal="true"
-      :closeOnEscape="true"
-  >
-    <template #header>
-      <h3>
-        {{ `Please use our discord channel to complain about inappropriate changes` }}
-      </h3>
-
-    </template>
-    <h3>
-      <a target="_blank" href="https://discord.com/channels/1171118046543347782/1196694554791915600">Discord edit-complains channel</a>
-    </h3>
-    <p>
-      You can use the following text:
-    </p>
-    <code>
-      Hi, I think I found changes that was inappropriate because ... <br/>
-      Here is the changes I am talking about {{ complainChangeLink }}  <br/>
-      This is the ...st time I found inappropriate changes from this user.  <br/>
-    </code>
-    <template #footer>
-    </template>
-  </Dialog>
+  <ChangeLogComplain
+      :show="complainModalVisible"
+      :complainChangeLink="complainChangeLink"
+      @hide="complainModalVisible = false"
+  />
   <Fieldset legend="change log" :toggleable="true" :collapsed="collapsed" @update:collapsed="toggle($event)">
     <div v-if="!isAuthorized">
       Sign in to see node change log
@@ -56,8 +34,8 @@ import Card from 'primevue/card';
 import {subscribeChangeLogEnriched} from "@/api/change_log";
 import {ref, reactive, watch, computed} from "vue";
 import {ActionType, ChangeLogEnriched} from '@/store/change_log';
-import Dialog from "primevue/dialog";
 import {useStore} from "@/store";
+import ChangeLogComplain from "@/components/node_content/ChangeLogComplain.vue";
 
 export default {
   name: "ChangeLog",
@@ -70,7 +48,7 @@ export default {
     nodeId: String
   },
   components: {
-    Dialog,
+    ChangeLogComplain,
     Fieldset,
     Card,
   },
