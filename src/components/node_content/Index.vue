@@ -44,6 +44,13 @@
               :node-id="selectedNode.id"
           />
 
+          <!-- Used by section -->
+          <h3><i>used by</i></h3>
+          <SectionUsedBy
+              v-if="selectedNodeContent"
+              :node-id="selectedNode.id"
+          />
+
           <!-- ChangeLog section -->
           <ChangeLog :node-id="selectedNode.id" />
         </div>
@@ -58,6 +65,7 @@ import { actions as nodeContentActions } from "@/store/node_content";
 import { computed } from "vue";
 import TextArea from "primevue/textarea";
 import SectionPreconditions from "./Preconditions.vue";
+import SectionUsedBy from "./UsedBy.vue";
 import { Tree } from "@/types/graphics";
 import {
   EmptyNodeContent,
@@ -73,6 +81,7 @@ import ChangeLog from "./ChangeLog.vue";
 export default {
   name: "NodeContent",
   components: {
+    SectionUsedBy,
     Markdown,
     TextArea,
     SectionPreconditions,
