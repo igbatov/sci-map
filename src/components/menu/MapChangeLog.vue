@@ -52,19 +52,26 @@ export default {
     subscribeChangeLogEnriched([ActionType.ParentID], [], (changeLogs)=>{
       changes.splice(0, changes.length, ...changeLogs as Array<ChangeLogNodeParent>)
     })
+    const getNodeUrl = (nodeIDPath: string, nodeID: string, nodeName: string) => {
+      if (nodeIDPath.substring(0, 5) == 'trash') {
+        return `<a target="_blank" href="/node_description/${nodeID}">${nodeName}</a>`
+      } else {
+        return `<a target="_blank" href="/${nodeID}">${nodeName}</a>`
+      }
+    }
     return {
       toggleAddDialog: () => (addDialogVisible.value = !addDialogVisible.value),
       addDialogVisible,
       changes,
       getActionDescription: (event: ChangeLogNodeParent): string => {
         if (event.isAdded) {
-          return `node <a target="_blank" href="/node_description/${event.nodeID}">${event.nodeName}</a> was added to <a target="_blank" href="/node_description/${event.parentNodeIDAfter}">${event.parentNodeAfterName}</a>`
+          return `node ${getNodeUrl(event.nodeIDPath, event.nodeID, event.nodeName)} was added to ${getNodeUrl(event.parentNodeIDAfterPath, event.parentNodeIDAfter, event.parentNodeAfterName)}`
         }
         if (event.isRemoved) {
-          return `node <a target="_blank" href="/node_description/${event.nodeID}">${event.nodeName}</a> was removed from <a target="_blank" href="/node_description/${event.parentNodeIDBefore}">${event.parentNodeBeforeName}</a>`
+          return `node ${getNodeUrl(event.nodeIDPath, event.nodeID, event.nodeName)} was removed from ${getNodeUrl(event.parentNodeIDBeforePath, event.parentNodeIDBefore, event.parentNodeBeforeName)}`
         }
 
-        return `node <a target="_blank" href="/node_description/${event.nodeID}">${event.nodeName}</a> was moved from <a target="_blank" href="/node_description/${event.parentNodeIDBefore}">${event.parentNodeBeforeName}</a> to <a target="_blank" href="/node_description/${event.parentNodeIDAfter}">${event.parentNodeAfterName}</a>`
+        return `node ${getNodeUrl(event.nodeIDPath, event.nodeID, event.nodeName)} was moved from ${getNodeUrl(event.parentNodeIDBeforePath, event.parentNodeIDBefore, event.parentNodeBeforeName)} to ${getNodeUrl(event.parentNodeIDAfterPath, event.parentNodeIDAfter, event.parentNodeAfterName)}`
       },
     }
   }
