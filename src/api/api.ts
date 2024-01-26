@@ -32,7 +32,7 @@ const update = async (data: Record<string, any>): Promise<ErrorKV> => {
   }
 };
 
-const debouncedUpdate = debounce(update, 400);
+const debouncedUpdate = debounce(update, 2000);
 
 export default {
   ROOT_WIDTH: window.innerWidth,
