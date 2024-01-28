@@ -35,8 +35,10 @@ const update = async (data: Record<string, any>): Promise<ErrorKV> => {
 const debouncedUpdate = debounce(update, 2000);
 
 export default {
-  ROOT_WIDTH: window.innerWidth,
-  ROOT_HEIGHT: window.innerHeight - window.innerHeight/100,
+  ROOT_WIDTH: 2*window.innerWidth/3,
+  ROOT_HEIGHT: window.innerHeight,
+  ROOT_CENTER_X: 0.3*window.innerWidth + 0.7*window.innerWidth/2,
+  ROOT_CENTER_Y: window.innerHeight/2,
   ST_WIDTH: 1000,
   ST_HEIGHT: 1000,
   initFirebase() {

@@ -683,7 +683,7 @@ export function convertPosition(
     convertedPosition = morphedPositions!["tmp"];
   } else {
     if (type === "denormalize") {
-      convertedPosition = { x: api.ROOT_WIDTH / 2, y: api.ROOT_HEIGHT / 2 };
+      convertedPosition = { x: api.ROOT_CENTER_X, y: api.ROOT_CENTER_Y };
     } else {
       convertedPosition = { x: api.ST_WIDTH / 2, y: api.ST_HEIGHT / 2 };
     }

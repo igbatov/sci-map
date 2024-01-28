@@ -9,7 +9,6 @@
   />
   <Map
     :layers="visibleZoomedPanedLayers"
-    :viewBox="viewBox"
     :selectedNodeId="selectedNodeId"
     :selectedNodePreconditionIds="selectedNodePreconditionIds"
     :pin-nodes="pinNodes"
@@ -87,18 +86,6 @@ export default defineComponent({
       },
       { immediate: true }
     );
-
-    /**
-     * compute svg viewBox
-     */
-    const viewBox = computed(() => {
-      if (treeState.mapNodeLayers && treeState.mapNodeLayers.length) {
-        return `0 0 ${2 * treeState.mapNodeLayers[0]["0"].center.x} ${2 *
-          treeState.mapNodeLayers[0]["0"].center.y}`;
-      } else {
-        return `0 0 1000 1000`;
-      }
-    });
 
     /**
      * From mapNodeLayers method updateLayers determines visibleLayers and nodes
@@ -288,7 +275,6 @@ export default defineComponent({
         return result;
       }),
 
-      viewBox,
       editModeOn: computed(() => store.state.editModeOn),
       selectedNodeId: computed(() => treeState.selectedNodeId),
       selectedNodePreconditionIds: computed(() =>

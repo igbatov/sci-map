@@ -1,5 +1,5 @@
 <template>
-  <svg xmlns="http://www.w3.org/2000/svg" :viewBox="viewBox" :id="mapID" style="touch-action: none;">
+  <svg xmlns="http://www.w3.org/2000/svg" :width="svgWidth" :height="svgHeight" :id="mapID" style="touch-action: none;">
     <MapLayer
       v-for="(layer, index) of layers"
       :key="index"
@@ -84,10 +84,6 @@ export default defineComponent({
     MapLayer
   },
   props: {
-    viewBox: {
-      type: String,
-      required: true
-    },
     layers: Object as PropType<Array<Record<string, MapNode>>>,
     selectedNodeId: {
       type: String || null,
@@ -179,6 +175,9 @@ export default defineComponent({
     });
 
     return {
+      svgWidth: window.innerWidth,
+      // 0.99 because if svg == innerHeight then browser vertical scroll bar appears
+      svgHeight: 0.99*window.innerHeight,
       visibleTitleIds: computed(() => {
         if (!props.layers) {
           return []

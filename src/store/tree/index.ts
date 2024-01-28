@@ -12,28 +12,33 @@ import { DBNode } from "@/api/types";
 import { printError, round } from "@/tools/utils";
 import api from "@/api/api";
 import {Commit, Dispatch} from "vuex";
-const XSkew = api.ROOT_WIDTH / 7;
+
+// Define root border for 2560x1600
+const ROOT_WIDTH = 2560
+const ROOT_HEIGHT = 1600
+const cf = 1/3
 const ROOT_BORDER = [
-  { x: XSkew, y: 0 },
-  { x: 0, y: 0.3 * api.ROOT_HEIGHT },
-  { x: 0, y: 0.7 * api.ROOT_HEIGHT },
-  { x: XSkew, y: api.ROOT_HEIGHT },
-  { x: 0.3 * (api.ROOT_WIDTH - 2 * XSkew) + XSkew, y: 1.1 * api.ROOT_HEIGHT },
-  { x: 0.6 * (api.ROOT_WIDTH - 2 * XSkew) + XSkew, y: 1.1 * api.ROOT_HEIGHT },
-  { x: api.ROOT_WIDTH - 2 * XSkew + XSkew, y: api.ROOT_HEIGHT },
-  { x: api.ROOT_WIDTH, y: 0.7 * api.ROOT_HEIGHT },
-  { x: api.ROOT_WIDTH, y: 0.3 * api.ROOT_HEIGHT },
-  { x: api.ROOT_WIDTH - XSkew, y: 0 },
-  {
-    x: api.ROOT_WIDTH - XSkew - 0.3 * (api.ROOT_WIDTH - 2 * XSkew),
-    y: -0.1 * api.ROOT_HEIGHT
-  },
-  {
-    x: api.ROOT_WIDTH - XSkew - 0.7 * (api.ROOT_WIDTH - 2 * XSkew),
-    y: -0.1 * api.ROOT_HEIGHT
-  }
+  { x: 0, y: cf * ROOT_HEIGHT},
+  { x: 0, y: 2*cf * ROOT_HEIGHT},
+  { x: (cf/2.5)*ROOT_WIDTH, y: (1-cf/4)*ROOT_HEIGHT},
+  { x: cf*ROOT_WIDTH, y: ROOT_HEIGHT},
+  { x: 2*cf*ROOT_WIDTH, y: ROOT_HEIGHT},
+  { x: (1-cf/2.5)*ROOT_WIDTH, y: (1-cf/4)*ROOT_HEIGHT},
+  { x: ROOT_WIDTH, y: 2*cf * ROOT_HEIGHT},
+  { x: ROOT_WIDTH, y: cf * ROOT_HEIGHT},
+  { x: (1-cf/2.5)*ROOT_WIDTH, y: cf/4 * ROOT_HEIGHT},
+  { x: 2*cf*ROOT_WIDTH, y: 0},
+  { x: cf*ROOT_WIDTH, y: 0},
+  { x: (cf/2.5)*ROOT_WIDTH, y: cf/4 * ROOT_HEIGHT},
 ];
-const ROOT_CENTER = { x: api.ROOT_WIDTH / 2, y: api.ROOT_HEIGHT / 2 };
+const ROOT_CENTER = { x: api.ROOT_CENTER_X, y: api.ROOT_CENTER_Y };
+
+// Scale root border proportionally to fit 2/3 of user browser viewport and move the left
+const userFitCoefficient = Math.min(api.ROOT_WIDTH/ROOT_WIDTH, api.ROOT_HEIGHT/ROOT_HEIGHT)
+for (const idx in ROOT_BORDER) {
+  ROOT_BORDER[idx].x = userFitCoefficient*ROOT_BORDER[idx].x + api.ROOT_CENTER_X - userFitCoefficient*ROOT_WIDTH/2
+  ROOT_BORDER[idx].y = userFitCoefficient*ROOT_BORDER[idx].y + api.ROOT_CENTER_Y -  userFitCoefficient * ROOT_HEIGHT/2
+}
 
 export interface NodeRecordItem {
   node: Tree;
