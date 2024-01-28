@@ -5,9 +5,6 @@ import NewErrorKV from "@/tools/errorkv";
 import { NodeRecordItem } from "@/store/tree";
 import { findMapNode } from "@/store/tree/helpers";
 import { clone } from "@/tools/utils";
-import api from "@/api/api";
-import { isEqual } from "lodash";
-import { DBNode } from "@/api/types";
 
 const MIN_VISIBLE_NUM_IN_LAYER = 3;
 

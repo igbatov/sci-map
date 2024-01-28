@@ -52,13 +52,15 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, toRef } from "vue";
 import { MapNode, Point } from "@/types/graphics";
-import { getTitleBoxes } from "@/components/map_layer/MapLayer";
+import { setTitleBoxes } from "@/components/map_layer/MapLayer";
 import PinMarker from "@/components/pin_layer/PinMarker.vue";
 import {
   WIDTH as PIN_MARKER_WIDTH,
   HEIGHT as PIN_MARKER_HEIGHT
 } from "@/components/pin_layer/PinMarker.vue";
 import SVGTextBox from "@/components/SVGTextBox.vue";
+import {useStore} from "@/store";
+import {mutations as titleBoxMutations, TitleBox} from "@/store/title_box";
 
 const TITLE_PREFIX = "pin_title_";
 
@@ -71,6 +73,7 @@ export default defineComponent({
     "title-leave",
   ],
   props: {
+    layerId: String,
     pinNodes: {
       type: Object as PropType<MapNode[]>,
       required: true
@@ -112,7 +115,18 @@ export default defineComponent({
       return result
     })
 
-    const titleBox = getTitleBoxes(TITLE_PREFIX, "left", allPinNodes);
+    const store = useStore();
+    const layerID = "pin_"+props.layerId
+    const titleBox = computed(() => store.state.titleBox.layerMap[layerID])
+    // watch pin nodes and set its title boxes to titleBox store
+    setTitleBoxes(
+        TITLE_PREFIX,
+        "left",
+        allPinNodes,
+        (titleBoxMap: Record<string, TitleBox>) => {
+          store.commit(`titleBox/${titleBoxMutations.SET_MAP}`, { layerName: layerID, titleBoxMap });
+        },
+    );
 
     return {
       TITLE_PREFIX,

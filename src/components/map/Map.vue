@@ -3,6 +3,7 @@
     <MapLayer
       v-for="(layer, index) of layers"
       :key="index"
+      :layer-id="index"
       :map-nodes="layer"
       :border-color="borderColor(index)"
       :font-color="fontColor(index)"
@@ -20,12 +21,14 @@
     <PreconditionLayer
         :selectedNodeId="selectedNodeId"
         :visibleTitleIds="visibleTitleIds"
+        :layer-id="`precondition`"
         @title-click="titleClick"
         @title-over="titleOver"
         @title-leave="titleLeave"
     />
     <PinLayer
       :pinNodes="pinNodes"
+      :layer-id="`pinNodes`"
       color="pink"
       :font-size=8
       font-weight="normal"
@@ -37,6 +40,7 @@
     />
     <PinLayer
       :pinNodes="searchResultPinNodes"
+      :layer-id="`searchResultPinNodes`"
       color="red"
       :font-size=10
       font-weight="bold"

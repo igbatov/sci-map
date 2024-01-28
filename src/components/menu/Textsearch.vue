@@ -9,7 +9,7 @@
 import InputText from "primevue/inputtext";
 import { search } from "@/tools/textsearch";
 import { mutations as searchMutations } from "@/store/search_result";
-import {actions, useStore} from "@/store";
+import { useStore } from "@/store";
 
 export default {
   name: "TextSearch",

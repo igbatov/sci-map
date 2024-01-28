@@ -65,7 +65,8 @@ import { findMapNode, findMapNodes } from "@/store/tree/helpers";
 import { clone } from "@/tools/utils";
 import { zoomAndPanPoint } from "@/views/Home";
 import SVGTextBox from "@/components/SVGTextBox.vue";
-import { getTitleBoxes } from "@/components/map_layer/MapLayer";
+import { setTitleBoxes } from "@/components/map_layer/MapLayer";
+import {mutations as titleBoxMutations, TitleBox} from "@/store/title_box";
 
 const TITLE_PREFIX = "precondition_title_";
 
@@ -78,6 +79,7 @@ export default defineComponent({
   ],
   components: {SVGTextBox, PreconditionArrow},
   props: {
+    layerId: String,
     selectedNodeId: String,
     visibleTitleIds: Object as PropType<Array<string>> // all visible titles on page
   },
@@ -114,7 +116,18 @@ export default defineComponent({
      */
     const preconditions = ref<Record<string, MapNode>>({});
     const visibleTitleNodes = ref<Record<string, MapNode>>({});
-    const visibleTitleNodeBoxes = getTitleBoxes(TITLE_PREFIX, "left", visibleTitleNodes);
+
+    const layerID = 'precondition'
+    const visibleTitleNodeBoxes = computed(() => store.state.titleBox.layerMap[layerID])
+    setTitleBoxes(
+        TITLE_PREFIX,
+        "left",
+        visibleTitleNodes,
+        (titleBoxMap: Record<string, TitleBox>) => {
+          store.commit(`titleBox/${titleBoxMutations.SET_MAP}`, { layerName: layerID, titleBoxMap });
+        },
+    );
+
     watchEffect(() => {
       preconditions.value = {};
       visibleTitleNodes.value = {}

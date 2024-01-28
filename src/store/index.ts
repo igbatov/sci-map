@@ -6,7 +6,10 @@ import {
   useStore as baseUseStore
 } from "vuex";
 import { InjectionKey } from "vue";
+
 import { store as pinStore, State as PinState } from "./pin";
+
+import { store as titleBoxStore, State as TitleBoxState } from "./title_box";
 
 import {
   store as preconditionStore,
@@ -70,6 +73,7 @@ export type State = {
   subscribedNodeIDs: string[];
 
   // module states
+  titleBox: TitleBoxState;
   pin: PinState;
   precondition: PreconditionState;
   positionChangePermits: positionChangePermitsState;
@@ -475,6 +479,7 @@ export const store = createStore<State>({
   },
   modules: {
     pin: pinStore,
+    titleBox: titleBoxStore,
     precondition: preconditionStore,
     positionChangePermits: positionChangePermitsStore,
     tree: treeStore,

@@ -73,13 +73,15 @@ import {
   polygonFillOpacity
 } from "@/tools/graphics";
 import {
-  getTitleBoxes,
+  setTitleBoxes,
   MouseDownInfo,
   mouseMoveListener,
   mouseUpListener
 } from "@/components/map_layer/MapLayer";
 import { printError } from "@/tools/utils";
 import {splitLines} from "@/components/SVGTextBox";
+import { useStore } from "@/store";
+import {TitleBox, mutations as titleBoxMutations} from "@/store/title_box"
 
 const TITLE_PREFIX = "title_";
 
@@ -93,6 +95,9 @@ export default defineComponent({
     "title-dragging"
   ],
   props: {
+    layerId: {
+      type: Number,
+    },
     mapId: {
       type: String,
       required: true
@@ -130,7 +135,19 @@ export default defineComponent({
   setup(props, ctx) {
     const mapNodes = toRef(props, "mapNodes");
 
-    const titleBox = getTitleBoxes(TITLE_PREFIX, "center", mapNodes);
+    const store = useStore();
+    const layerID = "map_"+props.layerId
+    const titleBox = computed(() => {
+      return store.state.titleBox.layerMap[layerID]
+    })
+    setTitleBoxes(
+      TITLE_PREFIX,
+      "center",
+      mapNodes,
+      (titleBoxMap: Record<string, TitleBox>) => {
+        store.commit(`titleBox/${titleBoxMutations.SET_MAP}`, { layerName: layerID, titleBoxMap });
+      },
+    );
 
     /**
      * Send event on titleBox click, drag and drop
@@ -229,9 +246,9 @@ export default defineComponent({
 
   methods: {
     splitLines,
-    polygonToPath: polygonToPath,
-    polygonFill: polygonFill,
-    polygonFillOpacity: polygonFillOpacity
+    polygonToPath,
+    polygonFill,
+    polygonFillOpacity
   }
 });
 </script>

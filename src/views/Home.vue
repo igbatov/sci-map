@@ -102,7 +102,7 @@ export default defineComponent({
 
     /**
      * From mapNodeLayers method updateLayers determines visibleLayers and nodes
-     * that will be shown to user (which is always just a small part of all nodes and visibleLayers of the map)
+     * that will be shown to user (which is always just a small part of all nodes of the map)
      * @param centralNodeId
      * @param mapNodeLayers
      * @param nodeRecord

@@ -70,18 +70,16 @@ export const nodeToTitleBox = (
   return titleBox;
 };
 
-const updateTitleBox = (
+const updateTitleBox = async (
   titleIdPrefix: string,
   position: "center" | "left",
   mapNodes: Record<string, MapNode>,
-  titleBox: Record<string, TitleBox>
-) => {
+): Promise<Record<string, TitleBox>> => {
+  const titleBox = {} as Record<any, TitleBox>
+
   // Code that will run only after the entire view has been rendered
-  nextTick(() => {
-    // clean previous version
-    for (const i in titleBox) {
-      delete titleBox[i];
-    }
+  await nextTick(() => {
+
     // fill new ones
     for (const i in mapNodes) {
       const node = mapNodes[i];
@@ -114,24 +112,27 @@ const updateTitleBox = (
       }
     }
   });
+
+  return titleBox;
 };
 
-export const getTitleBoxes = (
+export const setTitleBoxes = (
   titleIdPrefix: string,
   position: "center" | "left",
-  mapNodes: Ref<Record<string, MapNode>>
-): Ref<Record<string, TitleBox>> => {
-  const titleBox = ref(nodeToTitleBox(mapNodes.value));
+  mapNodes: Ref<Record<string, MapNode>>,
+  cb: (titleBoxMap: Record<string, TitleBox>) => void,
+) => {
+  cb(nodeToTitleBox(mapNodes.value))
   /**
    * Update titleBox on every prop change after DOM rerender
    */
   watch(
     mapNodes,
-    mps => updateTitleBox(titleIdPrefix, position, mps, titleBox.value),
+    async (mps) => {
+      return updateTitleBox(titleIdPrefix, position, mps).then((titleBoxMap) => cb(titleBoxMap))
+    },
     {
       immediate: true
     }
   );
-
-  return titleBox;
 };
