@@ -2,7 +2,7 @@
   <ConfirmDialog></ConfirmDialog>
   <Toast position="bottom-left" />
   <NodeContent
-      :show="!editModeOn && !!selectedNodeId"
+      :show="!editModeOn"
       :selectedNodeId="selectedNodeId"
   />
   <Menu

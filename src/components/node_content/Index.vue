@@ -1,62 +1,134 @@
 <template>
-  <transition name="slide">
-      <div v-if="show && selectedNode" class="wrapper">
-        <div class="p-fluid">
-          <!-- Content   -->
-          <div class="p-field p-grid">
-            <div class="p-col-12">
-              <TextArea
-                rows="1"
-                :autoResize="true"
-                placeholder="Node title"
-                :value="selectedNode.title"
-                @update:modelValue="changeNodeTitle($event)"
-              />
-            </div>
-            <div class="p-col-12">
-              <Markdown
-                :content = "selectedNodeContent ? selectedNodeContent.content : ''"
-                :rows="20"
-                @content-changed="changeContent($event)"
-              />
-            </div>
-          </div>
-
-          <!-- Comment -->
-          <div class="p-field p-grid">
-            <div class="p-col-12 p-md-12">
-            <TextArea
-                id="comment"
-                placeholder="Your notes (visible only to you)"
-                :autoResize="true"
-                rows="2"
-                :value="selectedNodeComment"
-                @update:modelValue="changeComment($event)"
-                v-on:keydown="checkAuthorized"
-            />
-            </div>
-          </div>
-
-          <!-- Preconditions section -->
-          <h3><i>based on</i></h3>
-          <SectionPreconditions
-              v-if="selectedNodeContent"
-              :node-id="selectedNode.id"
+  <div v-if="show && selectedNode" class="wrapper">
+    <div class="p-fluid">
+      <!-- Content   -->
+      <div class="p-field p-grid">
+        <div class="p-col-12">
+          <TextArea
+            rows="1"
+            :autoResize="true"
+            placeholder="Node title"
+            :value="selectedNode.title"
+            @update:modelValue="changeNodeTitle($event)"
           />
-
-          <!-- Used by section -->
-          <h3><i>used by</i></h3>
-          <SectionUsedBy
-              v-if="selectedNodeContent"
-              :node-id="selectedNode.id"
+        </div>
+        <div class="p-col-12">
+          <Markdown
+            :content = "selectedNodeContent ? selectedNodeContent.content : ''"
+            :rows="20"
+            @content-changed="changeContent($event)"
           />
-
-          <!-- ChangeLog section -->
-          <ChangeLog :node-id="selectedNode.id" />
         </div>
       </div>
 
-  </transition>
+      <!-- Comment -->
+      <div class="p-field p-grid">
+        <div class="p-col-12 p-md-12">
+        <TextArea
+            id="comment"
+            placeholder="Your notes (visible only to you)"
+            :autoResize="true"
+            rows="2"
+            :value="selectedNodeComment"
+            @update:modelValue="changeComment($event)"
+            v-on:keydown="checkAuthorized"
+        />
+        </div>
+      </div>
+
+      <!-- Preconditions section -->
+      <h3><i>based on</i></h3>
+      <SectionPreconditions
+          v-if="selectedNodeContent"
+          :node-id="selectedNode.id"
+      />
+
+      <!-- Used by section -->
+      <h3><i>used by</i></h3>
+      <SectionUsedBy
+          v-if="selectedNodeContent"
+          :node-id="selectedNode.id"
+      />
+
+      <!-- ChangeLog section -->
+      <ChangeLog :node-id="selectedNode.id" />
+    </div>
+  </div>
+  <div v-else class="wrapper">
+    <div class="p-fluid">
+      <div class="p-field p-grid">
+        <div class="p-col-12">
+          <div class="title">Welcome to new way of scientific knowledge crowdsourcing!</div>
+        </div>
+        <div class="p-col-12">
+          <iframe width="100%" height="225px" src="https://www.youtube.com/embed/4S9sDyooxf4?si=u4z2DkDwNTsVdMBH" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+        <div class="p-col-1 icon">
+          <img
+              alt="logo"
+              src="../../assets/images/sign-in.svg"
+              style="width: 25px"
+          />
+        </div>
+        <div class="p-col-11 list">
+          Sign in to edit map
+        </div>
+        <div class="p-col-1 icon">
+          <img
+              alt="logo"
+              src="../../assets/images/goal.svg"
+              style="width: 30px"
+          />
+        </div>
+        <div class="p-col-11 list">
+          Keep description focused and simple but profound (i - snippet with example of formula and image markdown)
+        </div>
+        <div class="p-col-1 icon">
+          <img
+              alt="logo"
+              src="../../assets/images/plugin.svg"
+              style="width: 30px"
+          />
+        </div>
+        <div class="p-col-11 list">
+          Use <b>"based on"</b> to link nodes that are necessary for solid understanding of your description
+        </div>
+        <div class="p-col-1 icon">
+          <img
+              alt="logo"
+              src="../../assets/images/pin-on-map.svg"
+              style="width: 30px"
+          />
+        </div>
+        <div class="p-col-11 list">
+          Pin nodes that currently under your research to find it easily
+        </div>
+        <div class="p-col-1 icon">
+          <img
+              alt="logo"
+              src="../../assets/images/action.svg"
+              style="width: 30px"
+          />
+        </div>
+        <div class="p-col-11 list">
+          Not only description, if you know actions one can take to push knowledge further (vacancies, crowdsourcing etc) - add it!
+        </div>
+        <div class="p-col-1 icon">
+          <img
+              alt="logo"
+              src="../../assets/images/talk.svg"
+              style="width: 20px"
+          />
+        </div>
+        <div class="p-col-11 list">
+          Talk to your coauthors to make description better in <a target="_blank" href="https://discord.com/channels/1171118046543347782/1171118047587745953">chat</a>
+        </div>
+        <div class="p-col-12 list">
+          <i>If you thank we need more rules or change these ones, feel free to discuss them in community chat</i>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -187,20 +259,30 @@ export default {
   background-color: rgba(255, 255, 255, 1);
   font-family: Roboto, Arial, sans-serif;
   color: rgb(73, 80, 87);
-}
 
-.slide-enter-active,
-.slide-leave-active {
-  transition: left 0.5s;
+  border-right: 1px solid rgb(218, 220, 224);
+  box-shadow: 0 0 5px rgba(0,0,0,0.5);
+  clip-path: inset(0px -5px 0px 0px);
 }
-
-.slide-leave-from,
-.slide-enter-to {
-  left: 0;
+.title {
+  font-family: "Google Sans",Roboto,Arial,sans-serif;
+  font-size: 1.375rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.75rem;
+  color: #202124;
+  margin-bottom: 10px;
 }
-
-.slide-enter-from,
-.slide-leave-to {
-  left: -100%;
+.list {
+  font-family: Roboto,Arial,sans-serif;
+  font-size: 0.875rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  padding-left: 20px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+.icon {
+  margin-top: 9px;
 }
 </style>
