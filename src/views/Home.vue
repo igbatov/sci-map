@@ -1,7 +1,10 @@
 <template>
   <ConfirmDialog></ConfirmDialog>
   <Toast position="bottom-left" />
-  <NodeContent :show="!editModeOn && !!selectedNodeId" />
+  <NodeContent
+      :show="!editModeOn && !!selectedNodeId"
+      :selectedNodeId="selectedNodeId"
+  />
   <Menu
     :clickedTitleId="clickedTitleId"
     @select-precondition-is-on="setSelectPreconditionON"

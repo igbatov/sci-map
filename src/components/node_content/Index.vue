@@ -30,7 +30,7 @@
                 placeholder="Your notes (visible only to you)"
                 :autoResize="true"
                 rows="2"
-                :value="comment"
+                :value="selectedNodeComment"
                 @update:modelValue="changeComment($event)"
                 v-on:keydown="checkAuthorized"
             />
@@ -69,7 +69,6 @@ import SectionUsedBy from "./UsedBy.vue";
 import { Tree } from "@/types/graphics";
 import {
   EmptyNodeContent,
-  NodeComment,
   NodeContent
 } from "@/store/node_content";
 import { clone, printError } from "@/tools/utils";
@@ -91,37 +90,37 @@ export default {
     show: {
       type: Boolean,
       required: true
-    }
+    },
+    selectedNodeId: {
+      type: String || null,
+      validator: (prop: string | null) =>
+          typeof prop === "string" || prop === null,
+      required: true
+    },
   },
-  setup() {
+  setup(props: {show: boolean, selectedNodeId: string|null}) {
     const store = useStore();
     const confirm = useConfirm();
     const tree = store.state.tree;
-    const nodeContents = computed<Record<string, NodeContent>>(
-      () => store.state.nodeContent.nodeContents
-    );
-    const userNodeComments = computed<Record<string, NodeComment>>(
-      () => store.state.nodeContent.userNodeComments
-    );
 
     const selectedNode = computed<Tree | null>(() =>
-      tree.selectedNodeId && tree.nodeRecord[tree.selectedNodeId]
-        ? tree.nodeRecord[tree.selectedNodeId].node
+        props.selectedNodeId && tree.nodeRecord[props.selectedNodeId]
+        ? tree.nodeRecord[props.selectedNodeId].node
         : null
     );
 
     const selectedNodeContent = computed<NodeContent | null>(() => {
-      if (tree.selectedNodeId && nodeContents.value[tree.selectedNodeId]) {
-        return nodeContents.value[tree.selectedNodeId];
+      if (props.selectedNodeId && store.state.nodeContent.nodeContents[props.selectedNodeId]) {
+        return store.state.nodeContent.nodeContents[props.selectedNodeId];
       }
       const newContent = clone(EmptyNodeContent);
-      newContent.nodeID = tree.selectedNodeId;
+      newContent.nodeID = props.selectedNodeId;
       return newContent;
     });
 
-    const comment = computed<string>(() =>
-      tree.selectedNodeId && userNodeComments.value[tree.selectedNodeId]
-        ? userNodeComments.value[tree.selectedNodeId].comment
+    const selectedNodeComment = computed<string>(() =>
+      props.selectedNodeId && store.state.nodeContent.userNodeComments[props.selectedNodeId]
+        ? store.state.nodeContent.userNodeComments[props.selectedNodeId].comment
         : ""
     );
 
@@ -134,7 +133,7 @@ export default {
           e.preventDefault();
         }
       },
-      comment,
+      selectedNodeComment,
       changeNodeTitle: async (value: string) => {
         if (!selectedNode.value || !selectedNode.value.id) {
           return;

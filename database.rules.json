@@ -21,7 +21,11 @@
     "user_data": {
       "$uid": {
         ".read": "$uid === auth.uid",
-        ".write": false
+        ".write": false,
+        "comment": {
+          ".read": "$uid === auth.uid",
+          ".write": "$uid === auth.uid"
+        }
       }
     },
     "public_user_data": {
