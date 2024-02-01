@@ -1,10 +1,10 @@
 <template>
+  <div :class="$style.textSearch">
+    <TextSearch />
+  </div>
   <div :class="$style.wrapper">
     <div v-if="email">
       <div class="p-grid">
-        <div class="p-col">
-          <TextSearch />
-        </div>
         <div class="p-col">
           {{ email }}
         </div>
@@ -101,5 +101,14 @@ export default {
   right: 0;
   padding: 8px;
   background-color: rgba(255, 255, 255, 0.2);
+}
+.textSearch {
+  position: fixed;
+  display: flex;
+  top: 0%;
+  left: 0%;
+  width: 30%;
+  padding: 15px 20px;
+  background: linear-gradient(rgba(120, 120, 120, 0.4), rgba(120, 120, 120, 0));
 }
 </style>

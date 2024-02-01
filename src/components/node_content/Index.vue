@@ -1,8 +1,14 @@
 <template>
   <div v-if="show && selectedNode" class="wrapper">
     <div class="p-fluid">
+      <img style="position: absolute; left:0; top:0; width: 100%; height: 240px" alt="welcome" src="../../assets/images/bottles.png"/>
+
       <!-- Content   -->
       <div class="p-field p-grid">
+        <div class="p-col-12">
+          <div style="height: 240px">
+          </div>
+        </div>
         <div class="p-col-12">
           <TextArea
             rows="1"
@@ -58,6 +64,10 @@
     <div class="p-fluid">
       <div class="p-field p-grid">
         <div class="p-col-12">
+          <div style="height: 60px;">
+          </div>
+        </div>
+        <div class="p-col-12">
           <div class="title">Welcome to new way of scientific knowledge crowdsourcing!</div>
         </div>
         <div class="p-col-12">
@@ -101,7 +111,7 @@
           />
         </div>
         <div class="p-col-11 list">
-          Pin nodes that currently under your research to find it easily
+          Pin nodes that you are focused on
         </div>
         <div class="p-col-1 icon">
           <img
@@ -271,7 +281,7 @@ export default {
   letter-spacing: 0;
   line-height: 1.75rem;
   color: #202124;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 .list {
   font-family: Roboto,Arial,sans-serif;
