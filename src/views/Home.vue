@@ -2,14 +2,13 @@
   <ConfirmDialog></ConfirmDialog>
   <Toast position="bottom-left" />
   <NodeContent
+      :clickedTitleId="clickedTitleId"
+      @select-precondition-is-on="setSelectPreconditionON"
+      @select-precondition-is-off="setSelectPreconditionOFF"
       :show="!editModeOn"
       :selectedNodeId="selectedNodeId"
   />
-  <Menu
-    :clickedTitleId="clickedTitleId"
-    @select-precondition-is-on="setSelectPreconditionON"
-    @select-precondition-is-off="setSelectPreconditionOFF"
-  />
+  <Menu />
   <Map
     :layers="visibleZoomedPanedLayers"
     :selectedNodeId="selectedNodeId"

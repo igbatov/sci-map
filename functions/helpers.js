@@ -5,13 +5,13 @@ const {logger} = require("firebase-functions");
 const NEW_RECORD_GAP = 1*24*60*60*1000 // days*hours*minutes*seconds*1000
 
 // add new change
-exports.insertChange = function (firestore, context, change, action, attributes){
+exports.insertChange = function (firestore, context, change, action, nodeID, attributes){
   const now = new Date().getTime();
   return firestore
     .collection('changes')
     .add({
       user_id: context.auth ? context.auth.token["user_id"] : 'admin',
-      node_id: change.after.ref.parent.getKey(),
+      node_id: nodeID,
       action: action,
       attributes: attributes,
       timestamp: now,
@@ -19,10 +19,10 @@ exports.insertChange = function (firestore, context, change, action, attributes)
 }
 
 // update last record for this node_id and user_id or create new one
-exports.upsertChange = function (firestore, context, change, action, attributes){
+exports.upsertChange = function (firestore, context, change, action, nodeID, attributes){
   return firestore
     .collection('changes')
-    .where('node_id', '==', change.after.ref.parent.getKey())
+    .where('node_id', '==', nodeID)
     .where('user_id', '==', context.auth ? context.auth.token["user_id"] : 'admin')
     .where('action', '==', action)
     .orderBy('timestamp', 'desc').limit(1)
@@ -31,7 +31,7 @@ exports.upsertChange = function (firestore, context, change, action, attributes)
       const now = new Date().getTime();
       if ( result.docs.length === 0 || result.docs[0].data()['timestamp'] < now - NEW_RECORD_GAP ){
         // if no history for this user or only old one - create new record
-        exports.insertChange(firestore, context, change, action, attributes)
+        exports.insertChange(firestore, context, change, action, nodeID, attributes)
       } else {
         // merge current change into latest one
         return firestore

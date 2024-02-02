@@ -98,7 +98,7 @@ export default {
   text-align: left;
   text-wrap: wrap;
   overflow-y: scroll;
-  height: 400px;
+  height: 300px;
 }
 .rawContent {
   overflow-y: scroll;

@@ -10,6 +10,7 @@ exports.GetOnNodePositionChange = (firestore) => database.ref('/map/{nodeId}/pos
       context,
       change,
       'position',
+      context.params.nodeId,
       {
         value: change.after.val(),
       }
@@ -27,6 +28,7 @@ exports.GetOnNodeChildrenChange = (firestore) => database.ref('/map/{nodeId}/chi
       context,
       change,
       'children',
+      context.params.nodeId,
       {
         valueBefore: change.before ? change.before.val() : null,
         valueAfter:  change.after ? change.after.val() : null,
@@ -46,6 +48,7 @@ exports.GetOnNodeParentChange = (firestore) => database.ref('/map/{nodeId}/paren
       context,
       change,
       'parentID',
+      context.params.nodeId,
       {
         valueBefore: change.before ? change.before.val() : null,
         valueAfter:  change.after ? change.after.val() : null,
@@ -63,6 +66,7 @@ exports.GetOnNodeNameChange = (firestore) => database.ref('/map/{nodeId}/name')
       context,
       change,
       'name',
+      context.params.nodeId,
       {
         value: change.after ? change.after.val() : null,
       }
@@ -80,6 +84,7 @@ exports.GetOnNodeMapIDChange = (firestore) => database.ref('/map/{nodeId}/id')
       context,
       change,
       'map_id',
+      context.params.nodeId,
       {
         valueBefore: change.before ? change.before.val() : null,
         valueAfter:  change.after ? change.after.val() : null,

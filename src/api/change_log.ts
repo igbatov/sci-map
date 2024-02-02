@@ -153,6 +153,18 @@ export async function subscribeChangeLogEnriched(
           nodeNames[changeLog.attributes.valueAfter] = ''
         }
       }
+      if (changeLog.action == ActionType.Precondition) {
+        if (changeLog.attributes.removed != null) {
+          for (const id of changeLog.attributes.removed) {
+            nodeNames[id] = ''
+          }
+        }
+        if (changeLog.attributes.added != null) {
+          for (const id of changeLog.attributes.added) {
+            nodeNames[id] = ''
+          }
+        }
+      }
     }
     // fetch node and user names
     const nodeIDs = []
@@ -179,9 +191,11 @@ export async function subscribeChangeLogEnriched(
             userID: log.userID,
             userDisplayName: userNames[log.userID],
 
-            nodeID: log.nodeID,
-            nodeIDPath: nodePath,
-            nodeName: nodeNames[nodePath],
+            node: {
+              id: log.nodeID,
+              idPath: nodePath,
+              name: nodeNames[nodePath],
+            },
 
             newName: log.attributes.value,
           })
@@ -195,11 +209,53 @@ export async function subscribeChangeLogEnriched(
             userID: log.userID,
             userDisplayName: userNames[log.userID],
 
-            nodeID: log.nodeID,
-            nodeIDPath: nodePath,
-            nodeName: nodeNames[nodePath],
+            node: {
+              id: log.nodeID,
+              idPath: nodePath,
+              name: nodeNames[nodePath],
+            },
 
             newContent: log.attributes.value,
+          })
+        } else if (log.action == ActionType.Precondition) {
+          const removed = []
+          if (log.attributes.removed) {
+            for (const id of log.attributes.removed) {
+              removed.push({
+                id: id,
+                idPath: getPathFromNodeName(id, nodeNames),
+                name: nodeNames[getPathFromNodeName(id, nodeNames)]
+              })
+            }
+          }
+          const added = []
+          if (log.attributes.added) {
+            for (const id of log.attributes.added) {
+              added.push({
+                id: id,
+                idPath: getPathFromNodeName(id, nodeNames),
+                name: nodeNames[getPathFromNodeName(id, nodeNames)]
+              })
+            }
+          }
+
+          changeLogsEnriched.push({
+            changeLogID: log.changeLogID,
+
+            timestamp: log.timestamp,
+            action: log.action,
+
+            userID: log.userID,
+            userDisplayName: userNames[log.userID],
+
+            node: {
+              id: log.nodeID,
+              idPath: nodePath,
+              name: nodeNames[nodePath],
+            },
+
+            removed,
+            added,
           })
         } else if (log.action == ActionType.ParentID) {
           const beforePath = getPathFromNodeName(log.attributes.valueBefore, nodeNames)
@@ -213,17 +269,23 @@ export async function subscribeChangeLogEnriched(
             userID: log.userID,
             userDisplayName: userNames[log.userID],
 
-            nodeID: log.nodeID,
-            nodeIDPath: nodePath,
-            nodeName: nodeNames[nodePath],
+            node: {
+              id: log.nodeID,
+              idPath: nodePath,
+              name: nodeNames[nodePath],
+            },
 
-            parentNodeIDBefore: log.attributes.valueBefore,
-            parentNodeIDBeforePath: beforePath,
-            parentNodeBeforeName: nodeNames[beforePath],
+            parentNodeBefore: {
+              id: log.attributes.valueBefore,
+              idPath: beforePath,
+              name: nodeNames[beforePath],
+            },
 
-            parentNodeIDAfter: log.attributes.valueAfter,
-            parentNodeIDAfterPath: afterPath,
-            parentNodeAfterName: nodeNames[afterPath],
+            parentNodeAfter: {
+              id: log.attributes.valueAfter,
+              idPath: afterPath,
+              name: nodeNames[afterPath],
+            },
 
             isRemoved: log.attributes.valueAfter == null,
             isAdded: log.attributes.valueBefore == null,
@@ -233,4 +295,12 @@ export async function subscribeChangeLogEnriched(
       cb(changeLogsEnriched)
     })
   })
+}
+
+export function GetNodeUrl(nodeIDPath: string, nodeID: string, nodeName: string): string {
+  if (nodeIDPath.substring(0, 5) == 'trash') {
+    return `<a target="_blank" href="/node_description/${nodeID}">${nodeName}</a>`
+  } else {
+    return `<a target="_blank" href="/${nodeID}">${nodeName}</a>`
+  }
 }

@@ -11,6 +11,7 @@ exports.GetOnPreconditionChange = (firestore) => database.ref('/precondition/{no
       context,
       change,
       'precondition',
+      context.params.nodeId,
       {
         valueBefore: change.before.val(),
         valueAfter: change.after.val(),

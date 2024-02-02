@@ -20,8 +20,17 @@
         <template #subtitle>
           {{ !!event.userDisplayName ? event.userDisplayName : `user id ${event.userID}` }} / <a href="#" @click="showComplain(event.changeLogID)">Complain</a>
         </template>
-        <template #content>
-          {{ event.action == ActionType.Name ? event.newName : (event.action == ActionType.Content ? event.newContent : '') }}
+        <template #content v-if="event.action == ActionType.Name">
+          {{ event.newName }}
+        </template>
+        <template #content v-else-if="event.action == ActionType.Content">
+          <Markdown
+              :content = "event.newContent"
+              :rows="10"
+          />
+        </template>
+        <template #content v-else-if="event.action == ActionType.Precondition">
+          <div v-html="getContent(event)"/>
         </template>
       </Card>
     </div>
@@ -31,11 +40,16 @@
 <script lang="ts">
 import Fieldset from 'primevue/fieldset';
 import Card from 'primevue/card';
-import {subscribeChangeLogEnriched} from "@/api/change_log";
-import {ref, reactive, watch, computed} from "vue";
-import {ActionType, ChangeLogEnriched} from '@/store/change_log';
+import {subscribeChangeLogEnriched, GetNodeUrl} from "@/api/change_log";
+import {computed, reactive, ref, watch} from "vue";
+import {
+  ActionType,
+  ChangeLogEnriched,
+  ChangeLogNodePrecondition
+} from '@/store/change_log';
 import {useStore} from "@/store";
 import ChangeLogComplain from "@/components/node_content/ChangeLogComplain.vue";
+import Markdown from "@/components/node_content/Markdown.vue";
 
 export default {
   name: "ChangeLog",
@@ -48,6 +62,7 @@ export default {
     nodeId: String
   },
   components: {
+    Markdown,
     ChangeLogComplain,
     Fieldset,
     Card,
@@ -67,7 +82,7 @@ export default {
       unsubscribe()
       unsubscribe = ()=>{ /**/ }
       if (collapsed.value == false) {
-        unsubscribe = await subscribeChangeLogEnriched([ActionType.Name, ActionType.Content], [props.nodeId], (changeLogs)=>{
+        unsubscribe = await subscribeChangeLogEnriched([ActionType.Name, ActionType.Content, ActionType.Precondition], [props.nodeId], (changeLogs)=>{
           changes.splice(0, changes.length, ...changeLogs)
         })
       }
@@ -81,6 +96,26 @@ export default {
       showComplain: (id: string) => {
         complainModalVisible.value = true
         complainChangeLink.value = 'https://scimap.org/change/'+id
+      },
+      getContent: (event: ChangeLogEnriched) => {
+        event = event as ChangeLogNodePrecondition
+        const removed = []
+        for (const cd of event.removed) {
+          removed.push(GetNodeUrl(cd.idPath, cd.id, cd.name))
+        }
+        const added = []
+        for (const cd of event.added) {
+          added.push(GetNodeUrl(cd.idPath, cd.id, cd.name))
+        }
+
+        let result = ""
+        if (removed.length>0) {
+          result += `removed: ${removed.join(', ')}`
+        }
+        if (added.length>0) {
+          result += `<br> added: ${added.join(', ')}`
+        }
+        return result;
       },
       complainModalVisible,
       complainChangeLink,

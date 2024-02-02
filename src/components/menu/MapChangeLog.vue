@@ -42,7 +42,7 @@
 import Dialog from "primevue/dialog";
 import {reactive, ref} from "vue";
 import {ActionType, ChangeLogNodeParent} from "@/store/change_log";
-import {subscribeChangeLogEnriched} from "@/api/change_log";
+import {GetNodeUrl, subscribeChangeLogEnriched} from "@/api/change_log";
 import Card from "primevue/card";
 import ChangeLogComplain from "@/components/node_content/ChangeLogComplain.vue";
 
@@ -61,13 +61,7 @@ export default {
     subscribeChangeLogEnriched([ActionType.ParentID], [], (changeLogs)=>{
       changes.splice(0, changes.length, ...changeLogs as Array<ChangeLogNodeParent>)
     })
-    const getNodeUrl = (nodeIDPath: string, nodeID: string, nodeName: string) => {
-      if (nodeIDPath.substring(0, 5) == 'trash') {
-        return `<a target="_blank" href="/node_description/${nodeID}">${nodeName}</a>`
-      } else {
-        return `<a target="_blank" href="/${nodeID}">${nodeName}</a>`
-      }
-    }
+
     return {
       complainChangeLink,
       complainModalVisible,
@@ -80,13 +74,13 @@ export default {
       changes,
       getActionDescription: (event: ChangeLogNodeParent): string => {
         if (event.isAdded) {
-          return `node ${getNodeUrl(event.nodeIDPath, event.nodeID, event.nodeName)} was added to ${getNodeUrl(event.parentNodeIDAfterPath, event.parentNodeIDAfter, event.parentNodeAfterName)}`
+          return `node ${GetNodeUrl(event.node.idPath, event.node.id, event.node.name)} was added to ${GetNodeUrl(event.parentNodeAfter.idPath, event.parentNodeAfter.id, event.parentNodeAfter.name)}`
         }
         if (event.isRemoved) {
-          return `node ${getNodeUrl(event.nodeIDPath, event.nodeID, event.nodeName)} was removed from ${getNodeUrl(event.parentNodeIDBeforePath, event.parentNodeIDBefore, event.parentNodeBeforeName)}`
+          return `node ${GetNodeUrl(event.node.idPath, event.node.id, event.node.name)} was removed from ${GetNodeUrl(event.parentNodeBefore.idPath, event.parentNodeBefore.id, event.parentNodeBefore.name)}`
         }
 
-        return `node ${getNodeUrl(event.nodeIDPath, event.nodeID, event.nodeName)} was moved from ${getNodeUrl(event.parentNodeIDBeforePath, event.parentNodeIDBefore, event.parentNodeBeforeName)} to ${getNodeUrl(event.parentNodeIDAfterPath, event.parentNodeIDAfter, event.parentNodeAfterName)}`
+        return `node ${GetNodeUrl(event.node.idPath, event.node.id, event.node.name)} was moved from ${GetNodeUrl(event.parentNodeBefore.idPath, event.parentNodeBefore.id, event.parentNodeBefore.name)} to ${GetNodeUrl(event.parentNodeAfter.idPath, event.parentNodeAfter.id, event.parentNodeAfter.name)}`
       },
     }
   }

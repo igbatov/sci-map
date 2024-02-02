@@ -6,15 +6,11 @@
   >
     <div class="p-col-12">
       <div class="p-grid">
-        <div class="p-col-11">
+        <div :class="`p-col-10 ${$style.title}`">
           <a :href=precondition.id >{{ precondition.title }}</a>
         </div>
-        <div class="p-col-1">
-          <Button
-            @click="remove(precondition.id)"
-            icon="pi pi-ban"
-            class="p-button-rounded p-button-help p-button-outlined"
-          />
+        <div class="p-col-2">
+          <RemoveIcon @click="remove(precondition.id)"/>
         </div>
       </div>
     </div>
@@ -22,11 +18,11 @@
 </template>
 
 <script lang="ts">
-import Button from "primevue/button";
 import { ref, watchEffect } from "vue";
 import { useStore } from "@/store";
 import api from "@/api/api";
 import { Tree } from "@/types/graphics";
+import RemoveIcon from "@/components/node_content/RemoveIcon.vue";
 
 export default {
   name: "Preconditions",
@@ -34,7 +30,7 @@ export default {
     nodeId: String
   },
   components: {
-    Button
+    RemoveIcon,
   },
   setup(props: { nodeId: string }) {
     const store = useStore();
@@ -61,13 +57,19 @@ export default {
         if (p.indexOf(id) == -1) {
           return;
         }
-
+        p.splice(p.indexOf(id), 1)
         api.savePreconditions(store.state.user.user, {
           nodeId: props.nodeId,
-          preconditionIds: p.splice(p.indexOf(id), 1),
+          preconditionIds: p,
         });
       }
     };
   }
 };
 </script>
+
+<style module>
+.title {
+  margin-top: 7px;
+}
+</style>

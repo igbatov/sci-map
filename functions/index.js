@@ -35,6 +35,7 @@ exports.onNodeContentChange = functions.database.ref('/node_content/{nodeId}/con
       context,
       change,
       'content',
+      context.params.nodeId,
       {
         value: change.after.val(),
       }
@@ -52,6 +53,7 @@ exports.onNodeContentIDChange = functions.database.ref('/node_content/{nodeId}/n
       context,
       change,
       'content_id',
+      context.params.nodeId,
       {
         after: change.after.val(),
         before: change.before.val(),

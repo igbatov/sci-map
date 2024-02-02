@@ -38,7 +38,7 @@ import api from "@/api/api";
 import PinIcon from "@/components/node_content/PinIcon.vue";
 
 export default {
-  name: "PinNode",
+  name: "PinButton",
   components: {
     PinIcon,
     Dialog,

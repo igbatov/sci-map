@@ -15,7 +15,7 @@
           />
         </div>
         <div class="p-col-2">
-          <Pin/>
+          <PinButton/>
         </div>
         <div class="p-col-12">
           <Markdown
@@ -42,7 +42,18 @@
       </div>
 
       <!-- Preconditions section -->
-      <h3><i>based on</i></h3>
+      <div class="p-field p-grid">
+        <div class="p-col-10 section">
+          based on
+        </div>
+        <div class="p-col-2">
+          <AddBasedOnButton
+              :clickedTitleId="clickedTitleId"
+              @select-precondition-is-on="$emit('select-precondition-is-on')"
+              @select-precondition-is-off="$emit('select-precondition-is-off')"
+          />
+        </div>
+      </div>
       <SectionPreconditions
           v-if="selectedNodeContent"
           :node-id="selectedNode.id"
@@ -157,20 +168,23 @@ import { useConfirm } from "primevue/useconfirm";
 import api from "@/api/api";
 import Markdown from "./Markdown.vue";
 import ChangeLog from "./ChangeLog.vue";
-import Pin from "./Pin.vue";
+import PinButton from "./PinButton.vue";
 import Title from "@/components/node_content/Title.vue";
+import AddBasedOnButton from "@/components/node_content/AddBasedOnButton.vue";
 
 export default {
   name: "NodeContent",
   components: {
+    AddBasedOnButton,
     Title,
     SectionUsedBy,
     Markdown,
     TextArea,
     SectionPreconditions,
     ChangeLog,
-    Pin,
+    PinButton,
   },
+  emits: ["select-precondition-is-on", "select-precondition-is-off"],
   props: {
     show: {
       type: Boolean,
@@ -182,6 +196,10 @@ export default {
           typeof prop === "string" || prop === null,
       required: true
     },
+    clickedTitleId: {
+      type: String,
+      required: true
+    }
   },
   setup(props: {show: boolean, selectedNodeId: string|null}) {
     const store = useStore();
@@ -297,5 +315,12 @@ export default {
 }
 .icon {
   margin-top: 9px;
+}
+.section {
+  font-family: "Google Sans",Roboto,Arial,sans-serif;
+  font-size: 1.375rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.75rem;
 }
 </style>
