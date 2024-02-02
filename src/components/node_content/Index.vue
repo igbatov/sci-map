@@ -10,12 +10,9 @@
           </div>
         </div>
         <div class="p-col-12">
-          <TextArea
-            rows="1"
-            :autoResize="true"
-            placeholder="Node title"
-            :value="selectedNode.title"
-            @update:modelValue="changeNodeTitle($event)"
+          <Title
+              :content = "selectedNodeContent ? selectedNode.title : ''"
+              @content-changed="changeNodeTitle($event)"
           />
         </div>
         <div class="p-col-12">
@@ -158,10 +155,12 @@ import { useConfirm } from "primevue/useconfirm";
 import api from "@/api/api";
 import Markdown from "./Markdown.vue";
 import ChangeLog from "./ChangeLog.vue";
+import Title from "@/components/node_content/Title.vue";
 
 export default {
   name: "NodeContent",
   components: {
+    Title,
     SectionUsedBy,
     Markdown,
     TextArea,
