@@ -1,11 +1,11 @@
 <template>
-  <button @mousedown.stop="toggleAddDialog">pin</button>
+  <PinIcon @click="clickPin">pin</PinIcon>
   <Dialog
-    v-model:visible="addDialogVisible"
-    :dismissableMask="true"
-    :closable="true"
-    :modal="true"
-    :closeOnEscape="true"
+      v-model:visible="addDialogVisible"
+      :dismissableMask="true"
+      :closable="true"
+      :modal="true"
+      :closeOnEscape="true"
   >
     <template #header>
       <h3>
@@ -17,10 +17,10 @@
 
     <template #footer>
       <Button
-        label="No"
-        icon="pi pi-times"
-        class="p-button-text"
-        @click="cancelAdd"
+          label="No"
+          icon="pi pi-times"
+          class="p-button-text"
+          @click="cancelAdd"
       />
       <Button label="Yes" icon="pi pi-check" @click="add" />
     </template>
@@ -35,10 +35,12 @@ import { useStore } from "@/store";
 import { computed, ref } from "vue";
 import { actions as pinActions } from "@/store/pin";
 import api from "@/api/api";
+import PinIcon from "@/components/node_content/PinIcon.vue";
 
 export default {
   name: "PinNode",
   components: {
+    PinIcon,
     Dialog,
     Button,
     Listbox
@@ -65,8 +67,16 @@ export default {
     });
 
     return {
-      toggleAddDialog: () => {
-        addDialogVisible.value = !addDialogVisible.value;
+      clickPin: () => {
+        if (store.state.pin.pins[store.state.tree.selectedNodeId] !== undefined) {
+          store.dispatch(
+              `pin/${pinActions.RemovePin}`,
+              store.state.tree.selectedNodeId
+          );
+          api.savePins(store.state.user.user, store.state.pin.pins);
+        } else {
+          addDialogVisible.value = !addDialogVisible.value;
+        }
       },
       selectedParent,
       parents,

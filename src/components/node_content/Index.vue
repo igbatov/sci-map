@@ -6,14 +6,16 @@
       <!-- Content   -->
       <div class="p-field p-grid">
         <div class="p-col-12">
-          <div style="height: 240px">
-          </div>
+          <div style="height: 240px"></div>
         </div>
-        <div class="p-col-12">
+        <div class="p-col-10">
           <Title
               :content = "selectedNodeContent ? selectedNode.title : ''"
               @content-changed="changeNodeTitle($event)"
           />
+        </div>
+        <div class="p-col-2">
+          <Pin/>
         </div>
         <div class="p-col-12">
           <Markdown
@@ -155,6 +157,7 @@ import { useConfirm } from "primevue/useconfirm";
 import api from "@/api/api";
 import Markdown from "./Markdown.vue";
 import ChangeLog from "./ChangeLog.vue";
+import Pin from "./Pin.vue";
 import Title from "@/components/node_content/Title.vue";
 
 export default {
@@ -166,6 +169,7 @@ export default {
     TextArea,
     SectionPreconditions,
     ChangeLog,
+    Pin,
   },
   props: {
     show: {

@@ -23,8 +23,6 @@
           @select-precondition-is-on="$emit('select-precondition-is-on')"
           @select-precondition-is-off="$emit('select-precondition-is-off')"
         />
-        <PinNode v-if="isNodeSelected && !isPinned" />
-        <UnpinNode v-if="isNodeSelected && isPinned" />
         <MapChangeLog/>
         <button @click="signOut">Sign Out</button>
       </div>
@@ -39,12 +37,10 @@
 import { useStore } from "@/store";
 import { computed } from "vue";
 import { actions as userActions } from "@/store/user";
-import PinNode from "./PinNode";
 import AddPrecondition from "./AddPrecondition";
 import AddNode from "./AddNode";
 import RemoveNode from "./RemoveNode";
 import EditMode from "./EditMode";
-import UnpinNode from "@/components/menu/UnpinNode";
 import CutPaste from "@/components/menu/CutPaste";
 import Feedback from "@/components/menu/Feedback";
 import TextSearch from "@/components/menu/Textsearch";
@@ -55,8 +51,6 @@ export default {
   components: {
     Feedback,
     CutPaste,
-    UnpinNode,
-    PinNode,
     AddNode,
     AddPrecondition,
     RemoveNode,

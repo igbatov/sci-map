@@ -6,7 +6,7 @@
       class="title"
   />
   <textarea
-      class="title p-inputtextarea p-inputtext p-component p-inputtextarea-resizable"
+      class="title rawTitle p-inputtextarea p-inputtext p-component p-inputtextarea-resizable"
       style="display: none"
       ref="txtarea"
       rows="1"
@@ -67,5 +67,8 @@ export default {
   font-weight: 400;
   letter-spacing: 0;
   line-height: 1.75rem;
+}
+.rawTitle {
+  margin-top: 10px;
 }
 </style>
