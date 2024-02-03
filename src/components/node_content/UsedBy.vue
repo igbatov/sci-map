@@ -27,7 +27,11 @@ export default defineComponent({
       usedBy.value = [];
       if (props.nodeId && store.state.precondition.reverseIndex[props.nodeId]) {
         for (const id of store.state.precondition.reverseIndex[props.nodeId]) {
-          usedBy.value.push(store.state.tree.nodeRecord[id].node);
+          if (!store.state.tree.nodeRecord[id]) {
+            console.log("UsedBy: cannot find id in nodeRecord", id);
+          } else {
+            usedBy.value.push(store.state.tree.nodeRecord[id].node);
+          }
         }
       }
     });
