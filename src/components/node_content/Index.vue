@@ -1,7 +1,11 @@
 <template>
   <div v-if="show && selectedNode" class="wrapper">
     <div class="p-fluid">
-      <img style="position: absolute; left:0; top:0; width: 100%; height: 240px" alt="welcome" src="../../assets/images/bottles.png"/>
+      <img
+        style="position: absolute; left:0; top:0; width: 100%; height: 240px"
+        alt="welcome"
+        src="../../assets/images/bottles.png"
+      />
 
       <!-- Content   -->
       <div class="p-field p-grid">
@@ -10,16 +14,16 @@
         </div>
         <div class="p-col-10">
           <Title
-              :content = "selectedNodeContent ? selectedNode.title : ''"
-              @content-changed="changeNodeTitle($event)"
+            :content="selectedNodeContent ? selectedNode.title : ''"
+            @content-changed="changeNodeTitle($event)"
           />
         </div>
         <div class="p-col-2">
-          <PinButton/>
+          <PinButton />
         </div>
         <div class="p-col-12">
           <Markdown
-            :content = "selectedNodeContent ? selectedNodeContent.content : ''"
+            :content="selectedNodeContent ? selectedNodeContent.content : ''"
             :rows="20"
             @content-changed="changeContent($event)"
           />
@@ -29,7 +33,7 @@
       <!-- Comment -->
       <div class="p-field p-grid">
         <div class="p-col-12 p-md-12">
-        <TextArea
+          <TextArea
             id="comment"
             placeholder="Your notes (visible only to you)"
             :autoResize="true"
@@ -37,7 +41,7 @@
             :value="selectedNodeComment"
             @update:modelValue="changeComment($event)"
             v-on:keydown="checkAuthorized"
-        />
+          />
         </div>
       </div>
 
@@ -48,23 +52,20 @@
         </div>
         <div class="p-col-2">
           <AddBasedOnButton
-              :clickedTitleId="clickedTitleId"
-              @select-precondition-is-on="$emit('select-precondition-is-on')"
-              @select-precondition-is-off="$emit('select-precondition-is-off')"
+            :clickedTitleId="clickedTitleId"
+            @select-precondition-is-on="$emit('select-precondition-is-on')"
+            @select-precondition-is-off="$emit('select-precondition-is-off')"
           />
         </div>
       </div>
       <SectionPreconditions
-          v-if="selectedNodeContent"
-          :node-id="selectedNode.id"
+        v-if="selectedNodeContent"
+        :node-id="selectedNode.id"
       />
 
       <!-- Used by section -->
       <h3><i>used by</i></h3>
-      <SectionUsedBy
-          v-if="selectedNodeContent"
-          :node-id="selectedNode.id"
-      />
+      <SectionUsedBy v-if="selectedNodeContent" :node-id="selectedNode.id" />
 
       <!-- ChangeLog section -->
       <ChangeLog :node-id="selectedNode.id" />
@@ -74,20 +75,29 @@
     <div class="p-fluid">
       <div class="p-field p-grid">
         <div class="p-col-12">
-          <div style="height: 60px;">
+          <div style="height: 60px;"></div>
+        </div>
+        <div class="p-col-12">
+          <div class="title">
+            Welcome to new way of scientific knowledge crowdsourcing!
           </div>
         </div>
         <div class="p-col-12">
-          <div class="title">Welcome to new way of scientific knowledge crowdsourcing!</div>
-        </div>
-        <div class="p-col-12">
-          <iframe width="100%" height="225px" src="https://www.youtube.com/embed/4S9sDyooxf4?si=u4z2DkDwNTsVdMBH" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          <iframe
+            width="100%"
+            height="225px"
+            src="https://www.youtube.com/embed/4S9sDyooxf4?si=u4z2DkDwNTsVdMBH"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          ></iframe>
         </div>
         <div class="p-col-1 icon">
           <img
-              alt="logo"
-              src="../../assets/images/sign-in.svg"
-              style="width: 25px"
+            alt="logo"
+            src="../../assets/images/sign-in.svg"
+            style="width: 25px"
           />
         </div>
         <div class="p-col-11 list">
@@ -95,29 +105,31 @@
         </div>
         <div class="p-col-1 icon">
           <img
-              alt="logo"
-              src="../../assets/images/goal.svg"
-              style="width: 30px"
+            alt="logo"
+            src="../../assets/images/goal.svg"
+            style="width: 30px"
           />
         </div>
         <div class="p-col-11 list">
-          Keep description focused and simple but profound (i - snippet with example of formula and image markdown)
+          Keep description focused and simple but profound (i - snippet with
+          example of formula and image markdown)
         </div>
         <div class="p-col-1 icon">
           <img
-              alt="logo"
-              src="../../assets/images/plugin.svg"
-              style="width: 30px"
+            alt="logo"
+            src="../../assets/images/plugin.svg"
+            style="width: 30px"
           />
         </div>
         <div class="p-col-11 list">
-          Use <b>"based on"</b> to link nodes that are necessary for solid understanding of your description
+          Use <b>"based on"</b> to link nodes that are necessary for solid
+          understanding of your description
         </div>
         <div class="p-col-1 icon">
           <img
-              alt="logo"
-              src="../../assets/images/pin-on-map.svg"
-              style="width: 30px"
+            alt="logo"
+            src="../../assets/images/pin-on-map.svg"
+            style="width: 30px"
           />
         </div>
         <div class="p-col-11 list">
@@ -125,26 +137,35 @@
         </div>
         <div class="p-col-1 icon">
           <img
-              alt="logo"
-              src="../../assets/images/action.svg"
-              style="width: 30px"
+            alt="logo"
+            src="../../assets/images/action.svg"
+            style="width: 30px"
           />
         </div>
         <div class="p-col-11 list">
-          Not only description, if you know actions one can take to push knowledge further (vacancies, crowdsourcing etc) - add it!
+          Not only description, if you know actions one can take to push
+          knowledge further (vacancies, crowdsourcing etc) - add it!
         </div>
         <div class="p-col-1 icon">
           <img
-              alt="logo"
-              src="../../assets/images/talk.svg"
-              style="width: 20px"
+            alt="logo"
+            src="../../assets/images/talk.svg"
+            style="width: 20px"
           />
         </div>
         <div class="p-col-11 list">
-          Talk to your coauthors to make description better in <a target="_blank" href="https://discord.com/channels/1171118046543347782/1171118047587745953">chat</a>
+          Talk to your coauthors to make description better in
+          <a
+            target="_blank"
+            href="https://discord.com/channels/1171118046543347782/1171118047587745953"
+            >chat</a
+          >
         </div>
         <div class="p-col-12 list">
-          <i>If you thank we need more rules or change these ones, feel free to discuss them in community chat</i>
+          <i
+            >If you thank we need more rules or change these ones, feel free to
+            discuss them in community chat</i
+          >
         </div>
       </div>
     </div>
@@ -159,10 +180,7 @@ import TextArea from "primevue/textarea";
 import SectionPreconditions from "./Preconditions.vue";
 import SectionUsedBy from "./UsedBy.vue";
 import { Tree } from "@/types/graphics";
-import {
-  EmptyNodeContent,
-  NodeContent
-} from "@/store/node_content";
+import { EmptyNodeContent, NodeContent } from "@/store/node_content";
 import { clone, printError } from "@/tools/utils";
 import { useConfirm } from "primevue/useconfirm";
 import api from "@/api/api";
@@ -182,7 +200,7 @@ export default {
     TextArea,
     SectionPreconditions,
     ChangeLog,
-    PinButton,
+    PinButton
   },
   emits: ["select-precondition-is-on", "select-precondition-is-off"],
   props: {
@@ -193,7 +211,7 @@ export default {
     selectedNodeId: {
       type: String || null,
       validator: (prop: string | null) =>
-          typeof prop === "string" || prop === null,
+        typeof prop === "string" || prop === null,
       required: true
     },
     clickedTitleId: {
@@ -201,19 +219,22 @@ export default {
       required: true
     }
   },
-  setup(props: {show: boolean, selectedNodeId: string|null}) {
+  setup(props: { show: boolean; selectedNodeId: string | null }) {
     const store = useStore();
     const confirm = useConfirm();
     const tree = store.state.tree;
 
     const selectedNode = computed<Tree | null>(() =>
-        props.selectedNodeId && tree.nodeRecord[props.selectedNodeId]
+      props.selectedNodeId && tree.nodeRecord[props.selectedNodeId]
         ? tree.nodeRecord[props.selectedNodeId].node
         : null
     );
 
     const selectedNodeContent = computed<NodeContent | null>(() => {
-      if (props.selectedNodeId && store.state.nodeContent.nodeContents[props.selectedNodeId]) {
+      if (
+        props.selectedNodeId &&
+        store.state.nodeContent.nodeContents[props.selectedNodeId]
+      ) {
         return store.state.nodeContent.nodeContents[props.selectedNodeId];
       }
       const newContent = clone(EmptyNodeContent);
@@ -222,7 +243,8 @@ export default {
     });
 
     const selectedNodeComment = computed<string>(() =>
-      props.selectedNodeId && store.state.nodeContent.userNodeComments[props.selectedNodeId]
+      props.selectedNodeId &&
+      store.state.nodeContent.userNodeComments[props.selectedNodeId]
         ? store.state.nodeContent.userNodeComments[props.selectedNodeId].comment
         : ""
     );
@@ -292,11 +314,11 @@ export default {
   color: rgb(73, 80, 87);
 
   border-right: 1px solid rgb(218, 220, 224);
-  box-shadow: 0 0 5px rgba(0,0,0,0.5);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
   clip-path: inset(0px -5px 0px 0px);
 }
 .title {
-  font-family: "Google Sans",Roboto,Arial,sans-serif;
+  font-family: "Google Sans", Roboto, Arial, sans-serif;
   font-size: 1.375rem;
   font-weight: 400;
   letter-spacing: 0;
@@ -305,7 +327,7 @@ export default {
   margin-bottom: 20px;
 }
 .list {
-  font-family: Roboto,Arial,sans-serif;
+  font-family: Roboto, Arial, sans-serif;
   font-size: 0.875rem;
   font-weight: 400;
   letter-spacing: 0;
@@ -317,7 +339,7 @@ export default {
   margin-top: 9px;
 }
 .section {
-  font-family: "Google Sans",Roboto,Arial,sans-serif;
+  font-family: "Google Sans", Roboto, Arial, sans-serif;
   font-size: 1.375rem;
   font-weight: 400;
   letter-spacing: 0;

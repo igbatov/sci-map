@@ -1,5 +1,5 @@
 import { MapNode, Point } from "@/types/graphics";
-import { nextTick, ref, Ref, watch } from "vue";
+import { nextTick, Ref, watch } from "vue";
 
 export type EventClickNode = {
   id: string;
@@ -15,7 +15,11 @@ export type MouseDownInfo = {
   dragStart: boolean;
 };
 
-type emitFn = (event: "title-dragging" | "title-drop", ...args: any[]) => void;
+type emitDragging = (
+  event: "title-dragging",
+  args: { nodeId: string; delta: Point }
+) => void;
+type emitDrop = (event: "title-drop", args: { id: string }) => void;
 
 type TitleBox = {
   position: Point;
@@ -26,7 +30,7 @@ type TitleBox = {
 };
 
 export const mouseMoveListener = (
-  emit: emitFn,
+  emit: emitDragging,
   event: MouseEvent,
   mouseDownInfo: MouseDownInfo
 ) => {
@@ -42,7 +46,10 @@ export const mouseMoveListener = (
   }
 };
 
-export const mouseUpListener = (emit: emitFn, mouseDownInfo: MouseDownInfo) => {
+export const mouseUpListener = (
+  emit: emitDrop,
+  mouseDownInfo: MouseDownInfo
+) => {
   if (mouseDownInfo.nodeId) {
     if (mouseDownInfo.dragStart) {
       emit("title-drop", { id: mouseDownInfo.nodeId });
@@ -73,13 +80,12 @@ export const nodeToTitleBox = (
 const updateTitleBox = async (
   titleIdPrefix: string,
   position: "center" | "left",
-  mapNodes: Record<string, MapNode>,
+  mapNodes: Record<string, MapNode>
 ): Promise<Record<string, TitleBox>> => {
-  const titleBox = {} as Record<any, TitleBox>
+  const titleBox = {} as Record<string, TitleBox>;
 
   // Code that will run only after the entire view has been rendered
   await nextTick(() => {
-
     // fill new ones
     for (const i in mapNodes) {
       const node = mapNodes[i];
@@ -120,16 +126,18 @@ export const setTitleBoxes = (
   titleIdPrefix: string,
   position: "center" | "left",
   mapNodes: Ref<Record<string, MapNode>>,
-  cb: (titleBoxMap: Record<string, TitleBox>) => void,
+  cb: (titleBoxMap: Record<string, TitleBox>) => void
 ) => {
-  cb(nodeToTitleBox(mapNodes.value))
+  cb(nodeToTitleBox(mapNodes.value));
   /**
    * Update titleBox on every prop change after DOM rerender
    */
   watch(
     mapNodes,
-    async (mps) => {
-      return updateTitleBox(titleIdPrefix, position, mps).then((titleBoxMap) => cb(titleBoxMap))
+    async mps => {
+      return updateTitleBox(titleIdPrefix, position, mps).then(titleBoxMap =>
+        cb(titleBoxMap)
+      );
     },
     {
       immediate: true

@@ -7,10 +7,10 @@
     <div class="p-col-12">
       <div class="p-grid">
         <div :class="`p-col-10 ${$style.title}`">
-          <a :href=precondition.id >{{ precondition.title }}</a>
+          <a :href="precondition.id">{{ precondition.title }}</a>
         </div>
         <div class="p-col-2">
-          <RemoveIcon @click="remove(precondition.id)"/>
+          <RemoveIcon @click="remove(precondition.id)" />
         </div>
       </div>
     </div>
@@ -30,7 +30,7 @@ export default {
     nodeId: String
   },
   components: {
-    RemoveIcon,
+    RemoveIcon
   },
   setup(props: { nodeId: string }) {
     const store = useStore();
@@ -57,10 +57,10 @@ export default {
         if (p.indexOf(id) == -1) {
           return;
         }
-        p.splice(p.indexOf(id), 1)
+        p.splice(p.indexOf(id), 1);
         api.savePreconditions(store.state.user.user, {
           nodeId: props.nodeId,
-          preconditionIds: p,
+          preconditionIds: p
         });
       }
     };

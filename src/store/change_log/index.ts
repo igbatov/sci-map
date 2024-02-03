@@ -1,16 +1,15 @@
-
 export enum ActionType {
-  ParentID = 'parentID',
-  Precondition = 'precondition',
-  Content = 'content',
-  Name = 'name',
+  ParentID = "parentID",
+  Precondition = "precondition",
+  Content = "content",
+  Name = "name"
 }
 
 export type Node = {
   id: string;
   idPath: string;
   name: string;
-}
+};
 
 export type ChangeLog = {
   changeLogID: string;
@@ -38,7 +37,7 @@ export type ChangeLogNodePrecondition = {
 
   removed: Array<Node>;
   added: Array<Node>;
-}
+};
 
 export type ChangeLogNodeContent = {
   changeLogID: string;
@@ -52,7 +51,7 @@ export type ChangeLogNodeContent = {
   node: Node;
 
   newContent: string;
-}
+};
 
 export type ChangeLogNodeName = {
   changeLogID: string;
@@ -66,7 +65,7 @@ export type ChangeLogNodeName = {
   node: Node;
 
   newName: string;
-}
+};
 
 export type ChangeLogNodeParent = {
   changeLogID: string;
@@ -83,7 +82,10 @@ export type ChangeLogNodeParent = {
 
   isRemoved: boolean;
   isAdded: boolean;
-}
+};
 
-export type ChangeLogEnriched = ChangeLogNodeContent | ChangeLogNodeName | ChangeLogNodePrecondition | ChangeLogNodeParent;
-
+export type ChangeLogEnriched =
+  | ChangeLogNodeContent
+  | ChangeLogNodeName
+  | ChangeLogNodePrecondition
+  | ChangeLogNodeParent;

@@ -2,11 +2,11 @@
   <ConfirmDialog></ConfirmDialog>
   <Toast position="bottom-left" />
   <NodeContent
-      :clickedTitleId="clickedTitleId"
-      @select-precondition-is-on="setSelectPreconditionON"
-      @select-precondition-is-off="setSelectPreconditionOFF"
-      :show="!editModeOn"
-      :selectedNodeId="selectedNodeId"
+    :clickedTitleId="clickedTitleId"
+    @select-precondition-is-on="setSelectPreconditionON"
+    @select-precondition-is-off="setSelectPreconditionOFF"
+    :show="!editModeOn"
+    :selectedNodeId="selectedNodeId"
   />
   <Menu />
   <Map
@@ -51,8 +51,8 @@ import {
 } from "@/views/Home";
 import { clone, printError } from "@/tools/utils";
 import { MapNode } from "@/types/graphics";
-import {findMapNode, findMapNodes} from "@/store/tree/helpers";
-import {actions as positionChangePermitsActions} from "@/store/position_change_permits";
+import { findMapNode, findMapNodes } from "@/store/tree/helpers";
+import { actions as positionChangePermitsActions } from "@/store/position_change_permits";
 
 export default defineComponent({
   name: "Home",
@@ -121,29 +121,34 @@ export default defineComponent({
     // Ugly hack to determine first load of page
     let isFirstPageLoad = true;
     onBeforeRouteUpdate(async (to, from) => {
-      isFirstPageLoad = false
-    })
+      isFirstPageLoad = false;
+    });
     // If this is isFirstPageLoad then pan map to node in URL
     watch(
-    () => [
-          treeState.mapNodeLayers,
-        ],
-    () => {
-      if (isFirstPageLoad && route.params.id.length > 0 && treeState.mapNodeLayers.length>0) {
-        const [firstNode] = findMapNode(route.params.id as string, treeState.mapNodeLayers)
-        if (firstNode != null) {
-          store.commit(
-              `zoomPan/${zoomPanMutations.SET_PAN}`,
-              {x: -firstNode.center.x + treeState.mapNodeLayers[0]["0"].center.x, y: -firstNode.center.y + treeState.mapNodeLayers[0]["0"].center.y},
+      () => [treeState.mapNodeLayers],
+      () => {
+        if (
+          isFirstPageLoad &&
+          route.params.id.length > 0 &&
+          treeState.mapNodeLayers.length > 0
+        ) {
+          const [firstNode] = findMapNode(
+            route.params.id as string,
+            treeState.mapNodeLayers
           );
+          if (firstNode != null) {
+            store.commit(`zoomPan/${zoomPanMutations.SET_PAN}`, {
+              x: -firstNode.center.x + treeState.mapNodeLayers[0]["0"].center.x,
+              y: -firstNode.center.y + treeState.mapNodeLayers[0]["0"].center.y
+            });
+          }
         }
       }
-    })
-
+    );
 
     // Determine which nodes to show based on current pan and zoom
     watch(
-  () => [
+      () => [
         treeState.mapNodeLayers,
         zoomPanState.debouncedZoom,
         zoomPanState.debouncedPan
@@ -173,7 +178,12 @@ export default defineComponent({
 
     const visibleZoomedPanedLayers = ref<Array<Record<string, MapNode>>>([]);
     watch(
-      () => [zoomPanState.pan.x, zoomPanState.pan.y, zoomPanState.zoom, visibleLayers],
+      () => [
+        zoomPanState.pan.x,
+        zoomPanState.pan.y,
+        zoomPanState.zoom,
+        visibleLayers
+      ],
       () => {
         // visibleLayers это всегда слои с zoom=1 и pan={0, 0} состоящий из только видимых прямо сейчас элементов.
         // Мы применяем к этому объекту текущий zoomPanState но сам эталон не трогаем, поэтому здесь clone
@@ -233,8 +243,8 @@ export default defineComponent({
       /**
        * searchResultNodeIDs
        */
-      searchResultNodeIDs: computed(()=>{
-        return searchResultState.nodeIDs
+      searchResultNodeIDs: computed(() => {
+        return searchResultState.nodeIDs;
       }),
 
       /**
@@ -262,7 +272,10 @@ export default defineComponent({
           }
         }
 
-        const searchResultMapNodes = findMapNodes(searchResultNodeIDs, treeState.mapNodeLayers);
+        const searchResultMapNodes = findMapNodes(
+          searchResultNodeIDs,
+          treeState.mapNodeLayers
+        );
         const result = [];
         for (const searchResultMapNode of searchResultMapNodes) {
           const cl = clone(searchResultMapNode);
@@ -286,9 +299,12 @@ export default defineComponent({
       ),
       visibleZoomedPanedLayers: visibleZoomedPanedLayers,
       nodeDragging: async (e: EventDraggingNode) => {
-        const hasDragPermit = await store.dispatch(`positionChangePermits/${positionChangePermitsActions.CheckNodeID}`, e.id);
+        const hasDragPermit = await store.dispatch(
+          `positionChangePermits/${positionChangePermitsActions.CheckNodeID}`,
+          e.id
+        );
         if (!hasDragPermit) {
-          return
+          return;
         }
         await store.dispatch(`${actions.updateNodePosition}`, {
           nodeId: e.id,
@@ -313,11 +329,11 @@ export default defineComponent({
         }
       },
       titleOver: (e: EventClickNode) => {
-        titleOver = true
+        titleOver = true;
         store.commit(`tree/${treeMutations.SET_SELECTED_NODE_ID}`, e.id);
       },
       titleLeave: (e: EventClickNode) => {
-        titleOver = false
+        titleOver = false;
         store.commit(
           `tree/${treeMutations.SET_SELECTED_NODE_ID}`,
           route.params.id
@@ -326,7 +342,7 @@ export default defineComponent({
       mapDragging: (event: EventDraggingBackground) => {
         if (store.state.editModeOn && titleOver) {
           // to prevent pan while node position editing ( = title dragging in edit mode)
-          return
+          return;
         }
         store.commit(`zoomPan/${zoomPanMutations.ADD_PAN}`, event);
       },

@@ -1,6 +1,9 @@
 import firebase from "firebase/compat";
 import api from "@/api/api";
-import { mutations as treeMutations, actions as treeActions } from "@/store/tree";
+import {
+  mutations as treeMutations,
+  actions as treeActions
+} from "@/store/tree";
 import { mutations as pinMutations } from "@/store/pin";
 import { mutations as preconditionMutations } from "@/store/precondition";
 import {
@@ -33,7 +36,9 @@ export async function initMap(user: firebase.User | null) {
 
   // subscribe on changes for every node in map
   for (const id in map) {
-    api.subscribeMapNodeChange(id, (dbNode: DBNode) => store.dispatch(`tree/${treeActions.handleMapNodeUpdate}`, dbNode))
+    api.subscribeMapNodeChange(id, (dbNode: DBNode) =>
+      store.dispatch(`tree/${treeActions.handleMapNodeUpdate}`, dbNode)
+    );
   }
 }
 
@@ -71,14 +76,12 @@ export async function initPreconditions(user: firebase.User | null) {
 
   // subscribe on precondition changes for every node
   for (const id in preconditions) {
-    api.subscribePreconditionNodeChange(
-      id,
-      (nodeID, preconditionIDs) => {
-        return store.commit(
-          `precondition/${preconditionMutations.UPDATE_PRECONDITIONS}`,
-          {nodeID:nodeID, preconditionIDs: preconditionIDs},
-        )
-      })
+    api.subscribePreconditionNodeChange(id, (nodeID, preconditionIDs) => {
+      return store.commit(
+        `precondition/${preconditionMutations.UPDATE_PRECONDITIONS}`,
+        { nodeID: nodeID, preconditionIDs: preconditionIDs }
+      );
+    });
   }
 
   store.commit(
@@ -103,16 +106,16 @@ export async function initNodeContents(user: firebase.User | null) {
   for (const i in nodeContent) {
     nodeContents[i] = {
       nodeID: nodeContent[i].nodeID,
-      content: nodeContent[i].content,
+      content: nodeContent[i].content
     } as NodeContent;
 
     api.subscribeNodeContentChange(
       nodeContents[i].nodeID,
-      (v: { nodeID: string; content: string }) =>  {
+      (v: { nodeID: string; content: string }) => {
         textSearchAdd(v.nodeID, v.content);
         store.commit(`nodeContent/${nodeContentMutations.SET_NODE_CONTENT}`, v);
       }
-    )
+    );
   }
 
   store.commit(
@@ -127,7 +130,7 @@ export async function initNodeContents(user: firebase.User | null) {
       return;
     }
     if (userComments === null) {
-      return
+      return;
     }
 
     // fix in store

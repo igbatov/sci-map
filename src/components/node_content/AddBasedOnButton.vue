@@ -1,31 +1,31 @@
 <template>
-  <AddBasedOnIcon @click="showAddBanner"/>
+  <AddBasedOnIcon @click="showAddBanner" />
   <Dialog
-      v-model:visible="addBannerVisible"
-      :dismissableMask="false"
-      :closable="true"
-      :modal="false"
-      :closeOnEscape="true"
-      @mousedown.stop
+    v-model:visible="addBannerVisible"
+    :dismissableMask="false"
+    :closable="true"
+    :modal="false"
+    :closeOnEscape="true"
+    @mousedown.stop
   >
     <template #header>
       <h3>
         Set "{{
           preconditionNode.title
-              ? preconditionNode.title
-              : selectedNode
-                  ? selectedNode.title
-                  : ""
+            ? preconditionNode.title
+            : selectedNode
+            ? selectedNode.title
+            : ""
         }}" as precondition for "{{ targetNode ? targetNode.title : "" }}"
       </h3>
     </template>
 
     <template #footer>
       <Button
-          label="Cancel"
-          icon="pi pi-times"
-          class="p-button-text"
-          @click="cancelAdd"
+        label="Cancel"
+        icon="pi pi-times"
+        class="p-button-text"
+        @click="cancelAdd"
       />
       <Button label="Done" icon="pi pi-check" @click="add" />
     </template>
@@ -45,7 +45,7 @@ export default {
   components: {
     Dialog,
     Button,
-    AddBasedOnIcon,
+    AddBasedOnIcon
   },
   emits: ["select-precondition-is-on", "select-precondition-is-off"],
   props: {
@@ -62,17 +62,17 @@ export default {
     const selectedNode = computed(() => store.getters["tree/selectedNode"]); // current selected node
 
     watch(
-        () => props.clickedTitleId,
-        () => {
-          if (
-              props.clickedTitleId !== "-1" &&
-              store.state.tree.nodeRecord[props.clickedTitleId]
-          ) {
-            preconditionNode.value =
-                store.state.tree.nodeRecord[props.clickedTitleId].node;
-          }
-        },
-        { immediate: true }
+      () => props.clickedTitleId,
+      () => {
+        if (
+          props.clickedTitleId !== "-1" &&
+          store.state.tree.nodeRecord[props.clickedTitleId]
+        ) {
+          preconditionNode.value =
+            store.state.tree.nodeRecord[props.clickedTitleId].node;
+        }
+      },
+      { immediate: true }
     );
 
     return {
@@ -82,15 +82,16 @@ export default {
         addBannerVisible.value = !addBannerVisible.value;
       },
       add: () => {
-        let preconditionsIDs = []
+        let preconditionsIDs = [];
         if (store.state.precondition.preconditions[targetNode.value.id]) {
-          preconditionsIDs = store.state.precondition.preconditions[targetNode.value.id];
+          preconditionsIDs =
+            store.state.precondition.preconditions[targetNode.value.id];
         }
         preconditionsIDs.push(preconditionNode.value.id);
 
         api.savePreconditions(store.state.user.user, {
           nodeId: targetNode.value.id,
-          preconditionIds: preconditionsIDs,
+          preconditionIds: preconditionsIDs
         });
         ctx.emit("select-precondition-is-off");
         addBannerVisible.value = false;

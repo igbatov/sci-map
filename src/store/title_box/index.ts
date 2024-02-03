@@ -1,13 +1,12 @@
-
 export type TitleBox = {
   position: {
-    x: number,
-    y: number
-  },
+    x: number;
+    y: number;
+  };
   bbox: {
-    width: number,
-    height: number,
-  }
+    width: number;
+    height: number;
+  };
 };
 
 export type TitleBoxMap = Record<
@@ -20,17 +19,20 @@ export interface State {
 }
 
 export const mutations = {
-  SET_MAP: "SET_MAP",
+  SET_MAP: "SET_MAP"
 };
 
 export const store = {
   namespaced: true,
   state: {
-    layerMap: {},
+    layerMap: {}
   },
   mutations: {
-    [mutations.SET_MAP](state: State, v: { layerName: string; titleBoxMap: TitleBoxMap }) {
-      state.layerMap[v.layerName] = v.titleBoxMap
-    },
+    [mutations.SET_MAP](
+      state: State,
+      v: { layerName: string; titleBoxMap: TitleBoxMap }
+    ) {
+      state.layerMap[v.layerName] = v.titleBoxMap;
+    }
   }
 };

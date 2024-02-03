@@ -13,18 +13,18 @@ import { store as titleBoxStore, State as TitleBoxState } from "./title_box";
 
 import {
   store as preconditionStore,
-  State as PreconditionState,
+  State as PreconditionState
 } from "./precondition";
 
 import {
   store as positionChangePermitsStore,
-  State as positionChangePermitsState,
+  State as positionChangePermitsState
 } from "./position_change_permits";
 
 import {
   store as treeStore,
   State as TreeState,
-  mutations as treeMutations,
+  mutations as treeMutations
 } from "./tree";
 
 import { store as zoomPanStore, State as ZoomPanState } from "./zoom_pan";
@@ -63,7 +63,7 @@ import {
 import NewErrorKV from "@/tools/errorkv";
 import { addVector, convertPosition } from "@/tools/graphics";
 import { DBNode } from "@/api/types";
-import {clone, debounce} from "lodash";
+import { clone, debounce } from "lodash";
 import { printError } from "@/tools/utils";
 import firebase from "firebase/compat";
 
@@ -208,7 +208,7 @@ export const store = createStore<State>({
       api.initFirebase();
       firebase.auth().onAuthStateChanged(user => {
         if (user && !user.isAnonymous) {
-          api.setPublicUserData(user.uid, user.displayName, null)
+          api.setPublicUserData(user.uid, user.displayName, null);
           commit(`user/${userMutations.SET_USER}`, user);
           initData(user);
         } else {
@@ -291,7 +291,7 @@ export const store = createStore<State>({
         parentID: v.parentID
       });
 
-      return node.id
+      return node.id;
     },
 
     /**
@@ -380,48 +380,61 @@ export const store = createStore<State>({
       const parentID = parent.id;
       const node = (await api.getNode(nodeID)) as DBNode;
       // collect all children id recursively
-      const allChildrenID = clone(node.children)
-      const allChildrenIDMap = {} as Record<string, DBNode>
+      const allChildrenID = clone(node.children);
+      const allChildrenIDMap = {} as Record<string, DBNode>;
       while (allChildrenID.length > 0) {
-        const id = allChildrenID.pop()
-        if (!id || !state.tree.nodeRecord[id!] || !state.tree.nodeRecord[id!].node || !state.tree.nodeRecord[id!].parent) {
-          continue
+        const id = allChildrenID.pop();
+        if (
+          !id ||
+          !state.tree.nodeRecord[id!] ||
+          !state.tree.nodeRecord[id!].node ||
+          !state.tree.nodeRecord[id!].parent
+        ) {
+          continue;
         }
         allChildrenIDMap[id] = {
           id: id,
           parentID: state.tree.nodeRecord[id].parent!.id,
           name: state.tree.nodeRecord[id].node.title,
-          children: state.tree.nodeRecord[id].node.children.map((node)=>node.id),
-          position: state.tree.nodeRecord[id].node.position,
-        }
-        allChildrenID.push(...state.tree.nodeRecord[id].node.children.map((node)=>node.id));
+          children: state.tree.nodeRecord[id].node.children.map(
+            node => node.id
+          ),
+          position: state.tree.nodeRecord[id].node.position
+        };
+        allChildrenID.push(
+          ...state.tree.nodeRecord[id].node.children.map(node => node.id)
+        );
       }
       // move node and its children to /trash atomically
-      const moveToTrash = {} as Record<string, any>
+      const moveToTrash = {} as Record<string, any>;
       const oldKey = await api.findKeyOfChild(parent.id, nodeID);
       moveToTrash[`trash/${nodeID}/map`] = node;
       moveToTrash[`map/${nodeID}`] = null;
       moveToTrash[`map/${parent.id}/children/${oldKey}`] = null;
       if (state.nodeContent.nodeContents[nodeID]) {
-        moveToTrash[`trash/${nodeID}/node_content`] = state.nodeContent.nodeContents[nodeID];
+        moveToTrash[`trash/${nodeID}/node_content`] =
+          state.nodeContent.nodeContents[nodeID];
         moveToTrash[`node_content/${nodeID}`] = null;
       }
       if (state.precondition.preconditions[nodeID]) {
-        moveToTrash[`trash/${nodeID}/precondition`] = state.precondition.preconditions[nodeID];
+        moveToTrash[`trash/${nodeID}/precondition`] =
+          state.precondition.preconditions[nodeID];
         moveToTrash[`precondition/${nodeID}`] = null;
       }
 
       // move also all children to /trash
       for (const id in allChildrenIDMap) {
-        moveToTrash[`trash/${id}/map`] = allChildrenIDMap[id]
-        moveToTrash[`map/${id}`] = null
+        moveToTrash[`trash/${id}/map`] = allChildrenIDMap[id];
+        moveToTrash[`map/${id}`] = null;
         if (state.nodeContent.nodeContents[id]) {
-          moveToTrash[`trash/${id}/node_content`] = state.nodeContent.nodeContents[id]
-          moveToTrash[`node_content/${id}`] = null
+          moveToTrash[`trash/${id}/node_content`] =
+            state.nodeContent.nodeContents[id];
+          moveToTrash[`node_content/${id}`] = null;
         }
         if (state.precondition.preconditions[id]) {
-          moveToTrash[`trash/${id}/precondition`] = state.precondition.preconditions[id]
-          moveToTrash[`precondition/${id}`] = null
+          moveToTrash[`trash/${id}/precondition`] =
+            state.precondition.preconditions[id];
+          moveToTrash[`precondition/${id}`] = null;
         }
       }
 
@@ -475,7 +488,7 @@ export const store = createStore<State>({
           state.tree.mapNodeLayers
         );
       }
-    },
+    }
   },
   modules: {
     pin: pinStore,
@@ -487,7 +500,7 @@ export const store = createStore<State>({
     zoomPan: zoomPanStore,
     history: historyStore,
     nodeContent: nodeContentStore,
-    searchResult: searchResultStore,
+    searchResult: searchResultStore
   }
 });
 

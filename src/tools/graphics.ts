@@ -276,7 +276,10 @@ export function polygonFill(
   if (selectedNodeId && selectedNodeId == currentNodeId) {
     return "#f3afaf";
   }
-  if (selectedNodePreconditionIds && selectedNodePreconditionIds.indexOf(currentNodeId) != -1) {
+  if (
+    selectedNodePreconditionIds &&
+    selectedNodePreconditionIds.indexOf(currentNodeId) != -1
+  ) {
     return "#62f363";
   }
   return "transparent";
@@ -290,7 +293,10 @@ export function polygonFillOpacity(
   if (selectedNodeId && selectedNodeId == currentNodeId) {
     return "0.2";
   }
-  if (selectedNodePreconditionIds && selectedNodePreconditionIds.indexOf(currentNodeId) != -1) {
+  if (
+    selectedNodePreconditionIds &&
+    selectedNodePreconditionIds.indexOf(currentNodeId) != -1
+  ) {
     return "0.2";
   }
   return "0";
@@ -737,10 +743,10 @@ export function treeToMapNodeLayers(
       }
 
       // check that no two children have the same center
-      const tmpMap = {} as Record<string, string>
-      let strPos = ""
+      const tmpMap = {} as Record<string, string>;
+      let strPos = "";
       for (const i in treeNode.children) {
-        strPos = JSON.stringify(treeNode.children[i].position)
+        strPos = JSON.stringify(treeNode.children[i].position);
         if (tmpMap[strPos] && tmpMap[strPos].length > 0) {
           return [
             null,
@@ -750,7 +756,7 @@ export function treeToMapNodeLayers(
             })
           ];
         } else {
-          tmpMap[strPos] = treeNode.children[i].id
+          tmpMap[strPos] = treeNode.children[i].id;
         }
       }
 

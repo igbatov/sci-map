@@ -1,21 +1,18 @@
 import firebase from "firebase/compat";
-import {Tree} from "@/types/graphics";
-import {ErrorKV} from "@/types/errorkv";
+import { Tree } from "@/types/graphics";
+import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "../tools/errorkv";
 import axios from "axios";
-import {Pins} from "@/store/pin";
-import {Preconditions} from "src/store/precondition";
-import {DBNode} from "@/api/types";
-import {convertChildren} from "./helpers";
-import {NodeComment, NodeContent} from "@/store/node_content";
+import { Pins } from "@/store/pin";
+import { Preconditions } from "src/store/precondition";
+import { DBNode } from "@/api/types";
+import { convertChildren } from "./helpers";
+import { NodeComment, NodeContent } from "@/store/node_content";
 import emulatorConfig from "../../firebase.json";
-import {debounce} from "lodash";
+import { debounce } from "lodash";
 
-import {
-  connectFirestoreEmulator,
-  getFirestore,
-} from "firebase/firestore";
-import {QueryFilterConstraint} from "@firebase/firestore";
+import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
+import { QueryFilterConstraint } from "@firebase/firestore";
 
 const MAP_FROM_STORAGE = false; // is storage is source for map (or database)
 let FUNCTION_DOMAIN = "https://us-central1-sci-map-1982.cloudfunctions.net/";
@@ -35,10 +32,10 @@ const update = async (data: Record<string, any>): Promise<ErrorKV> => {
 const debouncedUpdate = debounce(update, 2000);
 
 export default {
-  ROOT_WIDTH: 2*window.innerWidth/3,
+  ROOT_WIDTH: (2 * window.innerWidth) / 3,
   ROOT_HEIGHT: window.innerHeight,
-  ROOT_CENTER_X: 0.3*window.innerWidth + 0.7*window.innerWidth/2,
-  ROOT_CENTER_Y: window.innerHeight/2,
+  ROOT_CENTER_X: 0.3 * window.innerWidth + (0.7 * window.innerWidth) / 2,
+  ROOT_CENTER_Y: window.innerHeight / 2,
   ST_WIDTH: 1000,
   ST_HEIGHT: 1000,
   initFirebase() {
@@ -70,7 +67,11 @@ export default {
       firebase
         .storage()
         .useEmulator("localhost", emulatorConfig.emulators.storage.port);
-      connectFirestoreEmulator(getFirestore(), 'localhost', emulatorConfig.emulators.firestore.port);
+      connectFirestoreEmulator(
+        getFirestore(),
+        "localhost",
+        emulatorConfig.emulators.firestore.port
+      );
       FUNCTION_DOMAIN = "http://localhost:5001/sci-map-1982/us-central1/";
     }
   },
@@ -136,7 +137,9 @@ export default {
     ];
   },
 
-  async getMap(user: firebase.User | null): Promise<[Record<string, DBNode> | null, ErrorKV]> {
+  async getMap(
+    user: firebase.User | null
+  ): Promise<[Record<string, DBNode> | null, ErrorKV]> {
     try {
       return await this.getMapFromDB();
     } catch (e) {
@@ -221,7 +224,10 @@ export default {
     );
   },
 
-  subscribeNodeContentChange(nodeID: string, cb: (a: { nodeID: string; content: string }) => any) {
+  subscribeNodeContentChange(
+    nodeID: string,
+    cb: (a: { nodeID: string; content: string }) => any
+  ) {
     this.subscribeDBChange(
       `node_content/${nodeID}`,
       (snap: firebase.database.DataSnapshot) => {
@@ -235,7 +241,10 @@ export default {
     );
   },
 
-  subscribePreconditionNodeChange(nodeID: string, cb: (nodeID: string, preconditionIDs: Array<string>) => any) {
+  subscribePreconditionNodeChange(
+    nodeID: string,
+    cb: (nodeID: string, preconditionIDs: Array<string>) => any
+  ) {
     this.subscribeDBChange(
       `precondition/${nodeID}`,
       (snap: firebase.database.DataSnapshot) => {
@@ -296,19 +305,22 @@ export default {
       .set(node);
   },
 
-  async setPublicUserData(userID: string, displayName: string | null, discordName: string | null) {
+  async setPublicUserData(
+    userID: string,
+    displayName: string | null,
+    discordName: string | null
+  ) {
     try {
       const res = await firebase
         .database()
         .ref("public_user_data/" + userID)
         .set({
           displayName,
-          discordName,
+          discordName
         });
-    } catch(e) {
-      console.log(e)
+    } catch (e) {
+      console.log(e);
     }
-
   },
 
   async getNode(nodeID: string): Promise<DBNode | null> {
@@ -393,5 +405,5 @@ export default {
     }
 
     return [snapshot.val(), null];
-  },
+  }
 };

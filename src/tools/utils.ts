@@ -178,4 +178,3 @@ export function printError(msg: string, kv: any) {
 
   console.error(msg, ...kvArr);
 }
-

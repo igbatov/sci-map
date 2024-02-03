@@ -24,18 +24,18 @@ export const mutations = {
   SET_CONTENTS: "SET_CONTENTS",
   SET_USER_COMMENTS: "SET_USER_COMMENTS",
   SET_NODE_CONTENT: "SET_NODE_CONTENT",
-  SET_NODE_COMMENT: "SET_NODE_COMMENT",
+  SET_NODE_COMMENT: "SET_NODE_COMMENT"
 };
 
 export const actions = {
   getNodeContent: "getNodeContent",
   setNodeContent: "setNodeContent",
-  setNodeComment: "setNodeComment",
+  setNodeComment: "setNodeComment"
 };
 
 export const EmptyNodeContent = {
   nodeID: "",
-  content: "",
+  content: ""
 } as NodeContent;
 
 function createContentIfNotExist(
@@ -181,6 +181,6 @@ export const store = {
     ) {
       createCommentIfNotExist(state.userNodeComments, v.nodeID);
       state.userNodeComments[v.nodeID].comment = v.comment;
-    },
+    }
   }
 };

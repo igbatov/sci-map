@@ -27,7 +27,7 @@
     :line-height="8"
     :max-char-per-line="10"
     font-family="Roboto"
-    :font-size=fontSize
+    :font-size="fontSize"
     :font-weight="fontWeight"
     :color="color"
     :text-decoration="textDecoration"
@@ -50,7 +50,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, toRef } from "vue";
+import { computed, defineComponent, PropType } from "vue";
 import { MapNode, Point } from "@/types/graphics";
 import { setTitleBoxes } from "@/components/map_layer/MapLayer";
 import PinMarker from "@/components/pin_layer/PinMarker.vue";
@@ -59,19 +59,15 @@ import {
   HEIGHT as PIN_MARKER_HEIGHT
 } from "@/components/pin_layer/PinMarker.vue";
 import SVGTextBox from "@/components/SVGTextBox.vue";
-import {useStore} from "@/store";
-import {mutations as titleBoxMutations, TitleBox} from "@/store/title_box";
+import { useStore } from "@/store";
+import { mutations as titleBoxMutations, TitleBox } from "@/store/title_box";
 
 const TITLE_PREFIX = "pin_title_";
 
 export default defineComponent({
   name: "PinLayer",
   components: { SVGTextBox, PinMarker },
-  emits: [
-    "title-click",
-    "title-over",
-    "title-leave",
-  ],
+  emits: ["title-click", "title-over", "title-leave"],
   props: {
     layerId: String,
     pinNodes: {
@@ -85,47 +81,50 @@ export default defineComponent({
       required: true
     },
     color: {
-      type: String,
+      type: String
     },
     fontWeight: {
-      type: String,
+      type: String
     },
     fontSize: {
-      type: Number,
+      type: Number
     },
     textDecoration: {
-      type: String,
-    },
+      type: String
+    }
   },
   setup(props, ctx) {
     const allPinNodes = computed(() => {
-      const result:Record<string, MapNode> = {}
+      const result: Record<string, MapNode> = {};
       for (const node of props.pinNodes) {
-        result[node.id] = node
+        result[node.id] = node;
       }
-      return result
-    })
+      return result;
+    });
     const visiblePinNodes = computed(() => {
-      const result:Record<string, MapNode> = {}
+      const result: Record<string, MapNode> = {};
       for (const node of props.pinNodes) {
         if (node.id != props.selectedNodeId) {
-          result[node.id] = node
+          result[node.id] = node;
         }
       }
-      return result
-    })
+      return result;
+    });
 
     const store = useStore();
-    const layerID = "pin_"+props.layerId
-    const titleBox = computed(() => store.state.titleBox.layerMap[layerID])
+    const layerID = "pin_" + props.layerId;
+    const titleBox = computed(() => store.state.titleBox.layerMap[layerID]);
     // watch pin nodes and set its title boxes to titleBox store
     setTitleBoxes(
-        TITLE_PREFIX,
-        "left",
-        allPinNodes,
-        (titleBoxMap: Record<string, TitleBox>) => {
-          store.commit(`titleBox/${titleBoxMutations.SET_MAP}`, { layerName: layerID, titleBoxMap });
-        },
+      TITLE_PREFIX,
+      "left",
+      allPinNodes,
+      (titleBoxMap: Record<string, TitleBox>) => {
+        store.commit(`titleBox/${titleBoxMutations.SET_MAP}`, {
+          layerName: layerID,
+          titleBoxMap
+        });
+      }
     );
 
     return {
@@ -139,12 +138,8 @@ export default defineComponent({
         for (const i in allPinNodes.value) {
           const node = allPinNodes.value[i];
           alignedXY[node.id] = {
-            x: titleBox.value[node.id]
-              ? titleBox.value[node.id].position.x
-              : 0,
-            y: titleBox.value[node.id]
-              ? titleBox.value[node.id].position.y
-              : 0
+            x: titleBox.value[node.id] ? titleBox.value[node.id].position.x : 0,
+            y: titleBox.value[node.id] ? titleBox.value[node.id].position.y : 0
           };
         }
         return alignedXY;
@@ -157,7 +152,7 @@ export default defineComponent({
       },
       titleLeave: (nodeId: string) => {
         ctx.emit("title-leave", { id: nodeId });
-      },
+      }
     };
   }
 });

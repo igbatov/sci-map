@@ -20,7 +20,10 @@ export default {
   setup() {
     return {
       send: () => {
-        window.open("https://discord.com/channels/1171118046543347782/1171118047105396749", "_blank");
+        window.open(
+          "https://discord.com/channels/1171118046543347782/1171118047105396749",
+          "_blank"
+        );
       }
     };
   }

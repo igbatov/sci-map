@@ -72,19 +72,18 @@ export default defineComponent({
     }
   },
   setup(props) {
-    let lines = []
+    let lines = [];
     if (props.useLineBreak) {
-      lines = splitLines(props.text, props.maxCharPerLine)
+      lines = splitLines(props.text, props.maxCharPerLine);
     } else {
-      lines = [props.text]
+      lines = [props.text];
     }
     return {
-      lines,
+      lines
     };
   }
 });
 </script>
-
 
 <style scoped>
 .text {

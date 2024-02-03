@@ -52,7 +52,10 @@ export function convertDBMapToTree(
       if (!dbNodes[childID]) {
         return [
           null,
-          NewErrorKV("Cannot find child id in dbNodes", { childID, "parentID":node.id })
+          NewErrorKV("Cannot find child id in dbNodes", {
+            childID,
+            parentID: node.id
+          })
         ];
       }
       children.push({

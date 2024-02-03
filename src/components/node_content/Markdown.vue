@@ -6,45 +6,49 @@
     class="renderedContent"
   />
   <textarea
-      class="rawContent p-inputtextarea p-inputtext p-component p-inputtextarea-resizable"
-      style="display: none"
-      ref="txtarea"
-      :rows="rows"
-      :value="content"
-      @input="changeContent($event.target.value)"
-      @focusout="setEditOn(false)"
+    class="rawContent p-inputtextarea p-inputtext p-component p-inputtextarea-resizable"
+    style="display: none"
+    ref="txtarea"
+    :rows="rows"
+    :value="content"
+    @input="changeContent($event.target.value)"
+    @focusout="setEditOn(false)"
   />
 </template>
 
 <script lang="ts">
 import { computed, ref } from "vue";
-import MarkdownIt from 'markdown-it';
+import MarkdownIt from "markdown-it";
 const mdKatex = require('markdown-it-katex'); // eslint-disable-line
 const mdImsize = require('markdown-it-imsize'); // eslint-disable-line
 const mdContainer = require('markdown-it-container'); // eslint-disable-line
 const md = new MarkdownIt();
-md.use(mdKatex, {output: 'html'}).use(mdImsize).use(mdContainer, 'warning', {
-  validate: function(params: any) {
-    console.log("validate", params.trim(), params.trim() == 'warning')
-    return params.trim().match(/^warning$/);
-  },
-  render: function (tokens: any, idx: any) {
-    const m = tokens[idx].info.trim().match(/^warning(.*)$/);
-    if (tokens[idx].nesting === 1) {
-      // opening tag
-      return '<div style="background-color: #c6f68d; padding: 8px;">' + md.utils.escapeHtml(m[1]) + '\n';
-    } else {
-      // closing tag
-      return '</div>\n';
+md.use(mdKatex, { output: "html" })
+  .use(mdImsize)
+  .use(mdContainer, "warning", {
+    validate: function(params: any) {
+      console.log("validate", params.trim(), params.trim() == "warning");
+      return params.trim().match(/^warning$/);
+    },
+    render: function(tokens: any, idx: any) {
+      const m = tokens[idx].info.trim().match(/^warning(.*)$/);
+      if (tokens[idx].nesting === 1) {
+        // opening tag
+        return (
+          '<div style="background-color: #c6f68d; padding: 8px;">' +
+          md.utils.escapeHtml(m[1]) +
+          "\n"
+        );
+      } else {
+        // closing tag
+        return "</div>\n";
+      }
     }
-  }
-});
+  });
 
 export default {
   name: "Markdown",
-  emits: [
-    "content-changed",
-  ],
+  emits: ["content-changed"],
   props: {
     content: {
       type: String,
@@ -56,33 +60,33 @@ export default {
     }
   },
   setup(props: any, ctx: any) {
-    const renderedContent = computed(()=>{
+    const renderedContent = computed(() => {
       return md.render(props.content);
-    })
-    const editOn = ref(false)
+    });
+    const editOn = ref(false);
 
-    const txtarea = ref<HTMLDivElement | null>(null)
+    const txtarea = ref<HTMLDivElement | null>(null);
 
     return {
       editOn,
       txtarea,
       setEditOn: (val: boolean) => {
-        editOn.value = val
+        editOn.value = val;
         if (val && txtarea.value) {
-          txtarea.value.style.display = 'block'
-          txtarea.value.focus()
+          txtarea.value.style.display = "block";
+          txtarea.value.focus();
         }
         if (!val && txtarea.value) {
-          txtarea.value.style.display = 'none'
+          txtarea.value.style.display = "none";
         }
       },
       renderedContent,
       changeContent: (value: string) => {
-        ctx.emit("content-changed", value)
-      },
+        ctx.emit("content-changed", value);
+      }
     };
   }
-}
+};
 </script>
 
 <style scoped>

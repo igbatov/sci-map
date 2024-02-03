@@ -17,7 +17,7 @@
           <AddNode />
           <RemoveNode v-if="isNodeSelected" />
         </span>
-        <MapChangeLog/>
+        <MapChangeLog />
         <button @click="signOut">Sign Out</button>
       </div>
     </div>
@@ -48,7 +48,7 @@ export default {
     RemoveNode,
     EditMode,
     TextSearch,
-    MapChangeLog,
+    MapChangeLog
   },
   setup() {
     const store = useStore();

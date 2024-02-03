@@ -1,13 +1,9 @@
 <template>
-  <div
-      v-for="usedByNode of usedBy"
-      class="p-grid"
-      :key="usedByNode.id"
-  >
+  <div v-for="usedByNode of usedBy" class="p-grid" :key="usedByNode.id">
     <div class="p-col-12">
       <div class="p-grid">
         <div class="p-col-11">
-          <a :href=usedByNode.id >{{ usedByNode.title }}</a>
+          <a :href="usedByNode.id">{{ usedByNode.title }}</a>
         </div>
       </div>
     </div>
@@ -29,10 +25,7 @@ export default {
     const usedBy = ref<Array<Tree>>([]);
     watchEffect(() => {
       usedBy.value = [];
-      if (
-          props.nodeId &&
-          store.state.precondition.reverseIndex[props.nodeId]
-      ) {
+      if (props.nodeId && store.state.precondition.reverseIndex[props.nodeId]) {
         for (const id of store.state.precondition.reverseIndex[props.nodeId]) {
           usedBy.value.push(store.state.tree.nodeRecord[id].node);
         }
@@ -40,7 +33,7 @@ export default {
     });
 
     return {
-      usedBy,
+      usedBy
     };
   }
 };

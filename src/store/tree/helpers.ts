@@ -76,7 +76,7 @@ export function createNewNode(title: string, center: Point): Tree {
 export function getNewNodeCenter(
   parent: Tree,
   mapNodeLayers: Array<Record<number, MapNode>>,
-  addRandom: boolean,
+  addRandom: boolean
 ): [
   Point | null, // new node center
   Tree | null, // existing node with corrected center (if any)
@@ -106,9 +106,9 @@ export function getNewNodeCenter(
       }
     }
 
-    let coeff = 1/2
+    let coeff = 1 / 2;
     if (addRandom) {
-      coeff = Math.random() * (1/2) + 1/4
+      coeff = Math.random() * (1 / 2) + 1 / 4;
     }
 
     return [
@@ -176,9 +176,9 @@ export function getNewNodeCenter(
       }
     }
 
-    let coeff = 3 / 4
+    let coeff = 3 / 4;
     if (addRandom) {
-      coeff = Math.random() * (1/4) + 2.5/4
+      coeff = Math.random() * (1 / 4) + 2.5 / 4;
     }
 
     const [finalMaxDiag] = getMaxDiagonal(maxDiagChildMapNode.border);

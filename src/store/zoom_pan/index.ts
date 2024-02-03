@@ -42,12 +42,12 @@ export const store = {
       state.zoomCenter = center;
     },
     [mutations.ADD_ZOOM](state: State, delta: number) {
-      const newZoom= state.zoom * Math.pow(2, delta * ZOOM_SENSITIVITY);
+      const newZoom = state.zoom * Math.pow(2, delta * ZOOM_SENSITIVITY);
       if (newZoom < 0.5) {
         // foolproof from too much zoom
-        return
+        return;
       }
-      state.zoom = newZoom
+      state.zoom = newZoom;
       zoomDebounce(state, state.zoom);
     },
     [mutations.ADD_PAN](state: State, delta: Vector) {

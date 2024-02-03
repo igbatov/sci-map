@@ -1,14 +1,13 @@
 <template>
   <span class="p-input-icon-right" style="width: 100%">
-    <i class="pi pi-times" style="right: 1.2rem;" @click="clearBox"/>
+    <i class="pi pi-times" style="right: 1.2rem;" @click="clearBox" />
     <InputText
-        :class="$style['searchBox']"
-        placeholder="Search SciMap"
-        v-model="value"
-        @update:modelValue="doSearch($event)"
+      :class="$style['searchBox']"
+      placeholder="Search SciMap"
+      v-model="value"
+      @update:modelValue="doSearch($event)"
     />
   </span>
-
 </template>
 
 <script lang="ts">
@@ -21,25 +20,25 @@ import { ref } from "vue";
 export default {
   name: "TextSearch",
   components: {
-    InputText,
+    InputText
   },
 
   setup() {
-    const value = ref("")
+    const value = ref("");
     const store = useStore();
     return {
       doSearch: async (value: string) => {
-        const res = await search(value)
+        const res = await search(value);
         store.commit(`searchResult/${searchMutations.SET_NODE_IDS}`, res);
-        return res
+        return res;
       },
       value,
       clearBox: () => {
-        value.value = ""
+        value.value = "";
       }
-    }
-  },
-}
+    };
+  }
+};
 </script>
 
 <style module>

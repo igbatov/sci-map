@@ -1,4 +1,4 @@
-import {Vector} from "@/types/graphics";
+import { Vector } from "@/types/graphics";
 
 const mouseDownBg = {
   on: false
@@ -24,5 +24,5 @@ const mouseMove = (
 export default {
   mouseDown,
   mouseUp,
-  mouseMove,
+  mouseMove
 };

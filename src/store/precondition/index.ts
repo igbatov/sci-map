@@ -1,4 +1,3 @@
-
 export type Preconditions = Record<
   string /* id of node with premises */,
   string[] /* ids of premise nodes */
@@ -16,7 +15,7 @@ export interface State {
 
 export const mutations = {
   SET_PRECONDITIONS: "SET_PRECONDITIONS",
-  UPDATE_PRECONDITIONS: "UPDATE_PRECONDITIONS",
+  UPDATE_PRECONDITIONS: "UPDATE_PRECONDITIONS"
 };
 
 export const store = {
@@ -32,10 +31,10 @@ export const store = {
       // create reverseIndex
       for (const id in preconditions) {
         for (const precondID of preconditions[id]) {
-          if (typeof state.reverseIndex[precondID] === 'undefined') {
-            state.reverseIndex[precondID] = []
+          if (typeof state.reverseIndex[precondID] === "undefined") {
+            state.reverseIndex[precondID] = [];
           }
-          state.reverseIndex[precondID].push(id)
+          state.reverseIndex[precondID].push(id);
         }
       }
     },
@@ -48,8 +47,14 @@ export const store = {
       }
       // remove from reverseIndex old preconditions
       for (const id of state.preconditions[v.nodeID]) {
-        if (state.reverseIndex[id] && state.reverseIndex[id].indexOf(v.nodeID) != -1) {
-          state.reverseIndex[id].splice(state.reverseIndex[id].indexOf(v.nodeID), 1)
+        if (
+          state.reverseIndex[id] &&
+          state.reverseIndex[id].indexOf(v.nodeID) != -1
+        ) {
+          state.reverseIndex[id].splice(
+            state.reverseIndex[id].indexOf(v.nodeID),
+            1
+          );
         }
       }
 
@@ -57,11 +62,11 @@ export const store = {
 
       // add to reverseIndex new preconditions
       for (const precondID of state.preconditions[v.nodeID]) {
-        if (typeof state.reverseIndex[precondID] === 'undefined') {
-          state.reverseIndex[precondID] = []
+        if (typeof state.reverseIndex[precondID] === "undefined") {
+          state.reverseIndex[precondID] = [];
         }
-        state.reverseIndex[precondID].push(v.nodeID)
+        state.reverseIndex[precondID].push(v.nodeID);
       }
-    },
+    }
   }
 };

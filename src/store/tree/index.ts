@@ -11,33 +11,42 @@ import NewErrorKV from "@/tools/errorkv";
 import { DBNode } from "@/api/types";
 import { printError, round } from "@/tools/utils";
 import api from "@/api/api";
-import {Commit, Dispatch} from "vuex";
+import { Commit, Dispatch } from "vuex";
 
 // Define root border for 2560x1600
-const ROOT_WIDTH = 2560
-const ROOT_HEIGHT = 1600
-const cf = 1/3
+const ROOT_WIDTH = 2560;
+const ROOT_HEIGHT = 1600;
+const cf = 1 / 3;
 const ROOT_BORDER = [
-  { x: 0, y: cf * ROOT_HEIGHT},
-  { x: 0, y: 2*cf * ROOT_HEIGHT},
-  { x: (cf/2.5)*ROOT_WIDTH, y: (1-cf/4)*ROOT_HEIGHT},
-  { x: cf*ROOT_WIDTH, y: ROOT_HEIGHT},
-  { x: 2*cf*ROOT_WIDTH, y: ROOT_HEIGHT},
-  { x: (1-cf/2.5)*ROOT_WIDTH, y: (1-cf/4)*ROOT_HEIGHT},
-  { x: ROOT_WIDTH, y: 2*cf * ROOT_HEIGHT},
-  { x: ROOT_WIDTH, y: cf * ROOT_HEIGHT},
-  { x: (1-cf/2.5)*ROOT_WIDTH, y: cf/4 * ROOT_HEIGHT},
-  { x: 2*cf*ROOT_WIDTH, y: 0},
-  { x: cf*ROOT_WIDTH, y: 0},
-  { x: (cf/2.5)*ROOT_WIDTH, y: cf/4 * ROOT_HEIGHT},
+  { x: 0, y: cf * ROOT_HEIGHT },
+  { x: 0, y: 2 * cf * ROOT_HEIGHT },
+  { x: (cf / 2.5) * ROOT_WIDTH, y: (1 - cf / 4) * ROOT_HEIGHT },
+  { x: cf * ROOT_WIDTH, y: ROOT_HEIGHT },
+  { x: 2 * cf * ROOT_WIDTH, y: ROOT_HEIGHT },
+  { x: (1 - cf / 2.5) * ROOT_WIDTH, y: (1 - cf / 4) * ROOT_HEIGHT },
+  { x: ROOT_WIDTH, y: 2 * cf * ROOT_HEIGHT },
+  { x: ROOT_WIDTH, y: cf * ROOT_HEIGHT },
+  { x: (1 - cf / 2.5) * ROOT_WIDTH, y: (cf / 4) * ROOT_HEIGHT },
+  { x: 2 * cf * ROOT_WIDTH, y: 0 },
+  { x: cf * ROOT_WIDTH, y: 0 },
+  { x: (cf / 2.5) * ROOT_WIDTH, y: (cf / 4) * ROOT_HEIGHT }
 ];
 const ROOT_CENTER = { x: api.ROOT_CENTER_X, y: api.ROOT_CENTER_Y };
 
 // Scale root border proportionally to fit 2/3 of user browser viewport and move the left
-const userFitCoefficient = Math.min(api.ROOT_WIDTH/ROOT_WIDTH, api.ROOT_HEIGHT/ROOT_HEIGHT)
+const userFitCoefficient = Math.min(
+  api.ROOT_WIDTH / ROOT_WIDTH,
+  api.ROOT_HEIGHT / ROOT_HEIGHT
+);
 for (const idx in ROOT_BORDER) {
-  ROOT_BORDER[idx].x = userFitCoefficient*ROOT_BORDER[idx].x + api.ROOT_CENTER_X - userFitCoefficient*ROOT_WIDTH/2
-  ROOT_BORDER[idx].y = userFitCoefficient*ROOT_BORDER[idx].y + api.ROOT_CENTER_Y -  userFitCoefficient * ROOT_HEIGHT/2
+  ROOT_BORDER[idx].x =
+    userFitCoefficient * ROOT_BORDER[idx].x +
+    api.ROOT_CENTER_X -
+    (userFitCoefficient * ROOT_WIDTH) / 2;
+  ROOT_BORDER[idx].y =
+    userFitCoefficient * ROOT_BORDER[idx].y +
+    api.ROOT_CENTER_Y -
+    (userFitCoefficient * ROOT_HEIGHT) / 2;
 }
 
 export interface NodeRecordItem {
@@ -115,7 +124,11 @@ export const store = {
      * @param dbNode
      */
     async [actions.handleMapNodeUpdate](
-      { commit, state, dispatch }: { commit: Commit; state: State; dispatch: Dispatch },
+      {
+        commit,
+        state,
+        dispatch
+      }: { commit: Commit; state: State; dispatch: Dispatch },
       dbNode: DBNode
     ) {
       const dbNodeRecord = state.nodeRecord[dbNode.id];
@@ -176,9 +189,7 @@ export const store = {
           const toProcess = [addedDBNode];
           if (!addedDBNode) {
             // we cannot find node for addition, remove it from parent
-            dbNode.children = dbNode.children.filter(
-              id => id != childID
-            );
+            dbNode.children = dbNode.children.filter(id => id != childID);
             printError("Cannot find node for addition", { nodeID: childID });
             continue;
           }
@@ -192,7 +203,7 @@ export const store = {
               id: inProcessNode.id,
               title: inProcessNode.name,
               position: inProcessNode.position,
-              children: [],
+              children: []
             } as Tree;
             if (!state.nodeRecord[inProcessNode.parentID]) {
               printError("Cannot find nodeID in nodeRecord", {
@@ -216,7 +227,9 @@ export const store = {
               node: treeNode
             };
             // subscribe to new node changes
-            api.subscribeMapNodeChange(treeNode.id, (dbNode: DBNode) => dispatch(actions.handleMapNodeUpdate, dbNode))
+            api.subscribeMapNodeChange(treeNode.id, (dbNode: DBNode) =>
+              dispatch(actions.handleMapNodeUpdate, dbNode)
+            );
             for (const childID of inProcessNode.children) {
               const childNode = await api.getNode(childID);
               if (!childNode) {
@@ -262,7 +275,7 @@ export const store = {
             });
           }
           // unsubscribe from removed node changes
-          api.unsubscribeMapNodeChange(childID)
+          api.unsubscribeMapNodeChange(childID);
         }
       }
 
@@ -302,7 +315,7 @@ export const store = {
           if (v.returnError !== null) {
             printError(
               "actions.handleDBUpdate: cannot update node's position",
-              { "dbNode": dbNode, err: v.returnError }
+              { dbNode: dbNode, err: v.returnError }
             );
             return;
           }

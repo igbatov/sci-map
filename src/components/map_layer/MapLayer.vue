@@ -5,7 +5,11 @@
     :stroke="borderColor"
     :fill="polygonFill(selectedNodeId, mapNode.id, selectedNodePreconditionIds)"
     :fill-opacity="
-      polygonFillOpacity(selectedNodeId, mapNode.id, selectedNodePreconditionIds)
+      polygonFillOpacity(
+        selectedNodeId,
+        mapNode.id,
+        selectedNodePreconditionIds
+      )
     "
     stroke-width="2"
     :points="polygonToPath(mapNode.border)"
@@ -21,25 +25,29 @@
   <!--      stroke-width="1"-->
   <!--      fill="red"-->
   <!--    />-->
-<!--  <SVGTextBox> component shows unpredictable behaviour here and I didn't dig the reason so just used copy of SVGTextBox here -->
+  <!--  <SVGTextBox> component shows unpredictable behaviour here and I didn't dig the reason so just used copy of SVGTextBox here -->
   <text
-      v-for="mapNode of mapNodes"
-      :id="`${TITLE_PREFIX}${mapNode.id}`"
-      :key="mapNode.id"
-      font-family="Roboto"
-      :font-size="fontSize"
-      :font-weight="textWeight(mapNode.id, selectedNodeId)"
-      :fill="textColor(mapNode.id, selectedNodeId)"
-      :fill-opacity="fontOpacity"
-      :text-decoration="textDecoration(mapNode.id)"
-      class="text"
+    v-for="mapNode of mapNodes"
+    :id="`${TITLE_PREFIX}${mapNode.id}`"
+    :key="mapNode.id"
+    font-family="Roboto"
+    :font-size="fontSize"
+    :font-weight="textWeight(mapNode.id, selectedNodeId)"
+    :fill="textColor(mapNode.id, selectedNodeId)"
+    :fill-opacity="fontOpacity"
+    :text-decoration="textDecoration(mapNode.id)"
+    class="text"
   >
     <tspan
-        v-for="(line, i) of splitLines(mapNode.title, 20)"
-        :key="i"
-        :x="titleBox[mapNode.id] ? titleBox[mapNode.id].position.x : 0"
-        :y="titleBox[mapNode.id] ? titleBox[mapNode.id].position.y + i*fontSize : 0"
-        alignment-baseline="hanging"
+      v-for="(line, i) of splitLines(mapNode.title, 20)"
+      :key="i"
+      :x="titleBox[mapNode.id] ? titleBox[mapNode.id].position.x : 0"
+      :y="
+        titleBox[mapNode.id]
+          ? titleBox[mapNode.id].position.y + i * fontSize
+          : 0
+      "
+      alignment-baseline="hanging"
     >
       {{ line }}
     </tspan>
@@ -65,7 +73,14 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType, toRef, onMounted, onUnmounted, computed} from "vue";
+import {
+  defineComponent,
+  PropType,
+  toRef,
+  onMounted,
+  onUnmounted,
+  computed
+} from "vue";
 import { MapNode } from "@/types/graphics";
 import {
   polygonToPath,
@@ -79,9 +94,9 @@ import {
   mouseUpListener
 } from "@/components/map_layer/MapLayer";
 import { printError } from "@/tools/utils";
-import {splitLines} from "@/components/SVGTextBox";
+import { splitLines } from "@/components/SVGTextBox";
 import { useStore } from "@/store";
-import {TitleBox, mutations as titleBoxMutations} from "@/store/title_box"
+import { TitleBox, mutations as titleBoxMutations } from "@/store/title_box";
 
 const TITLE_PREFIX = "title_";
 
@@ -96,7 +111,7 @@ export default defineComponent({
   ],
   props: {
     layerId: {
-      type: Number,
+      type: Number
     },
     mapId: {
       type: String,
@@ -129,24 +144,27 @@ export default defineComponent({
       required: true
     },
     selectedNodePreconditionIds: Object as PropType<string[]>,
-    searchResultNodeIDs: Object as PropType<string[]>,
+    searchResultNodeIDs: Object as PropType<string[]>
   },
 
   setup(props, ctx) {
     const mapNodes = toRef(props, "mapNodes");
 
     const store = useStore();
-    const layerID = "map_"+props.layerId
+    const layerID = "map_" + props.layerId;
     const titleBox = computed(() => {
-      return store.state.titleBox.layerMap[layerID]
-    })
+      return store.state.titleBox.layerMap[layerID];
+    });
     setTitleBoxes(
       TITLE_PREFIX,
       "center",
       mapNodes,
       (titleBoxMap: Record<string, TitleBox>) => {
-        store.commit(`titleBox/${titleBoxMutations.SET_MAP}`, { layerName: layerID, titleBoxMap });
-      },
+        store.commit(`titleBox/${titleBoxMutations.SET_MAP}`, {
+          layerName: layerID,
+          titleBoxMap
+        });
+      }
     );
 
     /**
@@ -178,13 +196,13 @@ export default defineComponent({
       map.removeEventListener("mouseup", mouseUp);
     });
 
-    const searchResultNodeIDsMap = computed(() =>{
-      const map = {} as Record<string, boolean>
+    const searchResultNodeIDsMap = computed(() => {
+      const map = {} as Record<string, boolean>;
       if (!props.searchResultNodeIDs) {
-        return map
+        return map;
       }
       for (const id of props.searchResultNodeIDs) {
-        map[id] = true
+        map[id] = true;
       }
       return map;
     });
@@ -194,33 +212,36 @@ export default defineComponent({
       titleBox,
       textColor: (nodeID: string, selectedNodeId: string) => {
         if (selectedNodeId && selectedNodeId == nodeID) {
-          return '#ffa500'
+          return "#ffa500";
         }
-        if (props.selectedNodePreconditionIds && props.selectedNodePreconditionIds?.indexOf(nodeID) != -1) {
-          return '#ffa500'
+        if (
+          props.selectedNodePreconditionIds &&
+          props.selectedNodePreconditionIds?.indexOf(nodeID) != -1
+        ) {
+          return "#ffa500";
         }
         if (searchResultNodeIDsMap.value[nodeID]) {
-          return 'red'
+          return "red";
         }
 
-        return props.fontColor
+        return props.fontColor;
       },
       textWeight: (nodeID: string, selectedNodeId: string) => {
         if (selectedNodeId && selectedNodeId == nodeID) {
-          return 'bold'
+          return "bold";
         }
         if (searchResultNodeIDsMap.value[nodeID]) {
-          return 'bold'
+          return "bold";
         }
 
-        return 'normal'
+        return "normal";
       },
       textDecoration: (nodeID: string) => {
         if (searchResultNodeIDsMap.value[nodeID]) {
-          return 'underline'
+          return "underline";
         }
 
-        return 'none'
+        return "none";
       },
       titleClick: (nodeID: string) => {
         ctx.emit("title-click", {

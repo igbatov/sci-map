@@ -1,11 +1,11 @@
 <template>
   <PinIcon @click="clickPin">pin</PinIcon>
   <Dialog
-      v-model:visible="addDialogVisible"
-      :dismissableMask="true"
-      :closable="true"
-      :modal="true"
-      :closeOnEscape="true"
+    v-model:visible="addDialogVisible"
+    :dismissableMask="true"
+    :closable="true"
+    :modal="true"
+    :closeOnEscape="true"
   >
     <template #header>
       <h3>
@@ -17,10 +17,10 @@
 
     <template #footer>
       <Button
-          label="No"
-          icon="pi pi-times"
-          class="p-button-text"
-          @click="cancelAdd"
+        label="No"
+        icon="pi pi-times"
+        class="p-button-text"
+        @click="cancelAdd"
       />
       <Button label="Yes" icon="pi pi-check" @click="add" />
     </template>
@@ -68,10 +68,12 @@ export default {
 
     return {
       clickPin: () => {
-        if (store.state.pin.pins[store.state.tree.selectedNodeId] !== undefined) {
+        if (
+          store.state.pin.pins[store.state.tree.selectedNodeId] !== undefined
+        ) {
           store.dispatch(
-              `pin/${pinActions.RemovePin}`,
-              store.state.tree.selectedNodeId
+            `pin/${pinActions.RemovePin}`,
+            store.state.tree.selectedNodeId
           );
           api.savePins(store.state.user.user, store.state.pin.pins);
         } else {

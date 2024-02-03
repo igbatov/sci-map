@@ -65,8 +65,13 @@ export default {
           title: newNodeTitle.value
         });
         store.commit(
-            `positionChangePermits/${positionChangePermitMutations.ADD_NODES}`,
-            [newNodeID, ...store.state.tree.nodeRecord[selectedNode.value.id].node.children.map((node)=>node.id)]
+          `positionChangePermits/${positionChangePermitMutations.ADD_NODES}`,
+          [
+            newNodeID,
+            ...store.state.tree.nodeRecord[
+              selectedNode.value.id
+            ].node.children.map(node => node.id)
+          ]
         );
         newNodeTitle.value = "";
         addDialogVisible.value = false;
