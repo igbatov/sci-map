@@ -3,31 +3,39 @@
     <TextSearch />
   </div>
   <div :class="$style.wrapper">
-    <div v-if="email">
-      <div class="p-grid">
-        <Feedback />
-        <EditMode />
-        <span v-if="editModeOn">
-          <CutPaste v-if="isNodeSelected" />
-          <AddNode />
-          <RemoveNode v-if="isNodeSelected" />
-        </span>
-        <MapChangeLog />
-        <button @click="signOut">Sign Out</button>
+    <div v-if="email" style="width:100%">
+      <div style="position: absolute; right: 2rem;">
+        <MenuButton @click="toggleUserMenu">
+          <img alt="user" src="../../assets/images/user.svg" style="width: 20px"/>
+        </MenuButton>
+        <PrimeMenu ref="menu" id="overlay_menu" :model="items" :popup="true"/>
       </div>
-      <div class="p-col">
-        {{ email }}
+      <div style="position: absolute; right: 6.1rem;">
+        <Feedback />
+      </div>
+      <EditMode style="position: absolute; right: 12.5rem;" />
+      <div v-if="editModeOn" style="position: absolute; right: 20.6rem;">
+        <AddNode />
+      </div>
+      <div v-if="editModeOn" style="position: absolute; right: 26.6rem;">
+        <RemoveNode />
+      </div>
+      <div v-if="editModeOn && isNodeSelected" style="position: absolute; right: 33.6rem;">
+        <CutPaste v-if="isNodeSelected" />
+      </div>
+      <div v-if="editModeOn && isNodeSelected" style="position: absolute; right: 39.3rem;">
+        <MapChangeLog />
       </div>
     </div>
-    <button v-else @click="signIn">
-      Sign In
-    </button>
+    <div v-else>
+      <Button @click="signIn" style="position: absolute; right: 2rem;" rounded size="small"  icon="pi pi-sign-in" label="sign in"/>
+    </div>
   </div>
 </template>
 
 <script>
 import { useStore } from "@/store";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { actions as userActions } from "@/store/user";
 import AddNode from "./AddNode";
 import RemoveNode from "./RemoveNode";
@@ -36,10 +44,16 @@ import CutPaste from "@/components/menu/CutPaste";
 import Feedback from "@/components/menu/Feedback";
 import TextSearch from "@/components/menu/Textsearch";
 import MapChangeLog from "@/components/menu/MapChangeLog";
+import MenuButton from "@/components/menu/MenuButton.vue";
+import PrimeMenu from "primevue/menu";
+import Button from "primevue/button";
 
 export default {
   name: "Menu",
   components: {
+    Button,
+    PrimeMenu,
+    MenuButton,
     Feedback,
     CutPaste,
     AddNode,
@@ -51,21 +65,44 @@ export default {
   setup() {
     const store = useStore();
     const user = store.state.user;
+    const menu = ref();
 
     // user info
+    const userPhotoURL = computed(() => (user.user && user.user.photoURL ? user.user.photoURL : '../../assets/images/user.svg'));
     const email = computed(() => (user.user ? user.user.email : null));
-
+    const items = computed(() => {
+      return [
+        {
+          label: email.value,
+          items: [
+            {
+              label: 'sign out',
+              icon: 'pi pi-sign-out',
+              command: () => {
+                store.dispatch(`user/${userActions.signOut}`);
+              }
+            },
+          ]
+        },
+      ]
+    })
     return {
       email,
+      userPhotoURL,
       editModeOn: computed(() => store.state.editModeOn),
       isNodeSelected: computed(() => store.state.tree.selectedNodeId),
       isPinned: computed(
         () =>
           store.state.pin.pins[store.state.tree.selectedNodeId] !== undefined
       ),
-      // SignIn SignOut
+      // SignIn
       signIn: () => store.dispatch(`user/${userActions.signIn}`),
-      signOut: () => store.dispatch(`user/${userActions.signOut}`)
+      // User Menu
+      menu,
+      toggleUserMenu: (event) => {
+        menu.value.toggle(event);
+      },
+      items,
     };
   }
 };
@@ -79,6 +116,7 @@ export default {
   right: 0;
   padding: 8px;
   background-color: rgba(255, 255, 255, 0.2);
+  width: 70%;
 }
 .textSearch {
   position: fixed;

@@ -1,21 +1,17 @@
 <template>
-  <Button iconPos="right" @click="send">
-    <img
-      alt="logo"
-      src="../../assets/images/discord-icon-svgrepo-com.svg"
-      style="width: 20px"
-    />
-    <span class="p-ml-2 p-text-bold">chat</span>
-  </Button>
+  <MenuButton @click="send">
+    <img alt="icon" src="../../assets/images/chat.svg" style="width: 20px"/>
+    <span class="p-ml-2">chat</span>
+  </MenuButton>
 </template>
 
 <script>
-import Button from "primevue/button";
+import MenuButton from "@/components/menu/MenuButton.vue";
 
 export default {
   name: "Feedback",
   components: {
-    Button
+    MenuButton,
   },
   setup() {
     return {

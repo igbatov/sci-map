@@ -1,5 +1,8 @@
 <template>
-  <button @click="toggleAddDialog">+</button>
+  <MenuButton @click="toggleAddDialog">
+    <img alt="icon" src="../../assets/images/add.svg" style="width: 20px"/>
+    <span class="p-ml-2">add</span>
+  </MenuButton>
   <Dialog
     v-model:visible="addDialogVisible"
     :dismissableMask="true"
@@ -36,14 +39,15 @@
 import Dialog from "primevue/dialog";
 import Button from "primevue/button";
 import Input from "primevue/inputtext";
-import { useStore } from "@/store";
+import { useStore, actions } from "@/store";
 import { computed, ref } from "vue";
-import { actions } from "@/store";
 import { mutations as positionChangePermitMutations } from "@/store/position_change_permits";
+import MenuButton from "@/components/menu/MenuButton.vue";
 
 export default {
   name: "AddNode",
   components: {
+    MenuButton,
     Dialog,
     Button,
     Input

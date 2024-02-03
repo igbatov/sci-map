@@ -1,14 +1,26 @@
 <template>
-  <button v-if="editModeOn" @click="off">Back to view mode</button>
-  <button v-if="!editModeOn" @click="on">Edit Map</button>
+  <div>
+    <MenuButton v-if="!editModeOn" @click="on" style="height:35px">
+      <img alt="icon" src="../../assets/images/switch-on.svg" style="width: 20px"/>
+      <span class="p-ml-2">edit map</span>
+    </MenuButton>
+    <MenuButton v-if="editModeOn" @click="off" style="height:35px;">
+      <img alt="icon" src="../../assets/images/switch-off.svg" style="width: 20px"/>
+      <span class="p-ml-2">edit map</span>
+    </MenuButton>
+  </div>
 </template>
 
 <script>
 import { actions, useStore } from "@/store";
 import { computed } from "vue";
+import MenuButton from "@/components/menu/MenuButton.vue";
 
 export default {
   name: "EditMode",
+  components: {
+    MenuButton,
+  },
   setup() {
     const store = useStore();
 
@@ -19,7 +31,7 @@ export default {
       },
       off: () => {
         store.dispatch(`${actions.setEditMode}`, false);
-      }
+      },
     };
   }
 };

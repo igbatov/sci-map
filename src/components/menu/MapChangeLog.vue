@@ -4,7 +4,14 @@
     :complainChangeLink="complainChangeLink"
     @hide="complainModalVisible = false"
   />
-  <button @click="toggleAddDialog">Log</button>
+  <MenuButton @click="toggleAddDialog">
+    <img
+        alt="icon"
+        src="../../assets/images/chat.svg"
+        style="width: 20px"
+    />
+    <span class="p-ml-2">log</span>
+  </MenuButton>
   <Dialog
     v-model:visible="addDialogVisible"
     :dismissableMask="true"
@@ -41,13 +48,15 @@ import { ActionType, ChangeLogNodeParent } from "@/store/change_log";
 import { GetNodeUrl, subscribeChangeLogEnriched } from "@/api/change_log";
 import Card from "primevue/card";
 import ChangeLogComplain from "@/components/node_content/ChangeLogComplain.vue";
+import MenuButton from "@/components/menu/MenuButton.vue";
 
 export default {
   name: "MapChangeLog",
   components: {
+    MenuButton,
     ChangeLogComplain,
     Card,
-    Dialog
+    Dialog,
   },
   setup() {
     const complainChangeLink = ref("");

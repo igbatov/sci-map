@@ -1,5 +1,8 @@
 <template>
-  <button @click="toggleDialog" :disabled="!selectedNodeTitle">-</button>
+  <MenuButton @click="toggleDialog" :disabled="!selectedNodeTitle">
+    <img alt="icon" src="../../assets/images/minus.svg" style="width: 20px"/>
+    <span class="p-ml-2">delete</span>
+  </MenuButton>
   <Dialog
     v-model:visible="addDialogVisible"
     :dismissableMask="true"
@@ -28,14 +31,15 @@
 <script>
 import Dialog from "primevue/dialog";
 import Button from "primevue/button";
-import { useStore } from "@/store";
+import { useStore, actions } from "@/store";
 import { computed, ref } from "vue";
-import { actions } from "@/store";
 import { mutations as positionChangePermitMutations } from "@/store/position_change_permits";
+import MenuButton from "@/components/menu/MenuButton.vue";
 
 export default {
   name: "RemoveNode",
   components: {
+    MenuButton,
     Dialog,
     Button
   },
