@@ -5,11 +5,6 @@
   <div :class="$style.wrapper">
     <div v-if="email">
       <div class="p-grid">
-        <div class="p-col">
-          {{ email }}
-        </div>
-      </div>
-      <div class="p-grid">
         <Feedback />
         <EditMode />
         <span v-if="editModeOn">
@@ -19,6 +14,9 @@
         </span>
         <MapChangeLog />
         <button @click="signOut">Sign Out</button>
+      </div>
+      <div class="p-col">
+        {{ email }}
       </div>
     </div>
     <button v-else @click="signIn">

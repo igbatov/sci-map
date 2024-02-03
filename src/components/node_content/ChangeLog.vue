@@ -9,7 +9,9 @@
     :toggleable="true"
     :collapsed="collapsed"
     @update:collapsed="toggle($event)"
-  >
+    :pt="{
+        legend: { class: 'bg-primary' },
+    }">
     <div v-if="!isAuthorized">
       Sign in to see node change log
     </div>

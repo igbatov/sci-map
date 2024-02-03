@@ -64,7 +64,11 @@
       />
 
       <!-- Used by section -->
-      <h3><i>used by</i></h3>
+      <div class="p-field p-grid">
+        <div class="p-col-10 section">
+          used by
+        </div>
+      </div>
       <SectionUsedBy v-if="selectedNodeContent" :node-id="selectedNode.id" />
 
       <!-- ChangeLog section -->
@@ -79,7 +83,7 @@
         </div>
         <div class="p-col-12">
           <div class="title">
-            Welcome to new way of scientific knowledge crowdsourcing!
+            Welcome to new way of knowledge crowdsourcing!
           </div>
         </div>
         <div class="p-col-12">
@@ -339,10 +343,10 @@ export default {
   margin-top: 9px;
 }
 .section {
-  font-family: "Google Sans", Roboto, Arial, sans-serif;
-  font-size: 1.375rem;
-  font-weight: 400;
+  font-family: "Google Sans",Roboto,Arial,sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
   letter-spacing: 0;
-  line-height: 1.75rem;
+  line-height: 1.5rem;
 }
 </style>
