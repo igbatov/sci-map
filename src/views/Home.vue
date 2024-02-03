@@ -36,7 +36,7 @@ import {
   EventDraggingBackground,
   EventDraggingNode,
   EventWheel
-} from "@/components/map/Map.ts";
+} from "@/components/map/Map";
 import Menu from "@/components/menu/Index.vue";
 import { useStore } from "@/store";
 import { useRouter, useRoute, onBeforeRouteUpdate } from "vue-router";

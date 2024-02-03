@@ -6,7 +6,7 @@ import ToastService from "primevue/toastservice";
 import router from "./router";
 import { store, key } from "./store";
 // primevue ui stuff
-import "primevue/resources/themes/saga-blue/theme.css"; //theme
+import "primevue/resources/themes/aura-light-green/theme.css"; //theme
 import "primevue/resources/primevue.min.css"; //core css
 import "primeicons/primeicons.css"; //icons
 import "primeflex/primeflex.css";

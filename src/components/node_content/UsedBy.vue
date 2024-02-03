@@ -11,16 +11,16 @@
 </template>
 
 <script lang="ts">
-import { ref, watchEffect } from "vue";
+import { ref, watchEffect, defineComponent } from "vue";
 import { useStore } from "@/store";
 import { Tree } from "@/types/graphics";
 
-export default {
+export default defineComponent({
   name: "UsedBy",
   props: {
     nodeId: String
   },
-  setup(props: { nodeId: string }) {
+  setup(props) {
     const store = useStore();
     const usedBy = ref<Array<Tree>>([]);
     watchEffect(() => {
@@ -36,5 +36,5 @@ export default {
       usedBy
     };
   }
-};
+});
 </script>

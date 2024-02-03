@@ -179,7 +179,7 @@
 <script lang="ts">
 import { actions, useStore } from "@/store";
 import { actions as nodeContentActions } from "@/store/node_content";
-import { computed } from "vue";
+import { computed, defineComponent } from "vue";
 import TextArea from "primevue/textarea";
 import SectionPreconditions from "./Preconditions.vue";
 import SectionUsedBy from "./UsedBy.vue";
@@ -194,7 +194,7 @@ import PinButton from "./PinButton.vue";
 import Title from "@/components/node_content/Title.vue";
 import AddBasedOnButton from "@/components/node_content/AddBasedOnButton.vue";
 
-export default {
+export default defineComponent({
   name: "NodeContent",
   components: {
     AddBasedOnButton,
@@ -223,7 +223,7 @@ export default {
       required: true
     }
   },
-  setup(props: { show: boolean; selectedNodeId: string | null }) {
+  setup(props) {
     const store = useStore();
     const confirm = useConfirm();
     const tree = store.state.tree;
@@ -303,7 +303,7 @@ export default {
       }
     };
   }
-};
+});
 </script>
 
 <style scoped>
@@ -343,7 +343,7 @@ export default {
   margin-top: 9px;
 }
 .section {
-  font-family: "Google Sans",Roboto,Arial,sans-serif;
+  font-family: "Google Sans", Roboto, Arial, sans-serif;
   font-size: 1rem;
   font-weight: 500;
   letter-spacing: 0;

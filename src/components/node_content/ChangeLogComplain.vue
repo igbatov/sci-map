@@ -35,9 +35,9 @@
 </template>
 <script lang="ts">
 import Dialog from "primevue/dialog";
-import { ref, watch } from "vue";
+import { ref, watch, defineComponent } from "vue";
 
-export default {
+export default defineComponent({
   name: "ChangeLogComplain",
   props: {
     show: Boolean,
@@ -47,7 +47,7 @@ export default {
     Dialog
   },
   emits: ["hide"],
-  setup(props: { show: boolean }) {
+  setup(props) {
     const complainModalVisible = ref(false);
     watch(
       () => [props.show],
@@ -59,5 +59,5 @@ export default {
       complainModalVisible
     };
   }
-};
+});
 </script>

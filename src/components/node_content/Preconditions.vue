@@ -18,21 +18,24 @@
 </template>
 
 <script lang="ts">
-import { ref, watchEffect } from "vue";
+import { ref, watchEffect, defineComponent } from "vue";
 import { useStore } from "@/store";
 import api from "@/api/api";
 import { Tree } from "@/types/graphics";
 import RemoveIcon from "@/components/node_content/RemoveIcon.vue";
 
-export default {
+export default defineComponent({
   name: "Preconditions",
   props: {
-    nodeId: String
+    nodeId: {
+      type: String,
+      required: true
+    }
   },
   components: {
     RemoveIcon
   },
-  setup(props: { nodeId: string }) {
+  setup(props) {
     const store = useStore();
     const preconditions = ref<Array<Tree>>([]);
     watchEffect(() => {
@@ -65,7 +68,7 @@ export default {
       }
     };
   }
-};
+});
 </script>
 
 <style module>

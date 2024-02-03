@@ -10,8 +10,9 @@
     :collapsed="collapsed"
     @update:collapsed="toggle($event)"
     :pt="{
-        legend: { class: 'bg-primary' },
-    }">
+      legend: { class: 'bg-primary' }
+    }"
+  >
     <div v-if="!isAuthorized">
       Sign in to see node change log
     </div>
@@ -48,7 +49,7 @@
 import Fieldset from "primevue/fieldset";
 import Card from "primevue/card";
 import { subscribeChangeLogEnriched, GetNodeUrl } from "@/api/change_log";
-import { computed, reactive, ref, watch } from "vue";
+import { computed, reactive, ref, watch, defineComponent } from "vue";
 import {
   ActionType,
   ChangeLogEnriched,
@@ -58,7 +59,7 @@ import { useStore } from "@/store";
 import ChangeLogComplain from "@/components/node_content/ChangeLogComplain.vue";
 import Markdown from "@/components/node_content/Markdown.vue";
 
-export default {
+export default defineComponent({
   name: "ChangeLog",
   computed: {
     ActionType() {
@@ -66,7 +67,10 @@ export default {
     }
   },
   props: {
-    nodeId: String
+    nodeId: {
+      type: String,
+      required: true
+    }
   },
   components: {
     Markdown,
@@ -74,7 +78,7 @@ export default {
     Fieldset,
     Card
   },
-  setup(props: { nodeId: string }) {
+  setup(props) {
     const store = useStore();
     const isAuthorized = computed(
       () => store.state.user.user && !store.state.user.user.isAnonymous
@@ -110,7 +114,7 @@ export default {
     return {
       changes,
       collapsed,
-      toggle: (event: any) => {
+      toggle: (event: boolean) => {
         collapsed.value = event;
       },
       showComplain: (id: string) => {
@@ -142,5 +146,5 @@ export default {
       isAuthorized
     };
   }
-};
+});
 </script>

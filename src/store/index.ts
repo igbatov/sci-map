@@ -153,8 +153,8 @@ export const store = createStore<State>({
           group?: string;
           icon?: string;
           header?: string;
-          accept?: Function;
-          reject?: Function;
+          accept?: () => void;
+          reject?: () => void;
           acceptLabel?: string;
           rejectLabel?: string;
           acceptIcon?: string;
