@@ -1,10 +1,10 @@
 <template>
   <MenuButton v-if="cutNodeID == null" @click="cut">
-    <img alt="icon" src="../../assets/images/cut.svg" style="width: 20px"/>
+    <img alt="icon" src="../../assets/images/cut.svg" style="width: 20px" />
     <span class="p-ml-2">cut</span>
   </MenuButton>
   <MenuButton v-if="cutNodeID != null" @click="paste">
-    <img alt="icon" src="../../assets/images/paste.svg" style="width: 20px"/>
+    <img alt="icon" src="../../assets/images/paste.svg" style="width: 20px" />
     <span class="p-ml-2">paste</span>
   </MenuButton>
 </template>
@@ -17,7 +17,7 @@ import MenuButton from "@/components/menu/MenuButton.vue";
 
 export default {
   name: "CutPaste",
-  components: {MenuButton},
+  components: { MenuButton },
   setup() {
     const store = useStore();
     const selectedNode = computed(() => store.getters["tree/selectedNode"]);

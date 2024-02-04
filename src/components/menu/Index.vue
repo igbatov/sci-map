@@ -6,9 +6,13 @@
     <div v-if="email" style="width:100%">
       <div style="position: absolute; right: 2rem;">
         <MenuButton @click="toggleUserMenu">
-          <img alt="user" src="../../assets/images/user.svg" style="width: 20px"/>
+          <img
+            alt="user"
+            src="../../assets/images/user.svg"
+            style="width: 20px"
+          />
         </MenuButton>
-        <PrimeMenu ref="menu" id="overlay_menu" :model="items" :popup="true"/>
+        <PrimeMenu ref="menu" id="overlay_menu" :model="items" :popup="true" />
       </div>
       <div style="position: absolute; right: 6.1rem;">
         <Feedback />
@@ -20,15 +24,28 @@
       <div v-if="editModeOn" style="position: absolute; right: 26.6rem;">
         <RemoveNode />
       </div>
-      <div v-if="editModeOn && isNodeSelected" style="position: absolute; right: 33.6rem;">
+      <div
+        v-if="editModeOn && isNodeSelected"
+        style="position: absolute; right: 33.6rem;"
+      >
         <CutPaste v-if="isNodeSelected" />
       </div>
-      <div v-if="editModeOn && isNodeSelected" style="position: absolute; right: 39.3rem;">
+      <div
+        v-if="editModeOn && isNodeSelected"
+        style="position: absolute; right: 39.3rem;"
+      >
         <MapChangeLog />
       </div>
     </div>
     <div v-else>
-      <Button @click="signIn" style="position: absolute; right: 2rem;" rounded size="small"  icon="pi pi-sign-in" label="sign in"/>
+      <Button
+        @click="signIn"
+        style="position: absolute; right: 2rem;"
+        rounded
+        size="small"
+        icon="pi pi-sign-in"
+        label="sign in"
+      />
     </div>
   </div>
 </template>
@@ -68,7 +85,11 @@ export default {
     const menu = ref();
 
     // user info
-    const userPhotoURL = computed(() => (user.user && user.user.photoURL ? user.user.photoURL : '../../assets/images/user.svg'));
+    const userPhotoURL = computed(() =>
+      user.user && user.user.photoURL
+        ? user.user.photoURL
+        : "../../assets/images/user.svg"
+    );
     const email = computed(() => (user.user ? user.user.email : null));
     const items = computed(() => {
       return [
@@ -76,16 +97,16 @@ export default {
           label: email.value,
           items: [
             {
-              label: 'sign out',
-              icon: 'pi pi-sign-out',
+              label: "sign out",
+              icon: "pi pi-sign-out",
               command: () => {
                 store.dispatch(`user/${userActions.signOut}`);
               }
-            },
+            }
           ]
-        },
-      ]
-    })
+        }
+      ];
+    });
     return {
       email,
       userPhotoURL,
@@ -99,10 +120,10 @@ export default {
       signIn: () => store.dispatch(`user/${userActions.signIn}`),
       // User Menu
       menu,
-      toggleUserMenu: (event) => {
+      toggleUserMenu: event => {
         menu.value.toggle(event);
       },
-      items,
+      items
     };
   }
 };

@@ -1,6 +1,6 @@
 <template>
   <MenuButton @click="send">
-    <img alt="icon" src="../../assets/images/chat.svg" style="width: 20px"/>
+    <img alt="icon" src="../../assets/images/chat.svg" style="width: 20px" />
     <span class="p-ml-2">chat</span>
   </MenuButton>
 </template>
@@ -11,7 +11,7 @@ import MenuButton from "@/components/menu/MenuButton.vue";
 export default {
   name: "Feedback",
   components: {
-    MenuButton,
+    MenuButton
   },
   setup() {
     return {

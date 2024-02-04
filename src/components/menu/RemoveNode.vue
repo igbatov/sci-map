@@ -1,6 +1,6 @@
 <template>
   <MenuButton @click="toggleDialog" :disabled="!selectedNodeTitle">
-    <img alt="icon" src="../../assets/images/minus.svg" style="width: 20px"/>
+    <img alt="icon" src="../../assets/images/minus.svg" style="width: 20px" />
     <span class="p-ml-2">delete</span>
   </MenuButton>
   <Dialog

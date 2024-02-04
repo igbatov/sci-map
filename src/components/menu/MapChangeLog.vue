@@ -5,11 +5,7 @@
     @hide="complainModalVisible = false"
   />
   <MenuButton @click="toggleAddDialog">
-    <img
-        alt="icon"
-        src="../../assets/images/chat.svg"
-        style="width: 20px"
-    />
+    <img alt="icon" src="../../assets/images/chat.svg" style="width: 20px" />
     <span class="p-ml-2">log</span>
   </MenuButton>
   <Dialog
@@ -56,7 +52,7 @@ export default {
     MenuButton,
     ChangeLogComplain,
     Card,
-    Dialog,
+    Dialog
   },
   setup() {
     const complainChangeLink = ref("");
