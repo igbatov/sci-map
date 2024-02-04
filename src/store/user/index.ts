@@ -1,5 +1,4 @@
 import firebase from "firebase/compat";
-import api from "@/api/api";
 import { Commit } from "vuex";
 
 export interface State {

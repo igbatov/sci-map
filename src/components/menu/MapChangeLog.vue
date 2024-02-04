@@ -39,10 +39,10 @@
 
 <script lang="ts">
 import Dialog from "primevue/dialog";
+import Card from "primevue/card";
 import { reactive, ref } from "vue";
 import { ActionType, ChangeLogNodeParent } from "@/store/change_log";
 import { GetNodeUrl, subscribeChangeLogEnriched } from "@/api/change_log";
-import Card from "primevue/card";
 import ChangeLogComplain from "@/components/node_content/ChangeLogComplain.vue";
 import MenuButton from "@/components/menu/MenuButton.vue";
 

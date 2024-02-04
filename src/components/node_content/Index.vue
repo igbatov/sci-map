@@ -1,13 +1,12 @@
 <template>
   <div v-if="show && selectedNode" class="wrapper">
     <div class="p-fluid">
-      <img
-        style="position: absolute; left:0; top:0; width: 100%; height: 240px"
-        alt="welcome"
-        src="../../assets/images/bottles.png"
+      <!-- Image -->
+      <TitleImage
+        :nodeID="selectedNodeContent ? selectedNodeContent.nodeID : ''"
       />
 
-      <!-- Content   -->
+      <!-- Content -->
       <div class="p-field p-grid">
         <div class="p-col-12">
           <div style="height: 240px"></div>
@@ -193,10 +192,12 @@ import ChangeLog from "./ChangeLog.vue";
 import PinButton from "./PinButton.vue";
 import Title from "@/components/node_content/Title.vue";
 import AddBasedOnButton from "@/components/node_content/AddBasedOnButton.vue";
+import TitleImage from "@/components/node_content/TitleImage.vue";
 
 export default defineComponent({
   name: "NodeContent",
   components: {
+    TitleImage,
     AddBasedOnButton,
     Title,
     SectionUsedBy,

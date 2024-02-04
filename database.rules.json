@@ -8,6 +8,10 @@
       ".read": true,
       ".write": "auth !== null && auth.token.roles['map_editor'] === true && auth.token.auth_time > root.child('user_data').child(auth.uid).child('revokeTime').val()"
     },
+    "node_image": {
+      ".read": true,
+      ".write": "auth !== null && auth.token.roles['map_editor'] === true && auth.token.auth_time > root.child('user_data').child(auth.uid).child('revokeTime').val()"
+    },
     "precondition": {
       ".read": true,
       ".write": "auth !== null && auth.token.roles['map_editor'] === true && auth.token.auth_time > root.child('user_data').child(auth.uid).child('revokeTime').val()"

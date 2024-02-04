@@ -12,7 +12,6 @@ import emulatorConfig from "../../firebase.json";
 import { debounce } from "lodash";
 
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
-import { QueryFilterConstraint } from "@firebase/firestore";
 
 const MAP_FROM_STORAGE = false; // is storage is source for map (or database)
 let FUNCTION_DOMAIN = "https://us-central1-sci-map-1982.cloudfunctions.net/";
