@@ -84,8 +84,6 @@ export default defineComponent({
     }>);
     const uploadProgress = ref(0);
     const defaultImageURL = ref(bottlesURL);
-    const imgURL = ref("");
-    const imgFile = ref({} as File);
     const dbNodeImgPath = computed(() => `/node_image/${props.nodeID}`);
     watch(
       () => props.nodeID,
@@ -171,9 +169,8 @@ export default defineComponent({
           return;
         }
         uploadProgress.value = 0;
-        imgURL.value = "";
-        imgFile.value = event.target.files[0] as File;
-        if (imgFile.value.size > 1000000) {
+        const imgFile = event.target.files[0] as File;
+        if (imgFile.size > 1000000) {
           console.log("cannot upload file > 1Mb");
           toast.add({
             severity: "info",
@@ -183,14 +180,14 @@ export default defineComponent({
           });
           return;
         }
-        const name = imgFile.value.name;
+        const name = imgFile.name;
         const ext =
           name.substring(name.lastIndexOf(".") + 1, name.length) || name;
         const fileName = new Date().getTime();
         const storageRef = firebase
           .storage()
           .ref(`/user/${store.state.user.user.uid}/image/${fileName}.${ext}`)
-          .put(imgFile.value);
+          .put(imgFile);
         storageRef.on(
           "state_changed",
           snapshot => {
@@ -203,13 +200,21 @@ export default defineComponent({
           () => {
             uploadProgress.value = 100;
             storageRef.snapshot.ref.getDownloadURL().then(url => {
-              imgURL.value = url;
+              let parsedURL = {} as URL
+              try {
+                parsedURL = new URL(url);
+              } catch (error) {
+                console.log(error);
+                return
+              }
+              // removed token=... from url
+              const preparedURL = parsedURL.protocol+'//'+parsedURL.hostname+(parsedURL.port == '' ? '' : ':'+parsedURL.port)+parsedURL.pathname+'?alt=media';
               firebase
                 .database()
                 .ref(`${dbNodeImgPath.value}/${fileName}`)
                 .update({
                   name,
-                  url
+                  url: preparedURL,
                 });
             });
           }
