@@ -72,29 +72,29 @@ export default defineComponent({
     const store = useStore();
     const addDialogVisible = ref(false);
     const input = ref();
-    const bottlesURL = "https://scimap.org/img/bottles.e96489fc.png";
+    const defaultURL = "https://cdn.scimap.org/images/default.jpg";
     const items = ref([
       {
-        name: "bottles",
-        url: bottlesURL
+        name: "default",
+        url: defaultURL
       }
     ] as Array<{
       name: string;
       url: string;
     }>);
     const uploadProgress = ref(0);
-    const defaultImageURL = ref(bottlesURL);
+    const defaultImageURL = ref(defaultURL);
     const dbNodeImgPath = computed(() => `/node_image/${props.nodeID}`);
     watch(
       () => props.nodeID,
       async (newNodeID, oldNodeID) => {
         items.value = [
           {
-            name: "bottles",
-            url: bottlesURL
+            name: "default",
+            url: defaultURL
           }
         ];
-        defaultImageURL.value = bottlesURL;
+        defaultImageURL.value = defaultURL;
         if (oldNodeID) {
           api.unsubscribeDBChange(oldNodeID);
         }
@@ -107,23 +107,27 @@ export default defineComponent({
               }
               items.value = [
                 {
-                  name: "bottles",
-                  url: bottlesURL
+                  name: "default",
+                  url: defaultURL
                 }
               ];
               const images = snap.val() as Record<
                 string,
                 {
                   name: string;
+                  path: string;
                   url: string;
                 }
               >;
               for (const key in images) {
                 if (key == "default") {
-                  defaultImageURL.value = images[key].url;
+                  defaultImageURL.value = process.env.VUE_APP_IS_EMULATOR === "true" ? images[key].url : 'https://cdn.scimap.org/'+images[key].path;
                   continue;
                 }
-                items.value.push(images[key]);
+                items.value.push({
+                  name: images[key].name,
+                  url: process.env.VUE_APP_IS_EMULATOR === "true" ? images[key].url : 'https://cdn.scimap.org/'+images[key].path
+                });
               }
             }
           );
@@ -184,9 +188,10 @@ export default defineComponent({
         const ext =
           name.substring(name.lastIndexOf(".") + 1, name.length) || name;
         const fileName = new Date().getTime();
+        const filePath = `/user/${store.state.user.user.uid}/image/${fileName}.${ext}`
         const storageRef = firebase
           .storage()
-          .ref(`/user/${store.state.user.user.uid}/image/${fileName}.${ext}`)
+          .ref(filePath)
           .put(imgFile);
         storageRef.on(
           "state_changed",
@@ -214,6 +219,7 @@ export default defineComponent({
                 .ref(`${dbNodeImgPath.value}/${fileName}`)
                 .update({
                   name,
+                  path: filePath,
                   url: preparedURL,
                 });
             });
