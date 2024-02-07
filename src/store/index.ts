@@ -142,11 +142,11 @@ export const store = createStore<State>({
      * confirmSignInPopup
      * @param commit
      * @param state
-     * @param confirm
+     * @param val
      */
     async [actions.confirmSignInPopup](
       { dispatch, state }: { dispatch: Dispatch; state: State },
-      confirm: {
+      val: {confirm:  {
         require(args: {
           message?: string;
           target?: EventTarget;
@@ -165,10 +165,12 @@ export const store = createStore<State>({
         }): void;
 
         close(): void;
+      },
+      message: string,
       }
     ) {
-      confirm.require({
-        message: "Please authorize to change node contents",
+      val.confirm.require({
+        message: val.message,
         header: "SignIn",
         acceptLabel: "Ok, Sign In",
         rejectLabel: "No, thanks, just watching",

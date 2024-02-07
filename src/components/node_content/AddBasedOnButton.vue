@@ -35,10 +35,11 @@
 <script>
 import Dialog from "primevue/dialog";
 import Button from "primevue/button";
-import { useStore } from "@/store";
+import {actions, useStore} from "@/store";
 import { computed, ref, watch } from "vue";
 import api from "@/api/api";
 import AddBasedOnIcon from "@/components/node_content/AddBasedOnIcon.vue";
+import {useConfirm} from "primevue/useconfirm";
 
 export default {
   name: "AddBasedOnButton",
@@ -56,6 +57,7 @@ export default {
   },
   setup(props, ctx) {
     const store = useStore();
+    const confirm = useConfirm();
     const addBannerVisible = ref(false);
     const targetNode = ref({}); // node where precondition must be added
     const preconditionNode = ref({}); // node where precondition must be added
@@ -76,7 +78,11 @@ export default {
     );
 
     return {
-      showAddBanner: () => {
+      showAddBanner: async () => {
+        if (!(store.state.user && store.state.user.user && !store.state.user.user.isAnonymous)) {
+          await store.dispatch(`${actions.confirmSignInPopup}`, {confirm, message:"Please authorize to added node prerequisites"});
+          return
+        }
         ctx.emit("select-precondition-is-on");
         targetNode.value = store.getters["tree/selectedNode"];
         addBannerVisible.value = !addBannerVisible.value;

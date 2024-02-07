@@ -1,9 +1,14 @@
 <template>
-  <img
+  <img v-if="isAuthorized"
     style="position: absolute; left:0; top:0; width: 100%; height: 240px; cursor: pointer;"
     alt="welcome"
     :src="defaultImageURL"
     @click="toggleAddDialog"
+  />
+  <img v-else
+       style="position: absolute; left:0; top:0; width: 100%; height: 240px;"
+       alt="welcome"
+       :src="defaultImageURL"
   />
   <input
     type="file"
@@ -137,6 +142,7 @@ export default defineComponent({
     );
 
     return {
+      isAuthorized: computed(()=>store.state.user && store.state.user.user && !store.state.user.user.isAnonymous),
       defaultImageURL,
       setAsDefault: async (url: string) => {
         await firebase
@@ -152,7 +158,9 @@ export default defineComponent({
       copyURL: async (url: string) => {
         await navigator.clipboard.writeText(url);
       },
-      toggleAddDialog: () => (addDialogVisible.value = !addDialogVisible.value),
+      toggleAddDialog: () => {
+        addDialogVisible.value = !addDialogVisible.value
+      },
       addDialogVisible,
       items,
       input,

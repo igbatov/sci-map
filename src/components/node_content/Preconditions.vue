@@ -19,10 +19,11 @@
 
 <script lang="ts">
 import { ref, watchEffect, defineComponent } from "vue";
-import { useStore } from "@/store";
+import {actions, useStore} from "@/store";
 import api from "@/api/api";
 import { Tree } from "@/types/graphics";
 import RemoveIcon from "@/components/node_content/RemoveIcon.vue";
+import {useConfirm} from "primevue/useconfirm";
 
 export default defineComponent({
   name: "Preconditions",
@@ -37,6 +38,7 @@ export default defineComponent({
   },
   setup(props) {
     const store = useStore();
+    const confirm = useConfirm();
     const preconditions = ref<Array<Tree>>([]);
     watchEffect(() => {
       preconditions.value = [];
@@ -52,7 +54,12 @@ export default defineComponent({
 
     return {
       preconditions,
-      remove: (id: string) => {
+      remove: async (id: string) => {
+        if (!(store.state.user && store.state.user.user && !store.state.user.user.isAnonymous)) {
+          await store.dispatch(`${actions.confirmSignInPopup}`, {confirm, message:"Please authorize to added node prerequisites"});
+          return
+        }
+
         const p = store.state.precondition.preconditions[props.nodeId];
         if (!p) {
           return;

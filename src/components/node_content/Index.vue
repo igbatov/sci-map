@@ -259,7 +259,7 @@ export default defineComponent({
       selectedNodeContent,
       checkAuthorized: async (e: Event) => {
         if (!store.state.user.user || store.state.user.user.isAnonymous) {
-          await store.dispatch(`${actions.confirmSignInPopup}`, confirm);
+          await store.dispatch(`${actions.confirmSignInPopup}`, {confirm, message:"Please authorize to add comments and edit content"});
           e.preventDefault();
         }
       },

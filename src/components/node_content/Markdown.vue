@@ -1,8 +1,12 @@
 <template>
-  <p
+  <p v-if="isAuthorized"
     v-show="!editOn"
     v-html="renderedContent"
     @click="setEditOn(true)"
+    class="renderedContent"
+  />
+  <p v-else
+    v-html="renderedContent"
     class="renderedContent"
   />
   <textarea
@@ -19,6 +23,7 @@
 <script lang="ts">
 import { computed, ref } from "vue";
 import MarkdownIt from "markdown-it";
+import {useStore} from "@/store";
 const mdKatex = require('markdown-it-katex'); // eslint-disable-line
 const mdImsize = require('markdown-it-imsize'); // eslint-disable-line
 const mdContainer = require('markdown-it-container'); // eslint-disable-line
@@ -60,6 +65,7 @@ export default {
     }
   },
   setup(props: any, ctx: any) {
+    const store = useStore();
     const renderedContent = computed(() => {
       return md.render(props.content);
     });
@@ -68,6 +74,7 @@ export default {
     const txtarea = ref<HTMLDivElement | null>(null);
 
     return {
+      isAuthorized: computed(()=>store.state.user && store.state.user.user && !store.state.user.user.isAnonymous),
       editOn,
       txtarea,
       setEditOn: (val: boolean) => {

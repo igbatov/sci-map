@@ -31,11 +31,12 @@
 import Dialog from "primevue/dialog";
 import Button from "primevue/button";
 import Listbox from "primevue/listbox";
-import { useStore } from "@/store";
+import {actions, useStore} from "@/store";
 import { computed, ref } from "vue";
 import { actions as pinActions } from "@/store/pin";
 import api from "@/api/api";
 import PinIcon from "@/components/node_content/PinIcon.vue";
+import {useConfirm} from "primevue/useconfirm";
 
 export default {
   name: "PinButton",
@@ -47,6 +48,7 @@ export default {
   },
   setup() {
     const store = useStore();
+    const confirm = useConfirm();
     const treeState = store.state.tree;
     const addDialogVisible = ref(false);
     const selectedParent = ref(false);
@@ -67,7 +69,11 @@ export default {
     });
 
     return {
-      clickPin: () => {
+      clickPin: async () => {
+        if (!(store.state.user && store.state.user.user && !store.state.user.user.isAnonymous)) {
+          await store.dispatch(`${actions.confirmSignInPopup}`, {confirm, message:"Please authorize to pin nodes"});
+          return
+        }
         if (
           store.state.pin.pins[store.state.tree.selectedNodeId] !== undefined
         ) {

@@ -18,6 +18,7 @@
 
 <script lang="ts">
 import { computed, ref } from "vue";
+import {useStore} from "@/store";
 
 export default {
   name: "Title",
@@ -33,13 +34,18 @@ export default {
       return props.content;
     });
     const editOn = ref(false);
-
+    const store = useStore();
     const txtarea = ref<HTMLDivElement | null>(null);
 
     return {
       editOn,
       txtarea,
       setEditOn: (val: boolean) => {
+        if (!store.state.user ||
+            !store.state.user.user ||
+            store.state.user.user.isAnonymous) {
+          return
+        }
         editOn.value = val;
         if (val && txtarea.value) {
           txtarea.value.style.display = "block";
