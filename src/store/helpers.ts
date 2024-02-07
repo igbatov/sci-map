@@ -44,8 +44,12 @@ export async function initMap(user: firebase.User | null) {
 
 export async function fetchPins(user: firebase.User | null) {
   let [pins, err] = await api.getPins(user);
-  if (pins == null || err) {
-    console.error(err);
+  if (pins == null) {
+    if (err) {
+      console.error("fetchPins", err);
+    } else {
+      console.log("fetchPins: empty pins");
+    }
   }
 
   if (user && !pins) {

@@ -29,6 +29,10 @@
         "comment": {
           ".read": "$uid === auth.uid",
           ".write": "$uid === auth.uid"
+        },
+        "pins": {
+          ".read": "$uid === auth.uid",
+          ".write": "$uid === auth.uid"
         }
       }
     },

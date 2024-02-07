@@ -148,15 +148,26 @@ export default {
 
   async getPins(user: firebase.User | null): Promise<[Pins | null, ErrorKV]> {
     try {
-      const storage = firebase.storage().ref();
-      let ref = storage.child(`/pins.json`);
-      if (user) {
-        ref = storage.child(`/user/${user.uid}/pins.json`);
-      }
-      const url = await ref.getDownloadURL();
+      if (user == null) {
+        // for anonymous use general pins
+        const storage = firebase.storage().ref();
+        const ref = storage.child(`/pins.json`);
+        const url = await ref.getDownloadURL();
 
-      const response = await axios.get(url);
-      return [response.data, null];
+        const response = await axios.get(url);
+        return [response.data, null];
+      } else {
+        // for authenticated user use realtime database
+        const snapshot = await firebase
+          .database()
+          .ref(`user_data/${user.uid}/pins`)
+          .get();
+        if (!snapshot.exists()) {
+          return [null, NewErrorKV("!snapshot.exists", {})];
+        }
+        return [snapshot.val(), null];
+      }
+
     } catch (e) {
       return [null, NewErrorKV(e.message, { e: e })];
     }
@@ -167,12 +178,9 @@ export default {
       return;
     }
 
-    const storage = firebase.storage().ref();
-    const ref = storage.child(`/user/${user.uid}/pins.json`);
-    await ref.putString(
-      btoa(unescape(encodeURIComponent(JSON.stringify(pins)))),
-      "base64"
-    );
+    await firebase
+      .database()
+      .ref(`user_data/${user.uid}/pins`).set(pins);
   },
 
   async getPreconditions(
