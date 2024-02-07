@@ -1,6 +1,6 @@
 <template>
   <MenuButton @click="toggleAddDialog">
-    <img alt="icon" src="../../assets/images/add.svg" style="width: 20px" />
+    <img alt="icon" src="../../assets/images/add-off.svg" style="width: 20px" />
     <span class="p-ml-2">add</span>
   </MenuButton>
   <Dialog
