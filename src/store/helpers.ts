@@ -80,12 +80,7 @@ export async function initPreconditions(user: firebase.User | null) {
 
   // subscribe on precondition changes for every node
   for (const id in preconditions) {
-    api.subscribePreconditionNodeChange(id, (nodeID, preconditionIDs) => {
-      return store.commit(
-        `precondition/${preconditionMutations.UPDATE_PRECONDITIONS}`,
-        { nodeID: nodeID, preconditionIDs: preconditionIDs }
-      );
-    });
+    api.subscribePreconditionNodeChange(id);
   }
 
   store.commit(

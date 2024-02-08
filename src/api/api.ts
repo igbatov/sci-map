@@ -4,7 +4,7 @@ import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "../tools/errorkv";
 import axios from "axios";
 import { Pins } from "@/store/pin";
-import { Preconditions } from "src/store/precondition";
+import {mutations as preconditionMutations, Preconditions} from "@/store/precondition";
 import { DBNode } from "@/api/types";
 import { convertChildren } from "./helpers";
 import { NodeComment, NodeContent } from "@/store/node_content";
@@ -12,6 +12,7 @@ import emulatorConfig from "../../firebase.json";
 import { debounce } from "lodash";
 
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
+import {store} from "@/store";
 
 const MAP_FROM_STORAGE = false; // is storage is source for map (or database)
 let FUNCTION_DOMAIN = "https://us-central1-sci-map-1982.cloudfunctions.net/";
@@ -213,6 +214,13 @@ export default {
       .database()
       .ref("precondition/" + preconditions.nodeId)
       .set(preconditions.preconditionIds);
+
+    // If this is call to add first precondition ever
+    // then there is no subscription for this node yet
+    // Create it here
+    if (preconditions.preconditionIds.length == 1) {
+      this.subscribePreconditionNodeChange(preconditions.nodeId);
+    }
   },
 
   subscribeMapNodeChange(nodeID: string, cb: (a: DBNode) => any) {
@@ -250,7 +258,6 @@ export default {
 
   subscribePreconditionNodeChange(
     nodeID: string,
-    cb: (nodeID: string, preconditionIDs: Array<string>) => any
   ) {
     this.subscribeDBChange(
       `precondition/${nodeID}`,
@@ -260,7 +267,10 @@ export default {
         }
         const preconditionIDs = snap.val() as Array<string>;
         // console.log('got update for node precondition', 'nodeID', nodeID, 'preconditionIDs', preconditionIDs)
-        cb(nodeID, preconditionIDs);
+        store.commit(
+          `precondition/${preconditionMutations.UPDATE_PRECONDITIONS}`,
+          { nodeID: nodeID, preconditionIDs: preconditionIDs }
+        );
       }
     );
   },
