@@ -1,5 +1,6 @@
 <template>
   <line
+    v-if="from && to"
     :x1="from.x"
     :y1="from.y"
     :x2="to.x"
@@ -20,7 +21,7 @@ export default defineComponent({
     markerId: String,
     color: String,
     from: Object as PropType<Point>,
-    to: Object as PropType<Point>
+    to: Object as PropType<Point> || null
   }
 });
 </script>

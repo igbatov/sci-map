@@ -35,11 +35,40 @@ export async function initMap(user: firebase.User | null) {
   store.commit(`tree/${treeMutations.SET_TREE}`, tree);
 
   // subscribe on changes for every node in map
+  // General advice is to listen to specific paths, not root and ещ dynamically subscribe/unsubscribe
+  // https://firebase.google.com/docs/database/usage/optimize#efficient-listeners
   for (const id in map) {
-    api.subscribeMapNodeChange(id, (dbNode: DBNode) =>
-      store.dispatch(`tree/${treeActions.handleMapNodeUpdate}`, dbNode)
-    );
+    subscribeNodeChanges(id)
   }
+}
+
+export function unSubscribeNodeChanges(id: string) {
+  api.unsubscribeDBChange(`map/${id}`)
+  api.unsubscribeDBChange(`node_content/${id}`)
+  api.unsubscribeDBChange(`precondition/${id}`)
+  // TODO: unsubscribe image change
+
+}
+
+export function subscribeNodeChanges(id: string) {
+  // subscribe children, name or position change
+  api.subscribeMapNodeChange(id, (dbNode: DBNode) =>
+    store.dispatch(`tree/${treeActions.handleMapNodeUpdate}`, dbNode)
+  );
+
+  // subscribe node content change
+  api.subscribeNodeContentChange(
+    id,
+    (v: { nodeID: string; content: string }) => {
+      textSearchAdd(v.nodeID, v.content);
+      store.commit(`nodeContent/${nodeContentMutations.SET_NODE_CONTENT}`, v);
+    }
+  );
+
+  // subscribe on precondition changes for every node
+  api.subscribePreconditionNodeChange(id);
+
+  // TODO: subscribe image change
 }
 
 export async function fetchPins(user: firebase.User | null) {
@@ -78,11 +107,6 @@ export async function initPreconditions(user: firebase.User | null) {
     }
   }
 
-  // subscribe on precondition changes for every node
-  for (const id in preconditions) {
-    api.subscribePreconditionNodeChange(id);
-  }
-
   store.commit(
     `precondition/${preconditionMutations.SET_PRECONDITIONS}`,
     preconditions
@@ -107,14 +131,6 @@ export async function initNodeContents(user: firebase.User | null) {
       nodeID: nodeContent[i].nodeID,
       content: nodeContent[i].content
     } as NodeContent;
-
-    api.subscribeNodeContentChange(
-      nodeContents[i].nodeID,
-      (v: { nodeID: string; content: string }) => {
-        textSearchAdd(v.nodeID, v.content);
-        store.commit(`nodeContent/${nodeContentMutations.SET_NODE_CONTENT}`, v);
-      }
-    );
   }
 
   store.commit(

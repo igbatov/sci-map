@@ -70,7 +70,6 @@ import firebase from "firebase/compat";
 export type State = {
   // root states
   editModeOn: boolean;
-  subscribedNodeIDs: string[];
 
   // module states
   titleBox: TitleBoxState;
@@ -92,7 +91,6 @@ export const actions = {
   cutPasteNode: "cutPasteNode",
   removeNode: "removeNode",
   setEditMode: "setEditMode",
-  subscribeDBChange: "subscribeDBChange",
 
   // confirmSignInPopup
   confirmSignInPopup: "confirmSignInPopup"
@@ -100,7 +98,6 @@ export const actions = {
 
 export const mutations = {
   SET_EDIT_MODE: "SET_EDIT_MODE",
-  SET_SUBSCRIBED_NODE_IDS: "SET_SUBSCRIBED_NODE_IDS"
 };
 
 const debouncedPositionSet = debounce(
@@ -127,15 +124,11 @@ export const key: InjectionKey<Store<State>> = Symbol();
 export const store = createStore<State>({
   state: {
     editModeOn: false,
-    subscribedNodeIDs: [] as string[]
   } as State,
   mutations: {
     [mutations.SET_EDIT_MODE](state: State, val: boolean) {
       state.editModeOn = val;
     },
-    [mutations.SET_SUBSCRIBED_NODE_IDS](state: State, val: string[]) {
-      state.subscribedNodeIDs = val;
-    }
   },
   actions: {
     /**
@@ -194,12 +187,6 @@ export const store = createStore<State>({
       val: boolean
     ) {
       commit(mutations.SET_EDIT_MODE, val);
-      if (!val) {
-        state.subscribedNodeIDs.forEach(id =>
-          api.unsubscribeDBChange("map/" + id)
-        );
-        commit(mutations.SET_SUBSCRIBED_NODE_IDS, []);
-      }
     },
 
     /**

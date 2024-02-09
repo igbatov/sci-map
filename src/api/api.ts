@@ -214,13 +214,6 @@ export default {
       .database()
       .ref("precondition/" + preconditions.nodeId)
       .set(preconditions.preconditionIds);
-
-    // If this is call to add first precondition ever
-    // then there is no subscription for this node yet
-    // Create it here
-    if (preconditions.preconditionIds.length == 1) {
-      this.subscribePreconditionNodeChange(preconditions.nodeId);
-    }
   },
 
   subscribeMapNodeChange(nodeID: string, cb: (a: DBNode) => any) {
@@ -266,7 +259,6 @@ export default {
           return;
         }
         const preconditionIDs = snap.val() as Array<string>;
-        // console.log('got update for node precondition', 'nodeID', nodeID, 'preconditionIDs', preconditionIDs)
         store.commit(
           `precondition/${preconditionMutations.UPDATE_PRECONDITIONS}`,
           { nodeID: nodeID, preconditionIDs: preconditionIDs }

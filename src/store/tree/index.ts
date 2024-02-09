@@ -12,6 +12,7 @@ import { DBNode } from "@/api/types";
 import { printError, round } from "@/tools/utils";
 import api from "@/api/api";
 import { Commit, Dispatch } from "vuex";
+import {subscribeNodeChanges, unSubscribeNodeChanges} from "@/store/helpers";
 
 // Define root border for 2560x1600
 const ROOT_WIDTH = 2560;
@@ -227,9 +228,7 @@ export const store = {
               node: treeNode
             };
             // subscribe to new node changes
-            api.subscribeMapNodeChange(treeNode.id, (dbNode: DBNode) =>
-              dispatch(actions.handleMapNodeUpdate, dbNode)
-            );
+            subscribeNodeChanges(treeNode.id);
             for (const childID of inProcessNode.children) {
               const childNode = await api.getNode(childID);
               if (!childNode) {
@@ -275,7 +274,7 @@ export const store = {
             });
           }
           // unsubscribe from removed node changes
-          api.unsubscribeMapNodeChange(childID);
+          unSubscribeNodeChanges(childID);
         }
       }
 
