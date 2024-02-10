@@ -54,7 +54,7 @@ import Dialog from "primevue/dialog";
 import Card from "primevue/card";
 import { reactive, ref, defineComponent } from "vue";
 import { ActionType, ChangeLogNodeParent } from "@/store/change_log";
-import {GetNodeUrl, IsNodeInTrash, subscribeChangeLogEnriched} from "@/api/change_log";
+import {GetNodeUrl, subscribeChangeLogEnriched} from "@/api/change_log";
 import ChangeLogComplain from "@/components/node_content/ChangeLogComplain.vue";
 import MenuButton from "@/components/menu/MenuButton.vue";
 import RestoreNode from "@/components/menu/RestoreNode.vue";

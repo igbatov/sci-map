@@ -142,8 +142,8 @@ export default {
 .textSearch {
   position: fixed;
   display: flex;
-  top: 0%;
-  left: 0%;
+  top: 0;
+  left: 0;
   width: 30%;
   padding: 15px 20px;
   background: linear-gradient(rgba(120, 120, 120, 0.4), rgba(120, 120, 120, 0));

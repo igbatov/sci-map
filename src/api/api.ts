@@ -88,8 +88,7 @@ export default {
         NewErrorKV("callFunction: cannot determine current user", {})
       ];
     }
-    const idToken = await currentUser.getIdToken(true);
-    params.idToken = idToken;
+    params.idToken = await currentUser.getIdToken(true);
     try {
       const response = await axios.get(FUNCTION_DOMAIN + method, { params });
       return [response.data, null];
@@ -325,7 +324,7 @@ export default {
     discordName: string | null
   ) {
     try {
-      const res = await firebase
+      await firebase
         .database()
         .ref("public_user_data/" + userID)
         .set({
@@ -333,7 +332,7 @@ export default {
           discordName
         });
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   },
 

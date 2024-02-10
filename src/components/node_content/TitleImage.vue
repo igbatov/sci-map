@@ -56,9 +56,7 @@ import Button from "primevue/button";
 import {computed, defineComponent, ref, watchEffect} from "vue";
 import { useStore } from "@/store";
 import firebase from "firebase/compat";
-import api from "@/api/api";
 import { useToast } from "primevue/usetoast";
-import {DBImage} from "@/api/types";
 
 export default defineComponent({
   name: "TitleImage",
