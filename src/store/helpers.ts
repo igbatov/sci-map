@@ -13,7 +13,7 @@ import {
 import { store } from "@/store/index";
 import { printError } from "@/tools/utils";
 import { convertDBMapToTree } from "@/api/helpers";
-import { DBNode } from "@/api/types";
+import { DBMapNode } from "@/api/types";
 import { add as textSearchAdd } from "@/tools/textsearch";
 
 /**
@@ -46,13 +46,12 @@ export function unSubscribeNodeChanges(id: string) {
   api.unsubscribeDBChange(`map/${id}`)
   api.unsubscribeDBChange(`node_content/${id}`)
   api.unsubscribeDBChange(`precondition/${id}`)
-  // TODO: unsubscribe image change
-
+  api.unsubscribeDBChange(`node_image/${id}`)
 }
 
 export function subscribeNodeChanges(id: string) {
   // subscribe children, name or position change
-  api.subscribeMapNodeChange(id, (dbNode: DBNode) =>
+  api.subscribeMapNodeChange(id, (dbNode: DBMapNode) =>
     store.dispatch(`tree/${treeActions.handleMapNodeUpdate}`, dbNode)
   );
 
@@ -68,7 +67,8 @@ export function subscribeNodeChanges(id: string) {
   // subscribe on precondition changes for every node
   api.subscribePreconditionNodeChange(id);
 
-  // TODO: subscribe image change
+  // subscribe image change
+  api.subscribeNodeImageChange(id)
 }
 
 export async function fetchPins(user: firebase.User | null) {

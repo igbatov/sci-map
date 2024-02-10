@@ -17,6 +17,11 @@ import {
 } from "./precondition";
 
 import {
+  store as imageStore,
+  State as ImageState
+} from "./image";
+
+import {
   store as positionChangePermitsStore,
   State as positionChangePermitsState
 } from "./position_change_permits";
@@ -62,7 +67,7 @@ import {
 } from "@/store/tree/helpers";
 import NewErrorKV from "@/tools/errorkv";
 import { addVector, convertPosition } from "@/tools/graphics";
-import { DBNode } from "@/api/types";
+import { DBMapNode } from "@/api/types";
 import { clone, debounce } from "lodash";
 import { printError } from "@/tools/utils";
 import firebase from "firebase/compat";
@@ -74,6 +79,7 @@ export type State = {
   // module states
   titleBox: TitleBoxState;
   pin: PinState;
+  image: ImageState;
   precondition: PreconditionState;
   positionChangePermits: positionChangePermitsState;
   tree: TreeState;
@@ -134,11 +140,10 @@ export const store = createStore<State>({
     /**
      * confirmSignInPopup
      * @param commit
-     * @param state
      * @param val
      */
     async [actions.confirmSignInPopup](
-      { dispatch, state }: { dispatch: Dispatch; state: State },
+      { dispatch }: { dispatch: Dispatch; state: State },
       val: {confirm:  {
         require(args: {
           message?: string;
@@ -179,11 +184,10 @@ export const store = createStore<State>({
     /**
      *
      * @param commit
-     * @param state
      * @param val
      */
     [actions.setEditMode](
-      { commit, state }: { commit: Commit; state: State },
+      { commit }: { commit: Commit; state: State },
       val: boolean
     ) {
       commit(mutations.SET_EDIT_MODE, val);
@@ -367,10 +371,10 @@ export const store = createStore<State>({
         return;
       }
       const parentID = parent.id;
-      const node = (await api.getNode(nodeID)) as DBNode;
+      const node = (await api.getMapNode(nodeID)) as DBMapNode;
       // collect all children id recursively
       const allChildrenID = clone(node.children);
-      const allChildrenIDMap = {} as Record<string, DBNode>;
+      const allChildrenIDMap = {} as Record<string, DBMapNode>;
       while (allChildrenID.length > 0) {
         const id = allChildrenID.pop();
         if (
@@ -410,6 +414,11 @@ export const store = createStore<State>({
           state.precondition.preconditions[nodeID];
         moveToTrash[`precondition/${nodeID}`] = null;
       }
+      if (state.image.images[nodeID]) {
+        moveToTrash[`trash/${nodeID}/node_image`] =
+          state.image.images[nodeID];
+        moveToTrash[`node_image/${nodeID}`] = null;
+      }
 
       // move also all children to /trash
       for (const id in allChildrenIDMap) {
@@ -424,6 +433,11 @@ export const store = createStore<State>({
           moveToTrash[`trash/${id}/precondition`] =
             state.precondition.preconditions[id];
           moveToTrash[`precondition/${id}`] = null;
+        }
+        if (state.image.images[id]) {
+          moveToTrash[`trash/${id}/node_image`] =
+            state.image.images[id];
+          moveToTrash[`node_image/${id}`] = null;
         }
       }
 
@@ -482,6 +496,7 @@ export const store = createStore<State>({
   modules: {
     pin: pinStore,
     titleBox: titleBoxStore,
+    image: imageStore,
     precondition: preconditionStore,
     positionChangePermits: positionChangePermitsStore,
     tree: treeStore,

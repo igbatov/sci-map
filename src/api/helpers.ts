@@ -1,4 +1,4 @@
-import { DBNode } from "@/api/types";
+import { DBMapNode } from "@/api/types";
 import { Tree } from "@/types/graphics";
 import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "../tools/errorkv";
@@ -22,7 +22,7 @@ export function convertChildren(children: any): string[] {
 }
 
 export function convertDBMapToTree(
-  dbNodes: Record<string, DBNode>
+  dbNodes: Record<string, DBMapNode>
 ): [Tree | null, ErrorKV] {
   const root: Tree = {
     id: dbNodes["0"].id.toString(),

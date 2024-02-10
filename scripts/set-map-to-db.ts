@@ -12,7 +12,7 @@ import serviceAccount from "./private-key.json";
 // @ts-ignore
 import {printError} from "../src/tools/utils";
 // @ts-ignore
-import {DBNode} from "../src/api/types";
+import {DBMapNode} from "../src/api/types";
 // @ts-ignore
 import api from "../src/api/api";
 
@@ -27,7 +27,7 @@ getMapFromFile(admin).then(function(map){
   setToDB(admin, dbNodes)
 })
 
-function setToDB(admin, dbNodes: DBNode[]) {
+function setToDB(admin, dbNodes: DBMapNode[]) {
   // As an admin, the app has access to read and write all data, regardless of Security Rules
   const db = admin.database();
   const DBRef = db.ref("map");
@@ -38,7 +38,7 @@ function setToDB(admin, dbNodes: DBNode[]) {
   });
 }
 
-function convertToDBNodes(map:Tree[]): DBNode[] {
+function convertToDBNodes(map:Tree[]): DBMapNode[] {
   const borders: Record<string, Polygon> = {}
   borders[0] = [{x:0, y:0}, {x:0, y:api.ROOT_HEIGHT}, {x:api.ROOT_WIDTH, y:api.ROOT_HEIGHT}, {x:api.ROOT_WIDTH, y:0}]
   const stack = map

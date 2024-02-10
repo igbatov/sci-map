@@ -1,5 +1,5 @@
 <template>
-  <MenuButton v-if="cutNodeID == null" @click="cut">
+  <MenuButton v-if="cutNodeID == null" @click="cut" :disabled="!selectedNode">
     <img alt="icon" src="../../assets/images/cut.svg" style="width: 20px" />
     <span class="p-ml-2">cut</span>
   </MenuButton>
@@ -24,6 +24,7 @@ export default {
     const cutNodeID = ref(null);
 
     return {
+      selectedNode,
       cutNodeID,
       cut: () => {
         cutNodeID.value = selectedNode.value.id;

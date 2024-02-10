@@ -12,7 +12,7 @@
   >
     <template #header>
       <h3>
-        {{ `Remove ${selectedNodeTitle} and all its descendants?` }}
+        {{ `Remove "${selectedNodeTitle}" and all its descendants?` }}
       </h3>
     </template>
 
@@ -35,6 +35,7 @@ import { useStore, actions } from "@/store";
 import { computed, ref } from "vue";
 import { mutations as positionChangePermitMutations } from "@/store/position_change_permits";
 import MenuButton from "@/components/menu/MenuButton.vue";
+import {mutations as treeMutations} from "@/store/tree";
 
 export default {
   name: "RemoveNode",
@@ -61,6 +62,13 @@ export default {
           store.state.tree.nodeRecord[
             selectedNode.value.id
           ].parent.children.map(node => node.id)
+        );
+        // switch selectedNodeId to parent of removed node
+        store.commit(
+            `tree/${treeMutations.SET_SELECTED_NODE_ID}`,
+            store.state.tree.nodeRecord[
+                selectedNode.value.id
+                ].parent.id
         );
       },
       cancel: () => {

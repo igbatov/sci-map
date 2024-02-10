@@ -8,7 +8,7 @@ import {
 import { findMapNode, updatePosition } from "@/store/tree/helpers";
 import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "@/tools/errorkv";
-import { DBNode } from "@/api/types";
+import { DBMapNode } from "@/api/types";
 import { printError, round } from "@/tools/utils";
 import api from "@/api/api";
 import { Commit, Dispatch } from "vuex";
@@ -79,7 +79,7 @@ export const store = {
     return {
       tree: null,
       nodeRecord: {} as Record<string, NodeRecordItem>, // id => NodeRecordItem
-      mapNodeLayers: [] as Array<Record<string, MapNode>>,
+      mapNodeLayers: [] as Array<Record<string, DBMapNode>>,
       selectedNodeId: null
     };
   },
@@ -128,15 +128,12 @@ export const store = {
       {
         commit,
         state,
-        dispatch
       }: { commit: Commit; state: State; dispatch: Dispatch },
-      dbNode: DBNode
+      dbNode: DBMapNode
     ) {
       const dbNodeRecord = state.nodeRecord[dbNode.id];
       if (!dbNodeRecord) {
-        printError("UPDATE_NODE: Cannot find dbNode in dbNodeRecord", {
-          "dbNode.id": dbNode.id
-        });
+        // if it is a new node, we will fetch it from its parent children update event
         return;
       }
 
@@ -181,7 +178,7 @@ export const store = {
           }
 
           // request node and its children from the server, fill in tree
-          const addedDBNode = await api.getNode(childID);
+          const addedDBNode = await api.getMapNode(childID);
           console.log(
             "actions.handleDBUpdate: add node for cut-and-paste",
             addedDBNode
@@ -230,7 +227,7 @@ export const store = {
             // subscribe to new node changes
             subscribeNodeChanges(treeNode.id);
             for (const childID of inProcessNode.children) {
-              const childNode = await api.getNode(childID);
+              const childNode = await api.getMapNode(childID);
               if (!childNode) {
                 // we cannot find node for addition, remove it from parent
                 inProcessNode.children = inProcessNode.children.filter(

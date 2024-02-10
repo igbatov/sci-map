@@ -130,7 +130,7 @@ export default defineComponent({
      * compute selectedNodePreconditions
      */
     const preconditions = ref<Record<string, MapNode>>({});
-    const visibleTitleNodes = ref<Record<string, MapNode>>({});
+    const extraPreconditionTitles = ref<Record<string, MapNode>>({});
 
     const layerID = "precondition";
     const visibleTitleNodeBoxes = computed(
@@ -139,7 +139,7 @@ export default defineComponent({
     setTitleBoxes(
       TITLE_PREFIX,
       "left",
-      visibleTitleNodes,
+      extraPreconditionTitles,
       (titleBoxMap: Record<string, TitleBox>) => {
         store.commit(`titleBox/${titleBoxMutations.SET_MAP}`, {
           layerName: layerID,
@@ -150,7 +150,9 @@ export default defineComponent({
 
     watchEffect(() => {
       preconditions.value = {};
-      visibleTitleNodes.value = {};
+      // some precondition nodes may be not visible on current layout
+      // so collect these extra titles into extraPreconditionTitles and show them
+      extraPreconditionTitles.value = {};
       if (
         props.selectedNodeId &&
         store.state.precondition.preconditions[props.selectedNodeId] &&
@@ -173,7 +175,7 @@ export default defineComponent({
       }
       for (const id in preconditions.value) {
         if (props.visibleTitleIds?.indexOf(id) == -1) {
-          visibleTitleNodes.value[id] = preconditions.value[id];
+          extraPreconditionTitles.value[id] = preconditions.value[id];
         }
       }
       if (
@@ -182,7 +184,7 @@ export default defineComponent({
         store.state.tree.mapNodeLayers &&
         props.visibleTitleIds?.indexOf(props.selectedNodeId) == -1
       ) {
-        visibleTitleNodes.value[props.selectedNodeId] = selectedNode.value;
+        extraPreconditionTitles.value[props.selectedNodeId] = selectedNode.value;
       }
     });
 
@@ -190,7 +192,7 @@ export default defineComponent({
       TITLE_PREFIX,
       selectedNode,
       preconditions,
-      visibleTitleNodes,
+      visibleTitleNodes: extraPreconditionTitles,
       visibleTitleNodeBoxes,
       titleBoxClick: (nodeId: string) => {
         ctx.emit("title-click", { id: nodeId });

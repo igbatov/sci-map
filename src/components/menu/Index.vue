@@ -25,13 +25,13 @@
         <RemoveNode />
       </div>
       <div
-        v-if="editModeOn && isNodeSelected"
+        v-if="editModeOn"
         style="position: absolute; right: 33.6rem;"
       >
-        <CutPaste v-if="isNodeSelected" />
+        <CutPaste />
       </div>
       <div
-        v-if="editModeOn && isNodeSelected"
+        v-if="editModeOn"
         style="position: absolute; right: 39.3rem;"
       >
         <MapChangeLog />

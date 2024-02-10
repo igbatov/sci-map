@@ -53,11 +53,12 @@
 import Dialog from "primevue/dialog";
 import Card from "primevue/card";
 import Button from "primevue/button";
-import { computed, defineComponent, ref, watch } from "vue";
+import {computed, defineComponent, ref, watchEffect} from "vue";
 import { useStore } from "@/store";
 import firebase from "firebase/compat";
 import api from "@/api/api";
 import { useToast } from "primevue/usetoast";
+import {DBImage} from "@/api/types";
 
 export default defineComponent({
   name: "TitleImage",
@@ -78,70 +79,35 @@ export default defineComponent({
     const addDialogVisible = ref(false);
     const input = ref();
     const defaultURL = "https://cdn.scimap.org/images/default.jpg";
-    const items = ref([
-      {
-        name: "default",
-        url: defaultURL
-      }
-    ] as Array<{
+    const items = ref([] as Array<{
       name: string;
       url: string;
     }>);
     const uploadProgress = ref(0);
     const defaultImageURL = ref(defaultURL);
     const dbNodeImgPath = computed(() => `/node_image/${props.nodeID}`);
-    watch(
-      () => props.nodeID,
-      async (newNodeID, oldNodeID) => {
-        items.value = [
-          {
+    watchEffect(
+        () => {
+          const images = store.state.image.images[props.nodeID]
+          items.value = []
+          items.value.push({
             name: "default",
             url: defaultURL
-          }
-        ];
-        defaultImageURL.value = defaultURL;
-        if (oldNodeID) {
-          api.unsubscribeDBChange(oldNodeID);
-        }
-        if (props.nodeID) {
-          api.subscribeDBChange(
-            dbNodeImgPath.value,
-            (snap: firebase.database.DataSnapshot) => {
-              if (!snap.exists()) {
-                return;
-              }
-              items.value = [
-                {
-                  name: "default",
-                  url: defaultURL
-                }
-              ];
-              const images = snap.val() as Record<
-                string,
-                {
-                  name: string;
-                  path: string;
-                  url: string;
-                }
-              >;
-              for (const key in images) {
-                if (key == "default") {
-                  defaultImageURL.value = process.env.VUE_APP_IS_EMULATOR === "true" ? images[key].url : 'https://cdn.scimap.org/'+images[key].path;
-                  continue;
-                }
-                items.value.push({
-                  name: images[key].name,
-                  url: process.env.VUE_APP_IS_EMULATOR === "true" ? images[key].url : 'https://cdn.scimap.org/'+images[key].path
-                });
-              }
+          })
+          for (const key in images) {
+            if (key == "default") {
+              defaultImageURL.value = process.env.VUE_APP_IS_EMULATOR === "true" ? images[key].url : 'https://cdn.scimap.org/'+images[key].path;
+              continue;
             }
-          );
+            items.value.push({
+              name: images[key].name,
+              url: process.env.VUE_APP_IS_EMULATOR === "true" ? images[key].url : 'https://cdn.scimap.org/'+images[key].path
+            });
+          }
         }
-      },
-      { immediate: true }
-    );
-
+    )
     return {
+      items,
       isAuthorized: computed(()=>store.state.user && store.state.user.user && !store.state.user.user.isAnonymous),
       defaultImageURL,
       setAsDefault: async (url: string) => {
@@ -162,7 +128,6 @@ export default defineComponent({
         addDialogVisible.value = !addDialogVisible.value
       },
       addDialogVisible,
-      items,
       input,
       triggerUpload: () => {
         input.value.click();
@@ -182,7 +147,7 @@ export default defineComponent({
         }
         uploadProgress.value = 0;
         const imgFile = event.target.files[0] as File;
-        if (imgFile.size > 1000000) {
+        if (imgFile.size > 1_000_000) {
           console.log("cannot upload file > 1Mb");
           toast.add({
             severity: "info",

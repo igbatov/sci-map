@@ -23,8 +23,20 @@
     </template>
     <Card v-for="(event, i) of changes" :key="i" class="mt-3">
       <template #title>
-        {{ new Date(event.timestamp).toLocaleDateString() }}
-        {{ new Date(event.timestamp).toLocaleTimeString() }}
+        <div class="p-grid">
+          <div class="p-col-1">
+            <img alt="add_icon" v-if="event.isAdded" src="../../assets/images/add-off.svg"  style="width: 20px"/>
+            <img alt="add_icon" v-else-if="event.isRemoved" src="../../assets/images/remove-off.svg"  style="width: 20px"/>
+            <img alt="add_icon" v-else src="../../assets/images/move.svg"  style="width: 20px"/>
+          </div>
+          <div class="p-col-6">
+            {{ new Date(event.timestamp).toLocaleDateString() }}
+            {{ new Date(event.timestamp).toLocaleTimeString() }}
+          </div>
+          <div class="p-col-5">
+            <RestoreNode :clicked-title-id="``" :event="event" />
+          </div>
+        </div>
       </template>
       <template #subtitle>
         {{ event.userDisplayName }} /
@@ -40,15 +52,17 @@
 <script lang="ts">
 import Dialog from "primevue/dialog";
 import Card from "primevue/card";
-import { reactive, ref } from "vue";
+import { reactive, ref, defineComponent } from "vue";
 import { ActionType, ChangeLogNodeParent } from "@/store/change_log";
-import { GetNodeUrl, subscribeChangeLogEnriched } from "@/api/change_log";
+import {GetNodeUrl, IsNodeInTrash, subscribeChangeLogEnriched} from "@/api/change_log";
 import ChangeLogComplain from "@/components/node_content/ChangeLogComplain.vue";
 import MenuButton from "@/components/menu/MenuButton.vue";
+import RestoreNode from "@/components/menu/RestoreNode.vue";
 
-export default {
+export default defineComponent({
   name: "MapChangeLog",
   components: {
+    RestoreNode,
     MenuButton,
     ChangeLogComplain,
     Card,
@@ -117,5 +131,5 @@ export default {
       }
     };
   }
-};
+});
 </script>

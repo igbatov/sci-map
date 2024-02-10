@@ -331,12 +331,16 @@ export async function subscribeChangeLogEnriched(
   );
 }
 
+export function IsNodeInTrash(nodeIDPath: string): boolean {
+  return nodeIDPath.startsWith("trash")
+}
+
 export function GetNodeUrl(
   nodeIDPath: string,
   nodeID: string,
   nodeName: string
 ): string {
-  if (nodeIDPath.substring(0, 5) == "trash") {
+  if (IsNodeInTrash(nodeIDPath)) {
     return `<a target="_blank" href="/node_description/${nodeID}">${nodeName}</a>`;
   } else {
     return `<a target="_blank" href="/${nodeID}">${nodeName}</a>`;

@@ -5,7 +5,8 @@ import NewErrorKV from "../tools/errorkv";
 import axios from "axios";
 import { Pins } from "@/store/pin";
 import {mutations as preconditionMutations, Preconditions} from "@/store/precondition";
-import { DBNode } from "@/api/types";
+import {mutations as imageMutations} from "@/store/image";
+import { DBMapNode, DBImage} from "@/api/types";
 import { convertChildren } from "./helpers";
 import { NodeComment, NodeContent } from "@/store/node_content";
 import emulatorConfig from "../../firebase.json";
@@ -97,7 +98,7 @@ export default {
     }
   },
 
-  async getMapFromDB(): Promise<[Record<string, DBNode> | null, ErrorKV]> {
+  async getMapFromDB(): Promise<[Record<string, DBMapNode> | null, ErrorKV]> {
     const snapshot = await firebase
       .database()
       .ref("map")
@@ -139,7 +140,7 @@ export default {
 
   async getMap(
     user: firebase.User | null
-  ): Promise<[Record<string, DBNode> | null, ErrorKV]> {
+  ): Promise<[Record<string, DBMapNode> | null, ErrorKV]> {
     try {
       return await this.getMapFromDB();
     } catch (e) {
@@ -216,14 +217,14 @@ export default {
       .set(preconditions.preconditionIds);
   },
 
-  subscribeMapNodeChange(nodeID: string, cb: (a: DBNode) => any) {
+  subscribeMapNodeChange(nodeID: string, cb: (a: DBMapNode) => any) {
     this.subscribeDBChange(
       `map/${nodeID}`,
       (snap: firebase.database.DataSnapshot) => {
         if (!snap.exists()) {
           return;
         }
-        const node = snap.val() as DBNode;
+        const node = snap.val() as DBMapNode;
         // console.log('got update for map node', node)
         node.id = node.id.toString();
         node.children = convertChildren(node.children);
@@ -267,11 +268,22 @@ export default {
     );
   },
 
-  unsubscribeMapNodeChange(nodeID: string) {
-    firebase
-      .database()
-      .ref(`map/${nodeID}`)
-      .off("value");
+  subscribeNodeImageChange(
+    nodeID: string,
+  ) {
+    this.subscribeDBChange(
+      `node_image/${nodeID}`,
+      (snap: firebase.database.DataSnapshot) => {
+        if (!snap.exists()) {
+          return;
+        }
+        const images = snap.val() as Record<string, DBImage>;
+        store.commit(
+          `image/${imageMutations.UPDATE_IMAGES}`,
+          {nodeID, images}
+        );
+      }
+    );
   },
 
   subscribeDBChange(
@@ -307,13 +319,6 @@ export default {
       );
   },
 
-  async setNode(node: DBNode) {
-    await firebase
-      .database()
-      .ref("map/" + node.id)
-      .set(node);
-  },
-
   async setPublicUserData(
     userID: string,
     displayName: string | null,
@@ -332,15 +337,26 @@ export default {
     }
   },
 
-  async getNode(nodeID: string): Promise<DBNode | null> {
+  async getMapNode(nodeID: string): Promise<DBMapNode | null> {
     const pr = await firebase
       .database()
       .ref("map/" + nodeID)
       .get();
     const node = pr.val();
+    if (!node) {
+      console.error("got null fetching from map/nodeID", nodeID)
+    }
     node.id = node.id.toString();
     node.children = convertChildren(node.children);
     return node;
+  },
+
+  async getTrashNode(nodeID: string, type: string): Promise<DBMapNode | null> {
+    const pr = await firebase
+      .database()
+      .ref(`trash/${nodeID}/${type}`)
+      .get();
+    return pr.val();
   },
 
   generateKey(): string | null {
