@@ -9,7 +9,6 @@ exports.GetOnPreconditionChange = (firestore) => database.ref('/precondition/{no
     return insertChange(
       firestore,
       context,
-      change,
       'precondition',
       context.params.nodeId,
       {

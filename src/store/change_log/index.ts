@@ -1,4 +1,5 @@
 export enum ActionType {
+  Remove = "remove",
   ParentID = "parentID",
   Precondition = "precondition",
   Content = "content",
@@ -23,6 +24,7 @@ export type ChangeLog = {
     valueAfter: any;
     added: any;
     removed: any;
+    parentNodeID: any;
   };
 };
 
@@ -77,7 +79,7 @@ export type ChangeLogNodeParent = {
   userDisplayName: string;
 
   parentNodeBefore: Node;
-  parentNodeAfter: Node;
+  parentNodeAfter: Node | null;
   node: Node;
 
   isRemoved: boolean;

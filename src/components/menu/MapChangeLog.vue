@@ -52,8 +52,8 @@
 <script lang="ts">
 import Dialog from "primevue/dialog";
 import Card from "primevue/card";
-import { reactive, ref, defineComponent } from "vue";
-import { ActionType, ChangeLogNodeParent } from "@/store/change_log";
+import {defineComponent, reactive, ref} from "vue";
+import {ActionType, ChangeLogNodeParent} from "@/store/change_log";
 import {GetNodeUrl, subscribeChangeLogEnriched} from "@/api/change_log";
 import ChangeLogComplain from "@/components/node_content/ChangeLogComplain.vue";
 import MenuButton from "@/components/menu/MenuButton.vue";
@@ -73,7 +73,7 @@ export default defineComponent({
     const complainModalVisible = ref(false);
     const addDialogVisible = ref(false);
     const changes = reactive([]) as Array<ChangeLogNodeParent>;
-    subscribeChangeLogEnriched([ActionType.ParentID], [], changeLogs => {
+    subscribeChangeLogEnriched([ActionType.ParentID, ActionType.Remove], [], changeLogs => {
       changes.splice(
         0,
         changes.length,
@@ -98,9 +98,9 @@ export default defineComponent({
             event.node.id,
             event.node.name
           )} was added to ${GetNodeUrl(
-            event.parentNodeAfter.idPath,
-            event.parentNodeAfter.id,
-            event.parentNodeAfter.name
+            event.parentNodeAfter!.idPath,
+            event.parentNodeAfter!.id,
+            event.parentNodeAfter!.name
           )}`;
         }
         if (event.isRemoved) {
@@ -124,9 +124,9 @@ export default defineComponent({
           event.parentNodeBefore.id,
           event.parentNodeBefore.name
         )} to ${GetNodeUrl(
-          event.parentNodeAfter.idPath,
-          event.parentNodeAfter.id,
-          event.parentNodeAfter.name
+          event.parentNodeAfter!.idPath,
+          event.parentNodeAfter!.id,
+          event.parentNodeAfter!.name
         )}`;
       }
     };

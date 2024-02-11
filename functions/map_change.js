@@ -8,7 +8,6 @@ exports.GetOnNodePositionChange = (firestore) => database.ref('/map/{nodeId}/pos
     return upsertChange(
       firestore,
       context,
-      change,
       'position',
       context.params.nodeId,
       {
@@ -26,7 +25,6 @@ exports.GetOnNodeChildrenChange = (firestore) => database.ref('/map/{nodeId}/chi
     return insertChange(
       firestore,
       context,
-      change,
       'children',
       context.params.nodeId,
       {
@@ -46,7 +44,6 @@ exports.GetOnNodeParentChange = (firestore) => database.ref('/map/{nodeId}/paren
     return insertChange(
       firestore,
       context,
-      change,
       'parentID',
       context.params.nodeId,
       {
@@ -64,7 +61,6 @@ exports.GetOnNodeNameChange = (firestore) => database.ref('/map/{nodeId}/name')
     return upsertChange(
       firestore,
       context,
-      change,
       'name',
       context.params.nodeId,
       {
@@ -82,7 +78,6 @@ exports.GetOnNodeMapIDChange = (firestore) => database.ref('/map/{nodeId}/id')
     return insertChange(
       firestore,
       context,
-      change,
       'map_id',
       context.params.nodeId,
       {

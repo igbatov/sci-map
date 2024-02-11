@@ -49,7 +49,8 @@ export async function subscribeChangeLog(
           valueBefore: doc.get("attributes.valueBefore"),
           valueAfter: doc.get("attributes.valueAfter"),
           added: doc.get("attributes.added"),
-          removed: doc.get("attributes.removed")
+          removed: doc.get("attributes.removed"),
+          parentNodeID: doc.get("attributes.parentNodeID"),
         }
       });
     });
@@ -283,7 +284,7 @@ export async function subscribeChangeLogEnriched(
                 removed,
                 added
               });
-            } else if (log.action == ActionType.ParentID) {
+            } else if (log.action == ActionType.ParentID && log.attributes.valueAfter !== null) {
               const beforePath = getPathFromNodeName(
                 log.attributes.valueBefore,
                 nodeNames
@@ -319,8 +320,39 @@ export async function subscribeChangeLogEnriched(
                   name: nodeNames[afterPath]
                 },
 
-                isRemoved: log.attributes.valueAfter == null,
+                isRemoved: false,
                 isAdded: log.attributes.valueBefore == null
+              });
+            } else if (log.action == ActionType.Remove) {
+              const beforePath = getPathFromNodeName(
+                log.attributes.parentNodeID,
+                nodeNames
+              );
+              changeLogsEnriched.push({
+                changeLogID: log.changeLogID,
+
+                timestamp: log.timestamp,
+                action: log.action,
+
+                userID: log.userID,
+                userDisplayName: userNames[log.userID],
+
+                node: {
+                  id: log.nodeID,
+                  idPath: nodePath,
+                  name: nodeNames[nodePath]
+                },
+
+                parentNodeBefore: {
+                  id: log.attributes.valueBefore,
+                  idPath: beforePath,
+                  name: nodeNames[beforePath]
+                },
+
+                parentNodeAfter: null,
+
+                isRemoved: true,
+                isAdded: false
               });
             }
           });

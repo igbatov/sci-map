@@ -6,7 +6,10 @@ const functions = require('firebase-functions/v1');
 const admin = require('firebase-admin');
 admin.initializeApp();
 const firestore = admin.firestore();
+const database = admin.database();
 
+const { GetOnCommandRemove } = require('./cmd_remove');
+const { GetOnCommandRestore } = require('./cmd_restore');
 const { upsertChange, insertChange } = require('./helpers');
 const {
   GetOnNodeChildrenChange,
@@ -25,6 +28,12 @@ exports.onNodeNameChange = GetOnNodeNameChange(firestore)
 exports.onPreconditionChange = GetOnPreconditionChange(firestore)
 exports.onNodePositionChange = GetOnNodePositionChange(firestore)
 exports.onNodeMapIDChange = GetOnNodeMapIDChange(firestore)
+// there is an advice not to use REST calls, so we will imitate them changing
+// https://firebase.google.com/docs/database/usage/optimize#open-connections
+// /cmd/<name>/ in realtime database
+// and listening for these changes to start the corresponding actions on backend
+exports.onCommandRemove = GetOnCommandRemove(firestore, database)
+exports.onCommandRestore = GetOnCommandRestore(firestore, database)
 
 // [START onNodeContentChange]
 // Listens for changes in /node_content/{nodeId}/content and log them to firestore "changes" collection
@@ -33,7 +42,6 @@ exports.onNodeContentChange = functions.database.ref('/node_content/{nodeId}/con
     return upsertChange(
       firestore,
       context,
-      change,
       'content',
       context.params.nodeId,
       {
@@ -51,7 +59,6 @@ exports.onNodeContentIDChange = functions.database.ref('/node_content/{nodeId}/n
     return insertChange(
       firestore,
       context,
-      change,
       'content_id',
       context.params.nodeId,
       {

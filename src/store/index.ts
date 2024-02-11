@@ -370,81 +370,11 @@ export const store = createStore<State>({
       if (!parent) {
         return;
       }
-      const parentID = parent.id;
-      const node = (await api.getMapNode(nodeID)) as DBMapNode;
-      // collect all children id recursively
-      const allChildrenID = clone(node.children);
-      const allChildrenIDMap = {} as Record<string, DBMapNode>;
-      while (allChildrenID.length > 0) {
-        const id = allChildrenID.pop();
-        if (
-          !id ||
-          !state.tree.nodeRecord[id!] ||
-          !state.tree.nodeRecord[id!].node ||
-          !state.tree.nodeRecord[id!].parent
-        ) {
-          continue;
-        }
-        allChildrenIDMap[id] = {
-          id: id,
-          parentID: state.tree.nodeRecord[id].parent!.id,
-          name: state.tree.nodeRecord[id].node.title,
-          children: state.tree.nodeRecord[id].node.children.map(
-            node => node.id
-          ),
-          position: state.tree.nodeRecord[id].node.position
-        };
-        allChildrenID.push(
-          ...state.tree.nodeRecord[id].node.children.map(node => node.id)
-        );
-      }
-      // move node and its children to /trash atomically
-      const moveToTrash = {} as Record<string, any>;
-      const oldKey = await api.findKeyOfChild(parent.id, nodeID);
-      moveToTrash[`trash/${nodeID}/map`] = node;
-      moveToTrash[`map/${nodeID}`] = null;
-      moveToTrash[`map/${parent.id}/children/${oldKey}`] = null;
-      if (state.nodeContent.nodeContents[nodeID]) {
-        moveToTrash[`trash/${nodeID}/node_content`] =
-          state.nodeContent.nodeContents[nodeID];
-        moveToTrash[`node_content/${nodeID}`] = null;
-      }
-      if (state.precondition.preconditions[nodeID]) {
-        moveToTrash[`trash/${nodeID}/precondition`] =
-          state.precondition.preconditions[nodeID];
-        moveToTrash[`precondition/${nodeID}`] = null;
-      }
-      if (state.image.images[nodeID]) {
-        moveToTrash[`trash/${nodeID}/node_image`] =
-          state.image.images[nodeID];
-        moveToTrash[`node_image/${nodeID}`] = null;
-      }
-
-      // move also all children to /trash
-      for (const id in allChildrenIDMap) {
-        moveToTrash[`trash/${id}/map`] = allChildrenIDMap[id];
-        moveToTrash[`map/${id}`] = null;
-        if (state.nodeContent.nodeContents[id]) {
-          moveToTrash[`trash/${id}/node_content`] =
-            state.nodeContent.nodeContents[id];
-          moveToTrash[`node_content/${id}`] = null;
-        }
-        if (state.precondition.preconditions[id]) {
-          moveToTrash[`trash/${id}/precondition`] =
-            state.precondition.preconditions[id];
-          moveToTrash[`precondition/${id}`] = null;
-        }
-        if (state.image.images[id]) {
-          moveToTrash[`trash/${id}/node_image`] =
-            state.image.images[id];
-          moveToTrash[`node_image/${id}`] = null;
-        }
-      }
-
-      await api.update(moveToTrash);
+      // do other stuff on backend (see functions/cmd_remove.js)
+      await api.update({ [`cmd/remove`]: nodeID });
 
       commit(`history/${historyMutations.ADD_REMOVE}`, {
-        parentNodeID: parentID,
+        parentNodeID: parent.id,
         nodeID: nodeID
       });
     },

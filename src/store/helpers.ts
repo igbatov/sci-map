@@ -35,7 +35,7 @@ export async function initMap(user: firebase.User | null) {
   store.commit(`tree/${treeMutations.SET_TREE}`, tree);
 
   // subscribe on changes for every node in map
-  // General advice is to listen to specific paths, not root and ещ dynamically subscribe/unsubscribe
+  // General advice is to listen to specific paths (not root) and dynamically change subscribe/unsubscribe
   // https://firebase.google.com/docs/database/usage/optimize#efficient-listeners
   for (const id in map) {
     subscribeNodeChanges(id)
