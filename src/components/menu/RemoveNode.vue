@@ -84,7 +84,7 @@ export default {
           toast.add({
             severity: "info",
             summary: "Cannot remove node until some other nodes use it (or its children) in 'based on'",
-            detail: "If you are sure you want to remove it, please find dependant nodes in its 'used by' section and remove it from their 'based on' section",
+            detail: "If you are sure you want to remove it, please find dependant nodes in 'used by' section and remove it from their 'based on' section",
             life: 30000
           });
 
