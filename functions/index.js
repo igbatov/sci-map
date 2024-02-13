@@ -9,7 +9,6 @@ const firestore = admin.firestore();
 const database = admin.database();
 
 const { GetOnCommandRemove } = require('./cmd_remove');
-const { GetOnCommandRestore } = require('./cmd_restore');
 const { upsertChange, insertChange } = require('./helpers');
 const {
   GetOnNodeChildrenChange,
@@ -33,7 +32,6 @@ exports.onNodeMapIDChange = GetOnNodeMapIDChange(firestore)
 // /cmd/<name>/ in realtime database
 // and listening for these changes to start the corresponding actions on backend
 exports.onCommandRemove = GetOnCommandRemove(firestore, database)
-exports.onCommandRestore = GetOnCommandRestore(firestore, database)
 
 // [START onNodeContentChange]
 // Listens for changes in /node_content/{nodeId}/content and log them to firestore "changes" collection

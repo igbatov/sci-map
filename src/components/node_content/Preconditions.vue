@@ -24,6 +24,7 @@ import api from "@/api/api";
 import { Tree } from "@/types/graphics";
 import RemoveIcon from "@/components/node_content/RemoveIcon.vue";
 import {useConfirm} from "primevue/useconfirm";
+import {mutations as preconditionMutations} from "@/store/precondition";
 
 export default defineComponent({
   name: "Preconditions",
@@ -60,17 +61,13 @@ export default defineComponent({
           return
         }
 
-        const p = store.state.precondition.preconditions[props.nodeId];
-        if (!p) {
-          return;
-        }
-        if (p.indexOf(id) == -1) {
-          return;
-        }
-        p.splice(p.indexOf(id), 1);
+        store.commit(`precondition/${preconditionMutations.REMOVE_PRECONDITION}`, {
+          nodeID: props.nodeId,
+          preconditionID: id,
+        });
         api.savePreconditions(store.state.user.user, {
           nodeId: props.nodeId,
-          preconditionIds: p
+          preconditionIds: store.state.precondition.preconditions[props.nodeId]
         });
       }
     };

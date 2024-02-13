@@ -28,7 +28,7 @@
   </Dialog>
 </template>
 
-<script>
+<script lang="ts">
 import Dialog from "primevue/dialog";
 import Button from "primevue/button";
 import { useStore, actions } from "@/store";
@@ -36,6 +36,8 @@ import { computed, ref } from "vue";
 import { mutations as positionChangePermitMutations } from "@/store/position_change_permits";
 import MenuButton from "@/components/menu/MenuButton.vue";
 import {mutations as treeMutations} from "@/store/tree";
+import {useToast} from "primevue/usetoast";
+import {getArrayDiff} from "../helpers";
 
 export default {
   name: "RemoveNode",
@@ -46,6 +48,7 @@ export default {
   },
   setup() {
     const store = useStore();
+    const toast = useToast();
     const addDialogVisible = ref(false);
     const selectedNode = computed(() => store.getters["tree/selectedNode"]);
 
@@ -53,7 +56,42 @@ export default {
       selectedNodeTitle: computed(() =>
         selectedNode.value ? selectedNode.value.title : ""
       ),
-      toggleDialog: () => (addDialogVisible.value = !addDialogVisible.value),
+      toggleDialog: () => {
+        const nodeID = selectedNode.value.id
+
+        // collect all children IDs recursively
+        let stack = [nodeID];
+        const allChildrenIDs = [];
+        while (stack.length>0) {
+          const id = stack.pop()
+          allChildrenIDs.push(id)
+          stack.push(...store.state.tree.nodeRecord[id].node.children.map((node)=>node.id))
+        }
+
+        // collect all nodes where nodeID or its children were set as preconditions for nodes outside allChildrenIDs
+        stack = [nodeID];
+        const usedByNodes = {} as Record<string, Array<string>>;
+        while (stack.length>0) {
+          const id = stack.pop()
+          const [added, removed] = getArrayDiff(allChildrenIDs, store.state.precondition.reverseIndex[id])
+          if (store.state.precondition.reverseIndex[id] && added.length>0
+          ) {
+            usedByNodes[id] = added
+          }
+          stack.push(...store.state.tree.nodeRecord[id].node.children.map((node)=>node.id))
+        }
+        if (Object.keys(usedByNodes).length > 0) {
+          toast.add({
+            severity: "info",
+            summary: "Cannot remove node until some other nodes use it (or its children) in 'based on'",
+            detail: "If you are sure you want to remove it, please find dependant nodes in its 'used by' section and remove it from their 'based on' section",
+            life: 30000
+          });
+
+          return
+        }
+        addDialogVisible.value = !addDialogVisible.value
+      },
       remove: () => {
         addDialogVisible.value = false;
         store.dispatch(`${actions.removeNode}`, selectedNode.value.id);
@@ -61,14 +99,14 @@ export default {
           `positionChangePermits/${positionChangePermitMutations.ADD_NODES}`,
           store.state.tree.nodeRecord[
             selectedNode.value.id
-          ].parent.children.map(node => node.id)
+          ].parent!.children.map(node => node.id)
         );
         // switch selectedNodeId to parent of removed node
         store.commit(
             `tree/${treeMutations.SET_SELECTED_NODE_ID}`,
             store.state.tree.nodeRecord[
                 selectedNode.value.id
-                ].parent.id
+                ].parent!.id
         );
       },
       cancel: () => {

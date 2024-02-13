@@ -48,8 +48,8 @@ export default defineComponent({
         updateMap[`precondition/${mapNode?.id}`] = preconditionNode
         updateMap[`node_image/${mapNode?.id}`] = nodeImage
         if (mapNode?.children) {
-          for (const childrenID of mapNode?.children) {
-            queue.push(childrenID)
+          for (const idx in mapNode?.children) {
+            queue.push(mapNode?.children[idx])
           }
         }
       }

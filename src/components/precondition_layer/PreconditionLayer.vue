@@ -16,7 +16,7 @@
     :key="precondition.id"
     markerId="preconditionArrow"
     :from="precondition.center"
-    :to="selectedNode.center"
+    :to="selectedNode ? selectedNode.center : null"
     color="#aae3b9"
   />
   <SVGTextBox

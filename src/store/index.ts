@@ -67,8 +67,7 @@ import {
 } from "@/store/tree/helpers";
 import NewErrorKV from "@/tools/errorkv";
 import { addVector, convertPosition } from "@/tools/graphics";
-import { DBMapNode } from "@/api/types";
-import { clone, debounce } from "lodash";
+import { debounce } from "lodash";
 import { printError } from "@/tools/utils";
 import firebase from "firebase/compat";
 
@@ -370,7 +369,8 @@ export const store = createStore<State>({
       if (!parent) {
         return;
       }
-      // do other stuff on backend (see functions/cmd_remove.js)
+
+      // do main actions on backend (see functions/cmd_remove.js)
       await api.update({ [`cmd/remove`]: nodeID });
 
       commit(`history/${historyMutations.ADD_REMOVE}`, {

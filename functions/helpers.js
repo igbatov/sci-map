@@ -45,14 +45,14 @@ exports.upsertChange = function (firestore, context, action, nodeID, attributes)
     });
 }
 
-exports.getArrayDiff = function(arr1, arr2) {
+exports.getArrayDiff = function(beforeArr, afterArr) {
   const beforeMap = {}
-  for (const idx in arr1) {
-    beforeMap[arr1[idx]] = true
+  for (const idx in beforeArr) {
+    beforeMap[beforeArr[idx]] = true
   }
   const afterMap = {}
-  for (const idx in arr2) {
-    afterMap[arr2[idx]] = true
+  for (const idx in afterArr) {
+    afterMap[afterArr[idx]] = true
   }
   const added = []
   for (const id in afterMap) {

@@ -344,7 +344,7 @@ export async function subscribeChangeLogEnriched(
                 },
 
                 parentNodeBefore: {
-                  id: log.attributes.valueBefore,
+                  id: log.attributes.parentNodeID,
                   idPath: beforePath,
                   name: nodeNames[beforePath]
                 },

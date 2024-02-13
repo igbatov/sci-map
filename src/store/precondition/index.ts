@@ -15,7 +15,8 @@ export interface State {
 
 export const mutations = {
   SET_PRECONDITIONS: "SET_PRECONDITIONS",
-  UPDATE_PRECONDITIONS: "UPDATE_PRECONDITIONS"
+  UPDATE_PRECONDITIONS: "UPDATE_PRECONDITIONS",
+  REMOVE_PRECONDITION: "REMOVE_PRECONDITION"
 };
 
 export const store = {
@@ -25,8 +26,14 @@ export const store = {
     reverseIndex: {} as Record<string, string[]>
   },
   mutations: {
+    /**
+     * Set preconditions for all nodes
+     * @param state
+     * @param preconditions
+     */
     [mutations.SET_PRECONDITIONS](state: State, preconditions: Preconditions) {
       state.preconditions = preconditions;
+      state.reverseIndex = {};
 
       // create reverseIndex
       for (const id in preconditions) {
@@ -38,6 +45,12 @@ export const store = {
         }
       }
     },
+
+    /**
+     * Set preconditions for one node
+     * @param state
+     * @param v
+     */
     [mutations.UPDATE_PRECONDITIONS](
       state: State,
       v: { nodeID: string; preconditionIDs: Array<string> }
@@ -62,11 +75,44 @@ export const store = {
 
       // add to reverseIndex new preconditions
       for (const precondID of state.preconditions[v.nodeID]) {
-        if (typeof state.reverseIndex[precondID] === "undefined") {
+        if (!state.reverseIndex[precondID]) {
           state.reverseIndex[precondID] = [];
         }
         state.reverseIndex[precondID].push(v.nodeID);
       }
+    },
+
+    /**
+     * Remove one precondition from one node
+     * @param state
+     * @param v
+     */
+    [mutations.REMOVE_PRECONDITION](
+      state: State,
+      v: { nodeID: string; preconditionID: string }
+    ) {
+      if (!state.preconditions[v.nodeID]) {
+        return;
+      }
+
+      const p = state.preconditions[v.nodeID];
+      if (!p) {
+        return;
+      }
+      if (p.indexOf(v.preconditionID) == -1) {
+        return;
+      }
+      p.splice(p.indexOf(v.preconditionID), 1);
+
+      // remove from reverseIndex
+      if (!state.reverseIndex[v.preconditionID]) {
+        return
+      }
+      if (state.reverseIndex[v.preconditionID].indexOf(v.nodeID) == -1) {
+        return;
+      }
+      state.reverseIndex[v.preconditionID].splice(state.reverseIndex[v.preconditionID].indexOf(v.nodeID), 1);
     }
-  }
+  },
+
 };
