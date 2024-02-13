@@ -74,6 +74,66 @@
       <ChangeLog :node-id="selectedNode.id" />
     </div>
   </div>
+  <div v-else-if="editModeOn" class="wrapper">
+    <div class="p-fluid">
+      <div class="p-field p-grid">
+        <div class="p-col-12">
+          <div style="height: 60px;"></div>
+        </div>
+        <div class="p-col-12">
+          <div class="title">
+            Map edit mode is on
+          </div>
+        </div>
+        <div class="p-col-12 list">
+          In this mode you can change map structure but cannot edit contents of individual nodes. To return back to content editing push "edit map" button again.
+        </div>
+        <div class="p-col-1 icon">
+          <img
+              alt="logo"
+              src="../../assets/images/add-off.svg"
+              style="width: 30px"
+          />
+        </div>
+        <div class="p-col-11 list">
+          To add new node 1) select parent node on map and then 2) click "add" button in upper menu.
+        </div>
+        <div class="p-col-1 icon">
+          <img
+            alt="logo"
+            src="../../assets/images/remove-off.svg"
+            style="width: 30px"
+          />
+        </div>
+        <div class="p-col-11 list">
+          To remove node 1) select it on map and 2) click "delete" button in upper menu.
+        </div>
+        <div class="p-col-1 icon">
+          <img
+            alt="logo"
+            src="../../assets/images/cut.svg"
+            style="width: 30px"
+          />
+        </div>
+        <div class="p-col-11 list">
+          To move node 1) select it on map, then 2) press "cut" button, then 3) select its new parent and 4) press "paste" button.
+        </div>
+        <div class="p-col-1 icon">
+          <img
+            alt="logo"
+            src="../../assets/images/log.svg"
+            style="width: 30px"
+          />
+        </div>
+        <div class="p-col-11 list">
+          You can use "log" to see log of map edits and revert or complain any unfortunate edit.
+        </div>
+        <div class="p-col-12 list">
+            After add, paste or remove you can drag node title and its neighbours to adjust node centers position.
+        </div>
+      </div>
+    </div>
+  </div>
   <div v-else class="wrapper">
     <div class="p-fluid">
       <div class="p-field p-grid">
@@ -255,6 +315,7 @@ export default defineComponent({
     );
 
     return {
+      editModeOn: computed(() => store.state.editModeOn),
       selectedNode,
       selectedNodeContent,
       checkAuthorized: async (e: Event) => {

@@ -6,7 +6,7 @@
     @mouseleave="mouseover = false"
     :style="
       (mouseover
-        ? `background-color: rgba(0, 0, 0, 0.1); `
+        ? `background-color: #03dbfc; `
         : bgColor
         ? `background-color: ${bgColor};`
         : `background-color: white;`) + `color: black; border-color:#3B6BF9;`

@@ -18,23 +18,23 @@
         <Feedback />
       </div>
       <EditMode style="position: absolute; right: 12.5rem;" />
-      <div v-if="editModeOn" style="position: absolute; right: 20.6rem;">
-        <AddNode />
+      <div
+          v-if="editModeOn"
+          style="position: absolute; right: 20.6rem;"
+      >
+        <MapChangeLog />
       </div>
       <div v-if="editModeOn" style="position: absolute; right: 26.6rem;">
+        <AddNode />
+      </div>
+      <div v-if="editModeOn" style="position: absolute; right: 32.6rem;">
         <RemoveNode />
       </div>
       <div
         v-if="editModeOn"
-        style="position: absolute; right: 33.6rem;"
+        style="position: absolute; right: 39.6rem;"
       >
         <CutPaste />
-      </div>
-      <div
-        v-if="editModeOn"
-        style="position: absolute; right: 39.3rem;"
-      >
-        <MapChangeLog />
       </div>
     </div>
     <div v-else>
