@@ -92,6 +92,7 @@ export default defineComponent({
             name: "default",
             url: defaultURL
           })
+          defaultImageURL.value = defaultURL
           for (const key in images) {
             if (key == "default") {
               defaultImageURL.value =  images[key].url;
