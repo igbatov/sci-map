@@ -94,12 +94,12 @@ export default defineComponent({
           })
           for (const key in images) {
             if (key == "default") {
-              defaultImageURL.value = process.env.VUE_APP_IS_EMULATOR === "true" ? images[key].url : 'https://cdn.scimap.org/'+images[key].path;
+              defaultImageURL.value =  images[key].url;
               continue;
             }
             items.value.push({
               name: images[key].name,
-              url: process.env.VUE_APP_IS_EMULATOR === "true" ? images[key].url : 'https://cdn.scimap.org/'+images[key].path
+              url: process.env.VUE_APP_IS_EMULATOR === "true" ? images[key].url : 'https://cdn.scimap.org'+images[key].path
             });
           }
         }
