@@ -62,10 +62,10 @@
         :node-id="selectedNode.id"
       />
 
-      <!-- Used by section -->
+      <!-- 'Basis for' section -->
       <div class="p-field p-grid">
         <div class="p-col-10 section">
-          used by
+          basis for
         </div>
       </div>
       <SectionUsedBy v-if="selectedNodeContent" :node-id="selectedNode.id" />
