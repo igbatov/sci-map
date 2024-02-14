@@ -1,3 +1,8 @@
+import {NodeRecordItem} from "@/store/tree";
+
+export function idToLink(id: string, nodeRecord: Record<string, NodeRecordItem>): string {
+  return `<a href='/${id}'>${nodeRecord[id] ? nodeRecord[id].node.title : 'undefined'}</a>`
+}
 
 export function getArrayDiff(beforeArr: Array<string>, afterArr: Array<string>) {
   const beforeMap = {} as Record<string, boolean>

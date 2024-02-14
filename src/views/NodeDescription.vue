@@ -52,50 +52,48 @@ export default {
     watch(
       () => isAuthorized.value,
       async () => {
-        console.log("isAuthorized.value", isAuthorized.value);
         if (isAuthorized.value) {
           // fetch change from firestore
           const docRef = firebase
             .database()
-            .ref(`/trash/${route.params.id}`)
+            .ref(`/map/${route.params.id}`)
             .once("value", data => {
               if (data.exists()) {
-                node.value = data.val();
-                node.value["is_in_trash"] = true;
-                console.log("node.value", node.value);
-              } else {
                 // not in /trash, try to get from /map, /node_content, /precondition
                 node.value["is_in_trash"] = false;
 
                 // map
-                firebase
-                  .database()
-                  .ref(`/map/${route.params.id}`)
-                  .once("value", data => {
-                    if (data.exists()) {
-                      node.value["map"] = data.val();
-                    }
-                  });
+                node.value["map"] = data.val();
 
                 // node_content
                 firebase
-                  .database()
-                  .ref(`/node_content/${route.params.id}`)
-                  .once("value", data => {
-                    if (data.exists()) {
-                      node.value["node_content"] = data.val();
-                    }
-                  });
+                    .database()
+                    .ref(`/node_content/${route.params.id}`)
+                    .once("value", data => {
+                      if (data.exists()) {
+                        node.value["node_content"] = data.val();
+                      }
+                    });
 
                 // precondition
                 firebase
-                  .database()
-                  .ref(`/precondition/${route.params.id}`)
-                  .once("value", data => {
-                    if (data.exists()) {
-                      node.value["precondition"] = data.val();
-                    }
-                  });
+                    .database()
+                    .ref(`/precondition/${route.params.id}`)
+                    .once("value", data => {
+                      if (data.exists()) {
+                        node.value["precondition"] = data.val();
+                      }
+                    });
+              } else {
+                firebase
+                    .database()
+                    .ref(`/trash/${route.params.id}`)
+                    .once("value", data => {
+                      if (data.exists()) {
+                        node.value = data.val();
+                        node.value["is_in_trash"] = true;
+                      }
+                    });
               }
             });
         }

@@ -37,7 +37,7 @@ import { mutations as positionChangePermitMutations } from "@/store/position_cha
 import MenuButton from "@/components/menu/MenuButton.vue";
 import {mutations as treeMutations} from "@/store/tree";
 import {useToast} from "primevue/usetoast";
-import {getArrayDiff} from "../helpers";
+import {getArrayDiff, idToLink} from "../helpers";
 
 export default {
   name: "RemoveNode",
@@ -80,11 +80,18 @@ export default {
           }
           stack.push(...store.state.tree.nodeRecord[id].node.children.map((node)=>node.id))
         }
+
+        // show deny message
         if (Object.keys(usedByNodes).length > 0) {
+          const nr = store.state.tree.nodeRecord
+          let detailText = ''
+          for (const id in usedByNodes) {
+            detailText += `<div>- remove ${idToLink(id, nr)} from 'based on' of ${usedByNodes[id].map((id)=>idToLink(id, nr)).join(', ')}</div>`
+          }
           toast.add({
             severity: "info",
-            summary: "Cannot remove node until some other nodes use it (or its children) in 'based on'",
-            detail: "If you are sure you want to remove it, please find dependant nodes in 'used by' section and remove it from their 'based on' section",
+            summary: "Cannot remove node until some other nodes use it or its children in their 'based on'",
+            detail: "If you are sure you want to remove it, please: "+detailText,
             life: 30000
           });
 

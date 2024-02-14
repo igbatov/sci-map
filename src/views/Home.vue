@@ -1,6 +1,18 @@
 <template>
   <ConfirmDialog></ConfirmDialog>
-  <Toast position="bottom-left" />
+  <Toast position="bottom-left">
+    <template #icon="slotProps">
+      <div class="p-toast-message-icon">
+        <span :class="slotProps.class"></span>
+      </div>
+    </template>
+    <template #message="slotProps">
+      <div class="p-toast-message-text">
+        <span class="p-toast-summary">{{slotProps.message.summary}}</span>
+        <div class="p-toast-detail" v-html="slotProps.message.detail" />
+      </div>
+    </template>
+  </Toast>
   <NodeContent
     :clickedTitleId="clickedTitleId"
     @select-precondition-is-on="setSelectPreconditionON"
