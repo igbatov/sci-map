@@ -1,7 +1,7 @@
 <template>
   <img
       alt="add_icon"
-      v-if="event.isRemoved"
+      v-if="event.isRemoved && IsNodeInTrash(event.node.idPath)"
       src="../../assets/images/revert.svg"
       style="width: 30px; cursor: pointer;"
       @click="revertRemove(event)"
@@ -57,12 +57,13 @@ export default defineComponent({
       return await api.update(updateMap);
     }
     return {
+      IsNodeInTrash,
       revertRemove: async (event: ChangeLogNodeParent) => {
         if (!event.isRemoved) {
           return
         }
 
-        if (!IsNodeInTrash(event.parentNodeBefore.idPath)) {
+        if (!IsNodeInTrash(event.parentNodeBefore.idPath) && IsNodeInTrash(event.node.idPath)) {
           await restoreNodeWithChildren(event.node.id, event.parentNodeBefore.id)
         }
       },
