@@ -83,16 +83,15 @@ with emphasize on formulation of viable hypothesis and steps to be taken to test
 Technically hard part of project is collaborative editing.
 For MVP we want most simple still workable solution.
 
-Right now we will try Alternative #0 (see below) but maybe some other solution will come up later.
+Right now we will try Alternative #0 (see below) but maybe better solution will be discovered later.
 
 ## Alternative #0 (optimistic update) - any new user has tag 'map_editor' and can edit anything in realtime
 These updates will be sent to watchers of node
 (users with tags 'map_editor' and 'experienced' who subscribed to updates of node content).
-If sny experienced user noticed intentional abuse of node content he can revoke tag 'map_editor' from
+If any experienced user noticed intentional abuse of node content he can revoke tag 'map_editor' from
 inexperienced one after public discuss of this case in a sci-map chat.
 Node content can be easily restored from history by experienced user who banned inexperienced.
 
-Nodes can be moved and deleted only by experienced users.
 Move and removal of node also can be reverted from history of map change.
 
 User can be granted tag 'experienced' by any other already experienced user.

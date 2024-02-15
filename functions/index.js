@@ -18,9 +18,9 @@ const {
   GetOnNodeMapIDChange,
 } = require('./map_change');
 const { GetOnPreconditionChange } = require('./precondition_change');
-const { onUserRoleChange } = require('./user_role');
+const { GetOnUserCreate } = require('./user_role');
 
-exports.onUserRoleChange = onUserRoleChange
+exports.onUserCreate = GetOnUserCreate()
 exports.onNodeChildrenChange = GetOnNodeChildrenChange(firestore)
 exports.onNodeParentChange = GetOnNodeParentChange(firestore)
 exports.onNodeNameChange = GetOnNodeNameChange(firestore)
