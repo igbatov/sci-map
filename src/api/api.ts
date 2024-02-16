@@ -178,10 +178,46 @@ export default {
     if (!user) {
       return;
     }
-
     await firebase
       .database()
       .ref(`user_data/${user.uid}/pins`).set(pins);
+  },
+
+  /**
+   * getSubscriptions
+   * @param user
+   */
+  async getSubscriptions(user: firebase.User | null): Promise<[Pins | null, ErrorKV]> {
+    if (!user) {
+      return [null, null]
+    }
+    try {
+      // for authenticated user use realtime database
+      const snapshot = await firebase
+        .database()
+        .ref(`user_data/${user.uid}/subscriptions`)
+        .get();
+      if (!snapshot.exists()) {
+        return [null, NewErrorKV("!snapshot.exists", {})];
+      }
+      return [snapshot.val(), null];
+    } catch (e) {
+      return [null, NewErrorKV(e.message, { e: e })];
+    }
+  },
+
+  /**
+   * setSubscription
+   * @param user
+   * @param v
+   */
+  async setSubscription(user: firebase.User | null, v:{nodeID: string, mode: number | null}) {
+    if (!user) {
+      return;
+    }
+    await firebase
+      .database()
+      .ref(`user_data/${user.uid}/subscriptions/${v.nodeID}`).set(v.mode);
   },
 
   async getPreconditions(

@@ -1,5 +1,5 @@
 <template>
-  <PinIcon @click="clickPin">pin</PinIcon>
+  <PinIcon @click="clickPin"/>
   <Dialog
     v-model:visible="addDialogVisible"
     :dismissableMask="true"

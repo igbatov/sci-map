@@ -5,6 +5,7 @@ import {
   actions as treeActions
 } from "@/store/tree";
 import { mutations as pinMutations } from "@/store/pin";
+import { mutations as subscriptionsMutations } from "@/store/subscriptions";
 import { mutations as preconditionMutations } from "@/store/precondition";
 import {
   mutations as nodeContentMutations,
@@ -92,6 +93,19 @@ export async function fetchPins(user: firebase.User | null) {
   store.commit(`pin/${pinMutations.SET_PINS}`, pins);
 }
 
+export async function fetchSubscriptions(user: firebase.User | null) {
+  const [subscriptions, err] = await api.getSubscriptions(user);
+  if (subscriptions == null) {
+    if (err) {
+      console.error("fetchPins", err);
+    } else {
+      console.log("fetchPins: empty pins");
+    }
+  }
+
+  store.commit(`subscriptions/${subscriptionsMutations.SET_SUBSCRIPTIONS}`, subscriptions);
+}
+
 export async function initPreconditions(user: firebase.User | null) {
   let [preconditions, err] = await api.getPreconditions(user);
   if (preconditions == null || err) {
@@ -159,6 +173,7 @@ export async function initNodeContents(user: firebase.User | null) {
 export async function initData(user: firebase.User | null) {
   await initMap(user);
   await fetchPins(user);
+  await fetchSubscriptions(user);
   await initPreconditions(user);
   await initNodeContents(user);
 }

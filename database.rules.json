@@ -37,6 +37,10 @@
         "pins": {
           ".read": "$uid === auth.uid",
           ".write": "$uid === auth.uid"
+        },
+        "subscriptions": {
+          ".read": "$uid === auth.uid",
+          ".write": "$uid === auth.uid"
         }
       }
     },

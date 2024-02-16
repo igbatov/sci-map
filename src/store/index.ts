@@ -8,6 +8,7 @@ import {
 import { InjectionKey } from "vue";
 
 import { store as pinStore, State as PinState } from "./pin";
+import { store as subscriptionsStore, State as SubscriptionsState } from "./subscriptions";
 
 import { store as titleBoxStore, State as TitleBoxState } from "./title_box";
 
@@ -78,6 +79,7 @@ export type State = {
   // module states
   titleBox: TitleBoxState;
   pin: PinState;
+  subscriptions: SubscriptionsState;
   image: ImageState;
   precondition: PreconditionState;
   positionChangePermits: positionChangePermitsState;
@@ -425,6 +427,7 @@ export const store = createStore<State>({
   },
   modules: {
     pin: pinStore,
+    subscriptions: subscriptionsStore,
     titleBox: titleBoxStore,
     image: imageStore,
     precondition: preconditionStore,

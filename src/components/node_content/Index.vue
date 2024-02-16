@@ -11,11 +11,14 @@
         <div class="p-col-12">
           <div style="height: 240px"></div>
         </div>
-        <div class="p-col-10">
+        <div class="p-col-9">
           <Title
             :content="selectedNodeContent ? selectedNode.title : ''"
             @content-changed="changeNodeTitle($event)"
           />
+        </div>
+        <div class="p-col-1">
+          <SubscribeButton :nodeID="selectedNodeContent ? selectedNodeContent.nodeID : ''" />
         </div>
         <div class="p-col-2">
           <PinButton />
@@ -174,7 +177,7 @@
           />
         </div>
         <div class="p-col-11 list">
-          Keep description focused and simple but profound (i - snippet with
+          Keep description <b>focused</b> and simple <b>but profound</b> (i - snippet with
           example of formula and image markdown)
         </div>
         <div class="p-col-1 icon">
@@ -191,7 +194,7 @@
         <div class="p-col-1 icon">
           <img
             alt="logo"
-            src="../../assets/images/pin-on-map.svg"
+            src="../../assets/images/pin-on.svg"
             style="width: 30px"
           />
         </div>
@@ -201,18 +204,30 @@
         <div class="p-col-1 icon">
           <img
             alt="logo"
-            src="../../assets/images/action.svg"
+            src="../../assets/images/eye-on.svg"
             style="width: 30px"
           />
         </div>
         <div class="p-col-11 list">
-          Not only description, if you know actions one can take to push
-          knowledge further (vacancies, crowdsourcing etc) - add it!
+          Subscribe to node changes to receive updates on email
+        </div>
+        <div class="p-col-1 icon" style="color: #3B6BF9;">
+          [ORG]
+        </div>
+        <div class="p-col-11 list">
+          If you know actions one can take to push
+          knowledge further (vacancies, crowdsourcing etc) - you can also add it!
+        </div>
+        <div class="p-col-1 icon" style="color: #3B6BF9;">
+          W
+        </div>
+        <div class="p-col-11 list">
+          Use Wikipedia core content policies: neutral point of view, verifiability, and no original research
         </div>
         <div class="p-col-1 icon">
           <img
             alt="logo"
-            src="../../assets/images/talk.svg"
+            src="../../assets/images/chat.svg"
             style="width: 20px"
           />
         </div>
@@ -250,6 +265,7 @@ import api from "@/api/api";
 import Markdown from "./Markdown.vue";
 import ChangeLog from "./ChangeLog.vue";
 import PinButton from "./PinButton.vue";
+import SubscribeButton from "./SubscribeButton.vue";
 import Title from "@/components/node_content/Title.vue";
 import AddBasedOnButton from "@/components/node_content/AddBasedOnButton.vue";
 import TitleImage from "@/components/node_content/TitleImage.vue";
@@ -265,7 +281,8 @@ export default defineComponent({
     TextArea,
     SectionPreconditions,
     ChangeLog,
-    PinButton
+    PinButton,
+    SubscribeButton,
   },
   emits: ["select-precondition-is-on", "select-precondition-is-off"],
   props: {
