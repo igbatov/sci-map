@@ -19,8 +19,10 @@ const {
 } = require('./map_change');
 const { GetOnPreconditionChange } = require('./precondition_change');
 const { GetOnUserCreate } = require('./user_role');
+const { GetOnCommandSendDigest } = require('./cmd_send_digest');
 
 exports.onUserCreate = GetOnUserCreate()
+exports.onCommandSendDigest = GetOnCommandSendDigest(database)
 exports.onNodeChildrenChange = GetOnNodeChildrenChange(firestore)
 exports.onNodeParentChange = GetOnNodeParentChange(firestore)
 exports.onNodeNameChange = GetOnNodeNameChange(firestore)

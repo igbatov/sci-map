@@ -189,12 +189,6 @@ firebase firestore:indexes > firestore.indexes.json
 ## Firebase function
 Sits in ./function index.js (and included in it files)
 For now we use them mainly to log in "firestore" changes that was made in "realtime database"
-### Production logs
-[Google Cloud UI](https://console.cloud.google.com/logs/query;query=resource.type%3D%22cloud_function%22;storageScope=storage,projects%2Fsci-map-1982%2Flocations%2Fglobal%2Fbuckets%2F_Default%2Fviews%2F_Default,projects%2Fsci-map-1982%2Flocations%2Fglobal%2Fbuckets%2F_Required%2Fviews%2F_AllLogs,projects%2Fsci-map-1982%2Flocations%2Fglobal%2Fbuckets%2F_Default%2Fviews%2F_AllLogs;cursorTimestamp=2023-12-10T06:55:34.484210558Z;duration=PT1H?project=sci-map-1982)
-or 
-```shell
-firebase functions:log
-```
 
 ### Install firebase-tools (once)
 ```shell
@@ -208,7 +202,7 @@ firebase init emulators
 ```
 ### Run empty emulator
 ```shell
-$ firebase emulators:start
+firebase emulators:start
 ```
 ### Save data from running emulator
 ```shell
@@ -228,6 +222,29 @@ $ firebase deploy --only functions
 ### Look for logs in production
 https://console.cloud.google.com/logs/query
 https://console.firebase.google.com/project/sci-map-1982/functions/logs
+[Google Cloud UI](https://console.cloud.google.com/logs/query;query=resource.type%3D%22cloud_function%22;storageScope=storage,projects%2Fsci-map-1982%2Flocations%2Fglobal%2Fbuckets%2F_Default%2Fviews%2F_Default,projects%2Fsci-map-1982%2Flocations%2Fglobal%2Fbuckets%2F_Required%2Fviews%2F_AllLogs,projects%2Fsci-map-1982%2Flocations%2Fglobal%2Fbuckets%2F_Default%2Fviews%2F_AllLogs;cursorTimestamp=2023-12-10T06:55:34.484210558Z;duration=PT1H?project=sci-map-1982)
+or
+```shell
+firebase functions:log
+```
+
+### Set secrets for functions
+Change the value of an existing secret
+```shell
+firebase functions:secrets:set SECRET_NAME
+```
+View the value of a secret
+```shell
+firebase functions:secrets:access SECRET_NAME
+```
+ Destroy a secret
+```shell
+firebase functions:secrets:destroy SECRET_NAME
+```
+View all secret versions and their state
+```shell
+firebase functions:secrets:get SECRET_NAME
+```
 
 ### Run app on emulator
 Set in src/api/api.ts
@@ -247,11 +264,6 @@ firebase functions:shell
 ```shell script
 docker build -t sci-map .
 docker run -d -p 80:80 --rm --name sci-map sci-map
-```
-
-## Upload picture on cdn
-```shell
-gcloud storage cp ~/Downloads/wave1rope.png gs://sci-map-cdn/images/
 ```
 
 ## Deploy with gitlab
