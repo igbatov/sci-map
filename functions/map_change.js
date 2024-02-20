@@ -1,5 +1,6 @@
 const {database,  logger} = require("firebase-functions");
 const {insertChange, getArrayDiff, upsertChange} = require("./helpers");
+const {ActionType} = require("./actions");
 
 // [START GetOnNodePositionChange]
 // Listens for set /map/{nodeId}/position changed and log it to firestore "changes" collection
@@ -8,7 +9,7 @@ exports.GetOnNodePositionChange = (firestore) => database.ref('/map/{nodeId}/pos
     return upsertChange(
       firestore,
       context,
-      'position',
+      ActionType.Position,
       context.params.nodeId,
       {
         value: change.after.val(),
@@ -25,7 +26,7 @@ exports.GetOnNodeChildrenChange = (firestore) => database.ref('/map/{nodeId}/chi
     return insertChange(
       firestore,
       context,
-      'children',
+      ActionType.Children,
       context.params.nodeId,
       {
         valueBefore: change.before ? change.before.val() : null,
@@ -44,7 +45,7 @@ exports.GetOnNodeParentChange = (firestore) => database.ref('/map/{nodeId}/paren
     return insertChange(
       firestore,
       context,
-      'parentID',
+      ActionType.ParentID,
       context.params.nodeId,
       {
         valueBefore: change.before ? change.before.val() : null,
@@ -61,7 +62,7 @@ exports.GetOnNodeNameChange = (firestore) => database.ref('/map/{nodeId}/name')
     return upsertChange(
       firestore,
       context,
-      'name',
+      ActionType.Name,
       context.params.nodeId,
       {
         value: change.after ? change.after.val() : null,
@@ -78,7 +79,7 @@ exports.GetOnNodeMapIDChange = (firestore) => database.ref('/map/{nodeId}/id')
     return insertChange(
       firestore,
       context,
-      'map_id',
+      ActionType.MapID,
       context.params.nodeId,
       {
         valueBefore: change.before ? change.before.val() : null,

@@ -26,6 +26,12 @@
         ".write": "auth !== null && root.child('user_data').child(auth.uid).child('map_editor').val() === 'true'"
       }
     },
+    "user_subscription": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    },
     "user_data": {
       "$uid": {
         ".read": "$uid === auth.uid",
@@ -35,10 +41,6 @@
           ".write": "$uid === auth.uid"
         },
         "pins": {
-          ".read": "$uid === auth.uid",
-          ".write": "$uid === auth.uid"
-        },
-        "subscriptions": {
           ".read": "$uid === auth.uid",
           ".write": "$uid === auth.uid"
         }

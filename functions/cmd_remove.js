@@ -1,5 +1,6 @@
 const {database,  logger} = require("firebase-functions");
 const {insertChange} = require("./helpers");
+const {ActionType} = require("./actions");
 
 // [START GetOnCommandRemove]
 // Listens for /cmd/remove/{nodeId} update and do remove action
@@ -30,7 +31,7 @@ exports.GetOnCommandRemove = (firestore, db) => database.ref('/cmd/remove')
     const parentNodeMap = parentNodeMapSnap.val();
 
     // log to firestore that user removed this node
-    insertChange(firestore, context, "remove", nodeID, {
+    insertChange(firestore, context, ActionType.Remove, nodeID, {
       parentNodeID: nodeMap['parentID'],
     })
 

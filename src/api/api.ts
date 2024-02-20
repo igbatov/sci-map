@@ -195,7 +195,7 @@ export default {
       // for authenticated user use realtime database
       const snapshot = await firebase
         .database()
-        .ref(`user_data/${user.uid}/subscriptions`)
+        .ref(`user_subscriptions/${user.uid}`)
         .get();
       if (!snapshot.exists()) {
         return [null, NewErrorKV("!snapshot.exists", {})];
@@ -217,7 +217,7 @@ export default {
     }
     await firebase
       .database()
-      .ref(`user_data/${user.uid}/subscriptions/${v.nodeID}`).set(v.mode);
+      .ref(`user_subscription/${user.uid}/${v.nodeID}`).set(v.mode);
   },
 
   async getPreconditions(

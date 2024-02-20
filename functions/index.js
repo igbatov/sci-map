@@ -20,9 +20,10 @@ const {
 const { GetOnPreconditionChange } = require('./precondition_change');
 const { GetOnUserCreate } = require('./user_role');
 const { GetOnCommandSendDigest } = require('./cmd_send_digest');
+const {ActionType} = require("./actions");
 
 exports.onUserCreate = GetOnUserCreate()
-exports.onCommandSendDigest = GetOnCommandSendDigest(database)
+exports.onCommandSendDigest = GetOnCommandSendDigest(database, firestore)
 exports.onNodeChildrenChange = GetOnNodeChildrenChange(firestore)
 exports.onNodeParentChange = GetOnNodeParentChange(firestore)
 exports.onNodeNameChange = GetOnNodeNameChange(firestore)
@@ -42,7 +43,7 @@ exports.onNodeContentChange = functions.database.ref('/node_content/{nodeId}/con
     return upsertChange(
       firestore,
       context,
-      'content',
+      ActionType.Content,
       context.params.nodeId,
       {
         value: change.after.val(),
@@ -59,7 +60,7 @@ exports.onNodeContentIDChange = functions.database.ref('/node_content/{nodeId}/n
     return insertChange(
       firestore,
       context,
-      'content_id',
+      ActionType.ContentID,
       context.params.nodeId,
       {
         after: change.after.val(),

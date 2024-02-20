@@ -70,4 +70,12 @@ exports.getArrayDiff = function(beforeArr, afterArr) {
   return [added, removed]
 }
 
+exports.getNodeLink = function(nodeName, nodeID, isRemoved) {
+  if (!isRemoved) {
+    return `<a href='https://scimap.org/${nodeID}'>${nodeName}</a>`
+  } else {
+    return `<a href='https://scimap.org/node_description/${nodeID}'>${nodeName}</a>`
+  }
+}
+
 

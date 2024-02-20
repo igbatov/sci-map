@@ -1,5 +1,6 @@
 const {database,  logger} = require("firebase-functions");
 const {insertChange, getArrayDiff} = require("./helpers");
+const {ActionType} = require("./actions");
 
 // [START GetOnPreconditionChange]
 // Listens for changes in /precondition/{nodeId}/ and log them to firestore "changes" collection
@@ -9,7 +10,7 @@ exports.GetOnPreconditionChange = (firestore) => database.ref('/precondition/{no
     return insertChange(
       firestore,
       context,
-      'precondition',
+      ActionType.Precondition,
       context.params.nodeId,
       {
         valueBefore: change.before.val(),

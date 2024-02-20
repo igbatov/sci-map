@@ -1,9 +1,24 @@
 export enum ActionType {
-  Remove = "remove",
+  /**
+   * /map
+   */
+  Name = "name",
   ParentID = "parentID",
-  Precondition = "precondition",
+
+  /**
+   * /node_content
+   */
   Content = "content",
-  Name = "name"
+
+  /**
+   * /precondition
+   */
+  Precondition = "precondition",
+
+  /**
+   * /cmd/remove
+   */
+  Remove = "remove",
 }
 
 export type Node = {
