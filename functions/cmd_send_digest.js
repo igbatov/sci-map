@@ -7,6 +7,7 @@ const APP_NAME = "scimap.org"
 const USER_BATCH_LIMIT = 2
 const MAX_LOOP_LIMIT = 100_000
 const WEEK = 7*24*60*60*1000 // days*hours*minutes*seconds*1000
+const DAY = 24*60*60*1000 // days*hours*minutes*seconds*1000
 const ACTIONS = [ActionType.Name, ActionType.Content, ActionType.Precondition, ActionType.ParentID, ActionType.Children, ActionType.Remove]
 
 /**
@@ -252,10 +253,16 @@ exports.getDigest = async (getPeriodLastChange, getPrevPeriodLastChange, getNode
   }
 
   // concatenate actions in one text
+  let cnt = 0
   for (const actionType in actions) {
+    cnt++
     text += 'nbsp;nbsp;<BR>'+actions[actionType]
   }
-  digestCache[nodeID] = text
+  if (cnt>0) {
+    digestCache[nodeID] = text
+  } else {
+    digestCache[nodeID] = ''
+  }
 
   return digestCache[nodeID]
 }
@@ -266,7 +273,16 @@ exports.GetOnCommandSendDigest = (database, firestore) => functions
   // Make the secret available to this function
   .runWith({ secrets: ["IGBATOVSM_PWD"] }).database.ref('/cmd/send_digest')
   .onWrite(async (change, context) => {
-    if (change.after && change.after.val() === "1") {
+    if (change.after && change.after.val() !== "0") {
+      let period = 0
+      if (change.after.val() === 'weekly') {
+        period = WEEK
+      } else if (change.after.val() === 'daily') {
+        period = DAY
+      } else {
+        return
+      }
+
       const mailTransport = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -294,14 +310,40 @@ exports.GetOnCommandSendDigest = (database, firestore) => functions
           let currCnt = 0
           for (const userID in snap.val()) {
             currCnt++
+
+            let userSubscribePeriod = 'weekly'
+            const userSnap = await database.ref(`/user_data/${userID}/subscribe_period`).get()
+            if (userSnap.exists() && userSnap.val() === 'daily') {
+              userSubscribePeriod = 'daily';
+            }
+
+            if (period === DAY && userSubscribePeriod !== 'daily') {
+              lastKey = userID
+              continue
+            }
+            if (period === WEEK && userSubscribePeriod !== 'weekly') {
+              lastKey = userID
+              continue
+            }
+
+            functions.logger.info("------ SEND DIGEST STARTED USER", userID)
+
             let text = ''
             for (const nodeID in snap.val()[userID]) {
-              text += await exports.getDigest(
-                (nodeID, actionType) => exports.getPeriodLastChange(firestore, nodeID, actionType, WEEK),
-                (nodeID, actionType) => exports.getPrevPeriodLastChange(firestore, nodeID, actionType, WEEK),
-                (nodeID) => exports.getNodeName(database, nodeID),
-                nodeID,
-              ) + "<BR><BR>"
+              try {
+                const nodeDigestText = await exports.getDigest(
+                  (nodeID, actionType) => exports.getPeriodLastChange(firestore, nodeID, actionType, period),
+                  (nodeID, actionType) => exports.getPrevPeriodLastChange(firestore, nodeID, actionType, period),
+                  (nodeID) => exports.getNodeName(database, nodeID),
+                  nodeID,
+                )
+
+                if (nodeDigestText !== '') {
+                  text += nodeDigestText + "<BR><BR>"
+                }
+              } catch (e) {
+                functions.logger.error(e)
+              }
             }
             const email = "igbatov@gmail.com"
             const mailOptions = {
@@ -312,8 +354,10 @@ exports.GetOnCommandSendDigest = (database, firestore) => functions
             // The user subscribed to the newsletter.
             mailOptions.subject = `Weekly digest from ${APP_NAME}!`;
             mailOptions.text = text;
-            functions.logger.info(text)
-            //await mailTransport.sendMail(mailOptions);
+            if (text !== '') {
+              functions.logger.info('text', text)
+              //await mailTransport.sendMail(mailOptions);
+            }
 
             lastKey = userID
           }
