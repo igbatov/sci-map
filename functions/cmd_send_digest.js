@@ -19,15 +19,15 @@ const ACTIONS = [ActionType.Name, ActionType.Content, ActionType.Precondition, A
  * @returns {string}
  */
 exports.getPreconditionDigest = (nodeID, nodeName, isNodeRemoved, added, removed) => {
-  let text = `Node ${getNodeLink(nodeName, nodeID, isNodeRemoved)} has`
-  if (added.length) {
-    text = `${added.length} 'based on' added`
+  let text = (added && added.length) || (removed && removed.length)  ? ' - ' : ''
+  if (added && added.length) {
+    text += `added ${added.length} to 'based on'`
   }
-  if (removed.length) {
-    if (added.length) {
+  if (removed && removed.length) {
+    if (added && added.length) {
       text += ' and '
     }
-    text += `${removed.length} 'based on' removed`
+    text += `removed ${removed.length} from 'based on'`
   }
 
   return text
@@ -43,12 +43,12 @@ exports.getPreconditionDigest = (nodeID, nodeName, isNodeRemoved, added, removed
  * @returns {string}
  */
 exports.getChildrenDigest = (nodeID, nodeName, isNodeRemoved, added, removed) => {
-  let text = `Node ${getNodeLink(nodeName, nodeID, isNodeRemoved)} has`
-  if (added.length) {
-    text = `${added.length} children added`
+  let text = (added&&added.length) || (removed&&removed.length)  ? ' - has ' : ''
+  if (added && added.length) {
+    text += `${added.length} children added`
   }
-  if (removed.length) {
-    if (added.length) {
+  if (removed && removed.length) {
+    if (added && added.length) {
       text += ' and '
     }
     text += `${removed.length} children removed`
@@ -72,88 +72,107 @@ exports.getNodeName = async (database, nodeID) => {
   return [node.val(), isNodeRemoved]
 }
 
+exports.getPeriodLastChange = async (firestore, nodeID, actionType, period)=> {
+  const periodLastChange = await firestore
+    .collection('changes')
+    .where('node_id', '==', nodeID)
+    .where('action', '==', actionType)
+    .where('timestamp', '>=', new Date().getTime() - period)
+    .orderBy('timestamp', 'desc')
+    .limit(1).get();
+
+  return periodLastChange.docs.length > 0 ? periodLastChange.docs[0] : null
+}
+
+exports.getPrevPeriodLastChange = async (firestore, nodeID, actionType, period)=> {
+  // get the latest change before the last week
+  let prevPeriodLastChange = await firestore
+    .collection('changes')
+    .where('node_id', '==', nodeID)
+    .where('action', '==', actionType)
+    .where('timestamp', '<', new Date().getTime() - period)
+    .orderBy('timestamp', 'desc')
+    .limit(1).get()
+
+  if (prevPeriodLastChange.docs.length === 0) {
+    prevPeriodLastChange = await firestore
+      .collection('changes')
+      .where('node_id', '==', nodeID)
+      .where('action', '==', actionType)
+      .where('timestamp', '>=', new Date().getTime() - period)
+      .orderBy('timestamp', 'asc')
+      .limit(1).get()
+  }
+
+  return prevPeriodLastChange.docs.length>0 ? prevPeriodLastChange.docs[0] : null
+}
+
 /**
  * Filter firestore /changes to get digest for this nodeID
  * https://firebase.google.com/docs/firestore/query-data/order-limit-data
  * @type {{}}
  */
 const digestCache = {}
-exports.getDigest = async (database, firestore, nodeID) => {
+exports.getDigest = async (getPeriodLastChange, getPrevPeriodLastChange, getNodeName, nodeID) => {
   if (digestCache[nodeID]) {
     return digestCache[nodeID]
   }
 
-  const [nodeName, isNodeRemoved] = exports.getNodeName(database, nodeID)
+  const [nodeName, isNodeRemoved] = await getNodeName(nodeID)
   if (nodeName === null) {
-    digestCache[nodeID] = null
-    return
+    digestCache[nodeID] = ''
+    return digestCache[nodeID]
   }
+
+  let text = `Node ${getNodeLink(nodeName, nodeID, isNodeRemoved)}:`
+  const actions = {}
 
   for (const actionType of ACTIONS) {
     // get the latest change from the last week
-    const weekLastChange = await firestore
-      .collection('changes')
-      .where('node_id', '==', nodeID)
-      .where('action', '==', actionType)
-      .where('timestamp', '>=', new Date().getTime() - WEEK)
-      .orderBy('timestamp', 'desc')
-      .limit(1)
-
-    if (weekLastChange.docs.length === 0) {
+    const weekLastChange = await getPeriodLastChange(nodeID, actionType)
+    if (weekLastChange === null) {
       continue
     }
 
     if (actionType === ActionType.Remove) {
-      digestCache[nodeID][actionType] = `Node ${getNodeLink(nodeName, nodeID, isNodeRemoved)} was removed`
+      actions[actionType] = ` - was removed`
       continue
     }
 
-    // get the latest change before the last week
-    let prevWeekLastChange = await firestore
-      .collection('changes')
-      .where('node_id', '==', nodeID)
-      .where('action', '==', actionType)
-      .where('timestamp', '<', new Date().getTime() - WEEK)
-      .orderBy('timestamp', 'desc')
-      .limit(1)
+    const prevWeekLastChange = await getPrevPeriodLastChange(nodeID, actionType)
+    if (prevWeekLastChange === null) {
+      continue
+    }
 
-    if (prevWeekLastChange.docs.length === 0) {
-      prevWeekLastChange = await firestore
-        .collection('changes')
-        .where('node_id', '==', nodeID)
-        .where('action', '==', actionType)
-        .where('timestamp', '>=', new Date().getTime() - WEEK)
-        .orderBy('timestamp', 'asc')
-        .limit(1)
+    if (prevWeekLastChange.id === weekLastChange.id) {
+      // It means there is only one record in the whole history for this actionType and no diff exists
+      // If actionType is in [ActionType.Content, ActionType.Name, ActionType.ParentID],
+      // we think user already saw it (because she has done it herself, otherwise there will be several records in changes)
+      // So skip it here
+      if ([ActionType.Content, ActionType.Name, ActionType.ParentID].indexOf(actionType) !== -1) {
+        continue
+      }
 
-      if (prevWeekLastChange.docs[0].id === weekLastChange.docs[0].id) {
-        // It means there is only one record in the whole history and no diff exists
-        // If a user subscribed this node and action is in [ActionType.Content, ActionType.Name, ActionType.ParentID],
-        // we think user already saw it (because she done it herself, otherwise there will be several records in changes)
-        // So skip it here
-        if ([ActionType.Content, ActionType.Name, ActionType.ParentID].indexOf(actionType) !== -1) {
-          continue
-        }
+      if (actionType === ActionType.Children) {
+        actions[actionType] = exports.getChildrenDigest(
+          nodeID,
+          nodeName,
+          isNodeRemoved,
+          weekLastChange.data()['attributes']['added'],
+          weekLastChange.data()['attributes']['removed'],
+        )
+        continue
+      }
 
-        if (actionType === ActionType.Children) {
-          digestCache[nodeID][actionType] = exports.getChildrenDigest(
-            nodeID,
-            nodeName,
-            isNodeRemoved,
-            weekLastChange.docs[0].data()['attributes']['added'],
-            weekLastChange.docs[0].data()['attributes']['removed'],
-          )
-        }
-
-        if (actionType === ActionType.Precondition) {
-          digestCache[nodeID][actionType] = exports.getPreconditionDigest(
-            nodeID,
-            nodeName,
-            isNodeRemoved,
-            weekLastChange.docs[0].data()['attributes']['added'],
-            weekLastChange.docs[0].data()['attributes']['removed'],
-          )
-        }
+      if (actionType === ActionType.Precondition) {
+        actions[actionType] = exports.getPreconditionDigest(
+          nodeID,
+          nodeName,
+          isNodeRemoved,
+          weekLastChange.data()['attributes']['added'],
+          weekLastChange.data()['attributes']['removed'],
+        )
+        continue
       }
     }
 
@@ -164,8 +183,8 @@ exports.getDigest = async (database, firestore, nodeID) => {
      */
     if (actionType === ActionType.Content) {
       const diff = Diff.diffWords(
-        prevWeekLastChange.docs[0].data()['attributes']['value'],
-        weekLastChange.docs[0].data()['attributes']['value']
+        prevWeekLastChange.data()['attributes']['value'],
+        weekLastChange.data()['attributes']['value']
       );
       let added = 0
       let removed = 0
@@ -177,22 +196,22 @@ exports.getDigest = async (database, firestore, nodeID) => {
           removed++
         }
       })
-      digestCache[nodeID][actionType] = `Node ${getNodeLink(nodeName, nodeID, isNodeRemoved)} content changed: added ${added} words, removed ${removed} words`
+      actions[actionType] = `- content changed: added ${added} words, removed ${removed} words`
     }
 
     /**
      * Name
      */
     if (actionType === ActionType.Name) {
-      digestCache[nodeID][actionType] = `Node ${getNodeLink(nodeName, nodeID, isNodeRemoved)} was renamed from "${prevWeekLastChange.docs[0].data()['attributes']['value']}" to "${nodeName}"`
+      actions[actionType] = ` - changed name from "${prevWeekLastChange.data()['attributes']['value']}" to "${nodeName}"`
     }
 
     /**
      * Children
      */
     if (actionType === ActionType.Children) {
-      const [added, removed] = getArrayDiff(prevWeekLastChange.docs[0].data()['attributes']['valueAfter'], weekLastChange.docs[0].data()['attributes']['valueAfter'])
-      digestCache[nodeID][actionType] = exports.getChildrenDigest(
+      const [added, removed] = getArrayDiff(prevWeekLastChange.data()['attributes']['valueAfter'], weekLastChange.data()['attributes']['valueAfter'])
+      actions[actionType] = exports.getChildrenDigest(
         nodeID,
         nodeName,
         isNodeRemoved,
@@ -205,8 +224,8 @@ exports.getDigest = async (database, firestore, nodeID) => {
      * Precondition
      */
     if (actionType === ActionType.Precondition) {
-      const [added, removed] = getArrayDiff(prevWeekLastChange.docs[0].data()['attributes']['valueAfter'], weekLastChange.docs[0].data()['attributes']['valueAfter'])
-      digestCache[nodeID][actionType] = exports.getPreconditionDigest(
+      const [added, removed] = getArrayDiff(prevWeekLastChange.data()['attributes']['valueAfter'], weekLastChange.data()['attributes']['valueAfter'])
+      actions[actionType] = exports.getPreconditionDigest(
         nodeID,
         nodeName,
         isNodeRemoved,
@@ -216,21 +235,29 @@ exports.getDigest = async (database, firestore, nodeID) => {
     }
 
     /**
-     *
+     * ParentID
      */
     if (actionType === ActionType.ParentID) {
-      const parentNodeID = weekLastChange.docs[0].data()['attributes']['valueAfter']
+      const parentNodeID = weekLastChange.data()['attributes']['valueAfter']
       if (parentNodeID === null) {
         // this case was processed in actionType === ActionType.Remove
         continue
       }
-      const [parentNodeName, isParentNodeRemoved] = exports.getNodeName(database, parentNodeID)
+      const [parentNodeName, isParentNodeRemoved] = await getNodeName(parentNodeID)
       if (parentNodeName === null) {
         continue
       }
-      digestCache[nodeID][actionType] = `Node ${getNodeLink(nodeName, nodeID, isNodeRemoved)} changed parent to ${getNodeLink(parentNodeName, parentNodeID, isParentNodeRemoved)}`
+      actions[actionType] = ` - changed parent to ${getNodeLink(parentNodeName, parentNodeID, isParentNodeRemoved)}`
     }
   }
+
+  // concatenate actions in one text
+  for (const actionType in actions) {
+    text += 'nbsp;nbsp;<BR>'+actions[actionType]
+  }
+  digestCache[nodeID] = text
+
+  return digestCache[nodeID]
 }
 
 // [START GetOnCommandSendDigest]
@@ -259,7 +286,7 @@ exports.GetOnCommandSendDigest = (database, firestore) => functions
         }
         try {
           // https://firebase.google.com/docs/database/web/lists-of-data
-          const snap = await database.ref('/user_subscription').orderByKey().limitToFirst(2).startAfter(lastKey).get()
+          const snap = await database.ref('/user_subscription').orderByKey().limitToFirst(USER_BATCH_LIMIT).startAfter(lastKey).get()
           if (!snap.exists()) {
             break;
           }
@@ -269,7 +296,12 @@ exports.GetOnCommandSendDigest = (database, firestore) => functions
             currCnt++
             let text = ''
             for (const nodeID in snap.val()[userID]) {
-              text += await exports.getDigest(nodeID) + "<BR>"
+              text += await exports.getDigest(
+                (nodeID, actionType) => exports.getPeriodLastChange(firestore, nodeID, actionType, WEEK),
+                (nodeID, actionType) => exports.getPrevPeriodLastChange(firestore, nodeID, actionType, WEEK),
+                (nodeID) => exports.getNodeName(database, nodeID),
+                nodeID,
+              ) + "<BR><BR>"
             }
             const email = "igbatov@gmail.com"
             const mailOptions = {
@@ -280,6 +312,7 @@ exports.GetOnCommandSendDigest = (database, firestore) => functions
             // The user subscribed to the newsletter.
             mailOptions.subject = `Weekly digest from ${APP_NAME}!`;
             mailOptions.text = text;
+            functions.logger.info(text)
             //await mailTransport.sendMail(mailOptions);
 
             lastKey = userID
@@ -290,8 +323,6 @@ exports.GetOnCommandSendDigest = (database, firestore) => functions
           break;
         }
       }
-
-
 
       database.ref('/cmd/send_digest').set("0")
     }
