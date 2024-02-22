@@ -62,7 +62,7 @@ import Feedback from "@/components/menu/Feedback";
 import TextSearch from "@/components/menu/Textsearch";
 import MapChangeLog from "@/components/menu/MapChangeLog";
 import MenuButton from "@/components/menu/MenuButton.vue";
-import PrimeMenu from "primevue/menu";
+import PrimeMenu from "primevue/tieredmenu";
 import Button from "primevue/button";
 
 export default {
@@ -95,16 +95,44 @@ export default {
       return [
         {
           label: email.value,
+        },
+        {
+          separator: true
+        },
+        {
+          label: "email changes - "+(user.subscribePeriod ? user.subscribePeriod : 'weekly'),
+          icon: "pi pi-eye",
           items: [
             {
-              label: "sign out",
-              icon: "pi pi-sign-out",
+              label: "weekly",
+              icon: "pi pi-calendar",
               command: () => {
-                store.dispatch(`user/${userActions.signOut}`);
+                store.dispatch(`user/${userActions.setSubscribePeriod}`, 'weekly');
               }
-            }
+            },
+            {
+              label: "daily",
+              icon: "pi pi-tablet",
+              command: () => {
+                store.dispatch(`user/${userActions.setSubscribePeriod}`, 'daily');
+              }
+            },
+            {
+              label: "on pause",
+              icon: "pi pi-pause",
+              command: () => {
+                store.dispatch(`user/${userActions.setSubscribePeriod}`, 'on pause');
+              }
+            },
           ]
-        }
+        },
+        {
+          label: "sign out",
+          icon: "pi pi-sign-out",
+          command: () => {
+            store.dispatch(`user/${userActions.signOut}`);
+          }
+        },
       ];
     });
     return {

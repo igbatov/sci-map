@@ -436,6 +436,43 @@ export default {
   update,
   debouncedUpdate,
 
+  /**
+   * getUserSubscribePeriod
+   * @param user
+   */
+  async getUserSubscribePeriod(
+    user: firebase.User | null
+  ): Promise<string> {
+    if (!user) {
+      return ''
+    }
+    const userID = user.uid;
+    const snapshot = await firebase
+      .database()
+      .ref(`user_data/${userID}/subscribe_period`)
+      .get();
+    if (!snapshot.exists()) {
+      return '';
+    }
+    return snapshot.val();
+  },
+
+  /**
+   * setUserSubscribePeriod
+   * @param user
+   * @param period
+   */
+  async setUserSubscribePeriod(
+    user: firebase.User,
+    period: string,
+  ){
+    const userID = user.uid;
+    return await firebase
+      .database()
+      .ref(`user_data/${userID}/subscribe_period`)
+      .set(period);
+  },
+
   async getUserComments(
     user: firebase.User
   ): Promise<[Record<string, NodeComment> | null, ErrorKV]> {

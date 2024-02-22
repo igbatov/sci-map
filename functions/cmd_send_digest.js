@@ -313,6 +313,11 @@ exports.GetOnCommandSendDigest = (database, firestore) => functions
 
             let userSubscribePeriod = 'weekly'
             const userSnap = await database.ref(`/user_data/${userID}/subscribe_period`).get()
+            if (userSnap.exists() && userSnap.val() === 'on pause') {
+              lastKey = userID
+              continue
+            }
+
             if (userSnap.exists() && userSnap.val() === 'daily') {
               userSubscribePeriod = 'daily';
             }

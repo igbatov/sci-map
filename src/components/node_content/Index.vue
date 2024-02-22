@@ -145,7 +145,7 @@
         </div>
         <div class="p-col-12">
           <div class="title">
-            Welcome to new way of knowledge crowdsourcing!
+            The new way of knowledge crowdsourcing!
           </div>
         </div>
         <div class="p-col-12">
@@ -402,7 +402,7 @@ export default defineComponent({
 }
 .title {
   font-family: "Google Sans", Roboto, Arial, sans-serif;
-  font-size: 1.375rem;
+  font-size: 1.250rem;
   font-weight: 400;
   letter-spacing: 0;
   line-height: 1.75rem;

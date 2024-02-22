@@ -16,6 +16,7 @@ import { printError } from "@/tools/utils";
 import { convertDBMapToTree } from "@/api/helpers";
 import { DBMapNode } from "@/api/types";
 import { add as textSearchAdd } from "@/tools/textsearch";
+import {mutations as userMutations} from "@/store/user";
 
 /**
  * 1) fetch map
@@ -91,6 +92,14 @@ export async function fetchPins(user: firebase.User | null) {
   }
 
   store.commit(`pin/${pinMutations.SET_PINS}`, pins);
+}
+
+export async function fetchSubscribePeriod(user: firebase.User | null) {
+  if (!user) {
+    return
+  }
+  const period = await api.getUserSubscribePeriod(user);
+  store.commit(`user/${userMutations.SET_SUBSCRIBE_PERIOD}`, period);
 }
 
 export async function fetchSubscriptions(user: firebase.User | null) {
@@ -173,6 +182,7 @@ export async function initNodeContents(user: firebase.User | null) {
 export async function initData(user: firebase.User | null) {
   await initMap(user);
   await fetchPins(user);
+  await fetchSubscribePeriod(user);
   await fetchSubscriptions(user);
   await initPreconditions(user);
   await initNodeContents(user);

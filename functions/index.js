@@ -70,6 +70,25 @@ exports.onNodeContentIDChange = functions.database.ref('/node_content/{nodeId}/n
   });
 // [END onNodeContentIDChange]
 
+// [START dailyCrontab]
+exports.dailyCrontab = functions.pubsub.schedule('0 16 * * *')
+  .timeZone('UTC')
+  .onRun(async (context) => {
+    functions.logger.info('started dailyCrontab 16:00 UTC');
+    await database.ref('cmd/send_digest').set('daily')
+    return null;
+  });
+// [END dailyCrontab]
+
+// [START weeklyCrontab]
+exports.weeklyCrontab = functions.pubsub.schedule('0 0 * * 5')
+  .timeZone('UTC')
+  .onRun(async (context) => {
+    functions.logger.info('started weeklyCrontab 00:00 UTC on Friday');
+    await database.ref('cmd/send_digest').set('weekly')
+    return null;
+  });
+// [END weeklyCrontab]
 
 
 
