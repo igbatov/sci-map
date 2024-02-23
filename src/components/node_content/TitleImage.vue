@@ -31,7 +31,9 @@
       </div>
     </template>
     <Button rounded @click="triggerUpload">upload</Button>
-
+    <div style="height:10px;"></div>
+    <ProgressBar :value="uploadProgress"></ProgressBar>
+    <div style="height:10px;"></div>
     <Card v-for="(item, i) of items" :key="i" class="mt-3">
       <template #content>
         <img alt="image" :src="item.url" style="width:300px;" />
@@ -57,13 +59,15 @@ import {computed, defineComponent, ref, watchEffect} from "vue";
 import { useStore } from "@/store";
 import firebase from "firebase/compat";
 import { useToast } from "primevue/usetoast";
+import ProgressBar from 'primevue/progressbar';
 
 export default defineComponent({
   name: "TitleImage",
   components: {
     Button,
     Card,
-    Dialog
+    Dialog,
+    ProgressBar,
   },
   props: {
     nodeID: {
@@ -78,6 +82,7 @@ export default defineComponent({
     const input = ref();
     const defaultURL = "https://cdn.scimap.org/images/default.jpg";
     const items = ref([] as Array<{
+      timestamp: number,
       name: string;
       url: string;
     }>);
@@ -89,6 +94,7 @@ export default defineComponent({
           const images = store.state.image.images[props.nodeID]
           items.value = []
           items.value.push({
+            timestamp: Infinity,
             name: "default",
             url: defaultURL
           })
@@ -99,10 +105,13 @@ export default defineComponent({
               continue;
             }
             items.value.push({
+              timestamp: Number(key),
               name: images[key].name,
               url: process.env.VUE_APP_IS_EMULATOR === "true" ? images[key].url : 'https://cdn.scimap.org'+images[key].path
             });
           }
+          // desc sort by timestamp
+          items.value.sort((a,b) => b.timestamp - a.timestamp);
         }
     )
     return {
@@ -131,6 +140,7 @@ export default defineComponent({
       triggerUpload: () => {
         input.value.click();
       },
+      uploadProgress,
       onInputChange: (event: {
         target: {
           files: Array<File>;
@@ -145,13 +155,14 @@ export default defineComponent({
           return;
         }
         uploadProgress.value = 0;
+
         const imgFile = event.target.files[0] as File;
-        if (imgFile.size > 1_000_000) {
-          console.log("cannot upload file > 1Mb");
+        if (imgFile.size > 3_000_000) {
+          console.log("cannot upload file > 3Mb");
           toast.add({
             severity: "info",
             summary: "Sorry",
-            detail: "Cannot upload file > 1Mb",
+            detail: "Cannot upload file > 3Mb",
             life: 3000
           });
           return;
@@ -175,7 +186,7 @@ export default defineComponent({
             console.log(error.message);
           },
           () => {
-            uploadProgress.value = 100;
+            uploadProgress.value = 0;
             storageRef.snapshot.ref.getDownloadURL().then(url => {
               let parsedURL = {} as URL
               try {
