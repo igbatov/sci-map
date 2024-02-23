@@ -7,6 +7,7 @@ const admin = require('firebase-admin');
 admin.initializeApp();
 const firestore = admin.firestore();
 const database = admin.database();
+const auth = admin.auth();
 
 const { GetOnCommandRemove } = require('./cmd_remove');
 const { upsertChange, insertChange } = require('./helpers');
@@ -23,7 +24,7 @@ const { GetOnCommandSendDigest } = require('./cmd_send_digest');
 const {ActionType} = require("./actions");
 
 exports.onUserCreate = GetOnUserCreate()
-exports.onCommandSendDigest = GetOnCommandSendDigest(database, firestore)
+exports.onCommandSendDigest = GetOnCommandSendDigest(database, firestore, auth)
 exports.onNodeChildrenChange = GetOnNodeChildrenChange(firestore)
 exports.onNodeParentChange = GetOnNodeParentChange(firestore)
 exports.onNodeNameChange = GetOnNodeNameChange(firestore)

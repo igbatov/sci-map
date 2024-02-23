@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import PasswordLogin from "../views/PasswordLogin.vue";
 import Home from "../views/Home.vue";
 import Change from "../views/Change.vue";
+import UnsubscribeDigest from "../views/UnsubscribeDigest.vue";
 import NodeDescription from "../views/NodeDescription.vue";
 import NotFound from "../views/NotFound.vue";
 
@@ -19,6 +20,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/change/:id?",
     name: "change",
     component: Change
+  },
+  {
+    path: "/unsubscribe_digest",
+    name: "unsubscribe_digest",
+    component: UnsubscribeDigest
   },
   {
     path: "/:id?",

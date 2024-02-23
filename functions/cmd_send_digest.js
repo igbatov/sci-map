@@ -130,8 +130,8 @@ exports.getDigest = async (getPeriodLastChange, getPrevPeriodLastChange, getNode
 
   for (const actionType of ACTIONS) {
     // get the latest change from the last week
-    const weekLastChange = await getPeriodLastChange(nodeID, actionType)
-    if (weekLastChange === null) {
+    const periodLastChange = await getPeriodLastChange(nodeID, actionType)
+    if (periodLastChange === null) {
       continue
     }
 
@@ -140,12 +140,12 @@ exports.getDigest = async (getPeriodLastChange, getPrevPeriodLastChange, getNode
       continue
     }
 
-    const prevWeekLastChange = await getPrevPeriodLastChange(nodeID, actionType)
-    if (prevWeekLastChange === null) {
+    const prevPeriodLastChange = await getPrevPeriodLastChange(nodeID, actionType)
+    if (prevPeriodLastChange === null) {
       continue
     }
 
-    if (prevWeekLastChange.id === weekLastChange.id) {
+    if (prevPeriodLastChange.id === periodLastChange.id) {
       // It means there is only one record in the whole history for this actionType and no diff exists
       // If actionType is in [ActionType.Content, ActionType.Name, ActionType.ParentID],
       // we think user already saw it (because she has done it herself, otherwise there will be several records in changes)
@@ -159,8 +159,8 @@ exports.getDigest = async (getPeriodLastChange, getPrevPeriodLastChange, getNode
           nodeID,
           nodeName,
           isNodeRemoved,
-          weekLastChange.data()['attributes']['added'],
-          weekLastChange.data()['attributes']['removed'],
+          periodLastChange.data()['attributes']['added'],
+          periodLastChange.data()['attributes']['removed'],
         )
         continue
       }
@@ -170,8 +170,8 @@ exports.getDigest = async (getPeriodLastChange, getPrevPeriodLastChange, getNode
           nodeID,
           nodeName,
           isNodeRemoved,
-          weekLastChange.data()['attributes']['added'],
-          weekLastChange.data()['attributes']['removed'],
+          periodLastChange.data()['attributes']['added'],
+          periodLastChange.data()['attributes']['removed'],
         )
         continue
       }
@@ -184,8 +184,8 @@ exports.getDigest = async (getPeriodLastChange, getPrevPeriodLastChange, getNode
      */
     if (actionType === ActionType.Content) {
       const diff = Diff.diffWords(
-        prevWeekLastChange.data()['attributes']['value'],
-        weekLastChange.data()['attributes']['value']
+        prevPeriodLastChange.data()['attributes']['value'],
+        periodLastChange.data()['attributes']['value']
       );
       let added = 0
       let removed = 0
@@ -204,14 +204,14 @@ exports.getDigest = async (getPeriodLastChange, getPrevPeriodLastChange, getNode
      * Name
      */
     if (actionType === ActionType.Name) {
-      actions[actionType] = ` - changed name from "${prevWeekLastChange.data()['attributes']['value']}" to "${nodeName}"`
+      actions[actionType] = ` - changed name from "${prevPeriodLastChange.data()['attributes']['value']}" to "${nodeName}"`
     }
 
     /**
      * Children
      */
     if (actionType === ActionType.Children) {
-      const [added, removed] = getArrayDiff(prevWeekLastChange.data()['attributes']['valueAfter'], weekLastChange.data()['attributes']['valueAfter'])
+      const [added, removed] = getArrayDiff(prevPeriodLastChange.data()['attributes']['valueAfter'], periodLastChange.data()['attributes']['valueAfter'])
       actions[actionType] = exports.getChildrenDigest(
         nodeID,
         nodeName,
@@ -225,7 +225,7 @@ exports.getDigest = async (getPeriodLastChange, getPrevPeriodLastChange, getNode
      * Precondition
      */
     if (actionType === ActionType.Precondition) {
-      const [added, removed] = getArrayDiff(prevWeekLastChange.data()['attributes']['valueAfter'], weekLastChange.data()['attributes']['valueAfter'])
+      const [added, removed] = getArrayDiff(prevPeriodLastChange.data()['attributes']['valueAfter'], periodLastChange.data()['attributes']['valueAfter'])
       actions[actionType] = exports.getPreconditionDigest(
         nodeID,
         nodeName,
@@ -239,7 +239,7 @@ exports.getDigest = async (getPeriodLastChange, getPrevPeriodLastChange, getNode
      * ParentID
      */
     if (actionType === ActionType.ParentID) {
-      const parentNodeID = weekLastChange.data()['attributes']['valueAfter']
+      const parentNodeID = periodLastChange.data()['attributes']['valueAfter']
       if (parentNodeID === null) {
         // this case was processed in actionType === ActionType.Remove
         continue
@@ -256,7 +256,7 @@ exports.getDigest = async (getPeriodLastChange, getPrevPeriodLastChange, getNode
   let cnt = 0
   for (const actionType in actions) {
     cnt++
-    text += 'nbsp;nbsp;<BR>'+actions[actionType]
+    text += '<BR>&nbsp;&nbsp;'+actions[actionType]
   }
   if (cnt>0) {
     digestCache[nodeID] = text
@@ -269,7 +269,7 @@ exports.getDigest = async (getPeriodLastChange, getPrevPeriodLastChange, getNode
 
 // [START GetOnCommandSendDigest]
 // Listens for changes in /cmd/send_digest and send digests to subscribers
-exports.GetOnCommandSendDigest = (database, firestore) => functions
+exports.GetOnCommandSendDigest = (database, firestore, auth) => functions
   // Make the secret available to this function
   .runWith({ secrets: ["IGBATOVSM_PWD"] }).database.ref('/cmd/send_digest')
   .onWrite(async (change, context) => {
@@ -331,7 +331,7 @@ exports.GetOnCommandSendDigest = (database, firestore) => functions
               continue
             }
 
-            functions.logger.info("------ SEND DIGEST STARTED USER", userID)
+            functions.logger.info("------ STARTED PROCESSING USER", userID)
 
             let text = ''
             for (const nodeID in snap.val()[userID]) {
@@ -350,18 +350,22 @@ exports.GetOnCommandSendDigest = (database, firestore) => functions
                 functions.logger.error(e)
               }
             }
-            const email = "igbatov@gmail.com"
+
             const mailOptions = {
               from: `${APP_NAME} <noreply@firebase.com>`,
-              to: email,
+              subject: `Weekly digest from ${APP_NAME}!`,
+              sender: `noreply@scimap.org`
             };
 
-            // The user subscribed to the newsletter.
-            mailOptions.subject = `Weekly digest from ${APP_NAME}!`;
-            mailOptions.text = text;
             if (text !== '') {
-              functions.logger.info('text', text)
-              //await mailTransport.sendMail(mailOptions);
+              text += '<BR><BR><a target="_blank" href="https://scimap.org/unsubscribe_digest">Unsubscribe</a>'
+              mailOptions.html = text;
+
+              const userRecord = await auth.getUser(userID);
+              mailOptions.to = userRecord.toJSON().email
+
+              functions.logger.info('mailOptions', mailOptions)
+              await mailTransport.sendMail(mailOptions);
             }
 
             lastKey = userID
