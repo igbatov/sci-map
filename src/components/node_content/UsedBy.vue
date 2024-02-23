@@ -11,22 +11,22 @@
 </template>
 
 <script lang="ts">
-import { ref, watchEffect, defineComponent } from "vue";
+import {ref, watchEffect, defineComponent, PropType} from "vue";
 import { useStore } from "@/store";
 import { Tree } from "@/types/graphics";
 
 export default defineComponent({
   name: "UsedBy",
   props: {
-    nodeId: String
+    nodeIDs: Object as PropType<Array<string>>
   },
   setup(props) {
     const store = useStore();
     const usedBy = ref<Array<Tree>>([]);
     watchEffect(() => {
       usedBy.value = [];
-      if (props.nodeId && store.state.precondition.reverseIndex[props.nodeId]) {
-        for (const id of store.state.precondition.reverseIndex[props.nodeId]) {
+      if (props.nodeIDs) {
+        for (const id of props.nodeIDs) {
           if (!store.state.tree.nodeRecord[id]) {
             console.log("UsedBy: cannot find id in nodeRecord", id);
           } else {

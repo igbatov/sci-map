@@ -1,6 +1,6 @@
 <template>
   <span class="p-input-icon-right" style="width: 100%">
-    <i class="pi pi-times" style="right: 1.2rem;" @click="clearBox" />
+    <i class="pi pi-times" style="right: 1.2rem; cursor: pointer;" @click="clearBox" />
     <InputText
       :class="$style['searchBox']"
       placeholder="Search SciMap"
@@ -26,15 +26,18 @@ export default {
   setup() {
     const value = ref("");
     const store = useStore();
+    const doSearch = async(value: string) => {
+      const res = await search(value);
+      store.commit(`searchResult/${searchMutations.SET_NODE_IDS}`, res);
+      return res;
+    }
+
     return {
-      doSearch: async (value: string) => {
-        const res = await search(value);
-        store.commit(`searchResult/${searchMutations.SET_NODE_IDS}`, res);
-        return res;
-      },
+      doSearch,
       value,
-      clearBox: () => {
+      clearBox: async () => {
         value.value = "";
+        await doSearch('')
       }
     };
   }

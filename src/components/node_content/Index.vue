@@ -66,12 +66,14 @@
       />
 
       <!-- 'Basis for' section -->
-      <div class="p-field p-grid">
-        <div class="p-col-10 section">
-          basis for
+      <div v-if="selectedNodeContent && usedBy && usedBy.length > 0">
+        <div class="p-field p-grid">
+          <div class="p-col-10 section">
+            basis for
+          </div>
         </div>
+        <SectionUsedBy :nodeIDs="usedBy" />
       </div>
-      <SectionUsedBy v-if="selectedNodeContent" :node-id="selectedNode.id" />
 
       <!-- ChangeLog section -->
       <ChangeLog :node-id="selectedNode.id" />
@@ -332,6 +334,7 @@ export default defineComponent({
     );
 
     return {
+      usedBy: computed(() => store.state.precondition.reverseIndex[props.selectedNodeId]),
       editModeOn: computed(() => store.state.editModeOn),
       selectedNode,
       selectedNodeContent,
