@@ -146,11 +146,6 @@
           <div style="height: 60px;"></div>
         </div>
         <div class="p-col-12">
-          <div class="title">
-            The new way of knowledge crowdsourcing!
-          </div>
-        </div>
-        <div class="p-col-12">
           <iframe
             width="100%"
             height="225px"
@@ -179,7 +174,7 @@
           />
         </div>
         <div class="p-col-11 list">
-          Keep description <b>focused</b> and simple <b>but profound</b> (i - snippet with
+          Keep node content <b>focused and simple but profound</b> (i - snippet with
           example of formula and image markdown)
         </div>
         <div class="p-col-1 icon">
@@ -193,6 +188,12 @@
           Use <b>"based on"</b> to link nodes that are necessary for solid
           understanding of your description
         </div>
+        <div class="p-col-1 icon" style="color: #3B6BF9; padding-left:15px; font-weight: bold;">
+          W
+        </div>
+        <div class="p-col-11 list">
+          Use Wikipedia core content policies: neutral point of view, verifiability, and no original research
+        </div>
         <div class="p-col-1 icon">
           <img
             alt="logo"
@@ -201,7 +202,7 @@
           />
         </div>
         <div class="p-col-11 list">
-          Pin nodes that you are focused on
+          Pin nodes that you are currently interested in
         </div>
         <div class="p-col-1 icon">
           <img
@@ -218,13 +219,7 @@
         </div>
         <div class="p-col-11 list">
           If you know actions one can take to push
-          knowledge further (vacancies, crowdsourcing etc) - you can also add it!
-        </div>
-        <div class="p-col-1 icon" style="color: #3B6BF9;">
-          W
-        </div>
-        <div class="p-col-11 list">
-          Use Wikipedia core content policies: neutral point of view, verifiability, and no original research
+          knowledge further (jobs, crowdsourcing, etc.) - you can also add it!
         </div>
         <div class="p-col-1 icon">
           <img
@@ -234,18 +229,10 @@
           />
         </div>
         <div class="p-col-11 list">
-          Talk to your coauthors to make description better in
-          <a
-            target="_blank"
-            href="https://discord.com/channels/1171118046543347782/1171118047587745953"
-            >chat</a
-          >
+          Talk to your coauthors in <a target="_blank" href="https://discord.com/channels/1171118046543347782/1171118047587745953">chat</a> to adapt community rules and create a great content
         </div>
         <div class="p-col-12 list">
-          <i
-            >If you thank we need more rules or change these ones, feel free to
-            discuss them in community chat</i
-          >
+          <i>Because the greatest impact one can do is to nudge many others to discover the truth</i>
         </div>
       </div>
     </div>
