@@ -8,7 +8,7 @@
       />
       <span class="p-ml-2">edit map</span>
     </MenuButton>
-    <MenuButton v-if="editModeOn" @click="off" style="height:35px;">
+    <MenuButton v-if="editModeOn" @click="off" style="height:35px;" bg-color="#03dbfc;">
       <img
         alt="icon"
         src="../../assets/images/switch-off.svg"

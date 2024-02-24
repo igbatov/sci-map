@@ -232,7 +232,7 @@
           Talk to your coauthors in <a target="_blank" href="https://discord.com/channels/1171118046543347782/1171118047587745953">chat</a> to adapt community rules and create a great content
         </div>
         <div class="p-col-12 list">
-          <i>Because the greatest impact one can do is to nudge many others to discover the truth</i>
+          <i>Because one of the greatest impact one can do is to nudge many others to discover the truth</i>
         </div>
       </div>
     </div>
