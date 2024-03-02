@@ -110,6 +110,17 @@ export default {
   text-wrap: wrap;
   overflow-y: scroll;
   height: 300px;
+  table :is(td, th) {
+    border-top: 1px solid black;
+    padding: 0.3em;
+  }
+  table {
+    border-spacing: 0;
+    border-collapse: collapse;
+  }
+  tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
 }
 .rawContent {
   overflow-y: scroll;
