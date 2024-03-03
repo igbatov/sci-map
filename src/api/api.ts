@@ -195,7 +195,7 @@ export default {
       // for authenticated user use realtime database
       const snapshot = await firebase
         .database()
-        .ref(`user_subscriptions/${user.uid}`)
+        .ref(`user_subscription/${user.uid}`)
         .get();
       if (!snapshot.exists()) {
         return [null, NewErrorKV("!snapshot.exists", {})];

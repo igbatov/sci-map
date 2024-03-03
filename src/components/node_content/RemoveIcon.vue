@@ -37,6 +37,7 @@ export default {
 
 <style scoped>
 .custom {
-  margin-left: 15px;
+  margin-top: 8px;
+  margin-left: 22px;
 }
 </style>

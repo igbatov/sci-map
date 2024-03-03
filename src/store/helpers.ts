@@ -106,9 +106,9 @@ export async function fetchSubscriptions(user: firebase.User | null) {
   const [subscriptions, err] = await api.getSubscriptions(user);
   if (subscriptions == null) {
     if (err) {
-      console.error("fetchPins", err);
+      console.error("fetchSubscriptions", err);
     } else {
-      console.log("fetchPins: empty pins");
+      console.log("fetchSubscriptions: empty");
     }
   }
 
