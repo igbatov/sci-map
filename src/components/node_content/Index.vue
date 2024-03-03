@@ -68,7 +68,7 @@
       <!-- 'Basis for' section -->
       <div v-if="selectedNodeContent && usedBy && usedBy.length > 0">
         <div class="p-field p-grid">
-          <div class="p-col-10 section">
+          <div class="p-col-12 section p-pt-5">
             basis for
           </div>
         </div>
