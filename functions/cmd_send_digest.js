@@ -8,7 +8,14 @@ const USER_BATCH_LIMIT = 2
 const MAX_LOOP_LIMIT = 100_000
 const WEEK = 7*24*60*60*1000 // days*hours*minutes*seconds*1000
 const DAY = 24*60*60*1000 // days*hours*minutes*seconds*1000
-const ACTIONS = [ActionType.Name, ActionType.Content, ActionType.Precondition, ActionType.ParentID, ActionType.Children, ActionType.Remove]
+const ACTIONS = [
+  ActionType.Name,
+  ActionType.Content,
+  ActionType.Precondition,
+  ActionType.ParentID,
+  ActionType.Children,
+  ActionType.Remove,
+];
 
 /**
  * getChildrenDigest
@@ -131,6 +138,7 @@ exports.getDigest = async (getPeriodLastChange, getPrevPeriodLastChange, getNode
   for (const actionType of ACTIONS) {
     // get the latest change from the last week
     const periodLastChange = await getPeriodLastChange(nodeID, actionType)
+    functions.logger.info("log_type", "digest", "------------------------ getPeriodLastChange: nodeID", nodeID, "actionType", actionType, "periodLastChange", periodLastChange);
     if (periodLastChange === null) {
       continue
     }
@@ -141,6 +149,7 @@ exports.getDigest = async (getPeriodLastChange, getPrevPeriodLastChange, getNode
     }
 
     const prevPeriodLastChange = await getPrevPeriodLastChange(nodeID, actionType)
+    functions.logger.info("log_type", "digest", "------------------------ getPrevPeriodLastChange: nodeID", nodeID, "actionType", actionType, "getPrevPeriodLastChange", getPrevPeriodLastChange);
     if (prevPeriodLastChange === null) {
       continue
     }
@@ -148,7 +157,7 @@ exports.getDigest = async (getPeriodLastChange, getPrevPeriodLastChange, getNode
     if (prevPeriodLastChange.id === periodLastChange.id) {
       // It means there is only one record in the whole history for this actionType and no diff exists
       // If actionType is in [ActionType.Content, ActionType.Name, ActionType.ParentID],
-      // we think user already saw it (because she has done it herself, otherwise there will be several records in changes)
+      // we think user already saw it (otherwise she cannot click on "Subscribe button")
       // So skip it here
       if ([ActionType.Content, ActionType.Name, ActionType.ParentID].indexOf(actionType) !== -1) {
         continue
@@ -250,6 +259,8 @@ exports.getDigest = async (getPeriodLastChange, getPrevPeriodLastChange, getNode
       }
       actions[actionType] = ` - changed parent to ${getNodeLink(parentNodeName, parentNodeID, isParentNodeRemoved)}`
     }
+
+    functions.logger.info("log_type", "digest", "------------------------ actions: nodeID", nodeID, "actionType", actionType, "actions[actionType]", actions[actionType]);
   }
 
   // concatenate actions in one text
@@ -331,10 +342,11 @@ exports.GetOnCommandSendDigest = (database, firestore, auth) => functions
               continue
             }
 
-            functions.logger.info("------ STARTED PROCESSING USER", userID)
+            functions.logger.info("log_type", "digest", "------ STARTED PROCESSING USER", userID);
 
             let text = ''
             for (const nodeID in snap.val()[userID]) {
+              functions.logger.info("log_type", "digest", "------------ STARTED PROCESSING nodeID", nodeID, "for userID", userID);
               try {
                 const nodeDigestText = await exports.getDigest(
                   (nodeID, actionType) => exports.getPeriodLastChange(firestore, nodeID, actionType, period),
