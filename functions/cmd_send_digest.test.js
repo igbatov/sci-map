@@ -119,7 +119,8 @@ getDigest(
     }
     return alert('Unknown nodeID');
   },
-  '1'
+  '1',
+  '1',
 ).then((text) => {
   console.log(text)
 })

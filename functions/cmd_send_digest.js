@@ -121,7 +121,7 @@ exports.getPrevPeriodLastChange = async (firestore, nodeID, actionType, period)=
  * @type {{}}
  */
 const digestCache = {}
-exports.getDigest = async (getPeriodLastChange, getPrevPeriodLastChange, getNodeName, nodeID) => {
+exports.getDigest = async (getPeriodLastChange, getPrevPeriodLastChange, getNodeName, nodeID, userID) => {
   if (digestCache[nodeID]) {
     return digestCache[nodeID]
   }
@@ -138,7 +138,13 @@ exports.getDigest = async (getPeriodLastChange, getPrevPeriodLastChange, getNode
   for (const actionType of ACTIONS) {
     // get the latest change from the last week
     const periodLastChange = await getPeriodLastChange(nodeID, actionType)
-    functions.logger.info("log_type", "digest", "------------------------ getPeriodLastChange: nodeID", nodeID, "actionType", actionType, "periodLastChange", periodLastChange);
+    functions.logger.info("getPeriodLastChange", {
+      "nodeID": nodeID,
+      "userID": userID,
+      "log_type": "digest",
+      "actionType": actionType,
+      "periodLastChange": periodLastChange ? periodLastChange.data() : null,
+    });
     if (periodLastChange === null) {
       continue
     }
@@ -149,10 +155,18 @@ exports.getDigest = async (getPeriodLastChange, getPrevPeriodLastChange, getNode
     }
 
     const prevPeriodLastChange = await getPrevPeriodLastChange(nodeID, actionType)
-    functions.logger.info("log_type", "digest", "------------------------ getPrevPeriodLastChange: nodeID", nodeID, "actionType", actionType, "getPrevPeriodLastChange", getPrevPeriodLastChange);
+    functions.logger.info("getPrevPeriodLastChange", {
+      "nodeID": nodeID,
+      "userID": userID,
+      "log_type": "digest",
+      "actionType": actionType,
+      "prevPeriodLastChange": prevPeriodLastChange ? prevPeriodLastChange.data() : null,
+    });
+
     if (prevPeriodLastChange === null) {
       continue
     }
+
 
     if (prevPeriodLastChange.id === periodLastChange.id) {
       // It means there is only one record in the whole history for this actionType and no diff exists
@@ -260,7 +274,13 @@ exports.getDigest = async (getPeriodLastChange, getPrevPeriodLastChange, getNode
       actions[actionType] = ` - changed parent to ${getNodeLink(parentNodeName, parentNodeID, isParentNodeRemoved)}`
     }
 
-    functions.logger.info("log_type", "digest", "------------------------ actions: nodeID", nodeID, "actionType", actionType, "actions[actionType]", actions[actionType]);
+    functions.logger.info("actions", {
+      "userID": userID,
+      "nodeID": nodeID,
+      "actionType": actionType,
+      "actions": actions[actionType],
+      "log_type": "digest",
+    });
   }
 
   // concatenate actions in one text
@@ -342,17 +362,25 @@ exports.GetOnCommandSendDigest = (database, firestore, auth) => functions
               continue
             }
 
-            functions.logger.info("log_type", "digest", "------ STARTED PROCESSING USER", userID);
+            functions.logger.info("STARTED PROCESSING user", {
+              "userID": userID,
+              "log_type": "digest",
+            });
 
             let text = ''
             for (const nodeID in snap.val()[userID]) {
-              functions.logger.info("log_type", "digest", "------------ STARTED PROCESSING nodeID", nodeID, "for userID", userID);
+              functions.logger.info("STARTED PROCESSING node", {
+                "nodeID": nodeID,
+                "userID": userID,
+                "log_type": "digest",
+              });
               try {
                 const nodeDigestText = await exports.getDigest(
                   (nodeID, actionType) => exports.getPeriodLastChange(firestore, nodeID, actionType, period),
                   (nodeID, actionType) => exports.getPrevPeriodLastChange(firestore, nodeID, actionType, period),
                   (nodeID) => exports.getNodeName(database, nodeID),
                   nodeID,
+                  userID,
                 )
 
                 if (nodeDigestText !== '') {

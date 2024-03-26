@@ -223,6 +223,7 @@ $ firebase deploy --only functions
 https://console.cloud.google.com/logs/query
 https://console.firebase.google.com/project/sci-map-1982/functions/logs
 [Google Cloud UI](https://console.cloud.google.com/logs/query;query=resource.type%3D%22cloud_function%22;storageScope=storage,projects%2Fsci-map-1982%2Flocations%2Fglobal%2Fbuckets%2F_Default%2Fviews%2F_Default,projects%2Fsci-map-1982%2Flocations%2Fglobal%2Fbuckets%2F_Required%2Fviews%2F_AllLogs,projects%2Fsci-map-1982%2Flocations%2Fglobal%2Fbuckets%2F_Default%2Fviews%2F_AllLogs;cursorTimestamp=2023-12-10T06:55:34.484210558Z;duration=PT1H?project=sci-map-1982)
+[example](https://console.cloud.google.com/logs/query;query=SEARCH%2528%22STARTED%20PROCESSING%22%2529%0Aresource.type%3D%22cloud_function%22;storageScope=storage,projects%2Fsci-map-1982%2Flocations%2Fglobal%2Fbuckets%2F_Default%2Fviews%2F_Default,projects%2Fsci-map-1982%2Flocations%2Fglobal%2Fbuckets%2F_Required%2Fviews%2F_AllLogs,projects%2Fsci-map-1982%2Flocations%2Fglobal%2Fbuckets%2F_Default%2Fviews%2F_AllLogs;summaryFields=:false:32:beginning;lfeCustomFields=resource%252Ftype;cursorTimestamp=2024-03-25T16:00:12.252627Z;duration=P2D?authuser=0&project=sci-map-1982&hl=en&duet=true)
 or
 ```shell
 firebase functions:log
@@ -286,5 +287,6 @@ https://www.figma.com/proto/gdsTx92knJmXZjSUAmYeO7/scimap?node-id=2-753&starting
 Chord diagram
 https://onlinelibrary.wiley.com/cms/asset/e8bfe23d-0499-4a11-a4a4-58647afc9d58/cgf13610-fig-0010-m.jpg
 https://miro.medium.com/v2/resize:fit:1400/format:webp/1*FBaB_aGUcWbfrLr1Ric5bQ.png
+
 
 
