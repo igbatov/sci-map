@@ -173,9 +173,53 @@
             style="width: 30px"
           />
         </div>
-        <div class="p-col-11 list">
-          Keep node content <b>focused and simple but profound</b> (i - snippet with
-          example of formula and image markdown)
+        <div v-tooltip="{ escape:false,
+         autoHide: false,
+         pt: {
+          root: {
+            style: {
+              'max-width': 'fit-content',
+            },
+          },
+          arrow: {
+            style: {
+              borderRightColor: '#dcdcde',
+              borderBottomColor: 'rgb(255 255 255 / 0)',
+              borderTopColor: 'rgb(255 255 255 / 0)'
+            }
+          },
+          text: {
+            style: {
+              'background-color': '#dcdcde',
+              'color': 'black'
+            }
+          }
+         },
+        value: `
+<div style='padding-left: 20px; width:370px;height:550px;'>
+  Use <a target='_blank' href='https://markdown-it.github.io/'>markdown</a> to format text
+  and <a target='_blank' href='https://katex.org/docs/supported.html'>katex</a> notation to write formulas.
+ For example write
+ <textarea rows='3' cols='40'>$$
+\\sum_{\\mathclap{1\\le i\\le j\\le n}} x_{ij}
+$$</textarea>
+  to render formula:
+  ${md.render(`$$
+\\sum_{\\mathclap{1\\le i\\le j\\le n}} x_{ij}
+$$`)}
+  <div style='margin-top: -4em;'>
+  Or write
+   <textarea rows='3' cols='40'>![](https://cdn.scimap.org/images/default.jpg =340x)</textarea>
+   to insert image:
+   ${md.render(`![](https://cdn.scimap.org/images/default.jpg =340x)`)}
+   </div>
+</div>`
+        }" class="p-col-11 list">
+          Keep node content <b>focused and simple but profound</b> (you can use <a target='_blank' href='https://markdown-it.github.io/'>markdown</a> and <a target='_blank' href='https://katex.org/docs/supported.html'>katex</a>&nbsp;<img
+            alt="logo"
+            src="../../assets/images/question.svg"
+            style="width: 20px; margin-bottom:-5px;"
+        />)
         </div>
         <div class="p-col-1 icon">
           <img
@@ -258,6 +302,13 @@ import SubscribeButton from "./SubscribeButton.vue";
 import Title from "@/components/node_content/Title.vue";
 import AddBasedOnButton from "@/components/node_content/AddBasedOnButton.vue";
 import TitleImage from "@/components/node_content/TitleImage.vue";
+import MarkdownIt from "markdown-it";
+const mdKatex = require('markdown-it-katex'); // eslint-disable-line
+const mdImsize = require('markdown-it-imsize'); // eslint-disable-line
+const md = new MarkdownIt();
+md
+  .use(mdKatex, { output: "html" })
+  .use(mdImsize);
 
 export default defineComponent({
   name: "NodeContent",
@@ -321,6 +372,7 @@ export default defineComponent({
     );
 
     return {
+      md,
       usedBy: computed(() => store.state.precondition.reverseIndex[props.selectedNodeId]),
       editModeOn: computed(() => store.state.editModeOn),
       selectedNode,

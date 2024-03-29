@@ -10,6 +10,7 @@ import "primevue/resources/themes/aura-light-green/theme.css"; //theme
 import "primevue/resources/primevue.min.css"; //core css
 import "primeicons/primeicons.css"; //icons
 import "primeflex/primeflex.css";
+import Tooltip from 'primevue/tooltip';
 
 createApp(App)
   .use(store, key)
@@ -17,4 +18,5 @@ createApp(App)
   .use(PrimeVue)
   .use(ConfirmationService)
   .use(ToastService)
+  .directive('tooltip', Tooltip)
   .mount("#app");
