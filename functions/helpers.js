@@ -2,6 +2,7 @@
 // then two changes will be merged into one
 // (NEW_RECORD_GAP is in milliseconds)
 const {logger} = require("firebase-functions");
+const Diff = require("diff");
 const NEW_RECORD_GAP = 1*24*60*60*1000 // days*hours*minutes*seconds*1000
 
 // add new change
@@ -78,4 +79,24 @@ exports.getNodeLink = function(nodeName, nodeID, isRemoved) {
   }
 }
 
+exports.getTextChangePercent = function(fromText, toText) {
+  const diff = Diff.diffChars(fromText, toText);
+  let added = 0
+  let removed = 0
+  let unchanged = 0
+  diff.forEach((part) => {
+    if (part.added) {
+      added += part.count
+    } else if (part.removed) {
+      removed += part.count
+    } else {
+      unchanged += part.count
+    }
+  })
+
+  const prevPeriodCharCount = fromText.length
+  const periodCharCount = toText.length
+  const maxCharCount = Math.max(prevPeriodCharCount, periodCharCount)
+  return Math.floor(100*(1 - unchanged/maxCharCount));
+}
 

@@ -2,7 +2,7 @@ const functions = require('firebase-functions/v1');
 const nodemailer = require('nodemailer');
 const {ActionType} = require("./actions");
 const Diff = require('diff');
-const {getNodeLink, getArrayDiff} = require("./helpers");
+const {getNodeLink, getArrayDiff, getTextChangePercent} = require("./helpers");
 const APP_NAME = "scimap.org"
 const USER_BATCH_LIMIT = 2
 const MAX_LOOP_LIMIT = 100_000
@@ -18,27 +18,25 @@ const ACTIONS = [
 ];
 
 /**
- * getChildrenDigest
- * @param nodeID
- * @param nodeName
- * @param isNodeRemoved
- * @param added
- * @param removed
+ * getPreconditionDigest
+ * @param getNodeName
+ * @param preconditionNodeIDs
  * @returns {string}
  */
-exports.getPreconditionDigest = (nodeID, nodeName, isNodeRemoved, added, removed) => {
-  let text = (added && added.length) || (removed && removed.length)  ? ' - ' : ''
-  if (added && added.length) {
-    text += `added ${added.length} to 'based on'`
+exports.getPreconditionDigest = (getNodeName, preconditionNodeIDs) => {
+  if (!preconditionNodeIDs) {
+    return `Empty list in 'based on'`
   }
-  if (removed && removed.length) {
-    if (added && added.length) {
-      text += ' and '
-    }
-    text += `removed ${removed.length} from 'based on'`
+  const nodeNames = []
+  for (let nodeID of preconditionNodeIDs) {
+    const [name, _] = getNodeName(nodeID)
+    nodeNames.push(name)
+  }
+  if (nodeNames.length === 0) {
+    return `Empty list in 'based on'`
   }
 
-  return text
+  return `New list in 'based on': "${nodeNames.join('", "')}"`
 }
 
 /**
@@ -120,16 +118,10 @@ exports.getPrevPeriodLastChange = async (firestore, nodeID, actionType, period)=
  * https://firebase.google.com/docs/firestore/query-data/order-limit-data
  * @type {{}}
  */
-const digestCache = {}
 exports.getDigest = async (getPeriodLastChange, getPrevPeriodLastChange, getNodeName, nodeID, userID) => {
-  if (digestCache[nodeID]) {
-    return digestCache[nodeID]
-  }
-
   const [nodeName, isNodeRemoved] = await getNodeName(nodeID)
   if (nodeName === null) {
-    digestCache[nodeID] = ''
-    return digestCache[nodeID]
+    return ''
   }
 
   let text = `Node ${getNodeLink(nodeName, nodeID, isNodeRemoved)}:`
@@ -190,11 +182,8 @@ exports.getDigest = async (getPeriodLastChange, getPrevPeriodLastChange, getNode
 
       if (actionType === ActionType.Precondition) {
         actions[actionType] = exports.getPreconditionDigest(
-          nodeID,
-          nodeName,
-          isNodeRemoved,
-          periodLastChange.data()['attributes']['added'],
-          periodLastChange.data()['attributes']['removed'],
+          getNodeName,
+          periodLastChange.data()['attributes']['valueAfter'],
         )
         continue
       }
@@ -202,25 +191,15 @@ exports.getDigest = async (getPeriodLastChange, getPrevPeriodLastChange, getNode
 
     /**
      * Content
-     * calculate the percentage of added and removed content
+     * calculate the percentage of content change
      * https://github.com/kpdecker/jsdiff?tab=readme-ov-file#basic-example-in-node
      */
     if (actionType === ActionType.Content) {
-      const diff = Diff.diffWords(
+      const percent = getTextChangePercent(
         prevPeriodLastChange.data()['attributes']['value'],
-        periodLastChange.data()['attributes']['value']
-      );
-      let added = 0
-      let removed = 0
-      diff.forEach((part) => {
-        if (part.added) {
-          added++
-        }
-        if (part.removed) {
-          removed++
-        }
-      })
-      actions[actionType] = `- content changed: added ${added} words, removed ${removed} words`
+        periodLastChange.data()['attributes']['value'],
+      )
+      actions[actionType] = `- ${percent}% of content changed`
     }
 
     /**
@@ -248,13 +227,9 @@ exports.getDigest = async (getPeriodLastChange, getPrevPeriodLastChange, getNode
      * Precondition
      */
     if (actionType === ActionType.Precondition) {
-      const [added, removed] = getArrayDiff(prevPeriodLastChange.data()['attributes']['valueAfter'], periodLastChange.data()['attributes']['valueAfter'])
       actions[actionType] = exports.getPreconditionDigest(
-        nodeID,
-        nodeName,
-        isNodeRemoved,
-        added,
-        removed,
+        getNodeName,
+        periodLastChange.data()['attributes']['valueAfter']
       )
     }
 
@@ -290,12 +265,10 @@ exports.getDigest = async (getPeriodLastChange, getPrevPeriodLastChange, getNode
     text += '<BR>&nbsp;&nbsp;'+actions[actionType]
   }
   if (cnt>0) {
-    digestCache[nodeID] = text
+    return text
   } else {
-    digestCache[nodeID] = ''
+    return ''
   }
-
-  return digestCache[nodeID]
 }
 
 // [START GetOnCommandSendDigest]
@@ -304,6 +277,8 @@ exports.GetOnCommandSendDigest = (database, firestore, auth) => functions
   // Make the secret available to this function
   .runWith({ secrets: ["IGBATOVSM_PWD"] }).database.ref('/cmd/send_digest')
   .onWrite(async (change, context) => {
+    const digestCache = {}
+    const nodeNameCache = {}
     if (change.after && change.after.val() !== "0") {
       let period = 0
       if (change.after.val() === 'weekly') {
@@ -375,14 +350,29 @@ exports.GetOnCommandSendDigest = (database, firestore, auth) => functions
                 "log_type": "digest",
               });
               try {
-                const nodeDigestText = await exports.getDigest(
-                  (nodeID, actionType) => exports.getPeriodLastChange(firestore, nodeID, actionType, period),
-                  (nodeID, actionType) => exports.getPrevPeriodLastChange(firestore, nodeID, actionType, period),
-                  (nodeID) => exports.getNodeName(database, nodeID),
-                  nodeID,
-                  userID,
-                )
-
+                let nodeDigestText = ''
+                if (digestCache[nodeID]) {
+                  nodeDigestText = digestCache[nodeID]
+                } else {
+                  nodeDigestText = await exports.getDigest(
+                    (nodeID, actionType) => exports.getPeriodLastChange(firestore, nodeID, actionType, period),
+                    (nodeID, actionType) => exports.getPrevPeriodLastChange(firestore, nodeID, actionType, period),
+                    (nodeID) => {
+                      if (nodeNameCache[nodeID]) {
+                        return [nodeNameCache[nodeID]['name'], nodeNameCache[nodeID]['isRemoved']]
+                      }
+                      const [name, isRemoved] = exports.getNodeName(database, nodeID)
+                      nodeNameCache[nodeID] = {
+                        name,
+                        isRemoved,
+                      }
+                      return [name, isRemoved]
+                    },
+                    nodeID,
+                    userID,
+                  )
+                  digestCache[nodeID] = nodeDigestText;
+                }
                 if (nodeDigestText !== '') {
                   text += nodeDigestText + "<BR><BR>"
                 }
