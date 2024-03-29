@@ -23,13 +23,13 @@ const ACTIONS = [
  * @param preconditionNodeIDs
  * @returns {string}
  */
-exports.getPreconditionDigest = (getNodeName, preconditionNodeIDs) => {
+exports.getPreconditionDigest = async (getNodeName, preconditionNodeIDs) => {
   if (!preconditionNodeIDs) {
     return `Empty list in 'based on'`
   }
   const nodeNames = []
   for (let nodeID of preconditionNodeIDs) {
-    const [name, _] = getNodeName(nodeID)
+    const [name, _] = await getNodeName(nodeID)
     nodeNames.push(name)
   }
   if (nodeNames.length === 0) {
@@ -181,7 +181,7 @@ exports.getDigest = async (getPeriodLastChange, getPrevPeriodLastChange, getNode
       }
 
       if (actionType === ActionType.Precondition) {
-        actions[actionType] = exports.getPreconditionDigest(
+        actions[actionType] = await exports.getPreconditionDigest(
           getNodeName,
           periodLastChange.data()['attributes']['valueAfter'],
         )
@@ -227,7 +227,7 @@ exports.getDigest = async (getPeriodLastChange, getPrevPeriodLastChange, getNode
      * Precondition
      */
     if (actionType === ActionType.Precondition) {
-      actions[actionType] = exports.getPreconditionDigest(
+      actions[actionType] = await exports.getPreconditionDigest(
         getNodeName,
         periodLastChange.data()['attributes']['valueAfter']
       )
@@ -357,11 +357,11 @@ exports.GetOnCommandSendDigest = (database, firestore, auth) => functions
                   nodeDigestText = await exports.getDigest(
                     (nodeID, actionType) => exports.getPeriodLastChange(firestore, nodeID, actionType, period),
                     (nodeID, actionType) => exports.getPrevPeriodLastChange(firestore, nodeID, actionType, period),
-                    (nodeID) => {
+                    async (nodeID) => {
                       if (nodeNameCache[nodeID]) {
                         return [nodeNameCache[nodeID]['name'], nodeNameCache[nodeID]['isRemoved']]
                       }
-                      const [name, isRemoved] = exports.getNodeName(database, nodeID)
+                      const [name, isRemoved] = await exports.getNodeName(database, nodeID)
                       nodeNameCache[nodeID] = {
                         name,
                         isRemoved,
