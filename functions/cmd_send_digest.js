@@ -41,6 +41,7 @@ exports.getPreconditionDigest = async (getNodeName, preconditionNodeIDs) => {
 
 /**
  * getChildrenDigest
+ * @param getNodeName
  * @param nodeID
  * @param nodeName
  * @param isNodeRemoved
@@ -48,16 +49,28 @@ exports.getPreconditionDigest = async (getNodeName, preconditionNodeIDs) => {
  * @param removed
  * @returns {string}
  */
-exports.getChildrenDigest = (nodeID, nodeName, isNodeRemoved, added, removed) => {
+exports.getChildrenDigest = async (getNodeName, nodeID, nodeName, isNodeRemoved, added, removed) => {
   let text = (added&&added.length) || (removed&&removed.length)  ? ' - has ' : ''
-  if (added && added.length) {
-    text += `${added.length} children added`
+
+  if (added && added.length > 0) {
+    const addedNames = []
+    for (let nodeID of added) {
+      const [name, _] = await getNodeName(nodeID)
+      addedNames.push(name)
+    }
+    text += `${added.length} children added: "${addedNames.join('", "')}"`
   }
-  if (removed && removed.length) {
-    if (added && added.length) {
+
+  if (removed && removed.length > 0) {
+    if (added && added.length > 0) {
       text += ' and '
     }
-    text += `${removed.length} children removed`
+    const removedNames = []
+    for (let nodeID of removed) {
+      const [name, _] = await getNodeName(nodeID)
+      removedNames.push(name)
+    }
+    text += `${removed.length} children removed: "${removedNames.join('", "')}"`
   }
 
   return text
@@ -170,7 +183,8 @@ exports.getDigest = async (getPeriodLastChange, getPrevPeriodLastChange, getNode
       }
 
       if (actionType === ActionType.Children) {
-        actions[actionType] = exports.getChildrenDigest(
+        actions[actionType] = await exports.getChildrenDigest(
+          getNodeName,
           nodeID,
           nodeName,
           isNodeRemoved,
@@ -214,7 +228,8 @@ exports.getDigest = async (getPeriodLastChange, getPrevPeriodLastChange, getNode
      */
     if (actionType === ActionType.Children) {
       const [added, removed] = getArrayDiff(prevPeriodLastChange.data()['attributes']['valueAfter'], periodLastChange.data()['attributes']['valueAfter'])
-      actions[actionType] = exports.getChildrenDigest(
+      actions[actionType] = await exports.getChildrenDigest(
+        getNodeName,
         nodeID,
         nodeName,
         isNodeRemoved,
