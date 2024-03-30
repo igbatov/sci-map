@@ -14,7 +14,8 @@ export const mutations = {
   ADD_ZOOM: "ADD_ZOOM",
   ADD_PAN: "ADD_PAN",
   SET_PAN: "SET_PAN",
-  SET_ZOOM_CENTER: "SET_ZOOM_CENTER"
+  SET_ZOOM_CENTER: "SET_ZOOM_CENTER",
+  RESET_ZOOM_AND_PAN: "RESET_ZOOM_AND_PAN"
 };
 
 const zoomDebounce = debounce((state, value: number) => {
@@ -60,6 +61,12 @@ export const store = {
     [mutations.SET_PAN](state: State, point: Point) {
       state.pan = point;
       panDebounce(state, state.pan);
+    },
+    [mutations.RESET_ZOOM_AND_PAN](state: State, point: Point) {
+      state.pan = {x:0, y:0};
+      panDebounce(state, state.pan);
+      state.zoom = 1;
+      zoomDebounce(state, state.zoom);
     }
   }
 };

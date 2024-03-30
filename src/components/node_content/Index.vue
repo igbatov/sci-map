@@ -47,7 +47,7 @@
         </div>
       </div>
 
-      <!-- Preconditions section -->
+      <!-- 'Based on' section -->
       <div class="p-field p-grid">
         <div class="p-col-10 section p-pt-2">
           based on

@@ -130,7 +130,7 @@ export default defineComponent({
     // visibleLayers consists only from user visible nodes and visibleLayers of all (which is treeState.mapNodeLayers)
     const visibleLayers = ref<Array<Record<string, MapNode>>>([]);
 
-    // Ugly hack to determine first load of page
+    // Ugly hack to determine a first load of page
     let isFirstPageLoad = true;
     onBeforeRouteUpdate(async (to, from) => {
       isFirstPageLoad = false;

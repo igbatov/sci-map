@@ -8,7 +8,7 @@
         {{usedByPaths[usedByNode.id]}}
       </p>
       <p :class="`${$style.title}`">
-        <a :href="usedByNode.id">{{ usedByNode.title }}</a>
+        <Link :nodeID="usedByNode.id" :nodeTitle="usedByNode.title" />
       </p>
     </div>
   </div>
@@ -19,9 +19,13 @@ import {ref, watchEffect, defineComponent, PropType} from "vue";
 import { useStore } from "@/store";
 import { Tree } from "@/types/graphics";
 import {getTreePathString} from "@/components/helpers";
+import Link from "@/components/Link.vue";
 
 export default defineComponent({
   name: "UsedBy",
+  components: {
+    Link,
+  },
   props: {
     nodeIDs: Object as PropType<Array<string>>
   },

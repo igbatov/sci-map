@@ -9,7 +9,7 @@
           {{preconditionPaths[precondition.id]}}
         </p>
         <p :class="`${$style.title}`">
-          <a :href="precondition.id">{{ precondition.title }}</a>
+          <Link :nodeID="precondition.id" :nodeTitle="precondition.title" />
         </p>
     </div>
     <div class="p-col-2 p-p-md-0">
@@ -28,6 +28,7 @@ import RemoveIcon from "@/components/node_content/RemoveIcon.vue";
 import {useConfirm} from "primevue/useconfirm";
 import {mutations as preconditionMutations} from "@/store/precondition";
 import {getTreePathString} from "../helpers";
+import Link from "@/components/Link.vue";
 
 export default defineComponent({
   name: "Preconditions",
@@ -38,6 +39,7 @@ export default defineComponent({
     }
   },
   components: {
+    Link,
     RemoveIcon
   },
   setup(props) {
