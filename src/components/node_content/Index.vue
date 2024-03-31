@@ -146,16 +146,7 @@
           <div style="height: 60px;"></div>
         </div>
         <div class="p-col-12">
-          <iframe
-            width="100%"
-            height="225px"
-            src="https://www.youtube.com/embed/4S9sDyooxf4?si=u4z2DkDwNTsVdMBH"
-            title="YouTube video player"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowfullscreen
-          ></iframe>
-        </div>
+          <iframe width="400" height="210" src="https://www.youtube.com/embed/7Y1uTCEz8LI?si=gDPnpJ9D7INM8mD9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>        </div>
         <div class="p-col-1 icon">
           <img
             alt="logo"
@@ -276,7 +267,7 @@ $$`)}
           Talk to your coauthors in <a target="_blank" href="https://discord.com/channels/1171118046543347782/1171118047587745953">chat</a> to adapt community rules and create a great content
         </div>
         <div class="p-col-12 list">
-          <i>Because one of the greatest impact one can do is to nudge many others to discover the truth</i>
+          <i>Because one of the greatest impact one can do is to nudge millions of others to discover the truth</i>
         </div>
       </div>
     </div>
