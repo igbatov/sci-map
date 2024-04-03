@@ -5,11 +5,16 @@ import Change from "../views/Change.vue";
 import UnsubscribeDigest from "../views/UnsubscribeDigest.vue";
 import NodeDescription from "../views/NodeDescription.vue";
 import NotFound from "../views/NotFound.vue";
+import MobileWarning from "../views/MobileWarning.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/passwordLogin",
     component: PasswordLogin
+  },
+  {
+    path: "/mobile_warning",
+    component: MobileWarning
   },
   {
     path: "/node_description/:id?",
