@@ -8312,6 +8312,11 @@ ignore@^5.1.8, ignore@^5.2.0:
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-5.3.1.tgz#5073e554cd42c5b33b394375f538b8593e34d4ef"
   integrity sha512-5Fytz/IraMjqpwfd34ke28PTVMjZjJG2MPn5t7OE4eUCUNf8BAa7b5WUS9/Qvr6mwOQS7Mk6vdsMno5he+T8Xw==
 
+image-resize-compress@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/image-resize-compress/-/image-resize-compress-1.1.0.tgz#7a4b7ed3d0c65be1dd51f77df8f880dbba068594"
+  integrity sha512-OdSrzFXZClpl10rwXl2ejnlF+lT101Swqj8NXYxoh470ebODsEU/JrqwKC7YPh+sTN6HppHWdMigeB672wdM/w==
+
 import-cwd@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/import-cwd/-/import-cwd-2.1.0.tgz#aa6cf36e722761285cb371ec6519f53e2435b0a9"

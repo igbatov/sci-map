@@ -32,7 +32,7 @@
     </template>
     <Button rounded @click="triggerUpload">upload</Button>
     <div style="height:10px;"></div>
-    <ProgressBar :value="uploadProgress"></ProgressBar>
+    <ProgressBar v-if="showProgressBar" mode="indeterminate" style="height: 6px"></ProgressBar>
     <div style="height:10px;"></div>
     <Card v-for="(item, i) of items" :key="i" class="mt-3">
       <template #content>
@@ -60,6 +60,8 @@ import { useStore } from "@/store";
 import firebase from "firebase/compat";
 import { useToast } from "primevue/usetoast";
 import ProgressBar from 'primevue/progressbar';
+import { fromBlob } from 'image-resize-compress';
+const fileFormat = 'webp'
 
 export default defineComponent({
   name: "TitleImage",
@@ -86,7 +88,7 @@ export default defineComponent({
       name: string;
       url: string;
     }>);
-    const uploadProgress = ref(0);
+    const showProgressBar = ref(false);
     const defaultImageURL = ref(defaultURL);
     const dbNodeImgPath = computed(() => `/node_image/${props.nodeID}`);
     watchEffect(
@@ -140,8 +142,8 @@ export default defineComponent({
       triggerUpload: () => {
         input.value.click();
       },
-      uploadProgress,
-      onInputChange: (event: {
+      showProgressBar,
+      onInputChange: async (event: {
         target: {
           files: Array<File>;
         };
@@ -154,39 +156,42 @@ export default defineComponent({
         ) {
           return;
         }
-        uploadProgress.value = 0;
+        showProgressBar.value = true;
 
         const imgFile = event.target.files[0] as File;
-        if (imgFile.size > 3_000_000) {
-          console.log("cannot upload file > 3Mb");
-          toast.add({
-            severity: "info",
-            summary: "Sorry",
-            detail: "Cannot upload file > 3Mb",
-            life: 3000
-          });
-          return;
+        let compressedBlob = await fromBlob(imgFile, 90, 0, 0, fileFormat)
+        if (compressedBlob.size > 500_000) {
+          // try to resize
+          compressedBlob = await fromBlob(imgFile, 90, 1200, 'auto', fileFormat)
+          if (compressedBlob.size > 500_000) {
+            // if still large, then give up
+            toast.add({
+              severity: "info",
+              summary: "Sorry",
+              detail: "Cannot compress file, please try to resize/compress it to less than 500Kb",
+              life: 3000
+            });
+            return;
+          }
         }
+
         const name = imgFile.name;
-        const ext =
-          name.substring(name.lastIndexOf(".") + 1, name.length) || name;
         const fileName = new Date().getTime();
-        const filePath = `/user/${store.state.user.user.uid}/image/${fileName}.${ext}`
+        const filePath = `/user/${store.state.user.user.uid}/image/${fileName}.${fileFormat}`
         const storageRef = firebase
           .storage()
           .ref(filePath)
-          .put(imgFile);
+          .put(compressedBlob);
         storageRef.on(
           "state_changed",
           snapshot => {
-            uploadProgress.value =
-              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            // uploadProgress.value = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           },
           error => {
             console.log(error.message);
           },
           () => {
-            uploadProgress.value = 0;
+            showProgressBar.value = false;
             storageRef.snapshot.ref.getDownloadURL().then(url => {
               let parsedURL = {} as URL
               try {
