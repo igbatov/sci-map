@@ -47,6 +47,10 @@
         "subscribe_period": {
           ".read": "$uid === auth.uid",
           ".write": "$uid === auth.uid"
+        },
+        "last_search": {
+          ".read": "$uid === auth.uid",
+          ".write": "$uid === auth.uid"
         }
       }
     },

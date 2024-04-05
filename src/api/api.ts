@@ -473,6 +473,21 @@ export default {
       .set(period);
   },
 
+  /**
+   * setUserSearchPhrase
+   * @param userID
+   * @param searchPhrase
+   */
+  async setUserLastSearch(
+    userID: string,
+    searchPhrase: string,
+  ){
+    return await firebase
+      .database()
+      .ref(`user_data/${userID}/last_search`)
+      .set(searchPhrase);
+  },
+
   async getUserComments(
     user: firebase.User
   ): Promise<[Record<string, NodeComment> | null, ErrorKV]> {

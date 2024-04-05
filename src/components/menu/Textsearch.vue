@@ -16,6 +16,8 @@ import { search } from "@/tools/textsearch";
 import { mutations as searchMutations } from "@/store/search_result";
 import { useStore } from "@/store";
 import { ref } from "vue";
+import api from "@/api/api";
+import { debounce } from "lodash";
 
 export default {
   name: "TextSearch",
@@ -26,9 +28,13 @@ export default {
   setup() {
     const value = ref("");
     const store = useStore();
+    const debouncedLog = debounce(api.setUserLastSearch, 2000)
     const doSearch = async(value: string) => {
       const res = await search(value);
       store.commit(`searchResult/${searchMutations.SET_NODE_IDS}`, res);
+      if (value.length > 0) {
+        debouncedLog(store.state.user.user!.uid, value);
+      }
       return res;
     }
 
