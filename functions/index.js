@@ -9,21 +9,24 @@ const firestore = admin.firestore();
 const database = admin.database();
 const auth = admin.auth();
 
-const { GetOnLastSearch } = require('./last_search');
+const { GetOnLastSearch } = require('./change_last_search');
 const { GetOnCommandRemove } = require('./cmd_remove');
-const { upsertChange, insertChange } = require('./helpers');
 const {
   GetOnNodeChildrenChange,
   GetOnNodeParentChange,
   GetOnNodeNameChange,
   GetOnNodePositionChange,
   GetOnNodeMapIDChange,
-} = require('./map_change');
-const { GetOnPreconditionChange } = require('./precondition_change');
+} = require('./change_map');
+const { GetOnPreconditionChange } = require('./change_precondition');
 const { GetOnUserCreate } = require('./user_role');
 const { GetOnCommandSendDigest } = require('./cmd_send_digest');
-const {ActionType} = require("./actions");
+const {GetOnNodeContentChange, GetOnNodeContentIDChange} = require("./change_content");
+const {GetOnImageChange} = require("./change_image");
 
+exports.onNodeContentChange = GetOnNodeContentChange(firestore)
+exports.onNodeContentIDChange = GetOnNodeContentIDChange(firestore)
+exports.onImageChange = GetOnImageChange(firestore)
 exports.onUserCreate = GetOnUserCreate()
 exports.onCommandSendDigest = GetOnCommandSendDigest(database, firestore, auth)
 exports.onNodeChildrenChange = GetOnNodeChildrenChange(firestore)
@@ -39,39 +42,6 @@ exports.onNodeMapIDChange = GetOnNodeMapIDChange(firestore)
 exports.onCommandRemove = GetOnCommandRemove(firestore, database)
 exports.GetOnLastSearch = GetOnLastSearch()
 
-// [START onNodeContentChange]
-// Listens for changes in /node_content/{nodeId}/content and log them to firestore "changes" collection
-exports.onNodeContentChange = functions.database.ref('/node_content/{nodeId}/content')
-  .onWrite((change, context) => {
-    return upsertChange(
-      firestore,
-      context,
-      ActionType.Content,
-      context.params.nodeId,
-      {
-        value: change.after.val(),
-      }
-    )
-  });
-// [END onNodeContentChange]
-
-// [START onNodeContentIDChange]
-// Listens for changes in /node_content/{nodeId}/nodeID and log them to firestore "changes" collection
-// (it must be changed only on node creation anr removal)
-exports.onNodeContentIDChange = functions.database.ref('/node_content/{nodeId}/nodeID')
-  .onWrite((change, context) => {
-    return insertChange(
-      firestore,
-      context,
-      ActionType.ContentID,
-      context.params.nodeId,
-      {
-        after: change.after.val(),
-        before: change.before.val(),
-      }
-    )
-  });
-// [END onNodeContentIDChange]
 
 // [START dailyCrontab]
 exports.dailyCrontab = functions.pubsub.schedule('0 16 * * *')

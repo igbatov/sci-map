@@ -4,6 +4,7 @@
       <!-- Image -->
       <TitleImage
         :nodeID="selectedNodeContent ? selectedNodeContent.nodeID : ''"
+        :nodeContent="selectedNodeContent ? selectedNodeContent.content : ''"
       />
 
       <!-- Content -->

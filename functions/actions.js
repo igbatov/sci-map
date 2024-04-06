@@ -20,6 +20,11 @@ exports.ActionType = {
   Precondition: "precondition",
 
   /**
+   * /node_image
+   */
+  Image: "image",
+
+  /**
    * /cmd/remove
    */
   Remove: "remove",

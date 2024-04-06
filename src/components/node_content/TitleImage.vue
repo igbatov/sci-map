@@ -26,25 +26,27 @@
     @mousedown.stop
   >
     <template #header>
-      <div style="width: 100%; padding-right:10px;">
-        Upload new one or choose from the list
+      <div style="width:431px; padding-right:10px;">
+        Press "copy markdown link" button to add image into this node description
       </div>
     </template>
     <Button rounded @click="triggerUpload">upload</Button>
     <div style="height:10px;"></div>
     <ProgressBar v-if="showProgressBar" mode="indeterminate" style="height: 6px"></ProgressBar>
     <div style="height:10px;"></div>
-    <Card v-for="(item, i) of items" :key="i" class="mt-3">
+    <Card v-for="(item, i) of items" :key="i" class="p-mt-1">
       <template #content>
-        <img alt="image" :src="item.url" style="width:300px;" />
-        <div>
-          <Button
-            rounded
-            @click="setAsDefault(item.url)"
-            style="margin-right: 50px;"
-            >set as default</Button
-          >
-          <Button rounded @click="copyURL(item.url)">copy URL</Button>
+        <img alt="image" :src="item.url" style="width:431px;" />
+      </template>
+      <template #footer>
+        <div style="display:flex; flex-direction: row; justify-content: space-between;">
+          <Button rounded @click="setAsDefault(item.url)">set as default</Button>
+          <Button rounded @click="copyMDLink(item.url)">copy markdown link</Button>
+          <Button v-if="showRemoveButton(item.id)" @click="toTrash(item.id)" severity="danger" text raised rounded aria-label="Delete">
+            <template v-slot:icon>
+              <span class="material-symbols-outlined">delete</span>
+            </template>
+          </Button>
         </div>
       </template>
     </Card>
@@ -62,6 +64,7 @@ import { useToast } from "primevue/usetoast";
 import ProgressBar from 'primevue/progressbar';
 import { fromBlob } from 'image-resize-compress';
 const fileFormat = 'webp'
+import { useConfirm } from "primevue/useconfirm";
 
 export default defineComponent({
   name: "TitleImage",
@@ -75,18 +78,25 @@ export default defineComponent({
     nodeID: {
       type: String,
       required: true
-    }
+    },
+    nodeContent: {
+      type: String,
+      required: true
+    },
   },
   setup(props) {
     const toast = useToast();
     const store = useStore();
+    const confirm = useConfirm();
     const addDialogVisible = ref(false);
     const input = ref();
     const defaultURL = "https://cdn.scimap.org/images/default.jpg";
     const items = ref([] as Array<{
-      timestamp: number,
-      name: string;
-      url: string;
+      id: string,
+      timestamp: number, // it is also a unique key of image
+      name: string,
+      url: string,
+      removed: number,
     }>);
     const showProgressBar = ref(false);
     const defaultImageURL = ref(defaultURL);
@@ -96,9 +106,11 @@ export default defineComponent({
           const images = store.state.image.images[props.nodeID]
           items.value = []
           items.value.push({
+            id: "",
             timestamp: Infinity,
             name: "default",
-            url: defaultURL
+            url: defaultURL,
+            removed: 0,
           })
           defaultImageURL.value = defaultURL
           for (const key in images) {
@@ -107,13 +119,15 @@ export default defineComponent({
               continue;
             }
             items.value.push({
+              id: key,
               timestamp: Number(key),
               name: images[key].name,
-              url: process.env.VUE_APP_IS_EMULATOR === "true" ? images[key].url : 'https://cdn.scimap.org'+images[key].path
+              url: process.env.VUE_APP_IS_EMULATOR === "true" ? images[key].url : 'https://cdn.scimap.org'+images[key].path,
+              removed: images[key].removed,
             });
           }
           // desc sort by timestamp
-          items.value.sort((a,b) => b.timestamp - a.timestamp);
+          items.value = items.value.filter((item)=>!item.removed).sort((a,b) => b.timestamp - a.timestamp);
         }
     )
     return {
@@ -131,8 +145,45 @@ export default defineComponent({
             }
           });
       },
-      copyURL: async (url: string) => {
-        await navigator.clipboard.writeText(url);
+      copyMDLink: async (url: string) => {
+        await navigator.clipboard.writeText(`![](${url} =350x)`);
+        toast.add({
+          severity: "info",
+          summary: "Copied",
+          detail: "You can now paste it into node description. Please, do not use this link in other node description as someone can remove it from this node images as not used!",
+          life: 1000
+        });
+      },
+      showRemoveButton: (id: string) => {
+        if (!id) {
+          // if there is no id it is the default stub image
+          return false
+        }
+        // check that image is not used in node description
+        if (props.nodeContent.length && props.nodeContent.includes(id)) {
+          return false
+        }
+
+        return true
+      },
+      toTrash: async (id: string) => {
+        confirm.require({
+          message: 'Are you sure you want to delete this image?',
+          header: 'Confirmation',
+          icon: 'pi pi-exclamation-triangle',
+          rejectClass: 'p-button-secondary p-button-outlined',
+          rejectLabel: 'Cancel',
+          acceptLabel: 'Delete',
+          accept: async () => {
+            await firebase
+                .database()
+                .ref(`${dbNodeImgPath.value}/${id}`)
+                .update({removed: new Date().getTime()});
+            toast.add({ severity: 'info', summary: 'Image was deleted', detail: '', life: 3000 });
+          },
+          // reject: () => {}
+        });
+
       },
       toggleAddDialog: () => {
         addDialogVisible.value = !addDialogVisible.value

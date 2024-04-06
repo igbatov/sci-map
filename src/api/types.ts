@@ -12,5 +12,6 @@ export type DBImage = {
   name: string;
   path: string;
   url: string;
+  removed: number;
 };
 
