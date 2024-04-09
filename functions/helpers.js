@@ -6,12 +6,12 @@ const Diff = require("diff");
 const NEW_RECORD_GAP = 1*24*60*60*1000 // days*hours*minutes*seconds*1000
 
 // add new change
-exports.insertChange = function (firestore, context, action, nodeID, attributes){
+exports.insertChange = async function (firestore, context, action, nodeID, attributes){
   const now = new Date().getTime();
-  return firestore
+  return await firestore
     .collection('changes')
     .add({
-      user_id: context.auth ? context.auth.token["user_id"] : 'admin',
+      user_id: context.auth ? context.auth.token["user_id"] : 'function',
       node_id: nodeID,
       action: action,
       attributes: attributes,
@@ -20,11 +20,11 @@ exports.insertChange = function (firestore, context, action, nodeID, attributes)
 }
 
 // update last record for this node_id and user_id or create new one
-exports.upsertChange = function (firestore, context, action, nodeID, attributes){
-  return firestore
+exports.upsertChange = async function (firestore, context, action, nodeID, attributes){
+  return await firestore
     .collection('changes')
     .where('node_id', '==', nodeID)
-    .where('user_id', '==', context.auth ? context.auth.token["user_id"] : 'admin')
+    .where('user_id', '==', context.auth ? context.auth.token["user_id"] : 'function')
     .where('action', '==', action)
     .orderBy('timestamp', 'desc').limit(1)
     .get()
@@ -100,3 +100,48 @@ exports.getTextChangePercent = function(fromText, toText) {
   return Math.floor(100*(1 - unchanged/maxCharCount));
 }
 
+/**
+ * Try lock `locks/${lockID}`
+ * If another concurrent function will do the same, only one will get 'true'.
+ * If `locks/${lockID}` was locked more than 'timeout' than lock anyway (consider locked function died without unlocking)
+ * @param admin
+ * @param lockID
+ * @param timeout
+ * @returns {Promise<boolean>}
+ */
+exports.lock = async function(database, lockID, timeout) {
+  const currentTimestamp = Date.now()
+  const res = await database.ref(`locks/${lockID}`).transaction( (lockTimestamp) => {
+    if (lockTimestamp == null) {
+      return currentTimestamp
+    }
+
+    if ((currentTimestamp - lockTimestamp) > timeout) {
+      // lockID is locked too long, force unlock
+      return currentTimestamp
+    }
+    // abort the transaction by not returning a value
+    // see https://firebase.google.com/docs/reference/node/firebase.database.Reference#transaction
+    return;
+  });
+
+  if (res && res.committed && res.snapshot.val() === currentTimestamp) {
+    return true
+  }
+
+  return false
+}
+
+/**
+ * Unlock `locks/${lockID}`
+ * @param database
+ * @param lockID
+ * @returns {Promise<void>}
+ */
+exports.unlock = async function (database, lockID) {
+  await database.ref(`locks/${lockID}`).set(null)
+}
+
+exports.generateKey = function(db) {
+  return db.ref().push().key;
+}

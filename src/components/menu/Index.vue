@@ -22,7 +22,11 @@
           v-if="editModeOn"
           style="position: absolute; right: 20.6rem;"
       >
-        <MapChangeLog />
+        <MapChangeLog
+            @restore-select-new-parent-is-on="$emit('restore-select-new-parent-is-on')"
+            @restore-select-new-parent-is-off="$emit('restore-select-new-parent-is-off')"
+            :clickedTitleId="clickedTitleId"
+        />
       </div>
       <div v-if="editModeOn" style="position: absolute; right: 26.6rem;">
         <AddNode />
@@ -78,6 +82,13 @@ export default {
     EditMode,
     TextSearch,
     MapChangeLog
+  },
+  emits: ["restore-select-new-parent-is-on", "restore-select-new-parent-is-off"],
+  props: {
+    clickedTitleId: {
+      type: String,
+      required: true
+    }
   },
   setup() {
     const store = useStore();

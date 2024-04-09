@@ -19,6 +19,11 @@ export enum ActionType {
    * /cmd/remove
    */
   Remove = "remove",
+
+  /**
+   * /cmd/restore
+   */
+  Restore = "restore",
 }
 
 export type Node = {
@@ -93,7 +98,7 @@ export type ChangeLogNodeParent = {
   userID: string;
   userDisplayName: string;
 
-  parentNodeBefore: Node;
+  parentNodeBefore: Node | null;
   parentNodeAfter: Node | null;
   node: Node;
 

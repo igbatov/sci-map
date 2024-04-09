@@ -20,7 +20,11 @@
     :show="!editModeOn"
     :selectedNodeId="selectedNodeId"
   />
-  <Menu />
+  <Menu
+      @restore-select-new-parent-is-on="setRestoreSelectNewParentON"
+      @restore-select-new-parent-is-off="setRestoreSelectNewParentOFF"
+      :clickedTitleId="clickedTitleId"
+  />
   <Map
     :layers="visibleZoomedPanedLayers"
     :selectedNodeId="selectedNodeId"
@@ -87,6 +91,7 @@ export default defineComponent({
     const searchResultState = store.state.searchResult;
     const clickedTitleId = ref("-1");
     let selectPreconditionIsOn = false;
+    let restoreSelectNewParentIsOn = false;
     let titleOver = false;
 
     // Set node from URL as selected
@@ -332,12 +337,18 @@ export default defineComponent({
       setSelectPreconditionOFF: () => {
         selectPreconditionIsOn = false;
       },
+      setRestoreSelectNewParentON: () => {
+        restoreSelectNewParentIsOn = true;
+      },
+      setRestoreSelectNewParentOFF: () => {
+        restoreSelectNewParentIsOn = false;
+      },
       clickedTitleId,
       titleClick: (e: EventClickNode) => {
-        if (!selectPreconditionIsOn) {
-          router.push({ name: "node", params: { id: e.id } });
-        } else {
+        if (restoreSelectNewParentIsOn || selectPreconditionIsOn) {
           clickedTitleId.value = e.id;
+        } else {
+          router.push({ name: "node", params: { id: e.id } });
         }
       },
       titleOver: (e: EventClickNode) => {

@@ -66,7 +66,7 @@ export default {
     watch(
       () => props.clickedTitleId,
       () => {
-        if (
+        if (addBannerVisible.value &&
           props.clickedTitleId !== "-1" &&
           store.state.tree.nodeRecord[props.clickedTitleId]
         ) {

@@ -24,6 +24,10 @@
       "remove": {
         ".read": true,
         ".write": "auth !== null && root.child('user_data').child(auth.uid).child('map_editor').val() === 'true'"
+      },
+      "restore": {
+        ".read": true,
+        ".write": "auth !== null && root.child('user_data').child(auth.uid).child('map_editor').val() === 'true'"
       }
     },
     "user_subscription": {

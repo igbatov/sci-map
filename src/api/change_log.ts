@@ -29,6 +29,9 @@ export async function subscribeChangeLog(
   if (actions.length) {
     andConditions.push(where("action", "in", actions));
   }
+  // 'remove' and 'restore' changes is made by firebase functions (but logged anyway in firestore)
+  // here we skip most details made by function and show only action made by user
+  andConditions.push(where("user_id", "!=", "function"));
   const q = query(
     collection(getFirestore(), "changes"),
     and(...andConditions),
@@ -179,6 +182,11 @@ export async function subscribeChangeLogEnriched(
             nodeNames[changeLog.attributes.valueAfter] = "";
           }
         }
+        if (changeLog.action == ActionType.Restore) {
+          if (changeLog.attributes.parentNodeID != null) {
+            nodeNames[changeLog.attributes.parentNodeID] = "";
+          }
+        }
         if (changeLog.action == ActionType.Precondition) {
           if (changeLog.attributes.removed != null) {
             for (const id of changeLog.attributes.removed) {
@@ -192,7 +200,7 @@ export async function subscribeChangeLogEnriched(
           }
         }
       }
-      // fetch node and user names
+      // fetch node and usernames
       const nodeIDs = [];
       for (const nodeID in nodeNames) {
         nodeIDs.push(nodeID);
@@ -353,6 +361,37 @@ export async function subscribeChangeLogEnriched(
 
                 isRemoved: true,
                 isAdded: false
+              });
+            } else if (log.action == ActionType.Restore) {
+              const afterPath = getPathFromNodeName(
+                log.attributes.parentNodeID,
+                nodeNames
+              );
+              changeLogsEnriched.push({
+                changeLogID: log.changeLogID,
+
+                timestamp: log.timestamp,
+                action: log.action,
+
+                userID: log.userID,
+                userDisplayName: userNames[log.userID],
+
+                node: {
+                  id: log.nodeID,
+                  idPath: nodePath,
+                  name: nodeNames[nodePath]
+                },
+
+                parentNodeBefore: null,
+
+                parentNodeAfter: {
+                  id: log.attributes.parentNodeID,
+                  idPath: afterPath,
+                  name: nodeNames[afterPath]
+                },
+
+                isRemoved: false,
+                isAdded: true
               });
             }
           });

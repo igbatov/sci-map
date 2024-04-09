@@ -21,9 +21,9 @@ exports.GetOnNodePositionChange = (firestore) => database.ref('/map/{nodeId}/pos
 // [START GetOnNodeChildrenChange]
 // Listens for changes in /map/{nodeId}/children and log them to firestore "changes" collection
 exports.GetOnNodeChildrenChange = (firestore) => database.ref('/map/{nodeId}/children')
-  .onWrite((change, context) => {
+  .onWrite(async (change, context) => {
     const [added, removed] = getArrayDiff(change.before.val(), change.after.val())
-    return insertChange(
+    return await insertChange(
       firestore,
       context,
       ActionType.Children,
@@ -41,8 +41,8 @@ exports.GetOnNodeChildrenChange = (firestore) => database.ref('/map/{nodeId}/chi
 // [START GetOnNodeParentChange]
 // Listens for changes in /map/{nodeId}/parentID and log them to firestore "changes" collection
 exports.GetOnNodeParentChange = (firestore) => database.ref('/map/{nodeId}/parentID')
-  .onWrite((change, context) => {
-    return insertChange(
+  .onWrite(async (change, context) => {
+    return await insertChange(
       firestore,
       context,
       ActionType.ParentID,
@@ -75,8 +75,8 @@ exports.GetOnNodeNameChange = (firestore) => database.ref('/map/{nodeId}/name')
 // Listens for set /map/{nodeId}/id change and log it to firestore "changes" collection
 // (id can only change on node create or delete)
 exports.GetOnNodeMapIDChange = (firestore) => database.ref('/map/{nodeId}/id')
-  .onWrite((change, context) => {
-    return insertChange(
+  .onWrite(async (change, context) => {
+    return await insertChange(
       firestore,
       context,
       ActionType.MapID,

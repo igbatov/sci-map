@@ -6,18 +6,54 @@
       style="width: 30px; cursor: pointer;"
       @click="revertRemove(event)"
   />
+<!--  In case parent node was deleted show Dialog to select new parent -->
+  <Dialog
+      v-model:visible="newParentDialogVisible"
+      :dismissableMask="false"
+      :closable="true"
+      :modal="false"
+      :closeOnEscape="true"
+      @mousedown.stop
+  >
+    <template #header>
+      <h3>
+        Parent node of this node was deleted, please select new parent.
+      </h3>
+    </template>
+    Set "{{
+      newParentNode && newParentNode.title
+          ? newParentNode.title
+          : ""
+    }}" as new parent node.
+    <template #footer>
+      <Button
+          label="Cancel"
+          icon="pi pi-times"
+          class="p-button-text"
+          @click="cancelAdd"
+      />
+      <Button label="Done" icon="pi pi-check" @click="add" />
+    </template>
+  </Dialog>
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from "vue";
+import {defineComponent, PropType, ref, watch} from "vue";
 import {ChangeLogNodeParent} from "@/store/change_log";
 import {IsNodeInTrash} from "@/api/change_log";
-import { Queue } from '@datastructures-js/queue';
 import api from "@/api/api";
+import {useStore} from "@/store";
+import {Tree} from "@/types/graphics";
+import Dialog from "primevue/dialog";
+import Button from "primevue/button";
 
 export default defineComponent({
   name: "RestoreNode",
-  emits: ["select-restore-parent-is-on", "select-restore-parent-is-off"],
+  components: {
+    Dialog,
+    Button,
+  },
+  emits: ["restore-select-new-parent-is-on", "restore-select-new-parent-is-off"],
   props: {
     event: {
       type: Object as PropType<ChangeLogNodeParent>,
@@ -25,46 +61,70 @@ export default defineComponent({
     },
     clickedTitleId: {
       type: String,
+      required: true,
     },
   },
-  setup() {
-    const restoreNodeWithChildren = async (nodeID: string, parentNodeID: string) => {
-      const queue = new Queue<string>();
-      const updateMap = {} as Record<string, any>
-      updateMap[`map/${parentNodeID}/children/${api.generateKey()}`] = nodeID
-      queue.push(nodeID)
-      while (!queue.isEmpty()) {
-        const nodeID = queue.pop()
-        const mapNode = await api.getTrashNode(nodeID, "map")
-        if (!mapNode) {
-          console.error("restoreNodeWithChildren: cannot find node in trash", nodeID)
-          continue
-        }
-        const nodeContentNode = await api.getTrashNode(nodeID, "node_content")
-        const preconditionNode = await api.getTrashNode(nodeID, "precondition")
-        const nodeImage = await api.getTrashNode(nodeID, "node_image")
-        updateMap[`map/${mapNode?.id}`] = mapNode
-        updateMap[`node_content/${mapNode?.id}`] = nodeContentNode
-        updateMap[`precondition/${mapNode?.id}`] = preconditionNode
-        updateMap[`node_image/${mapNode?.id}`] = nodeImage
-        if (mapNode?.children) {
-          for (const idx in mapNode?.children) {
-            queue.push(mapNode?.children[idx])
+  setup(props, ctx) {
+    // select new parent Dialog stuff
+    const store = useStore();
+    const newParentDialogVisible = ref(false);
+    const newParentNode = ref(null as Tree | null);
+    const nodeIdToRestore = ref("");
+    watch(
+        () => props.clickedTitleId,
+        () => {
+          if (
+              newParentDialogVisible.value &&
+              nodeIdToRestore.value &&
+              props.clickedTitleId !== "-1" &&
+              store.state.tree.nodeRecord[props.clickedTitleId]
+          ) {
+            newParentNode.value =
+                store.state.tree.nodeRecord[props.clickedTitleId].node;
           }
+        },
+        { immediate: true }
+    );
+
+    const restoreNodeWithChildren = async (nodeID: string, parentID: string) => {
+      // do main actions on backend (see functions/cmd_restore.js)
+      return await api.update({ [`cmd/restore`]: {
+          nodeID,
+          parentID,
         }
-      }
-      console.log(updateMap)
-      return await api.update(updateMap);
+      });
     }
     return {
+      newParentDialogVisible,
+      newParentNode,
+      cancelAdd: () => {
+        newParentDialogVisible.value = false;
+        nodeIdToRestore.value = "";
+        newParentNode.value = null;
+        ctx.emit("restore-select-new-parent-is-off");
+      },
+      add: async () => {
+        await restoreNodeWithChildren(nodeIdToRestore.value, newParentNode.value!.id)
+        ctx.emit("restore-select-new-parent-is-off");
+        newParentDialogVisible.value = false;
+        nodeIdToRestore.value = "";
+        newParentNode.value = null;
+      },
       IsNodeInTrash,
       revertRemove: async (event: ChangeLogNodeParent) => {
         if (!event.isRemoved) {
           return
         }
 
-        if (!IsNodeInTrash(event.parentNodeBefore.idPath) && IsNodeInTrash(event.node.idPath)) {
-          await restoreNodeWithChildren(event.node.id, event.parentNodeBefore.id)
+        if (event.parentNodeBefore && !IsNodeInTrash(event.parentNodeBefore.idPath)) {
+          if (IsNodeInTrash(event.node.idPath)) {
+            await restoreNodeWithChildren(event.node.id, event.parentNodeBefore.id)
+          }
+        } else {
+          // parent node is in trash - let user choose new parent
+          ctx.emit('restore-select-new-parent-is-on');
+          newParentDialogVisible.value = true;
+          nodeIdToRestore.value = event.node.id;
         }
       },
     }

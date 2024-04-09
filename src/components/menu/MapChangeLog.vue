@@ -10,9 +10,9 @@
   </MenuButton>
   <Dialog
     v-model:visible="addDialogVisible"
-    :dismissableMask="true"
+    :dismissableMask="false"
     :closable="true"
-    :modal="true"
+    :modal="false"
     :closeOnEscape="true"
     @mousedown.stop
   >
@@ -34,7 +34,12 @@
             {{ new Date(event.timestamp).toLocaleTimeString() }}
           </div>
           <div class="p-col-5">
-            <RestoreNode :clicked-title-id="``" :event="event" />
+            <RestoreNode
+                @restore-select-new-parent-is-on="$emit('restore-select-new-parent-is-on')"
+                @restore-select-new-parent-is-off="$emit('restore-select-new-parent-is-off')"
+                :clickedTitleId="clickedTitleId"
+                :event="event"
+            />
           </div>
         </div>
       </template>
@@ -68,12 +73,19 @@ export default defineComponent({
     Card,
     Dialog
   },
+  emits: ["restore-select-new-parent-is-on", "restore-select-new-parent-is-off"],
+  props: {
+    clickedTitleId: {
+      type: String,
+      required: true
+    }
+  },
   setup() {
     const complainChangeLink = ref("");
     const complainModalVisible = ref(false);
     const addDialogVisible = ref(false);
     const changes = reactive([]) as Array<ChangeLogNodeParent>;
-    subscribeChangeLogEnriched([ActionType.ParentID, ActionType.Remove], [], changeLogs => {
+    subscribeChangeLogEnriched([ActionType.ParentID, ActionType.Remove, ActionType.Restore], [], changeLogs => {
       changes.splice(
         0,
         changes.length,
@@ -92,6 +104,17 @@ export default defineComponent({
       addDialogVisible,
       changes,
       getActionDescription: (event: ChangeLogNodeParent): string => {
+        if (event.action === ActionType.Restore) {
+          return `node ${GetNodeUrl(
+            event.node.idPath,
+            event.node.id,
+            event.node.name
+          )} was restored to ${GetNodeUrl(
+            event.parentNodeAfter!.idPath,
+            event.parentNodeAfter!.id,
+            event.parentNodeAfter!.name
+          )}`;
+        }
         if (event.isAdded) {
           return `node ${GetNodeUrl(
             event.node.idPath,
@@ -109,9 +132,9 @@ export default defineComponent({
             event.node.id,
             event.node.name
           )} was removed from ${GetNodeUrl(
-            event.parentNodeBefore.idPath,
-            event.parentNodeBefore.id,
-            event.parentNodeBefore.name
+            event.parentNodeBefore!.idPath,
+            event.parentNodeBefore!.id,
+            event.parentNodeBefore!.name
           )}`;
         }
 
@@ -120,9 +143,9 @@ export default defineComponent({
           event.node.id,
           event.node.name
         )} was moved from ${GetNodeUrl(
-          event.parentNodeBefore.idPath,
-          event.parentNodeBefore.id,
-          event.parentNodeBefore.name
+          event.parentNodeBefore!.idPath,
+          event.parentNodeBefore!.id,
+          event.parentNodeBefore!.name
         )} to ${GetNodeUrl(
           event.parentNodeAfter!.idPath,
           event.parentNodeAfter!.id,

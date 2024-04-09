@@ -22,8 +22,8 @@ exports.GetOnNodeContentChange = (firestore) => functions.database.ref('/node_co
 // Listens for changes in /node_content/{nodeId}/nodeID and log them to firestore "changes" collection
 // (it must be changed only on node creation anr removal)
 exports.GetOnNodeContentIDChange = (firestore) => functions.database.ref('/node_content/{nodeId}/nodeID')
-  .onWrite((change, context) => {
-    return insertChange(
+  .onWrite(async (change, context) => {
+    return await insertChange(
       firestore,
       context,
       ActionType.ContentID,

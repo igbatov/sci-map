@@ -380,6 +380,7 @@ export default {
     const node = pr.val();
     if (!node) {
       console.error("got null fetching from map/nodeID", nodeID)
+      return null
     }
     node.id = node.id.toString();
     node.children = convertChildren(node.children);

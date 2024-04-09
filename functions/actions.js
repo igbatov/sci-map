@@ -28,4 +28,9 @@ exports.ActionType = {
    * /cmd/remove
    */
   Remove: "remove",
+
+  /**
+   * /cmd/restore
+   */
+  Restore: "restore",
 }

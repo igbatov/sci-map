@@ -23,6 +23,7 @@ const { GetOnUserCreate } = require('./user_role');
 const { GetOnCommandSendDigest } = require('./cmd_send_digest');
 const {GetOnNodeContentChange, GetOnNodeContentIDChange} = require("./change_content");
 const {GetOnImageChange} = require("./change_image");
+const {GetOnCommandRestore} = require("./cmd_restore");
 
 exports.onNodeContentChange = GetOnNodeContentChange(firestore)
 exports.onNodeContentIDChange = GetOnNodeContentIDChange(firestore)
@@ -40,6 +41,7 @@ exports.onNodeMapIDChange = GetOnNodeMapIDChange(firestore)
 // /cmd/<name>/ in realtime database
 // and listening for these changes to start the corresponding actions on backend
 exports.onCommandRemove = GetOnCommandRemove(firestore, database)
+exports.GetOnCommandRestore = GetOnCommandRestore(firestore, database)
 exports.GetOnLastSearch = GetOnLastSearch()
 
 
