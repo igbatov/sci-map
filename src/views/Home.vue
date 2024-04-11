@@ -336,6 +336,7 @@ export default defineComponent({
       },
       setSelectPreconditionOFF: () => {
         selectPreconditionIsOn = false;
+        clickedTitleId.value = "-1"
       },
       setRestoreSelectNewParentON: () => {
         restoreSelectNewParentIsOn = true;
