@@ -40,7 +40,8 @@ const restoreNodeWithChildren = async (db, nodeID, parentID) => {
       mapNode.parentID = parentID;
     }
     const nodeContentNode = await getTrashNode(db, currentNodeID, "node_content")
-    const preconditionNode = getTrashNode(db, currentNodeID, "precondition")
+    const preconditionNode = await getTrashNode(db, currentNodeID, "precondition")
+    // TODO: for each precondition node check that it exists on current map, if not - skip it
     const nodeImage = await getTrashNode(db, currentNodeID, "node_image")
     updateMap[`map/${currentNodeID}`] = mapNode
     updateMap[`node_content/${currentNodeID}`] = nodeContentNode
