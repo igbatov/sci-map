@@ -51,6 +51,7 @@ exports.dailyCrontab = functions.pubsub.schedule('0 16 * * *')
   .onRun(async (context) => {
     functions.logger.info('started dailyCrontab 16:00 UTC');
     await database.ref('cmd/send_digest').set('daily')
+    await database.ref('cmd/send_digest').set('')
     return null;
   });
 // [END dailyCrontab]
@@ -61,6 +62,7 @@ exports.weeklyCrontab = functions.pubsub.schedule('0 0 * * 5')
   .onRun(async (context) => {
     functions.logger.info('started weeklyCrontab 00:00 UTC on Friday');
     await database.ref('cmd/send_digest').set('weekly')
+    await database.ref('cmd/send_digest').set('')
     return null;
   });
 // [END weeklyCrontab]
