@@ -21,7 +21,7 @@
         Map change log
       </h3>
     </template>
-    <Card v-for="(event, i) of changes" :key="i" class="mt-3">
+    <Card v-for="(event, i) of changes" :key="i" class="p-mt-3">
       <template #title>
         <div class="p-grid">
           <div class="p-col-1">
@@ -48,7 +48,7 @@
         <a href="#" @click="showComplain(event.changeLogID)">Complain</a>
       </template>
       <template #content>
-        <div v-html="getActionDescription(event)"></div>
+        <div style="width:20rem;" v-html="getActionDescription(event)"></div>
       </template>
     </Card>
   </Dialog>
