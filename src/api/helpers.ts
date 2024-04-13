@@ -3,7 +3,7 @@ import { Tree } from "@/types/graphics";
 import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "../tools/errorkv";
 
-// convert children object to array
+// convert children an object to array
 export function convertChildren(children: any): string[] {
   let result: string[];
 

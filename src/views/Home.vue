@@ -21,9 +21,9 @@
     :selectedNodeId="selectedNodeId"
   />
   <Menu
-      @restore-select-new-parent-is-on="setRestoreSelectNewParentON"
-      @restore-select-new-parent-is-off="setRestoreSelectNewParentOFF"
-      :clickedTitleId="clickedTitleId"
+    @restore-select-new-parent-is-on="setRestoreSelectNewParentON"
+    @restore-select-new-parent-is-off="setRestoreSelectNewParentOFF"
+    :clickedTitleId="clickedTitleId"
   />
   <Map
     :layers="visibleZoomedPanedLayers"

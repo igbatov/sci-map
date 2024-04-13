@@ -279,7 +279,7 @@ export const store = createStore<State>({
       }
 
       // check that parent node still exists
-      // maybe its better to check this as security rule?
+      // maybe it's better to check this as a security rule?
       const pn = await api.getMapNode(v.parentID)
       if (!pn) {
         console.error("Cannot find parent to add node", v.parentID)

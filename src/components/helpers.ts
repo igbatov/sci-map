@@ -49,3 +49,7 @@ export function getTreePathNodes(id: string,  records: Record<string, NodeRecord
 export function getTreePathString(id: string,  records: Record<string, NodeRecordItem>): string {
   return getTreePathNodes(id, records).filter((node)=>node.id !== '0').map((node)=>node.title).reverse().join('/')
 }
+
+export function isWideScreen() {
+  return window.innerWidth > window.innerHeight
+}

@@ -1,26 +1,26 @@
 <template>
-  <div :class="$style.textSearch">
-    <TextSearch />
+  <div :class="isWideScreen() ? $style.textWrapperSearch : $style.textWrapperSearchMobile">
+    <TextSearch :style="isWideScreen() ? '' : 'width: 80%;'" />
   </div>
   <div :class="$style.wrapper">
     <div v-if="email" style="width:100%">
-      <div style="position: absolute; right: 2rem;">
+      <div style="position: absolute; right: 1.5rem; top:1.2rem;">
         <MenuButton @click="toggleUserMenu">
           <img
             alt="user"
-            src="../../assets/images/user.svg"
-            style="width: 20px"
+            src="../../assets/images/menu.svg"
+            style="width: 1.2rem"
           />
         </MenuButton>
         <PrimeMenu ref="menu" id="overlay_menu" :model="items" :popup="true" />
       </div>
-      <div style="position: absolute; right: 6.1rem;">
+      <div v-if="isWideScreen()" style="position: absolute; right: 6.1rem; top:1.2rem;">
         <Feedback />
       </div>
-      <EditMode style="position: absolute; right: 12.5rem;" />
+      <EditMode v-if="isWideScreen()" style="position: absolute; right: 12.5rem; top:1.2rem;" />
       <div
-          v-if="editModeOn"
-          style="position: absolute; right: 20.6rem;"
+          v-if="editModeOn && isWideScreen()"
+          style="position: absolute; right: 20.6rem; top:1.2rem;"
       >
         <MapChangeLog
             @restore-select-new-parent-is-on="$emit('restore-select-new-parent-is-on')"
@@ -28,15 +28,15 @@
             :clickedTitleId="clickedTitleId"
         />
       </div>
-      <div v-if="editModeOn" style="position: absolute; right: 26.6rem;">
+      <div v-if="editModeOn" style="position: absolute; right: 26.6rem; top:1.2rem;">
         <AddNode />
       </div>
-      <div v-if="editModeOn" style="position: absolute; right: 32.6rem;">
+      <div v-if="editModeOn" style="position: absolute; right: 32.6rem; top:1.2rem;">
         <RemoveNode />
       </div>
       <div
         v-if="editModeOn"
-        style="position: absolute; right: 39.6rem;"
+        style="position: absolute; right: 39.6rem; top:1.2rem;"
       >
         <CutPaste />
       </div>
@@ -44,11 +44,11 @@
     <div v-else>
       <Button
         @click="signIn"
-        style="position: absolute; right: 2rem;"
+        style="position: absolute; right: 2rem; top: 1.2rem;"
         rounded
         size="small"
         icon="pi pi-sign-in"
-        label="sign in"
+        :label="isWideScreen() ? 'sign in' : ''"
       />
     </div>
   </div>
@@ -56,7 +56,7 @@
 
 <script>
 import { useStore } from "@/store";
-import { computed, ref } from "vue";
+import {computed, ref, useCssModule} from "vue";
 import { actions as userActions } from "@/store/user";
 import AddNode from "./AddNode";
 import RemoveNode from "./RemoveNode";
@@ -68,6 +68,7 @@ import MapChangeLog from "@/components/menu/MapChangeLog";
 import MenuButton from "@/components/menu/MenuButton.vue";
 import PrimeMenu from "primevue/tieredmenu";
 import Button from "primevue/button";
+import {isWideScreen} from "@/components/helpers";
 
 export default {
   name: "Menu",
@@ -91,6 +92,7 @@ export default {
     }
   },
   setup() {
+    const $style = useCssModule()
     const store = useStore();
     const user = store.state.user;
     const menu = ref();
@@ -102,14 +104,40 @@ export default {
         : "../../assets/images/user.svg"
     );
     const email = computed(() => (user.user ? user.user.email : null));
+    const editModeOn = computed(() => store.state.editModeOn);
     const items = computed(() => {
-      return [
+      const res = [
         {
           label: email.value,
         },
         {
           separator: true
-        },
+        }]
+      // if (!isWideScreen()) {
+      //   res.push(...[
+      //     {
+      //       label: editModeOn.value ? "edit map is ON" : "edit map is OFF",
+      //       icon: editModeOn.value ? "mdi mdi-power-on" : "mdi mdi-power-off",
+      //       style: editModeOn.value ? "background-color: lightgrey" : "",
+      //       command: () => {
+      //         if (editModeOn.value) {
+      //           store.dispatch(`${actions.setEditMode}`, false);
+      //         } else {
+      //           store.dispatch(`${actions.setEditMode}`, true);
+      //         }
+      //       }
+      //     }
+      //   ])
+      //
+      //   if (editModeOn.value) {
+      //     res.push(...[
+      //       {
+      //
+      //       }
+      //     ])
+      //   }
+      // }
+      res.push(...[
         {
           label: "email changes - "+(user.subscribePeriod ? user.subscribePeriod : 'weekly'),
           icon: "pi pi-eye",
@@ -144,12 +172,14 @@ export default {
             store.dispatch(`user/${userActions.signOut}`);
           }
         },
-      ];
+      ]);
+      return res;
     });
     return {
+      isWideScreen,
       email,
       userPhotoURL,
-      editModeOn: computed(() => store.state.editModeOn),
+      editModeOn,
       isNodeSelected: computed(() => store.state.tree.selectedNodeId),
       isPinned: computed(
         () =>
@@ -178,7 +208,7 @@ export default {
   background-color: rgba(255, 255, 255, 0.2);
   width: 70%;
 }
-.textSearch {
+.textWrapperSearch {
   position: fixed;
   display: flex;
   top: 0;
@@ -186,5 +216,21 @@ export default {
   width: 30%;
   padding: 15px 20px;
   background: linear-gradient(rgba(120, 120, 120, 0.4), rgba(120, 120, 120, 0));
+}
+.textWrapperSearchMobile {
+  position: fixed;
+  display: flex;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 15px 20px;
+  background: linear-gradient(rgba(120, 120, 120, 0.4), rgba(120, 120, 120, 0));
+}
+
+.customSvgIcon {
+  background: url("../../assets/images/user.svg");
+  fill: red;
+  height: 20px;
+  width: 20px;
 }
 </style>
