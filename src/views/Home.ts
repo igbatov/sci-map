@@ -6,7 +6,7 @@ import { NodeRecordItem } from "@/store/tree";
 import { findMapNode } from "@/store/tree/helpers";
 import { clone } from "@/tools/utils";
 
-const MIN_VISIBLE_NUM_IN_LAYER = 3;
+const MIN_VISIBLE_NODES_NUM = 3;
 
 export function zoomAndPanPoint(p: Point, zoom: number, pan: Point): Point {
   return { x: p.x * zoom + pan.x, y: p.y * zoom + pan.y };
@@ -24,16 +24,17 @@ export function zoomAndPanPolygon(
  * CentralNode вычисляется следующим образом.
  * Начинаем смотреть с самого верхнего слоя.
  * Для каждого узла слоя применяем zoomFactor, затем pan
- * Потом смотрим находится ли zoomCenter внутри него. Если да, то это претендент на currentNode (назовем его N).
- * Мы берем его полную площадь и умножаем на 2.
+ * Потом смотрим находиться ли focusPoint внутри него.
+ * Если да, то это претендент на currentNode (назовем его N).
+ * Мы берем его полную площадь и умножаем на MIN_VISIBLE_NODES_NUM.
  * Если получившееся значение ≤ площади экрана, то мы считаем что currentNode это parent узла N
- * Если больше то повторяем итерацию но только с детьми N.
+ * Если больше, то повторяем итерацию, но только с детьми N.
  * @param layers
  * @param nodeRecord
  * @param viewport
  * @param zoomFactor
  * @param pan
- * @param zoomCenter
+ * @param focusPoint
  */
 export function findCentralNode(
   layers: Array<Record<string, MapNode>>,
@@ -41,17 +42,17 @@ export function findCentralNode(
   viewport: Viewport,
   zoomFactor: number,
   pan: Point,
-  zoomCenter: Point
+  focusPoint: Point
 ): [string, ErrorKV] {
   if (!layers || layers.length == 0) {
     return ["", null];
   }
 
-  let underCursorNodeId = null;
+  let underFocusPointNodeId = null;
   const viewportArea = viewport.width * viewport.height;
   let nodesToCheck = layers[0];
   while (Object.keys(nodesToCheck).length) {
-    underCursorNodeId = "";
+    underFocusPointNodeId = "";
 
     for (const nodeId in nodesToCheck) {
       const borderToCheck = zoomAndPanPolygon(
@@ -59,14 +60,14 @@ export function findCentralNode(
         zoomFactor,
         pan
       );
-      if (isInside(zoomCenter, borderToCheck)) {
-        underCursorNodeId = nodeId;
+      if (isInside(focusPoint, borderToCheck)) {
+        underFocusPointNodeId = nodeId;
         break;
       }
     }
 
-    if (underCursorNodeId === "") {
-      // if zoomCenter is outside take the closest node
+    if (underFocusPointNodeId === "") {
+      // if focusPoint is outside a map, take the closest node
       let minDist = Infinity;
       for (const nodeId in nodesToCheck) {
         const nodeCenter = zoomAndPanPoint(
@@ -74,37 +75,36 @@ export function findCentralNode(
           zoomFactor,
           pan
         );
-        const dist = getVectorLength({ from: nodeCenter, to: zoomCenter });
+        const dist = getVectorLength({ from: nodeCenter, to: focusPoint });
         if (dist < minDist) {
           minDist = dist;
-          underCursorNodeId = nodeId;
+          underFocusPointNodeId = nodeId;
         }
       }
     }
 
     const underCursorNodeArea = area(
-      zoomAndPanPolygon(nodesToCheck[underCursorNodeId].border, zoomFactor, pan)
+      zoomAndPanPolygon(nodesToCheck[underFocusPointNodeId].border, zoomFactor, pan)
     );
     if (
-      Math.floor(underCursorNodeArea) <=
-      Math.floor(viewportArea / MIN_VISIBLE_NUM_IN_LAYER)
+      Math.floor(underCursorNodeArea)*MIN_VISIBLE_NODES_NUM <= Math.floor(viewportArea)
     ) {
-      if (nodeRecord[underCursorNodeId].parent == null) {
-        return [underCursorNodeId, null];
+      if (nodeRecord[underFocusPointNodeId].parent == null) {
+        return [underFocusPointNodeId, null];
       }
-      return [nodeRecord[underCursorNodeId].parent!.id, null];
+      return [nodeRecord[underFocusPointNodeId].parent!.id, null];
     } else {
       nodesToCheck = {};
-      if (!nodeRecord[underCursorNodeId]) {
+      if (!nodeRecord[underFocusPointNodeId]) {
         return [
           "",
           NewErrorKV(
-            "findCurrentNode: cannot find underCursorNodeId in nodeRecord",
-            { maxIntersectNodeId: underCursorNodeId, nodeRecord }
+            "findCurrentNode: cannot find underFocusPointNodeId in nodeRecord",
+            { maxIntersectNodeId: underFocusPointNodeId, nodeRecord }
           )
         ];
       }
-      for (const child of nodeRecord[underCursorNodeId].node.children) {
+      for (const child of nodeRecord[underFocusPointNodeId].node.children) {
         const [mapNode] = findMapNode(child.id, layers);
         if (mapNode == null) {
           return [
@@ -119,7 +119,7 @@ export function findCentralNode(
       }
 
       if (Object.keys(nodesToCheck).length === 0) {
-        return [underCursorNodeId, null];
+        return [underFocusPointNodeId, null];
       }
     }
   }

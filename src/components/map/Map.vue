@@ -228,10 +228,10 @@ export default defineComponent({
       fontSize: (index: number): number => {
         let size = 0;
         const levelSizes: Record<number, number> = {
-          0: 6,
-          1: 11,
-          2: 21,
-          3: 28
+          0: 0.4,
+          1: 0.73,
+          2: 1.4,
+          3: 1.86
         };
         if (props.layers!.length >= 4) {
           size = levelSizes[index];

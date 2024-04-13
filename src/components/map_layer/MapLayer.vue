@@ -31,7 +31,7 @@
     :id="`${TITLE_PREFIX}${mapNode.id}`"
     :key="mapNode.id"
     font-family="Roboto"
-    :font-size="fontSize"
+    :font-size="`${fontSize}vmax`"
     :font-weight="textWeight(mapNode.id, selectedNodeId)"
     :fill="textColor(mapNode.id, selectedNodeId)"
     :fill-opacity="fontOpacity"
@@ -43,8 +43,8 @@
       :key="i"
       :x="titleBox[mapNode.id] ? titleBox[mapNode.id].position.x : 0"
       :y="
-        titleBox[mapNode.id]
-          ? titleBox[mapNode.id].position.y + i * fontSize
+        titleBox[mapNode.id] && innerWidth>0
+          ? titleBox[mapNode.id].position.y + i * fontSize * Math.max(innerWidth, innerHeight)/100
           : 0
       "
       alignment-baseline="hanging"
@@ -210,6 +210,8 @@ export default defineComponent({
     return {
       TITLE_PREFIX,
       titleBox,
+      innerWidth: window.innerWidth,
+      innerHeight: window.innerHeight,
       textColor: (nodeID: string, selectedNodeId: string) => {
         if (selectedNodeId && selectedNodeId == nodeID) {
           return "#ffa500";

@@ -107,8 +107,9 @@ export default defineComponent({
     );
 
     /**
-     * From mapNodeLayers method updateLayers determines visibleLayers and nodes
-     * that will be shown to user (which is always just a small part of all nodes of the map)
+     * Method updateLayers extracts visibleLayers and nodes from mapNodeLayers.
+     * These are the nodes that will be visible to the user
+     * (and are always just a small part of all nodes of the map).
      * @param centralNodeId
      * @param mapNodeLayers
      * @param nodeRecord
@@ -177,7 +178,8 @@ export default defineComponent({
           { width: window.innerWidth, height: window.innerHeight },
           zoomPanState.debouncedZoom,
           zoomPanState.pan,
-          zoomPanState.zoomCenter
+            {x:window.innerWidth/2, y:window.innerHeight/2}
+          // zoomPanState.zoomCenter
         );
         if (err != null) {
           printError("filterNodesAndLayers: error in findCurrentNode", { err });
@@ -203,7 +205,7 @@ export default defineComponent({
       ],
       () => {
         // visibleLayers это всегда слои с zoom=1 и pan={0, 0} состоящий из только видимых прямо сейчас элементов.
-        // Мы применяем к этому объекту текущий zoomPanState но сам эталон не трогаем, поэтому здесь clone
+        // Мы применяем к этому объекту текущий zoomPanState, но сам эталон не трогаем, поэтому здесь clone
         // Это не дорогая операция так как visibleLayers всегда содержит небольшое кол-во элементов
         // видимых только прямо сейчас
         const layersToZoomAndPan = clone(visibleLayers.value);
