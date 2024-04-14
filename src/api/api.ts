@@ -32,9 +32,11 @@ const update = async (data: Record<string, any>): Promise<ErrorKV> => {
 
 const debouncedUpdate = debounce(update, 2000);
 
+// ROOT_WIDTH and ROOT_HEIGHT is used only to scale to device window,
+// actual proportion is hardcoded in store/tree ROOT_WIDTH/ROOT_HEIGHT
 export default {
-  ROOT_WIDTH: window.innerWidth > window.innerHeight ?  (2 * window.innerWidth) / 3 : 1.8*0.99*window.innerWidth,
-  ROOT_HEIGHT: window.innerWidth > window.innerHeight ? window.innerHeight : 1.8*2*window.innerHeight/3,
+  ROOT_WIDTH: window.innerWidth > window.innerHeight ? window.innerWidth : 1.5*0.95*window.innerWidth,
+  ROOT_HEIGHT: window.innerWidth > window.innerHeight ? 0.95*window.innerHeight : 1.5*window.innerHeight,
   ROOT_CENTER_X: window.innerWidth > window.innerHeight ? 0.3 * window.innerWidth + (0.7 * window.innerWidth) / 2 : window.innerWidth/2,
   ROOT_CENTER_Y: window.innerWidth > window.innerHeight ? window.innerHeight / 2 : (0.75 * window.innerHeight) / 2,
   ST_WIDTH: 1000,

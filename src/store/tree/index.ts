@@ -14,9 +14,15 @@ import api from "@/api/api";
 import { Commit, Dispatch } from "vuex";
 import {subscribeNodeChanges, unSubscribeNodeChanges} from "@/store/helpers";
 
-// Define root border for 2560x1600
+// Every node in map in database is stored for quadratic border 1000x1000
+// But on client it is recalculated to the proportion hardcoded in these ROOT_WIDTH/ROOT_HEIGHT
+// and fit into border given by ROOT_BORDER
+// Important!: these proportion and border should be the same for every user regardless of her device window!
+// They should be fixed in this constants and never be changed!
+// This is because all users should see the same positions and borders and fit node titles in it
+// (and not try to fit node positions for their windows breaking other users position fit)
 const ROOT_WIDTH = 2560;
-const ROOT_HEIGHT = 1600;
+const ROOT_HEIGHT = 2000;
 const cf = 1 / 3;
 const ROOT_BORDER = [
   { x: 0, y: cf * ROOT_HEIGHT },
@@ -34,7 +40,7 @@ const ROOT_BORDER = [
 ];
 const ROOT_CENTER = { x: api.ROOT_CENTER_X, y: api.ROOT_CENTER_Y };
 
-// Scale root border proportionally to fit 2/3 of user browser viewport and move the left
+// Scale a root border proportionally to fit user browser viewport and move the left
 const userFitCoefficient = Math.min(
   api.ROOT_WIDTH / ROOT_WIDTH,
   api.ROOT_HEIGHT / ROOT_HEIGHT
