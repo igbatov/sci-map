@@ -5,8 +5,9 @@ import NewErrorKV from "@/tools/errorkv";
 import { NodeRecordItem } from "@/store/tree";
 import { findMapNode } from "@/store/tree/helpers";
 import { clone } from "@/tools/utils";
+import {isWideScreen} from "@/components/helpers";
 
-const MIN_VISIBLE_NODES_NUM = 3;
+const MIN_VISIBLE_NODES_NUM = isWideScreen() ? 3 : 1;
 
 export function zoomAndPanPoint(p: Point, zoom: number, pan: Point): Point {
   return { x: p.x * zoom + pan.x, y: p.y * zoom + pan.y };

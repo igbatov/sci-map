@@ -71,6 +71,7 @@ import pan from "./MapPan";
 import PinLayer from "@/components/pin_layer/PinLayer.vue";
 import { printError } from "@/tools/utils";
 import PreconditionLayer from "@/components/precondition_layer/PreconditionLayer.vue";
+import {isWideScreen} from "@/components/helpers";
 
 const mapID = "mapID";
 
@@ -227,12 +228,23 @@ export default defineComponent({
       mapID: mapID,
       fontSize: (index: number): number => {
         let size = 0;
-        const levelSizes: Record<number, number> = {
-          0: 0.4,
-          1: 0.73,
-          2: 1.4,
-          3: 1.86
-        };
+        let levelSizes: Record<number, number>
+        if (isWideScreen()) {
+          levelSizes = {
+            0: 0.4,
+            1: 0.73,
+            2: 1.4,
+            3: 1.86
+          };
+        } else {
+          levelSizes = {
+            0: 1.8*0.4,
+            1: 1.8*0.73,
+            2: 1.8*1.4,
+            3: 1.8*1.86
+          };
+        }
+
         if (props.layers!.length >= 4) {
           size = levelSizes[index];
         }

@@ -69,6 +69,7 @@ import { clone, printError } from "@/tools/utils";
 import { MapNode } from "@/types/graphics";
 import { findMapNode, findMapNodes } from "@/store/tree/helpers";
 import { actions as positionChangePermitsActions } from "@/store/position_change_permits";
+import api from "@/api/api";
 
 export default defineComponent({
   name: "Home",
@@ -178,7 +179,7 @@ export default defineComponent({
           { width: window.innerWidth, height: window.innerHeight },
           zoomPanState.debouncedZoom,
           zoomPanState.pan,
-            {x:window.innerWidth/2, y:window.innerHeight/2}
+            {x:api.ROOT_CENTER_X, y:api.ROOT_CENTER_Y}
           // zoomPanState.zoomCenter
         );
         if (err != null) {

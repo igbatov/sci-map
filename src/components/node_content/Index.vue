@@ -432,7 +432,7 @@ export default defineComponent({
   bottom: 0;
   position: absolute;
   width: 100%;
-  height: 50%;
+  height: 34%;
   padding: 24px;
   overflow-y: scroll;
   background-color: rgba(255, 255, 255, 1);
