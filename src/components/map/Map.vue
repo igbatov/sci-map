@@ -182,8 +182,8 @@ export default defineComponent({
             ctx.emit("wheel", {
               delta: delta,
               center: {
-                x: (e.touches[0].pageX - e.touches[1].pageX) / 2,
-                y: (e.touches[0].pageY - e.touches[1].pageY) / 2
+                x: e.touches[0].pageX + (e.touches[0].pageX - e.touches[1].pageX) / 2,
+                y: e.touches[0].pageY + (e.touches[0].pageY - e.touches[1].pageY) / 2
               }
             });
           }

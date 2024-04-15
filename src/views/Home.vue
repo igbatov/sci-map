@@ -374,7 +374,7 @@ export default defineComponent({
         store.commit(`zoomPan/${zoomPanMutations.ADD_PAN}`, event);
       },
       zoom: (event: EventWheel) => {
-        // initial value of center (when root.border == viewport)
+        // initial value of a center (when root.border == viewport)
         const initial = {
           x: (event.center.x - zoomPanState.pan.x) / zoomPanState.zoom,
           y: (event.center.y - zoomPanState.pan.y) / zoomPanState.zoom
