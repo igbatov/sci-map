@@ -111,6 +111,9 @@ export default defineComponent({
         return;
       }
 
+      /**
+       * Mouse events
+       */
       map.addEventListener("mousedown", event => {
         pan.mouseDown();
       });
@@ -139,16 +142,31 @@ export default defineComponent({
         { passive: true }
       );
 
+      /**
+       * Mobile touch events
+       */
+      // zoom stuff
       let prevDist = Infinity;
+      let center = {x:0, y:0};
+      // drag stuff
       const prevPoint = { x: Infinity, y: Infinity };
       map.addEventListener(
         "touchstart",
-        event => {
+        e => {
+          if (e.touches.length === 1) {
+            prevPoint.x = e.touches[0].clientX;
+            prevPoint.y = e.touches[0].clientY;
+          }
+          if (e.touches.length === 2) {
+            prevDist = Infinity;
+          }
+
           pan.mouseDown();
         },
         { passive: true }
       );
       map.addEventListener("touchend", event => {
+        center = {x:0, y:0};
         prevDist = Infinity;
         prevPoint.x = Infinity;
         prevPoint.y = Infinity;
@@ -170,21 +188,28 @@ export default defineComponent({
             prevPoint.y = e.touches[0].clientY;
           } else if (e.touches.length === 2) {
             let delta = 0;
-            const dist = Math.hypot(
-              e.touches[0].pageX - e.touches[1].pageX,
-              e.touches[0].pageY - e.touches[1].pageY
-            );
-            if (prevDist !== Infinity) {
-              delta = prevDist - dist;
+            let dist = 0;
+            if (prevDist === Infinity) {
+              // init center
+              center = {
+                x: e.touches[0].pageX + (e.touches[0].pageX - e.touches[1].pageX) / 2,
+                y: e.touches[0].pageY + (e.touches[0].pageY - e.touches[1].pageY) / 2
+              };
+              prevDist = 0;
+            } else {
+              dist = Math.max(
+                  Math.abs(center.x - e.touches[0].pageX),
+                  Math.abs(center.x - e.touches[1].pageX),
+                  Math.abs(center.y - e.touches[0].pageY),
+                  Math.abs(center.y - e.touches[1].pageY),
+              )
+              delta = dist - prevDist;
+              prevDist = dist;
             }
-            prevDist = dist;
 
             ctx.emit("wheel", {
               delta: delta,
-              center: {
-                x: e.touches[0].pageX + (e.touches[0].pageX - e.touches[1].pageX) / 2,
-                y: e.touches[0].pageY + (e.touches[0].pageY - e.touches[1].pageY) / 2
-              }
+              center: center,
             });
           }
         },

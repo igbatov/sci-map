@@ -14,13 +14,19 @@ import api from "@/api/api";
 import { Commit, Dispatch } from "vuex";
 import {subscribeNodeChanges, unSubscribeNodeChanges} from "@/store/helpers";
 
-// Every node in map in database is stored for quadratic border 1000x1000
-// But on client it is recalculated to the proportion hardcoded in these ROOT_WIDTH/ROOT_HEIGHT
+// Every node in map in database is stored for quadratic border 1000x1000.
+// But on a client it is recalculated to the proportion hardcoded in these ROOT_WIDTH/ROOT_HEIGHT
 // and fit into border given by ROOT_BORDER
-// Important!: these proportion and border should be the same for every user regardless of her device window!
-// They should be fixed in this constants and never be changed!
-// This is because all users should see the same positions and borders and fit node titles in it
-// (and not try to fit node positions for their windows breaking other users position fit)
+// Important!: these proportion and border should be the same for every user regardless of device screen!
+// Thus, it should be fixed in these constants and never be changed!
+// This is because all users should see the same borders and relative title positions
+// and fit titles in "one for everyone's" setting.
+// If we give every user its own scene, they will try to fit node positions for their device screen
+// and breaking other users fitting, and this will lead to constant changing mess.
+//
+// ROOT_WIDTH,
+// ROOT_HEIGHT and ROOT_BORDER below were chosen
+// to fit laptop screens (where width>height) as well as mobile screens in vertical orientation (height>width).
 const ROOT_WIDTH = 2560;
 const ROOT_HEIGHT = 2000;
 const cf = 1 / 3;
