@@ -134,6 +134,7 @@ export default defineComponent({
       map.addEventListener(
         "wheel",
         event => {
+          console.log(event.deltaY)
           ctx.emit("wheel", {
             delta: event.deltaY,
             center: { x: event.clientX, y: event.clientY }
@@ -208,7 +209,7 @@ export default defineComponent({
             }
 
             ctx.emit("wheel", {
-              delta: delta,
+              delta: -2*delta,
               center: center,
             });
           }
