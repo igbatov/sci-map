@@ -134,7 +134,6 @@ export default defineComponent({
       map.addEventListener(
         "wheel",
         event => {
-          console.log(event.deltaY)
           ctx.emit("wheel", {
             delta: -event.deltaY,
             center: { x: event.clientX, y: event.clientY }
@@ -167,8 +166,10 @@ export default defineComponent({
         { passive: true }
       );
       map.addEventListener("touchend", event => {
+        // zoom stuff
         center = {x:0, y:0};
         prevDist = Infinity;
+        // dragging stuff
         prevPoint.x = Infinity;
         prevPoint.y = Infinity;
         pan.mouseUp();
@@ -189,24 +190,23 @@ export default defineComponent({
             prevPoint.y = e.touches[0].clientY;
           } else if (e.touches.length === 2) {
             let delta = 0;
-            let dist = 0;
             if (prevDist === Infinity) {
               // init center
               center = {
                 x: e.touches[0].pageX + (e.touches[0].pageX - e.touches[1].pageX) / 2,
                 y: e.touches[0].pageY + (e.touches[0].pageY - e.touches[1].pageY) / 2
               };
-              prevDist = 0;
-            } else {
-              dist = Math.max(
+            }
+            const dist = Math.max(
                 Math.abs(center.x - e.touches[0].pageX),
                 Math.abs(center.x - e.touches[1].pageX),
                 Math.abs(center.y - e.touches[0].pageY),
                 Math.abs(center.y - e.touches[1].pageY),
-              );
+            );
+            if (prevDist !== Infinity) {
               delta = dist - prevDist;
-              prevDist = dist;
             }
+            prevDist = dist;
 
             ctx.emit("wheel", {
               delta: 2*delta,
