@@ -136,7 +136,7 @@ export default defineComponent({
         event => {
           console.log(event.deltaY)
           ctx.emit("wheel", {
-            delta: event.deltaY,
+            delta: -event.deltaY,
             center: { x: event.clientX, y: event.clientY }
           });
         },
@@ -199,17 +199,17 @@ export default defineComponent({
               prevDist = 0;
             } else {
               dist = Math.max(
-                  Math.abs(center.x - e.touches[0].pageX),
-                  Math.abs(center.x - e.touches[1].pageX),
-                  Math.abs(center.y - e.touches[0].pageY),
-                  Math.abs(center.y - e.touches[1].pageY),
-              )
+                Math.abs(center.x - e.touches[0].pageX),
+                Math.abs(center.x - e.touches[1].pageX),
+                Math.abs(center.y - e.touches[0].pageY),
+                Math.abs(center.y - e.touches[1].pageY),
+              );
               delta = dist - prevDist;
               prevDist = dist;
             }
 
             ctx.emit("wheel", {
-              delta: -2*delta,
+              delta: 2*delta,
               center: center,
             });
           }

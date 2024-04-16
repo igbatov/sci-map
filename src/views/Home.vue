@@ -379,7 +379,7 @@ export default defineComponent({
           x: (event.center.x - zoomPanState.pan.x) / zoomPanState.zoom,
           y: (event.center.y - zoomPanState.pan.y) / zoomPanState.zoom
         };
-        store.commit(`zoomPan/${zoomPanMutations.ADD_ZOOM}`, -1 * event.delta);
+        store.commit(`zoomPan/${zoomPanMutations.ADD_ZOOM}`, event.delta);
         const after = {
           x: initial.x * zoomPanState.zoom + zoomPanState.pan.x,
           y: initial.y * zoomPanState.zoom + zoomPanState.pan.y
