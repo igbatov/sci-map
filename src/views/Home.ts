@@ -267,13 +267,20 @@ export function zoomAnPanLayers(
   if (!layers || layers.length == 0) {
     return [];
   }
-  for (const layer of layers) {
-    for (const id in layer) {
-      const node = layer[id];
-      node.center = zoomAndPanPoint(node.center, zoom, pan);
-      node.border = zoomAndPanPolygon(node.border, zoom, pan);
+  const resultLayers = [] as Array<Record<number, MapNode>>
+  for (const idx in layers) {
+    const layer = {} as Record<number, MapNode>
+    for (const id in layers[idx]) {
+      const node = layers[idx][id];
+      layer[id] = {
+        id: node.id,
+        title: node.title,
+        center:  zoomAndPanPoint(node.center, zoom, pan),
+        border: zoomAndPanPolygon(node.border, zoom, pan),
+      }
     }
+    resultLayers.push(layer)
   }
 
-  return layers;
+  return resultLayers;
 }

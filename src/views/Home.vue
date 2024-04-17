@@ -197,19 +197,26 @@ export default defineComponent({
     );
 
     const visibleZoomedPanedLayers = ref<Array<Record<string, MapNode>>>([]);
+    let layersToZoomAndPan = [] as Array<Record<string, MapNode>>;
+    watch(visibleLayers, ()=>{
+      // visibleLayers это всегда слои с zoom=1 и pan={0, 0} состоящие из только видимых прямо сейчас элементов.
+      // Мы применяем к этому объекту текущий zoomPanState, но сам эталон не трогаем, поэтому здесь clone
+      // visibleLayers всегда содержит небольшое кол-во элементов
+      // видимых только прямо сейчас
+      layersToZoomAndPan = clone(visibleLayers.value);
+      visibleZoomedPanedLayers.value = zoomAnPanLayers(
+          layersToZoomAndPan,
+          zoomPanState.zoom,
+          zoomPanState.pan
+      );
+    },{ immediate: true, deep: true })
     watch(
       () => [
         zoomPanState.pan.x,
         zoomPanState.pan.y,
         zoomPanState.zoom,
-        visibleLayers
       ],
       () => {
-        // visibleLayers это всегда слои с zoom=1 и pan={0, 0} состоящий из только видимых прямо сейчас элементов.
-        // Мы применяем к этому объекту текущий zoomPanState, но сам эталон не трогаем, поэтому здесь clone
-        // Это не дорогая операция так как visibleLayers всегда содержит небольшое кол-во элементов
-        // видимых только прямо сейчас
-        const layersToZoomAndPan = clone(visibleLayers.value);
         visibleZoomedPanedLayers.value = zoomAnPanLayers(
           layersToZoomAndPan,
           zoomPanState.zoom,
