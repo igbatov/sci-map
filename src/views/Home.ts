@@ -21,6 +21,27 @@ export function zoomAndPanPolygon(
   return p.map(point => zoomAndPanPoint(point, zoom, pan));
 }
 
+export function zoomAndPanPointInPlace(
+  p: Point,
+  newZoom: number,
+  oldZoom: number,
+  newPan: Point,
+  oldPan: Point,
+) {
+  p.x = ((p.x-oldPan.x)/oldZoom)*newZoom + newPan.x
+  p.y = ((p.y-oldPan.y)/oldZoom)*newZoom + newPan.y
+}
+
+export function zoomAndPanPolygonInPlace(
+  p: Polygon,
+  newZoom: number,
+  oldZoom: number,
+  newPan: Point,
+  oldPan: Point,
+) {
+  p.forEach(point => zoomAndPanPointInPlace(point, newZoom, oldZoom, newPan, oldPan));
+}
+
 /**
  * CentralNode вычисляется следующим образом.
  * Начинаем смотреть с самого верхнего слоя.
@@ -257,6 +278,25 @@ export function filterNodesAndLayers(
   }
 
   return [resultLayers, null];
+}
+
+export function zoomAnPanLayersInPlace(
+  layers: Array<Record<number, MapNode>>,
+  newZoom: number,
+  newPan: Point,
+  oldZoom: number,
+  oldPan: Point,
+) {
+  if (!layers || layers.length == 0) {
+    return [];
+  }
+  for (const idx in layers) {
+    const layer = {} as Record<number, MapNode>
+    for (const id in layers[idx]) {
+      zoomAndPanPointInPlace(layers[idx][id].center, newZoom, oldZoom, newPan, oldPan)
+      zoomAndPanPolygonInPlace(layers[idx][id].border, newZoom, oldZoom, newPan, oldPan)
+    }
+  }
 }
 
 export function zoomAnPanLayers(

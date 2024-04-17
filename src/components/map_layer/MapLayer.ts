@@ -140,7 +140,8 @@ export const setTitleBoxes = (
       );
     },
     {
-      immediate: true
+      immediate: true,
+      deep: true,
     }
   );
 };

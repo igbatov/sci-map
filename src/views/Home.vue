@@ -63,10 +63,11 @@ import {
   filterNodesAndLayers,
   findCentralNode,
   zoomAndPanPoint,
-  zoomAnPanLayers
+  zoomAnPanLayers,
+  zoomAnPanLayersInPlace
 } from "@/views/Home";
 import { clone, printError } from "@/tools/utils";
-import { MapNode } from "@/types/graphics";
+import { MapNode, Point } from "@/types/graphics";
 import { findMapNode, findMapNodes } from "@/store/tree/helpers";
 import { actions as positionChangePermitsActions } from "@/store/position_change_permits";
 import api from "@/api/api";
@@ -212,16 +213,26 @@ export default defineComponent({
     },{ immediate: true, deep: true })
     watch(
       () => [
-        zoomPanState.pan.x,
-        zoomPanState.pan.y,
         zoomPanState.zoom,
+        zoomPanState.pan,
       ],
-      () => {
-        visibleZoomedPanedLayers.value = zoomAnPanLayers(
-          layersToZoomAndPan,
-          zoomPanState.zoom,
-          zoomPanState.pan
-        );
+        (newArgs, oldArgs) => {
+        if (!oldArgs) {
+          visibleZoomedPanedLayers.value = zoomAnPanLayers(
+              layersToZoomAndPan,
+              zoomPanState.zoom,
+              zoomPanState.pan
+          )
+        } else {
+          zoomAnPanLayersInPlace(
+              visibleZoomedPanedLayers.value,
+              newArgs[0] as number,
+              newArgs[1] as Point,
+              oldArgs[0] as number,
+              oldArgs[1] as Point,
+          );
+        }
+
       },
       { immediate: true, deep: true }
     );
