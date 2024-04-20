@@ -209,7 +209,7 @@ export default defineComponent({
             prevDist = dist;
 
             ctx.emit("wheel", {
-              delta: 2*delta,
+              delta: 4*delta,
               center: center,
             });
           }
@@ -251,7 +251,7 @@ export default defineComponent({
       titleLeave: (e: EventClickNode) => {
         ctx.emit("title-leave", { id: e.id });
       },
-      mapID: mapID,
+      mapID,
       fontSize: (index: number): number => {
         let size = 0;
         let levelSizes: Record<number, number>

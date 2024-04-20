@@ -71,6 +71,7 @@ import { MapNode, Point } from "@/types/graphics";
 import { findMapNode, findMapNodes } from "@/store/tree/helpers";
 import { actions as positionChangePermitsActions } from "@/store/position_change_permits";
 import api from "@/api/api";
+import isMobile from 'ismobilejs';
 
 export default defineComponent({
   name: "Home",
@@ -200,10 +201,13 @@ export default defineComponent({
     const visibleZoomedPanedLayers = ref<Array<Record<string, MapNode>>>([]);
     let layersToZoomAndPan = [] as Array<Record<string, MapNode>>;
     watch(visibleLayers, ()=>{
-      // visibleLayers это всегда слои с zoom=1 и pan={0, 0} состоящие из только видимых прямо сейчас элементов.
+      // visibleLayers это всегда слои с zoom=1 и pan={0, 0} состоящие только из видимых прямо сейчас элементов.
       // Мы применяем к этому объекту текущий zoomPanState, но сам эталон не трогаем, поэтому здесь clone
-      // visibleLayers всегда содержит небольшое кол-во элементов
-      // видимых только прямо сейчас
+      const svg = document.getElementById("mapID")
+      if (svg && isMobile().phone) {
+        // сбрасываем svg трансформацию
+        svg.setAttribute('transform', ` scale(1 1) translate(0 0)`);
+      }
       layersToZoomAndPan = clone(visibleLayers.value);
       visibleZoomedPanedLayers.value = zoomAnPanLayers(
           layersToZoomAndPan,
@@ -224,15 +228,22 @@ export default defineComponent({
               zoomPanState.pan
           )
         } else {
-          zoomAnPanLayersInPlace(
-              visibleZoomedPanedLayers.value,
-              newArgs[0] as number,
-              newArgs[1] as Point,
-              oldArgs[0] as number,
-              oldArgs[1] as Point,
-          );
+          const svg = document.getElementById("mapID")
+          if (svg && isMobile().phone) {
+            // для мобильного в реальном времени pan и zoom делаем через svg transform
+            // т к на мобильном пересчет через zoomAnPanLayersInPlace притормаживает
+            svg.setAttribute('transform-origin', ` ${zoomPanState.zoomCenter.x}px ${zoomPanState.zoomCenter.y}px`);
+            svg.setAttribute('transform', ` scale(${zoomPanState.relative.zoom}) translate(${zoomPanState.relative.pan.x} ${zoomPanState.relative.pan.y})`);
+          } else {
+            zoomAnPanLayersInPlace(
+                visibleZoomedPanedLayers.value,
+                newArgs[0] as number,
+                newArgs[1] as Point,
+                oldArgs[0] as number,
+                oldArgs[1] as Point,
+            );
+          }
         }
-
       },
       { immediate: true, deep: true }
     );
@@ -390,6 +401,7 @@ export default defineComponent({
           return;
         }
         store.commit(`zoomPan/${zoomPanMutations.ADD_PAN}`, event);
+        store.commit(`zoomPan/${zoomPanMutations.ADD_RELATIVE_PAN}`, event);
       },
       zoom: (event: EventWheel) => {
         // initial value of a center (when root.border == viewport)
@@ -397,6 +409,10 @@ export default defineComponent({
           x: (event.center.x - zoomPanState.pan.x) / zoomPanState.zoom,
           y: (event.center.y - zoomPanState.pan.y) / zoomPanState.zoom
         };
+        store.commit(
+            `zoomPan/${zoomPanMutations.SET_ZOOM_CENTER}`,
+            event.center
+        );
         store.commit(`zoomPan/${zoomPanMutations.ADD_ZOOM}`, event.delta);
         const after = {
           x: initial.x * zoomPanState.zoom + zoomPanState.pan.x,
@@ -406,10 +422,6 @@ export default defineComponent({
           from: after,
           to: event.center
         });
-        store.commit(
-          `zoomPan/${zoomPanMutations.SET_ZOOM_CENTER}`,
-          event.center
-        );
       }
     };
   }
