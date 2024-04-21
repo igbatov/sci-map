@@ -200,6 +200,7 @@ export default {
 
 <style module>
 .wrapper {
+  z-index:20;
   position: fixed;
   display: flex;
   top: 0;
@@ -209,6 +210,7 @@ export default {
   width: 70%;
 }
 .textWrapperSearch {
+  z-index:20;
   position: fixed;
   display: flex;
   top: 0;
@@ -218,6 +220,7 @@ export default {
   background: linear-gradient(rgba(120, 120, 120, 0.4), rgba(120, 120, 120, 0));
 }
 .textWrapperSearchMobile {
+  z-index:20;
   position: fixed;
   display: flex;
   top: 0;

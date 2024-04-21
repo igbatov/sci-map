@@ -76,7 +76,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, watchEffect } from "vue";
+import { computed, defineComponent, PropType, ref, watch } from "vue";
 import PreconditionArrow from "@/components/precondition_layer/PreconditionArrow.vue";
 import { useStore } from "@/store";
 import { MapNode } from "@/types/graphics";
@@ -86,6 +86,7 @@ import { zoomAndPanPoint } from "@/views/Home";
 import SVGTextBox from "@/components/SVGTextBox.vue";
 import { setTitleBoxes } from "@/components/map_layer/MapLayer";
 import { mutations as titleBoxMutations, TitleBox } from "@/store/title_box";
+import isMobile from "ismobilejs";
 
 const TITLE_PREFIX = "precondition_title_";
 
@@ -115,11 +116,20 @@ export default defineComponent({
           return null;
         }
         const zoomedPannedSelectedNode = clone(mapNode);
-        zoomedPannedSelectedNode.center = zoomAndPanPoint(
-          zoomedPannedSelectedNode.center,
-          zoomPanState.zoom,
-          zoomPanState.pan
-        );
+        if (isMobile().phone) {
+          zoomedPannedSelectedNode.center = zoomAndPanPoint(
+              zoomedPannedSelectedNode.center,
+              zoomPanState.debouncedZoom,
+              zoomPanState.debouncedPan
+          );
+        } else {
+          zoomedPannedSelectedNode.center = zoomAndPanPoint(
+              zoomedPannedSelectedNode.center,
+              zoomPanState.zoom,
+              zoomPanState.pan
+          );
+        }
+
         return zoomedPannedSelectedNode;
       } else {
         return null;
@@ -148,45 +158,71 @@ export default defineComponent({
       }
     );
 
-    watchEffect(() => {
-      preconditions.value = {};
-      // some precondition nodes may be not visible on current layout
-      // so collect these extra titles into extraPreconditionTitles and show them
-      extraPreconditionTitles.value = {};
-      if (
-        props.selectedNodeId &&
-        store.state.precondition.preconditions[props.selectedNodeId] &&
-        store.state.tree.mapNodeLayers
-      ) {
-        const nodes = clone(
-          findMapNodes(
-            store.state.precondition.preconditions[props.selectedNodeId],
+    watch(
+() => {
+        return isMobile().phone ? [
+          zoomPanState.debouncedZoom,
+          zoomPanState.debouncedPan,
+          props.selectedNodeId,
+          store.state.precondition.preconditions,
+          props.visibleTitleIds,
+        ] : [
+          zoomPanState.zoom,
+          zoomPanState.pan,
+          props.selectedNodeId,
+          store.state.precondition.preconditions,
+          props.visibleTitleIds,
+        ]
+      },
+  () => {
+        preconditions.value = {};
+        // some precondition nodes may be not visible on current layout
+        // so collect these extra titles into extraPreconditionTitles and show them
+        extraPreconditionTitles.value = {};
+        if (
+            props.selectedNodeId &&
+            store.state.precondition.preconditions[props.selectedNodeId] &&
             store.state.tree.mapNodeLayers
-          )
-        );
-        for (const node of nodes) {
-          node.center = zoomAndPanPoint(
-            node.center,
-            zoomPanState.zoom,
-            zoomPanState.pan
+        ) {
+          const nodes = clone(
+              findMapNodes(
+                  store.state.precondition.preconditions[props.selectedNodeId],
+                  store.state.tree.mapNodeLayers
+              )
           );
-          preconditions.value[node.id] = node;
+          for (const node of nodes) {
+            if (isMobile().phone) {
+              node.center = zoomAndPanPoint(
+                  node.center,
+                  zoomPanState.debouncedZoom,
+                  zoomPanState.debouncedPan
+              );
+            } else {
+              node.center = zoomAndPanPoint(
+                  node.center,
+                  zoomPanState.zoom,
+                  zoomPanState.pan
+              );
+            }
+
+            preconditions.value[node.id] = node;
+          }
         }
-      }
-      for (const id in preconditions.value) {
-        if (props.visibleTitleIds?.indexOf(id) == -1) {
-          extraPreconditionTitles.value[id] = preconditions.value[id];
+        for (const id in preconditions.value) {
+          if (props.visibleTitleIds?.indexOf(id) == -1) {
+            extraPreconditionTitles.value[id] = preconditions.value[id];
+          }
         }
-      }
-      if (
-        props.selectedNodeId &&
-        selectedNode.value &&
-        store.state.tree.mapNodeLayers &&
-        props.visibleTitleIds?.indexOf(props.selectedNodeId) == -1
-      ) {
-        extraPreconditionTitles.value[props.selectedNodeId] = selectedNode.value;
-      }
-    });
+        if (
+            props.selectedNodeId &&
+            selectedNode.value &&
+            store.state.tree.mapNodeLayers &&
+            props.visibleTitleIds?.indexOf(props.selectedNodeId) == -1
+        ) {
+          extraPreconditionTitles.value[props.selectedNodeId] = selectedNode.value;
+        }
+  },
+{immediate:true, deep:true});
 
     return {
       TITLE_PREFIX,

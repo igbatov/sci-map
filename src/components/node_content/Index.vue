@@ -429,6 +429,7 @@ export default defineComponent({
 
 <style module>
 .wrapperContentMobile {
+  z-index:10;
   bottom: 0;
   position: absolute;
   width: 100%;
@@ -444,6 +445,7 @@ export default defineComponent({
   clip-path: inset(-5px 0px 0px 0px);
 }
 .wrapperContent {
+  z-index:10;
   position: absolute;
   width: 30%;
   height: 100%;

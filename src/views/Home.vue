@@ -203,10 +203,14 @@ export default defineComponent({
     watch(visibleLayers, ()=>{
       // visibleLayers это всегда слои с zoom=1 и pan={0, 0} состоящие только из видимых прямо сейчас элементов.
       // Мы применяем к этому объекту текущий zoomPanState, но сам эталон не трогаем, поэтому здесь clone
-      const svg = document.getElementById("mapID")
+      const svg = document.getElementById("mapID") as any
       if (svg && isMobile().phone) {
         // сбрасываем svg трансформацию
-        svg.setAttribute('transform', ` scale(1 1) translate(0 0)`);
+        svg.setAttribute('transform', ` scale(1 1)`);
+        const viewBox = svg.viewBox.baseVal;
+        // сбрасываем pan viewBox
+        viewBox.x = 0;
+        viewBox.y = 0;
       }
       layersToZoomAndPan = clone(visibleLayers.value);
       visibleZoomedPanedLayers.value = zoomAnPanLayers(
@@ -228,12 +232,22 @@ export default defineComponent({
               zoomPanState.pan
           )
         } else {
-          const svg = document.getElementById("mapID")
+          const svg = document.getElementById("mapID") as any
           if (svg && isMobile().phone) {
             // для мобильного в реальном времени pan и zoom делаем через svg transform
             // т к на мобильном пересчет через zoomAnPanLayersInPlace притормаживает
             svg.setAttribute('transform-origin', ` ${zoomPanState.zoomCenter.x}px ${zoomPanState.zoomCenter.y}px`);
-            svg.setAttribute('transform', ` scale(${zoomPanState.relative.zoom}) translate(${zoomPanState.relative.pan.x} ${zoomPanState.relative.pan.y})`);
+            svg.setAttribute('transform', ` scale(${zoomPanState.relative.zoom})`);
+            // TODO: для pan вместо viewBox лучше использовать svg transform translate для единообразия
+            // svg.setAttribute('transform', ` scale(${zoomPanState.relative.zoom}) translate(${zoomPanState.relative.pan.x} ${zoomPanState.relative.pan.y})`);
+            // Но при таком подходе после pan обрезается все что вне экрана (так же как сейчас при zoom)
+            // Если же использовать viewBox для zoom начинается какой-то неадекват с определением bbox для title:
+            // viewBox.width =  viewBox.width/zoomPanState.relative.zoom
+            // viewBox.height =  viewBox.height/zoomPanState.relative.zoom
+            // Разбираться не стал, в результате пока что такой вот костыль из смеси viewBox и transform
+            const viewBox = svg.viewBox.baseVal;
+            viewBox.x = -zoomPanState.relative.pan.x;
+            viewBox.y = -zoomPanState.relative.pan.y;
           } else {
             zoomAnPanLayersInPlace(
                 visibleZoomedPanedLayers.value,
@@ -278,11 +292,20 @@ export default defineComponent({
         const result = [];
         for (const pinMapNode of pinMapNodes) {
           const cl = clone(pinMapNode);
-          cl.center = zoomAndPanPoint(
-            pinMapNode.center,
-            zoomPanState.zoom,
-            zoomPanState.pan
-          );
+          if (isMobile().phone) {
+            cl.center = zoomAndPanPoint(
+                pinMapNode.center,
+                zoomPanState.debouncedZoom,
+                zoomPanState.debouncedPan
+            );
+          } else {
+            cl.center = zoomAndPanPoint(
+                pinMapNode.center,
+                zoomPanState.zoom,
+                zoomPanState.pan
+            );
+          }
+
           result.push(cl);
         }
 
@@ -328,11 +351,20 @@ export default defineComponent({
         const result = [];
         for (const searchResultMapNode of searchResultMapNodes) {
           const cl = clone(searchResultMapNode);
-          cl.center = zoomAndPanPoint(
-            searchResultMapNode.center,
-            zoomPanState.zoom,
-            zoomPanState.pan
-          );
+          if (isMobile().phone) {
+            cl.center = zoomAndPanPoint(
+                searchResultMapNode.center,
+                zoomPanState.debouncedZoom,
+                zoomPanState.debouncedPan
+            );
+          } else {
+            cl.center = zoomAndPanPoint(
+                searchResultMapNode.center,
+                zoomPanState.zoom,
+                zoomPanState.pan
+            );
+          }
+
           result.push(cl);
         }
 

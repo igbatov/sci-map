@@ -3,6 +3,7 @@
     xmlns="http://www.w3.org/2000/svg"
     :width="svgWidth"
     :height="svgHeight"
+    :viewBox="`0 0 ${svgWidth} ${svgHeight}`"
     :id="mapID"
     style="touch-action: none;"
   >
@@ -220,8 +221,7 @@ export default defineComponent({
 
     return {
       svgWidth: window.innerWidth,
-      // 0.99 because if svg == innerHeight then browser vertical scroll bar appears
-      svgHeight: 0.99 * window.innerHeight,
+      svgHeight: window.innerHeight,
       visibleTitleIds: computed(() => {
         if (!props.layers) {
           return [];
