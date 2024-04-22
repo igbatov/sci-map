@@ -1,7 +1,4 @@
 <template>
-  <div :class="isWideScreen() ? $style.textWrapperSearch : $style.textWrapperSearchMobile">
-    <TextSearch :style="isWideScreen() ? '' : 'width: 80%;'" />
-  </div>
   <div :class="$style.wrapper">
     <div v-if="email" style="width:100%">
       <div style="position: absolute; right: 1.5rem; top:1.2rem;">
@@ -63,7 +60,6 @@ import RemoveNode from "./RemoveNode";
 import EditMode from "./EditMode";
 import CutPaste from "@/components/menu/CutPaste";
 import Feedback from "@/components/menu/Feedback";
-import TextSearch from "@/components/menu/Textsearch";
 import MapChangeLog from "@/components/menu/MapChangeLog";
 import MenuButton from "@/components/menu/MenuButton.vue";
 import PrimeMenu from "primevue/tieredmenu";
@@ -81,7 +77,6 @@ export default {
     AddNode,
     RemoveNode,
     EditMode,
-    TextSearch,
     MapChangeLog
   },
   emits: ["restore-select-new-parent-is-on", "restore-select-new-parent-is-off"],
@@ -209,27 +204,6 @@ export default {
   background-color: rgba(255, 255, 255, 0.2);
   width: 70%;
 }
-.textWrapperSearch {
-  z-index:20;
-  position: fixed;
-  display: flex;
-  top: 0;
-  left: 0;
-  width: 30%;
-  padding: 15px 20px;
-  background: linear-gradient(rgba(120, 120, 120, 0.4), rgba(120, 120, 120, 0));
-}
-.textWrapperSearchMobile {
-  z-index:20;
-  position: fixed;
-  display: flex;
-  top: 0;
-  left: 0;
-  width: 100%;
-  padding: 15px 20px;
-  background: linear-gradient(rgba(120, 120, 120, 0.4), rgba(120, 120, 120, 0));
-}
-
 .customSvgIcon {
   background: url("../../assets/images/user.svg");
   fill: red;

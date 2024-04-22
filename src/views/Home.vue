@@ -13,32 +13,67 @@
       </div>
     </template>
   </Toast>
-  <NodeContent
-    :clickedTitleId="clickedTitleId"
-    @select-precondition-is-on="setSelectPreconditionON"
-    @select-precondition-is-off="setSelectPreconditionOFF"
-    :show="!editModeOn"
-    :selectedNodeId="selectedNodeId"
-  />
+  <div :class="isWideScreen() ? $style.textWrapperSearch : $style.textWrapperSearchMobile">
+    <TextSearch :style="isWideScreen() ? '' : 'width: 80%;'" />
+  </div>
   <Menu
     @restore-select-new-parent-is-on="setRestoreSelectNewParentON"
     @restore-select-new-parent-is-off="setRestoreSelectNewParentOFF"
     :clickedTitleId="clickedTitleId"
   />
-  <Map
-    :layers="visibleZoomedPanedLayers"
-    :selectedNodeId="selectedNodeId"
-    :selectedNodePreconditionIds="selectedNodePreconditionIds"
-    :pin-nodes="pinNodes"
-    :searchResultPinNodes="searchResultPinNodes"
-    :searchResultNodeIDs="searchResultNodeIDs"
-    @title-dragging="nodeDragging"
-    @title-click="titleClick"
-    @title-over="titleOver"
-    @title-leave="titleLeave"
-    @dragging-background="mapDragging"
-    @wheel="zoom"
-  />
+  <div v-if="isWideScreen()">
+    <NodeContent
+        :clickedTitleId="clickedTitleId"
+        @select-precondition-is-on="setSelectPreconditionON"
+        @select-precondition-is-off="setSelectPreconditionOFF"
+        :show="!editModeOn"
+        :selectedNodeId="selectedNodeId"
+    />
+    <Map
+        :layers="visibleZoomedPanedLayers"
+        :selectedNodeId="selectedNodeId"
+        :selectedNodePreconditionIds="selectedNodePreconditionIds"
+        :pin-nodes="pinNodes"
+        :searchResultPinNodes="searchResultPinNodes"
+        :searchResultNodeIDs="searchResultNodeIDs"
+        @title-dragging="nodeDragging"
+        @title-click="titleClick"
+        @title-over="titleOver"
+        @title-leave="titleLeave"
+        @dragging-background="mapDragging"
+        @wheel="zoom"
+    />
+  </div>
+  <div v-else>
+    <Splitter :style="`height:${innerHeight}px`" :gutterSize="15" layout="vertical" @resize="splitterResize($event)">
+      <SplitterPanel class="flex align-items-center justify-content-center" :size="60">
+        <Map
+            :layers="visibleZoomedPanedLayers"
+            :selectedNodeId="selectedNodeId"
+            :selectedNodePreconditionIds="selectedNodePreconditionIds"
+            :pin-nodes="pinNodes"
+            :searchResultPinNodes="searchResultPinNodes"
+            :searchResultNodeIDs="searchResultNodeIDs"
+            @title-dragging="nodeDragging"
+            @title-click="titleClick"
+            @title-over="titleOver"
+            @title-leave="titleLeave"
+            @dragging-background="mapDragging"
+            @wheel="zoom"
+        />
+      </SplitterPanel>
+      <SplitterPanel class="flex align-items-center justify-content-center" :size="40">
+        <NodeContent
+            :wrapperHeight="contentSplitHeight"
+            :clickedTitleId="clickedTitleId"
+            @select-precondition-is-on="setSelectPreconditionON"
+            @select-precondition-is-off="setSelectPreconditionOFF"
+            :show="!editModeOn"
+            :selectedNodeId="selectedNodeId"
+        />
+      </SplitterPanel>
+    </Splitter>
+  </div>
 </template>
 
 <script lang="ts">
@@ -72,11 +107,18 @@ import { findMapNode, findMapNodes } from "@/store/tree/helpers";
 import { actions as positionChangePermitsActions } from "@/store/position_change_permits";
 import api from "@/api/api";
 import isMobile from 'ismobilejs';
+import TextSearch from "@/components/menu/Textsearch.vue";
+import {isWideScreen} from "@/components/helpers";
+import Splitter, { SplitterResizeEvent } from 'primevue/splitter';
+import SplitterPanel from 'primevue/splitterpanel';
 
 export default defineComponent({
   name: "Home",
 
   components: {
+    Splitter,
+    SplitterPanel,
+    TextSearch,
     Map,
     Menu,
     NodeContent,
@@ -262,7 +304,11 @@ export default defineComponent({
       { immediate: true, deep: true }
     );
 
+    const contentSplitHeight = ref(window.innerHeight*0.4);
+
     return {
+      innerHeight: window.innerHeight,
+      isWideScreen,
       /**
        * pinNodes
        */
@@ -454,8 +500,35 @@ export default defineComponent({
           from: after,
           to: event.center
         });
-      }
+      },
+      splitterResize: (event: SplitterResizeEvent) => {
+        contentSplitHeight.value = window.innerHeight*event.sizes[1]/100
+      },
+      contentSplitHeight,
     };
   }
 });
 </script>
+
+<style module>
+.textWrapperSearch {
+  z-index:20;
+  position: fixed;
+  display: flex;
+  top: 0;
+  left: 0;
+  width: 30%;
+  padding: 15px 20px;
+  background: linear-gradient(rgba(120, 120, 120, 0.4), rgba(120, 120, 120, 0));
+}
+.textWrapperSearchMobile {
+  z-index:20;
+  position: fixed;
+  display: flex;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 15px 20px;
+  background: linear-gradient(rgba(120, 120, 120, 0.4), rgba(120, 120, 120, 0));
+}
+</style>

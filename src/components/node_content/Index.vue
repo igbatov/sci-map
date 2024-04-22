@@ -1,5 +1,5 @@
 <template>
-  <div v-if="show && selectedNode" :class="`${wrapperClass()}`">
+  <div v-if="show && selectedNode" :class="`${wrapperClass()}`" :style="!isWideScreen() ? `height:${wrapperHeight}px;` : ''">
     <div class="p-fluid">
       <!-- Image -->
       <TitleImage
@@ -81,7 +81,7 @@
       <ChangeLog :node-id="selectedNode.id" />
     </div>
   </div>
-  <div v-else-if="editModeOn" :class="`${wrapperClass()}`">
+  <div v-else-if="editModeOn" :class="`${wrapperClass()}`" :style="!isWideScreen() ? `height:${wrapperHeight}px;` : ''">
     <div class="p-fluid">
       <div class="p-field p-grid">
         <div class="p-col-12">
@@ -141,7 +141,7 @@
       </div>
     </div>
   </div>
-  <div v-else :class="`${wrapperClass()}`">
+  <div v-else :class="`${wrapperClass()}`" :style="!isWideScreen() ? `height:${wrapperHeight}px;` : ''">
     <div class="p-fluid">
       <div class="p-field p-grid">
         <div v-if="isWideScreen()" class="p-col-12">
@@ -270,7 +270,7 @@ $$`)}
           Talk to your coauthors in <a target="_blank" href="https://discord.com/channels/1171118046543347782/1171118047587745953">chat</a> to adapt community rules and create a great content
         </div>
         <div :class="`p-col-12 ${$style.list}`">
-          <i>One of the greatest impact one can do is to help millions of others to discover the truth!</i>
+          <i>One of the greatest impact one can do is to help millions to get the knowledge!</i>
         </div>
       </div>
     </div>
@@ -333,6 +333,10 @@ export default defineComponent({
     },
     clickedTitleId: {
       type: String,
+      required: true
+    },
+    wrapperHeight: {
+      type: Number,
       required: true
     }
   },
@@ -421,7 +425,7 @@ export default defineComponent({
       isWideScreen,
       wrapperClass: () => {
         return isWideScreen() ? $style.wrapperContent : $style.wrapperContentMobile;
-      }
+      },
     };
   }
 });
@@ -430,19 +434,11 @@ export default defineComponent({
 <style module>
 .wrapperContentMobile {
   z-index:10;
-  bottom: 0;
-  position: absolute;
-  width: 100%;
-  height: 34%;
   padding: 24px;
-  overflow-y: scroll;
   background-color: rgba(255, 255, 255, 1);
   font-family: Roboto, Arial, sans-serif;
   color: rgb(73, 80, 87);
-
-  border-top: 1px solid rgb(218, 220, 224);
-  box-shadow: 0 -2px 2px rgba(0, 0, 0, 0.5);
-  clip-path: inset(-5px 0px 0px 0px);
+  overflow-y: scroll;
 }
 .wrapperContent {
   z-index:10;
