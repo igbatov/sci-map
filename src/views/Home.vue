@@ -13,66 +13,74 @@
       </div>
     </template>
   </Toast>
-  <div :class="isWideScreen() ? $style.textWrapperSearch : $style.textWrapperSearchMobile">
-    <TextSearch :style="isWideScreen() ? '' : 'width: 80%;'" />
-  </div>
-  <Menu
-    @restore-select-new-parent-is-on="setRestoreSelectNewParentON"
-    @restore-select-new-parent-is-off="setRestoreSelectNewParentOFF"
-    :clickedTitleId="clickedTitleId"
-  />
-  <div v-if="isWideScreen()">
-    <NodeContent
-        :clickedTitleId="clickedTitleId"
-        @select-precondition-is-on="setSelectPreconditionON"
-        @select-precondition-is-off="setSelectPreconditionOFF"
-        :show="!editModeOn"
-        :selectedNodeId="selectedNodeId"
-    />
-    <Map
-        :layers="visibleZoomedPanedLayers"
-        :selectedNodeId="selectedNodeId"
-        :selectedNodePreconditionIds="selectedNodePreconditionIds"
-        :pin-nodes="pinNodes"
-        :searchResultPinNodes="searchResultPinNodes"
-        :searchResultNodeIDs="searchResultNodeIDs"
-        @title-dragging="nodeDragging"
-        @title-click="titleClick"
-        @title-over="titleOver"
-        @title-leave="titleLeave"
-        @dragging-background="mapDragging"
-        @wheel="zoom"
+  <div v-if="!(visibleZoomedPanedLayers && visibleZoomedPanedLayers.length)">
+    <LogoDummy
+        :wrapHeight="innerHeight"
+        :wrapWidth="innerWidth"
     />
   </div>
   <div v-else>
-    <Splitter :style="`height:${innerHeight}px`" :gutterSize="15" layout="vertical" @resize="splitterResize($event)">
-      <SplitterPanel class="flex align-items-center justify-content-center" :size="60">
-        <Map
-            :layers="visibleZoomedPanedLayers"
-            :selectedNodeId="selectedNodeId"
-            :selectedNodePreconditionIds="selectedNodePreconditionIds"
-            :pin-nodes="pinNodes"
-            :searchResultPinNodes="searchResultPinNodes"
-            :searchResultNodeIDs="searchResultNodeIDs"
-            @title-dragging="nodeDragging"
-            @title-click="titleClick"
-            @title-over="titleOver"
-            @title-leave="titleLeave"
-            @dragging-background="mapDragging"
-            @wheel="zoom"
-        />
-      </SplitterPanel>
-      <SplitterPanel class="flex align-items-center justify-content-center" :size="40">
-        <NodeContent
-            :wrapperHeight="contentSplitHeight"
-            :clickedTitleId="clickedTitleId"
-            @select-precondition-is-on="setSelectPreconditionON"
-            @select-precondition-is-off="setSelectPreconditionOFF"
-            :show="!editModeOn"
-            :selectedNodeId="selectedNodeId"
-        />
-      </SplitterPanel>
-    </Splitter>
+    <div :class="isWideScreen() ? $style.textWrapperSearch : $style.textWrapperSearchMobile">
+      <TextSearch :style="isWideScreen() ? '' : 'width: 80%;'" />
+    </div>
+    <Menu
+        @restore-select-new-parent-is-on="setRestoreSelectNewParentON"
+        @restore-select-new-parent-is-off="setRestoreSelectNewParentOFF"
+        :clickedTitleId="clickedTitleId"
+    />
+    <div v-if="isWideScreen()">
+      <NodeContent
+          :clickedTitleId="clickedTitleId"
+          @select-precondition-is-on="setSelectPreconditionON"
+          @select-precondition-is-off="setSelectPreconditionOFF"
+          :show="!editModeOn"
+          :selectedNodeId="selectedNodeId"
+      />
+      <Map
+          :layers="visibleZoomedPanedLayers"
+          :selectedNodeId="selectedNodeId"
+          :selectedNodePreconditionIds="selectedNodePreconditionIds"
+          :pin-nodes="pinNodes"
+          :searchResultPinNodes="searchResultPinNodes"
+          :searchResultNodeIDs="searchResultNodeIDs"
+          @title-dragging="nodeDragging"
+          @title-click="titleClick"
+          @title-over="titleOver"
+          @title-leave="titleLeave"
+          @dragging-background="mapDragging"
+          @wheel="zoom"
+      />
+    </div>
+    <div v-else>
+      <Splitter :style="`height:${innerHeight}px`" :gutterSize="15" layout="vertical" @resize="splitterResize($event)">
+        <SplitterPanel class="flex align-items-center justify-content-center" :size="60">
+          <Map
+              :layers="visibleZoomedPanedLayers"
+              :selectedNodeId="selectedNodeId"
+              :selectedNodePreconditionIds="selectedNodePreconditionIds"
+              :pin-nodes="pinNodes"
+              :searchResultPinNodes="searchResultPinNodes"
+              :searchResultNodeIDs="searchResultNodeIDs"
+              @title-dragging="nodeDragging"
+              @title-click="titleClick"
+              @title-over="titleOver"
+              @title-leave="titleLeave"
+              @dragging-background="mapDragging"
+              @wheel="zoom"
+          />
+        </SplitterPanel>
+        <SplitterPanel class="flex align-items-center justify-content-center" :size="40">
+          <NodeContent
+              :wrapperHeight="contentSplitHeight"
+              :clickedTitleId="clickedTitleId"
+              @select-precondition-is-on="setSelectPreconditionON"
+              @select-precondition-is-off="setSelectPreconditionOFF"
+              :show="!editModeOn"
+              :selectedNodeId="selectedNodeId"
+          />
+        </SplitterPanel>
+      </Splitter>
+    </div>
   </div>
 </template>
 
@@ -111,11 +119,13 @@ import TextSearch from "@/components/menu/Textsearch.vue";
 import {isWideScreen} from "@/components/helpers";
 import Splitter, { SplitterResizeEvent } from 'primevue/splitter';
 import SplitterPanel from 'primevue/splitterpanel';
+import LogoDummy from "@/views/LogoDummy.vue";
 
 export default defineComponent({
   name: "Home",
 
   components: {
+    LogoDummy,
     Splitter,
     SplitterPanel,
     TextSearch,
@@ -308,6 +318,7 @@ export default defineComponent({
 
     return {
       innerHeight: window.innerHeight,
+      innerWidth: window.innerWidth,
       isWideScreen,
       /**
        * pinNodes
