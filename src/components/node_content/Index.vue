@@ -190,11 +190,11 @@
           }
          },
         value: `
-<div style='padding-left: 20px; width:370px;height:550px;'>
+<div style='padding-left: 20px; width:410px;height:600px;'>
   Use <a target='_blank' href='https://markdown-it.github.io/'>markdown</a> to format text
   and <a target='_blank' href='https://katex.org/docs/supported.html'>katex</a> notation to write formulas.
  For example write
- <textarea rows='3' cols='40'>$$
+ <textarea rows='3' cols='43'>$$
 \\sum_{\\mathclap{1\\le i\\le j\\le n}} x_{ij}
 $$</textarea>
   to render formula:
@@ -203,9 +203,12 @@ $$</textarea>
 $$`)}
   <div style='margin-top: -4em;'>
   Or write
-   <textarea rows='3' cols='40'>![](https://cdn.scimap.org/images/default.jpg =340x)</textarea>
-   to insert image:
-   ${md.render(`![](https://cdn.scimap.org/images/default.jpg =340x)`)}
+   <textarea rows='5' cols='43'>
+   ![](https://cdn.scimap.org/images/default.jpg =340x)
+   @[youtube](https://www.youtube.com/watch?v=E8YCQ0zjCZA)
+   </textarea>
+   to insert image or video:
+   ${md.render(`@[youtube](https://www.youtube.com/watch?v=E8YCQ0zjCZA)`)}
    </div>
 </div>`
         }" :class="`p-col-10 ${$style.list}`">
@@ -300,10 +303,18 @@ import MarkdownIt from "markdown-it";
 import { isWideScreen } from "../helpers";
 const mdKatex = require('markdown-it-katex'); // eslint-disable-line
 const mdImsize = require('markdown-it-imsize'); // eslint-disable-line
+const mdVideo = require('markdown-it-block-embed'); // eslint-disable-line
 const md = new MarkdownIt();
 md
   .use(mdKatex, { output: "html" })
-  .use(mdImsize);
+  .use(mdImsize)
+  .use(mdVideo, {
+    containerClassName: "video-embed",
+    youtube: {
+      width: 370,
+      height: 209,
+    }
+  });
 
 export default defineComponent({
   name: "NodeContent",

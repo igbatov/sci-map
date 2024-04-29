@@ -27,9 +27,17 @@ import {useStore} from "@/store";
 const mdKatex = require('markdown-it-katex'); // eslint-disable-line
 const mdImsize = require('markdown-it-imsize'); // eslint-disable-line
 const mdContainer = require('markdown-it-container'); // eslint-disable-line
+const mdVideo = require('markdown-it-block-embed'); // eslint-disable-line
 const md = new MarkdownIt();
 md.use(mdKatex, { output: "html" })
   .use(mdImsize)
+  .use(mdVideo, {
+    containerClassName: "video-embed",
+    youtube: {
+      width: 370,
+      height: 209,
+    }
+  })
   .use(mdContainer, "warning", {
     validate: function(params: any) {
       console.log("validate", params.trim(), params.trim() == "warning");
