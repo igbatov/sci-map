@@ -150,6 +150,12 @@
         <div class="p-col-12" style="margin-bottom:2em;">
           <iframe width="100%" src="https://www.youtube.com/embed/DuiTlnrK6G4?si=HuVA4cs5U86H9E3l" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         </div>
+        <div :class="`${$style.list}`">
+          The goal  of the project is to
+          <br><br>1. Collect the <b>best explanations</b> of the most important knowledge. Correctness of these explanations can be tracked down to fundamental theories/experiments using "based on" feature of SciMap.
+          <br><br>2. Help to discover communities that use this knowledge to solve <b>most import problems</b> of humanity.
+          <br><br>Here are the features:
+        </div>
         <div :class="`p-col-2 ${$style.icon}`">
           <img
             alt="logo"
@@ -271,9 +277,6 @@ $$`)}
         </div>
         <div :class="`p-col-10 ${$style.list}`">
           Talk to your coauthors in <a target="_blank" href="https://discord.com/channels/1171118046543347782/1171118047587745953">chat</a> to adapt community rules and create a great content
-        </div>
-        <div :class="`p-col-12 ${$style.list}`">
-          <i>One of the greatest impact one can do is to help millions to get the knowledge!</i>
         </div>
       </div>
     </div>
