@@ -23,19 +23,35 @@
 import { actions, useStore } from "@/store";
 import { computed } from "vue";
 import MenuButton from "@/components/menu/MenuButton.vue";
+import {useToast} from "primevue/usetoast";
 
 export default {
   name: "EditMode",
   components: {
     MenuButton
   },
-  setup() {
+  props: {
+    isNodeSelected: {
+      type: Boolean,
+      required: true
+    },
+  },
+  setup(props) {
     const store = useStore();
+    const toast = useToast();
 
     return {
       editModeOn: computed(() => store.state.editModeOn),
       on: () => {
-        store.dispatch(`${actions.setEditMode}`, true);
+        if (props.isNodeSelected) {
+          store.dispatch(`${actions.setEditMode}`, true);
+        } else {
+          toast.add({
+            severity: "info",
+            summary: "Please, select node you want to edit",
+            life: 2000
+          });
+        }
       },
       off: () => {
         store.dispatch(`${actions.setEditMode}`, false);

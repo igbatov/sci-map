@@ -14,7 +14,7 @@
       <div v-if="isWideScreen()" style="position: absolute; right: 6.1rem; top:1.2rem;">
         <Feedback />
       </div>
-      <EditMode v-if="isWideScreen()" style="position: absolute; right: 12.5rem; top:1.2rem;" />
+      <EditMode v-if="isWideScreen()" :isNodeSelected="isNodeSelected" style="position: absolute; right: 12.5rem; top:1.2rem;" />
       <div
           v-if="editModeOn && isWideScreen()"
           style="position: absolute; right: 20.6rem; top:1.2rem;"
@@ -175,7 +175,9 @@ export default {
       email,
       userPhotoURL,
       editModeOn,
-      isNodeSelected: computed(() => store.state.tree.selectedNodeId),
+      isNodeSelected: computed(() => {
+        return !!store.state.tree.selectedNodeId && store.state.tree.selectedNodeId.length > 0
+      }),
       isPinned: computed(
         () =>
           store.state.pin.pins[store.state.tree.selectedNodeId] !== undefined

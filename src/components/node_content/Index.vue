@@ -166,7 +166,7 @@
         <div :class="`p-col-10 ${$style.list}`">
           Sign in to edit map
         </div>
-        <div :class="`p-col-2 ${$style.list}`">
+        <div :class="`p-col-2 ${$style.icon}`">
           <img
             alt="logo"
             src="../../assets/images/goal.svg"

@@ -1,5 +1,5 @@
 <template>
-  <MenuButton @click="toggleAddDialog">
+  <MenuButton @click="toggleAddDialog" :disabled="!selectedNode">
     <img alt="icon" src="../../assets/images/add-off.svg" style="width: 20px" />
     <span class="p-ml-2">add</span>
   </MenuButton>
@@ -59,6 +59,7 @@ export default {
     const newNodeTitle = ref("");
 
     return {
+      selectedNode,
       selectedNodeTitle: computed(() =>
         selectedNode.value ? selectedNode.value.title : ""
       ),
