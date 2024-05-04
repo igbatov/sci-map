@@ -7,12 +7,12 @@ const tokenizer = new natural.WordTokenizer();
 exports.GetOnLastSearch = () => database.ref('/user_data/{userID}/last_search')
   .onWrite(async (change, context) => {
     // sanitize
-    if (change.after.val() > 500) {
+    if (change.after.val().length === 0 && change.after.val().length > 500) {
       // consider it abuse
       return
     }
 
-    if (change.after.val() > 200) {
+    if (change.after.val().length > 200) {
       // consider it text quote and do not stem
       logger.info("user searched", {
         userID: context.params.userID,
