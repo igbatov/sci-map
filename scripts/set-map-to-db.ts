@@ -1,3 +1,8 @@
+/**
+ * Example of scripts that takes map.json from storage bucket
+ * and sets into a realtime database /map on PROD environment
+ */
+
 // @ts-nocheck
 import fs from "fs";
 import * as admin from "firebase-admin";

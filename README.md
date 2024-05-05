@@ -1,17 +1,17 @@
 # Concept
 
-Goal: attract and direct human activity to push forward science as fast as possible.
+Goal: boost human activity to push forward science as fast as possible.
 
 This is first draft MVP of the application for crowdsourced "Map Of Science".
 Its intent is to show concept of the map and gather feedback to build appropriate application.
 
 The goal for the project is to 
  - give clear and holistic view of all knowledge and problems that we have with the best explanations available
- - direct people into groups and companies for practical actions to solve this problems
+ - direct people into groups and companies for practical actions to solve these problems
 
 We post jobs and show their connection with question that will help to solve most interesting and hard question of humanity.
 
-We want to create search platform where one can select its skills and will find companies from our list that
+We also want to create search platform where one can select its skills and will find companies from our list that
 are searching for candidates with such skills.
 
 # Rules
@@ -279,6 +279,76 @@ docker system prune --all
 
 ## Deploy with github and firebase
 https://firebase.google.com/docs/hosting/github-integration?hl=ru
+
+## Backups
+### Realtime Database
+Backups can be configured from firebase UI
+
+### Firestore
+
+#### Backups from gc console—https://cloud.google.com/firestore/docs/backups?hl=en
+
+List backup schedules 
+```shell
+gcloud alpha firestore backups schedules list --database='(default)'
+```
+
+List backups
+```shell
+gcloud alpha firestore backups list --format="table(name, database, state)"
+```
+
+Backup can be restored only to a new database
+```shell
+gcloud alpha firestore databases restore \
+--source-backup=projects/PROJECT_ID/locations/LOCATION/backups/BACKUP_ID \
+--destination-database='DATABASE_ID'
+```
+
+#### Firestore also has PITR
+Point-in-time https://cloud.google.com/firestore/docs/pitr?hl=en
+
+#### Firestore also has import/export feature
+https://console.cloud.google.com/firestore/databases/-default-/import-export?authuser=0&hl=en&project=sci-map-1982
+
+List objects in bucket
+```shell
+gcloud storage ls --recursive gs://firestore_custom_backup/
+```
+
+Export to a backup
+```shell
+  gcloud firestore export gs://firestore_custom_backup/ --database='(default)'
+```
+
+Import from backup
+```shell
+gcloud firestore import gs://firestore_custom_backup/2024-05-04T11:21:09_97658/ --database='(default)'
+```
+
+## Admin scripts
+You can write scripts that should be run manually by admin in the /scripts directory.
+
+See README.md there.
+
+For example, after restoring a realtime database from backup on a special date in the past, you may want to remove 
+logs in firestore after this date to keep logs and database in sync.
+
+You can do this with
+```shell
+cd scripts
+npm run remove-change-logs # before run edit FROM_TIMESTAMP in remove-change-logs.ts (milliseconds after which all logs will be removed)
+```
+It is recommended to manually backup whole firestore DB before running this script (see [firestore import/export](https://console.cloud.google.com/firestore/databases/-default-/import-export?authuser=0&hl=en&project=sci-map-1982)) 
+
+## Temporary block all editing
+In case you want to temporary block all editing (for example while database restore is in progress)
+you can 
+- change in database.rules.json map_editor to xxxmap_editorxxx
+- deploy new rules
+- do restore
+- change in database.rules.json xxxmap_editorxxx to map_editor
+- deploy new rules
 
 # Alternative visualizations
 Here is some other approaches to visualize the same structure (which is called "hierarchical network" or "hierarchical graph")
