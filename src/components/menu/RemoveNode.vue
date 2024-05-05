@@ -101,6 +101,12 @@ export default {
       },
       remove: () => {
         addDialogVisible.value = false;
+        toast.add({
+          severity: "info",
+          summary: "Please, wait",
+          detail: "Removal can take up to 15 seconds",
+          life: 15000
+        });
         store.dispatch(`${actions.removeNode}`, selectedNode.value.id);
         store.commit(
           `positionChangePermits/${positionChangePermitMutations.ADD_NODES}`,
