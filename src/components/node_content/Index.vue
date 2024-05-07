@@ -304,6 +304,7 @@ import AddBasedOnButton from "@/components/node_content/AddBasedOnButton.vue";
 import TitleImage from "@/components/node_content/TitleImage.vue";
 import MarkdownIt from "markdown-it";
 import { isWideScreen } from "../helpers";
+import {add as textSearchAdd, SearchFieldName} from "@/tools/textsearch";
 const mdKatex = require('markdown-it-katex'); // eslint-disable-line
 const mdImsize = require('markdown-it-imsize'); // eslint-disable-line
 const mdVideo = require('markdown-it-block-embed'); // eslint-disable-line
@@ -424,6 +425,7 @@ export default defineComponent({
         }
       },
       changeComment: async (value: string) => {
+        textSearchAdd(selectedNode.value!.id, SearchFieldName.UserComment, value);
         const err = await store.dispatch(
           `nodeContent/${nodeContentActions.setNodeComment}`,
           {

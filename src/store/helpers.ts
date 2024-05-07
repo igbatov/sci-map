@@ -1,21 +1,15 @@
 import firebase from "firebase/compat";
 import api from "@/api/api";
-import {
-  mutations as treeMutations,
-  actions as treeActions
-} from "@/store/tree";
-import { mutations as pinMutations } from "@/store/pin";
-import { mutations as subscriptionsMutations } from "@/store/subscriptions";
-import { mutations as preconditionMutations } from "@/store/precondition";
-import {
-  mutations as nodeContentMutations,
-  NodeContent
-} from "@/store/node_content";
-import { store } from "@/store/index";
-import { printError } from "@/tools/utils";
-import { convertDBMapToTree } from "@/api/helpers";
-import { DBMapNode } from "@/api/types";
-import { add as textSearchAdd } from "@/tools/textsearch";
+import {actions as treeActions, mutations as treeMutations} from "@/store/tree";
+import {mutations as pinMutations} from "@/store/pin";
+import {mutations as subscriptionsMutations} from "@/store/subscriptions";
+import {mutations as preconditionMutations} from "@/store/precondition";
+import {mutations as nodeContentMutations, NodeContent} from "@/store/node_content";
+import {store} from "@/store/index";
+import {printError} from "@/tools/utils";
+import {convertDBMapToTree} from "@/api/helpers";
+import {DBMapNode} from "@/api/types";
+import {add as textSearchAdd, SearchFieldName} from "@/tools/textsearch";
 import {mutations as userMutations} from "@/store/user";
 
 /**
@@ -53,15 +47,16 @@ export function unSubscribeNodeChanges(id: string) {
 
 export function subscribeNodeChanges(id: string) {
   // subscribe children, name or position change
-  api.subscribeMapNodeChange(id, (dbNode: DBMapNode) =>
-    store.dispatch(`tree/${treeActions.handleMapNodeUpdate}`, dbNode)
-  );
+  api.subscribeMapNodeChange(id, async (dbNode: DBMapNode) => {
+      textSearchAdd(dbNode.id, SearchFieldName.Title, dbNode.name);
+      await store.dispatch(`tree/${treeActions.handleMapNodeUpdate}`, dbNode)
+  });
 
   // subscribe node content change
   api.subscribeNodeContentChange(
     id,
     (v: { nodeID: string; content: string }) => {
-      textSearchAdd(v.nodeID, v.content);
+      textSearchAdd(v.nodeID, SearchFieldName.Content, v.content);
       store.commit(`nodeContent/${nodeContentMutations.SET_NODE_CONTENT}`, v);
     }
   );
@@ -169,6 +164,11 @@ export async function initNodeContents(user: firebase.User | null) {
     }
     if (userComments === null) {
       return;
+    }
+
+    // add to search
+    for (const idx in userComments) {
+      textSearchAdd(userComments[idx].nodeID, SearchFieldName.UserComment, userComments[idx].comment)
     }
 
     // fix in store
