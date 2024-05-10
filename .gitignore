@@ -26,6 +26,11 @@ pnpm-debug.log*
 
 # firebase admin private key
 /scripts/private-key.json
+
+# ipfs private key
+/scripts/w3_ipfs_key.json
+
+# logs
 /ui-debug.log
 /database-debug.log
 /firebase-debug.log
