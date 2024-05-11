@@ -1,3 +1,6 @@
+/**
+ * Log every search with standard logger
+ */
 const {database,  logger} = require("firebase-functions");
 const natural = require('natural');
 const tokenizer = new natural.WordTokenizer();

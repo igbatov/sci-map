@@ -28,7 +28,7 @@ pnpm-debug.log*
 /scripts/private-key.json
 
 # ipfs private key
-/scripts/w3_ipfs_key.json
+/scripts/filebase_ipfs_key.json
 
 # logs
 /ui-debug.log

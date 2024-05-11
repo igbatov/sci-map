@@ -39,7 +39,7 @@
         <div class="p-col-12 p-md-12">
           <TextArea
             id="comment"
-            placeholder="Your notes (visible only to you)"
+            placeholder="Personal notes. DO NOT WRITE SENSITIVE INFORMATION HERE! (on scimap.org your notes visible only to you, but anyone can get access to it from publicly available backups!)"
             :autoResize="true"
             rows="2"
             :value="selectedNodeComment"

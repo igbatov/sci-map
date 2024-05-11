@@ -24,6 +24,7 @@ const { GetOnCommandSendDigest } = require('./cmd_send_digest');
 const {GetOnNodeContentChange, GetOnNodeContentIDChange} = require("./change_content");
 const {GetOnImageChange} = require("./change_image");
 const {GetOnCommandRestore} = require("./cmd_restore");
+const {GetOnCommandBackupIpfs} = require("./cmd_backup_ipfs");
 
 exports.onNodeContentChange = GetOnNodeContentChange(firestore)
 exports.onNodeContentIDChange = GetOnNodeContentIDChange(firestore)
@@ -41,9 +42,20 @@ exports.onNodeMapIDChange = GetOnNodeMapIDChange(firestore)
 // /cmd/<name>/ in realtime database
 // and listening for these changes to start the corresponding actions on backend
 exports.onCommandRemove = GetOnCommandRemove(firestore, database)
-exports.GetOnCommandRestore = GetOnCommandRestore(firestore, database)
-exports.GetOnLastSearch = GetOnLastSearch()
+exports.onCommandRestore = GetOnCommandRestore(firestore, database)
+exports.onLastSearch = GetOnLastSearch()
+exports.onCommandBackupIpfs = GetOnCommandBackupIpfs(firestore, database)
 
+// [START everyHalfHourCrontab]
+exports.everyHalfHourCrontab = functions.pubsub.schedule('*/30 * * * *')
+  .timeZone('UTC')
+  .onRun(async (context) => {
+    functions.logger.info('started everyHalfHourCrontab');
+    await database.ref('cmd/backup_ipfs').set('1')
+    await database.ref('cmd/backup_ipfs').set('')
+    return null;
+  });
+// [END everyHalfHourCrontab]
 
 // [START dailyCrontab]
 exports.dailyCrontab = functions.pubsub.schedule('0 16 * * *')
