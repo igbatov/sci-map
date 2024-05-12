@@ -153,7 +153,7 @@
         <div :class="`${$style.list}`">
           The goal  of the project is to
           <br><br>1. Collect the <b>best explanations</b> of the most important knowledge. Correctness of these explanations can be tracked down to fundamental theories/experiments using "based on" feature of SciMap.
-          <br><br>2. Help to discover communities that use this knowledge to solve <b>most import problems</b> of humanity.
+          <br><br>2. Help to <b>discover and join communities</b> that use this knowledge to solve most import problems of humanity.
           <br><br>Here are the features:
         </div>
         <div :class="`p-col-2 ${$style.icon}`">
@@ -235,6 +235,16 @@ $$`)}
           Use <b>"based on"</b> to link nodes that are necessary for solid
           understanding of your description
         </div>
+        <div :class="`p-col-2 ${$style.icon}`">
+          <img
+              alt="logo"
+              src="../../assets/images/chat.svg"
+              style="width: 20px"
+          />
+        </div>
+        <div :class="`p-col-10 ${$style.list}`">
+          Talk to your coauthors in <a target="_blank" href="https://discord.com/channels/1171118046543347782/1171118047587745953">chat</a> to adapt community rules and create a great content
+        </div>
         <div :class="`p-col-2 ${$style.icon}`" style="color: #3B6BF9; padding-left:10px; font-weight: bold; font-size:1.5em;">
           W
         </div>
@@ -268,15 +278,11 @@ $$`)}
           If you know actions one can take to push
           knowledge further (jobs, crowdsourcing, etc.) - you can also add it!
         </div>
-        <div :class="`p-col-2 ${$style.icon}`">
-          <img
-            alt="logo"
-            src="../../assets/images/chat.svg"
-            style="width: 20px"
-          />
+        <div :class="`p-col-2 ${$style.icon}`" style="color: #3B6BF9;">
+          Open
         </div>
         <div :class="`p-col-10 ${$style.list}`">
-          Talk to your coauthors in <a target="_blank" href="https://discord.com/channels/1171118046543347782/1171118047587745953">chat</a> to adapt community rules and create a great content
+          Project is <a target="_blank" href="https://github.com/igbatov/sci-map">open source</a> and data is <a target="_blank" href="https://github.com/igbatov/scimap-backup-list/blob/main/backup-list.json">publicly available</a> on <b>decentralized storage</b> in JSON format
         </div>
       </div>
     </div>
