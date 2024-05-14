@@ -65,6 +65,7 @@ import ProgressBar from 'primevue/progressbar';
 import { fromBlob } from 'image-resize-compress';
 const fileFormat = 'webp'
 import { useConfirm } from "primevue/useconfirm";
+import {DBImage} from "@/api/types";
 
 export default defineComponent({
   name: "TitleImage",
@@ -101,6 +102,18 @@ export default defineComponent({
     const showProgressBar = ref(false);
     const defaultImageURL = ref(defaultURL);
     const dbNodeImgPath = computed(() => `/node_image/${props.nodeID}`);
+    const getImageURL = function(image: DBImage) {
+      if (process.env.VUE_APP_PROJECT === "prod") {
+        return 'https://cdn.scimap.org'+image.path;
+      }
+      if (process.env.VUE_APP_PROJECT === "stage") {
+        return 'https://firebasestorage.googleapis.com/v0/b/sci-map-stg.appspot.com/o/'+encodeURIComponent(image.path.substring(1))+'?alt=media';
+      }
+      if (process.env.VUE_APP_PROJECT === "emulator") {
+        return image.url;
+      }
+      return '';
+    }
     watchEffect(
         () => {
           const images = store.state.image.images[props.nodeID]
@@ -122,7 +135,7 @@ export default defineComponent({
               id: key,
               timestamp: Number(key),
               name: images[key].name,
-              url: process.env.VUE_APP_PROJECT === "emulator" ? images[key].url : (process.env.VUE_APP_PROJECT === "prod" ? 'https://cdn.scimap.org'+images[key].path : 'https://sci-map-stg.web.app'+images[key].path),
+              url: getImageURL(images[key]),
               removed: images[key].removed,
             });
           }

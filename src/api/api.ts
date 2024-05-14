@@ -46,14 +46,14 @@ export default {
     // Initialize Firebase
     if (process.env.VUE_APP_PROJECT === "prod") {
       firebase.initializeApp(prodConfig);
+      firebase.analytics();
     } else if (process.env.VUE_APP_PROJECT === "stage") {
       firebase.initializeApp(stgConfig);
+      firebase.analytics();
     }
-
-    firebase.analytics();
-
     if (process.env.VUE_APP_PROJECT === "emulator") {
       console.log("Starting in emulator mode");
+      firebase.initializeApp(prodConfig);
       firebase
         .auth()
         .useEmulator(`http://localhost:${emulatorConfig.emulators.auth.port}`);
