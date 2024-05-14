@@ -1,17 +1,20 @@
 /**
  * Remove all logs in firestore after FROM_TIMESTAMP (in milliseconds)
  * CREATE BACKUP OF FIRESTORE BEFORE RUNNING THIS SCRIPT!!!
+ * (See Firestore backup section in README.md)
  */
 
 import * as admin from "firebase-admin";
 import {ServiceAccount} from "firebase-admin/lib/credential";
-import serviceAccount from "./private-key.json";
-const firebase_tools = require("firebase-tools");
+// import serviceAccount from "./private-key.json";
+import serviceAccount from "./private-key-stg.json";
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as ServiceAccount),
-  databaseURL: "https://sci-map-1982.firebaseio.com",
-  storageBucket: "sci-map-1982.appspot.com",
+  // databaseURL: "https://sci-map-1982.firebaseio.com",
+  // storageBucket: "sci-map-1982.appspot.com",
+  databaseURL: "https://sci-map-stg-default-rtdb.firebaseio.com",
+  storageBucket: "sci-map-stg.appspot.com",
 });
 
 const FROM_TIMESTAMP=99999999999999; // 99999999999999 (in milliseconds) is a 5138 year

@@ -250,11 +250,11 @@ firebase functions:secrets:get SECRET_NAME
 ### Run app on emulator
 Set in src/api/api.ts
 ```shell
-export VUE_APP_IS_EMULATOR=true; yarn serve
+yarn serve
 ```
 
 #### Emulate schedule function
-Emulator do not support schedule
+Emulator does not support schedule
 To imitate schedule locally you can run it in shell:
 ```shell
 firebase functions:shell
@@ -278,7 +278,7 @@ docker system prune --all
 ```
 
 ## Deploy with github and firebase
-https://firebase.google.com/docs/hosting/github-integration?hl=ru
+https://firebase.google.com/docs/hosting/github-integration
 
 ## Backups
 ### Realtime Database
@@ -318,7 +318,7 @@ gcloud storage ls --recursive gs://firestore_custom_backup/
 
 Export to a backup
 ```shell
-  gcloud firestore export gs://firestore_custom_backup/ --database='(default)'
+gcloud firestore export gs://firestore_custom_backup/ --database='(default)'
 ```
 
 Import from backup
@@ -350,8 +350,41 @@ you can
 - change in database.rules.json xxxmap_editorxxx to map_editor
 - deploy new rules
 
+# Deploy a SciMap on a brand-new firebase project
+## 0. Fork github code to your own project
+## 1. Create a new firebase project, install firebase-tools cli
+See the official firebase documentation for this step.
+Let's say the name of the project will by "sci-map-stg".
+## 2. Create Realtime Database in a firebase project
+See the official firebase documentation for this step.
+Optionally import data from scimap.org backup
+(take a link to the latest backup at https://github.com/igbatov/scimap-backup-list/blob/main/backup-list.json)
+## 3. Create Google Authentication in firebase
+See the official firebase documentation for this step.
+## 4. Create Firestore in firebase
+See the official firebase documentation for this step.
+## 5. Create Storage in firebase
+See the official firebase documentation for this step.
+## 6. Enable Function in firebase
+See the official firebase documentation for this step.
+## 7. Enable Hosting in firebase
+See the official firebase documentation for this step.
+## 8. Register web app and get SDK config
+https://firebase.google.com/docs/web/setup#register-app
+Place config json in src/prodConfig (for prod project) and src/stgConfig (for stg project)
+## 9. Deploy code to firebase hosting
+On prod
+```shell
+yarn deploy:prod
+```
+On stage
+```shell
+yarn deploy:prod
+```
+That's it!
+
 # Alternative visualizations
-Here is some other approaches to visualize the same structure (which is called "hierarchical network" or "hierarchical graph")
+Here are some other approaches to visualize the same structure (which is called "hierarchical network" or "hierarchical graph")
 Bubbles
 https://www.figma.com/proto/gdsTx92knJmXZjSUAmYeO7/scimap?node-id=2-753&starting-point-node-id=2%3A753&scaling=scale-down
 Chord diagram

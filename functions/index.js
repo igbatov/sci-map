@@ -26,25 +26,30 @@ const {GetOnImageChange} = require("./change_image");
 const {GetOnCommandRestore} = require("./cmd_restore");
 const {GetOnCommandBackupIpfs} = require("./cmd_backup_ipfs");
 
+// because some functions on stg should behave differentially from prod env (backups, for example)
+const isProd = (process.env.GCLOUD_PROJECT === 'sci-map-1982')
+functions.logger.info("isProd", isProd)
+
 exports.onNodeContentChange = GetOnNodeContentChange(firestore)
 exports.onNodeContentIDChange = GetOnNodeContentIDChange(firestore)
 exports.onImageChange = GetOnImageChange(firestore)
 exports.onUserCreate = GetOnUserCreate()
-exports.onCommandSendDigest = GetOnCommandSendDigest(database, firestore, auth)
 exports.onNodeChildrenChange = GetOnNodeChildrenChange(firestore)
 exports.onNodeParentChange = GetOnNodeParentChange(firestore)
 exports.onNodeNameChange = GetOnNodeNameChange(firestore)
 exports.onPreconditionChange = GetOnPreconditionChange(firestore)
 exports.onNodePositionChange = GetOnNodePositionChange(firestore)
 exports.onNodeMapIDChange = GetOnNodeMapIDChange(firestore)
-// there is an advice not to use REST calls, so we will imitate them changing
+exports.onLastSearch = GetOnLastSearch()
+
+// There is an advice not to use REST calls,
 // https://firebase.google.com/docs/database/usage/optimize#open-connections
-// /cmd/<name>/ in realtime database
+// So we will imitate them changing /cmd/<name>/ in realtime database
 // and listening for these changes to start the corresponding actions on backend
 exports.onCommandRemove = GetOnCommandRemove(firestore, database)
 exports.onCommandRestore = GetOnCommandRestore(firestore, database)
-exports.onLastSearch = GetOnLastSearch()
-exports.onCommandBackupIpfs = GetOnCommandBackupIpfs(firestore, database)
+exports.onCommandBackupIpfs = GetOnCommandBackupIpfs(firestore, database, isProd)
+exports.onCommandSendDigest = GetOnCommandSendDigest(database, firestore, auth, isProd)
 
 // [START everyHalfHourCrontab]
 exports.everyHalfHourCrontab = functions.pubsub.schedule('*/30 * * * *')

@@ -1,5 +1,9 @@
 {
   "projects": {
-    "default": "sci-map-1982"
-  }
+    "default": "sci-map-1982",
+    "staging": "sci-map-stg"
+  },
+  "targets": {},
+  "etags": {},
+  "dataconnectEmulatorConfig": {}
 }

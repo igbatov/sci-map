@@ -11,6 +11,7 @@ Install dependencies for scripts here (not in root of a project) with command li
 npm install -D <packagename>
 ```
 
-To run scripts locally, you need private-key.json which can be downloaded at Firebase Settings > Service Accounts: 
+To run scripts locally,
+you need admin config private-key.json which can be downloaded at Firebase Settings > Service Accounts: 
 https://console.firebase.google.com/u/0/project/sci-map-1982/settings/serviceaccounts/adminsdk
 (see also https://firebase.google.com/docs/admin/setup?hl=en#prerequisites)

@@ -291,10 +291,15 @@ exports.getDigest = async (getPeriodLastChange, getPrevPeriodLastChange, getNode
 
 // [START GetOnCommandSendDigest]
 // Listens for changes in /cmd/send_digest and send digests to subscribers
-exports.GetOnCommandSendDigest = (database, firestore, auth) => functions
+exports.GetOnCommandSendDigest = (database, firestore, auth, isProd) => functions
   // Make the secret available to this function
   .runWith({ secrets: ["IGBATOVSM_PWD"] }).database.ref('/cmd/send_digest')
   .onWrite(async (change, context) => {
+    if (!isProd) {
+      functions.logger.info("GetOnCommandSendDigest: refuse to run on stg env, exiting...")
+      return
+    }
+
     const digestCache = {}
     const nodeNameCache = {}
     if (change.after && change.after.val() !== "0") {

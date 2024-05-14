@@ -10,13 +10,14 @@ import { DBMapNode, DBImage} from "@/api/types";
 import { convertChildren } from "./helpers";
 import { NodeComment, NodeContent } from "@/store/node_content";
 import emulatorConfig from "../../firebase.json";
+import prodConfig from "./prodConfig.json";
+import stgConfig from "./stgConfig.json";
 import { debounce } from "lodash";
 
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import {store} from "@/store";
 
-const MAP_FROM_STORAGE = false; // is storage is source for map (or database)
-let FUNCTION_DOMAIN = "https://us-central1-sci-map-1982.cloudfunctions.net/";
+const MAP_FROM_STORAGE = false; // use storage as a source for the map (or database)
 
 const update = async (data: Record<string, any>): Promise<ErrorKV> => {
   try {
@@ -42,24 +43,16 @@ export default {
   ST_WIDTH: 1000,
   ST_HEIGHT: 1000,
   initFirebase() {
-    // Your web app's Firebase configuration
-    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-    const firebaseConfig = {
-      apiKey: "AIzaSyCP50k-WOkTeG8BYvRtu4Bo_x3T2RnVsxU",
-      authDomain: "sci-map-1982.firebaseapp.com",
-      databaseURL: "https://sci-map-1982.firebaseio.com",
-      projectId: "sci-map-1982",
-      storageBucket: "sci-map-1982.appspot.com",
-      messagingSenderId: "340899060236",
-      appId: "1:340899060236:web:b136e9289e342a8bb62c29",
-      measurementId: "G-TV74Q61H9P"
-    };
-
     // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
+    if (process.env.VUE_APP_PROJECT === "prod") {
+      firebase.initializeApp(prodConfig);
+    } else if (process.env.VUE_APP_PROJECT === "stage") {
+      firebase.initializeApp(stgConfig);
+    }
+
     firebase.analytics();
 
-    if (process.env.VUE_APP_IS_EMULATOR === "true") {
+    if (process.env.VUE_APP_PROJECT === "emulator") {
       console.log("Starting in emulator mode");
       firebase
         .auth()
@@ -75,27 +68,6 @@ export default {
         "localhost",
         emulatorConfig.emulators.firestore.port
       );
-      FUNCTION_DOMAIN = "http://localhost:5001/sci-map-1982/us-central1/";
-    }
-  },
-
-  async callFunction(
-    method: string,
-    params: Record<string, string>
-  ): Promise<[string, ErrorKV]> {
-    const currentUser = firebase.auth().currentUser;
-    if (!currentUser) {
-      return [
-        "",
-        NewErrorKV("callFunction: cannot determine current user", {})
-      ];
-    }
-    params.idToken = await currentUser.getIdToken(true);
-    try {
-      const response = await axios.get(FUNCTION_DOMAIN + method, { params });
-      return [response.data, null];
-    } catch (e) {
-      return ["", NewErrorKV("Error in callFunction", { method, params, e })];
     }
   },
 

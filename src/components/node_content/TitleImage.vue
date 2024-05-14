@@ -122,7 +122,7 @@ export default defineComponent({
               id: key,
               timestamp: Number(key),
               name: images[key].name,
-              url: process.env.VUE_APP_IS_EMULATOR === "true" ? images[key].url : 'https://cdn.scimap.org'+images[key].path,
+              url: process.env.VUE_APP_PROJECT === "emulator" ? images[key].url : (process.env.VUE_APP_PROJECT === "prod" ? 'https://cdn.scimap.org'+images[key].path : 'https://sci-map-stg.web.app'+images[key].path),
               removed: images[key].removed,
             });
           }

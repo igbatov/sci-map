@@ -4,15 +4,18 @@
   "private": true,
   "scripts": {
     "firebase": "firebase emulators:start --import=functions/data",
-    "serve": "export VUE_APP_IS_EMULATOR=true; export NODE_OPTIONS=--openssl-legacy-provider; vue-cli-service serve",
-    "build": "export VUE_APP_IS_EMULATOR=false; export NODE_OPTIONS=--openssl-legacy-provider; vue-cli-service build",
+    "serve": "export VUE_APP_PROJECT='emulator'; export NODE_OPTIONS=--openssl-legacy-provider; vue-cli-service serve",
+    "build": "export VUE_APP_PROJECT='prod'; export NODE_OPTIONS=--openssl-legacy-provider; vue-cli-service build",
+    "build-stg": "export VUE_APP_PROJECT='stage'; export NODE_OPTIONS=--openssl-legacy-provider; vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
     "deploy:functions": "firebase deploy --only functions",
     "deploy:database": "firebase deploy --only database",
     "deploy:firestore": "firebase deploy --only firestore",
-    "deploy:storage": "firebase deploy --only storage"
+    "deploy:storage": "firebase deploy --only storage",
+    "deploy:prod": "export VUE_APP_PROJECT='prod'; export NODE_OPTIONS=--openssl-legacy-provider; vue-cli-service build; firebase use default; firebase deploy --only hosting",
+    "deploy:stage": "export VUE_APP_PROJECT='stage'; export NODE_OPTIONS=--openssl-legacy-provider; vue-cli-service build; firebase use stage; firebase deploy --only hosting"
   },
   "dependencies": {
     "@datastructures-js/queue": "^4.2.3",

@@ -9,6 +9,9 @@ node_modules
 .env.local
 .env.*.local
 
+# firebase hosting cache files
+.firebase/*
+
 # Log files
 npm-debug.log*
 yarn-debug.log*
@@ -26,6 +29,7 @@ pnpm-debug.log*
 
 # firebase admin private key
 /scripts/private-key.json
+/scripts/private-key-stg.json
 
 # ipfs private key
 /scripts/filebase_ipfs_key.json
