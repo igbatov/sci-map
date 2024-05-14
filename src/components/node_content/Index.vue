@@ -39,7 +39,7 @@
         <div class="p-col-12 p-md-12">
           <TextArea
             id="comment"
-            placeholder="Personal notes. DO NOT WRITE SENSITIVE INFORMATION HERE! (on scimap.org your notes visible only to you, but anyone can get access to it from publicly available backups!)"
+            placeholder="Personal notes. DO NOT WRITE SENSITIVE INFORMATION HERE! (on scimap.org your notes will be visible only to you, but anyone can get access to it from publicly available backups)"
             :autoResize="true"
             rows="2"
             :value="selectedNodeComment"
@@ -153,7 +153,7 @@
         <div :class="`${$style.list}`">
           The goal  of the project is to
           <br><br>1. Collect the <b>best explanations</b> of the most important knowledge. Correctness of these explanations can be tracked down to fundamental theories/experiments using "based on" feature of SciMap.
-          <br><br>2. Help to <b>discover and join communities</b> that use this knowledge to solve most import problems of humanity.
+          <br><br>2. Help to <b>discover and join communities</b> that use this knowledge to solve hard problems of humanity.
           <br><br>Here are the features:
         </div>
         <div :class="`p-col-2 ${$style.icon}`">

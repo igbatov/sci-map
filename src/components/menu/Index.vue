@@ -11,13 +11,17 @@
         </MenuButton>
         <PrimeMenu ref="menu" id="overlay_menu" :model="items" :popup="true" />
       </div>
-      <div v-if="isWideScreen()" style="position: absolute; right: 6.1rem; top:1.2rem;">
+      <div v-if="isWideScreen()" style="position: absolute; right: 5.3rem; top:1.2rem;">
+        <Help />
+      </div>
+      <div v-if="isWideScreen()" style="position: absolute; right: 8.8rem; top:1.2rem;">
         <Feedback />
       </div>
-      <EditMode v-if="isWideScreen()" :isNodeSelected="isNodeSelected" style="position: absolute; right: 12.5rem; top:1.2rem;" />
+
+      <EditMode v-if="isWideScreen()" :isNodeSelected="isNodeSelected" style="position: absolute; right: 15rem; top:1.2rem;" />
       <div
           v-if="editModeOn && isWideScreen()"
-          style="position: absolute; right: 20.6rem; top:1.2rem;"
+          style="position: absolute; right: 23rem; top:1.2rem;"
       >
         <MapChangeLog
             @restore-select-new-parent-is-on="$emit('restore-select-new-parent-is-on')"
@@ -25,15 +29,15 @@
             :clickedTitleId="clickedTitleId"
         />
       </div>
-      <div v-if="editModeOn" style="position: absolute; right: 26.6rem; top:1.2rem;">
+      <div v-if="editModeOn" style="position: absolute; right: 28.3rem; top:1.2rem;">
         <AddNode />
       </div>
-      <div v-if="editModeOn" style="position: absolute; right: 32.6rem; top:1.2rem;">
+      <div v-if="editModeOn" style="position: absolute; right: 34rem; top:1.2rem;">
         <RemoveNode />
       </div>
       <div
         v-if="editModeOn"
-        style="position: absolute; right: 39.6rem; top:1.2rem;"
+        style="position: absolute; right: 40.7rem; top:1.2rem;"
       >
         <CutPaste />
       </div>
@@ -61,7 +65,8 @@ import EditMode from "./EditMode";
 import CutPaste from "@/components/menu/CutPaste";
 import Feedback from "@/components/menu/Feedback";
 import MapChangeLog from "@/components/menu/MapChangeLog";
-import MenuButton from "@/components/menu/MenuButton.vue";
+import MenuButton from "@/components/menu/MenuButton";
+import Help from "@/components/menu/Help";
 import PrimeMenu from "primevue/tieredmenu";
 import Button from "primevue/button";
 import {isWideScreen} from "@/components/helpers";
@@ -73,6 +78,7 @@ export default {
     PrimeMenu,
     MenuButton,
     Feedback,
+    Help,
     CutPaste,
     AddNode,
     RemoveNode,

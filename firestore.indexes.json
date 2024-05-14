@@ -14,6 +14,24 @@
         },
         {
           "fieldPath": "timestamp",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "changes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "action",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "node_id",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "timestamp",
           "order": "DESCENDING"
         }
       ]
@@ -50,6 +68,24 @@
         },
         {
           "fieldPath": "timestamp",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "changes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "action",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "timestamp",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "user_id",
           "order": "DESCENDING"
         }
       ]
