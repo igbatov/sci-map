@@ -1,7 +1,7 @@
 {
   "projects": {
     "default": "sci-map-1982",
-    "staging": "sci-map-stg"
+    "stage": "sci-map-stg"
   },
   "targets": {},
   "etags": {},
