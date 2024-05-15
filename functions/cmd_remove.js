@@ -31,13 +31,6 @@ exports.GetOnCommandRemove = (firestore, db) => database.ref('/cmd/remove')
       auth: context.auth,
     }
 
-    // check that user has permissions
-    if (context.auth && context.auth.token['roles']['map_editor'] !== true) {
-      logger.error("GetOnCommandRemove: only admin or user with role 'map_editor' can remove node", processCtx)
-      await db.ref('/cmd/remove').set("")
-      return
-    }
-
     // check arguments are valid
     const nodeID = change.after.val()
     if (!nodeID) {

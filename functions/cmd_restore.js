@@ -79,13 +79,6 @@ exports.GetOnCommandRestore = (firestore, db) => database.ref('/cmd/restore')
       auth: context.auth,
     }
 
-    // check that user has permissions
-    if (context.auth && context.auth.token['roles']['map_editor'] !== true) {
-      logger.error("GetOnCommandRestore: only admin or user with role 'map_editor' can restore node", processCtx)
-      await db.ref('/cmd/remove').set("")
-      return
-    }
-
     // check nodeID is valid
     const nodeID = change.after.val()['nodeID']
     if (!nodeID) {
