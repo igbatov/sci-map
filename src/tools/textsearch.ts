@@ -56,20 +56,20 @@ export function add(nodeID: string, field: SearchFieldName, text: string) {
     searchIdMap[idMapCnt] = nodeID
   }
   if (field === SearchFieldName.Title) {
-    indexTitle.add(nodeIDMap[nodeID], text);
+    indexTitle.add(nodeIDMap[nodeID], text.toLowerCase());
   }
   if (field === SearchFieldName.Content) {
-    indexContent.add(nodeIDMap[nodeID], text);
+    indexContent.add(nodeIDMap[nodeID], text.toLowerCase());
   }
   if (field === SearchFieldName.UserComment) {
-    indexUserComment.add(nodeIDMap[nodeID], text);
+    indexUserComment.add(nodeIDMap[nodeID], text.toLowerCase());
   }
 }
 
 export async function search(text: string): Promise<Array<string>> {
-  const ids1 = await indexTitle.search(text);
-  const ids2 = await indexContent.search(text);
-  const ids3 = await indexUserComment.search(text);
+  const ids1 = await indexTitle.search(text.toLowerCase());
+  const ids2 = await indexContent.search(text.toLowerCase());
+  const ids3 = await indexUserComment.search(text.toLowerCase());
   const result = [] as string[]
   result.push(...ids1.map((id: number) => searchIdMap[id]))
   result.push(...ids2.map((id: number) => searchIdMap[id]))
