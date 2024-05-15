@@ -65,13 +65,13 @@ const saveCIDs = async function (githubSecret, firestore) {
 
 // [START GetOnCommandBackupIpfs]
 // Listens for changes in /cmd/backup_ipfs and send digests to subscribers
-exports.GetOnCommandBackupIpfs = (firestore, database, isProd) => functions
+exports.GetOnCommandBackupIpfs = (firestore, database, isProd, isEmulator) => functions
   // Make the secret available to this function
   .runWith({ secrets: ["FILEBASE_IPFS_KEY", "FILEBASE_IPFS_SECRET", "GITHUB_SCIMAP_BACKUP_KEY"] })
   .database.ref('/cmd/backup_ipfs')
   .onWrite(async (change, context) => {
-    if (!isProd) {
-      functions.logger.info("GetOnCommandBackupIpfs: refuse to run on stg env, exiting...")
+    if (!isProd || isEmulator) {
+      functions.logger.info("GetOnCommandBackupIpfs: refuse to run on stg or dev env, exiting...")
       return
     }
 

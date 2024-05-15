@@ -46,6 +46,7 @@ import {useStore} from "@/store";
 import {Tree} from "@/types/graphics";
 import Dialog from "primevue/dialog";
 import Button from "primevue/button";
+import {useToast} from "primevue/usetoast";
 
 export default defineComponent({
   name: "RestoreNode",
@@ -67,6 +68,7 @@ export default defineComponent({
   setup(props, ctx) {
     // select new parent Dialog stuff
     const store = useStore();
+    const toast = useToast();
     const newParentDialogVisible = ref(false);
     const newParentNode = ref(null as Tree | null);
     const nodeIdToRestore = ref("");
@@ -104,6 +106,12 @@ export default defineComponent({
         ctx.emit("restore-select-new-parent-is-off");
       },
       add: async () => {
+        toast.add({
+          severity: "info",
+          summary: "Please, wait",
+          detail: "Restore can take up to 15 seconds",
+          life: 15000
+        });
         await restoreNodeWithChildren(nodeIdToRestore.value, newParentNode.value!.id)
         ctx.emit("restore-select-new-parent-is-off");
         newParentDialogVisible.value = false;
@@ -118,6 +126,12 @@ export default defineComponent({
 
         if (event.parentNodeBefore && !IsNodeInTrash(event.parentNodeBefore.idPath)) {
           if (IsNodeInTrash(event.node.idPath)) {
+            toast.add({
+              severity: "info",
+              summary: "Please, wait",
+              detail: "Restore can take up to 15 seconds",
+              life: 15000
+            });
             await restoreNodeWithChildren(event.node.id, event.parentNodeBefore.id)
           }
         } else {

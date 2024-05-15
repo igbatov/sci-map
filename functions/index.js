@@ -29,6 +29,8 @@ const {GetOnCommandBackupIpfs} = require("./cmd_backup_ipfs");
 // because some functions on stg should behave differentially from prod env (backups, for example)
 const isProd = (process.env.GCLOUD_PROJECT === 'sci-map-1982')
 functions.logger.info("isProd", isProd)
+const isEmulator = process.env.FUNCTIONS_EMULATOR
+functions.logger.info("isEmulator", isEmulator)
 
 exports.onNodeContentChange = GetOnNodeContentChange(firestore)
 exports.onNodeContentIDChange = GetOnNodeContentIDChange(firestore)
@@ -48,7 +50,7 @@ exports.onLastSearch = GetOnLastSearch()
 // and listening for these changes to start the corresponding actions on backend
 exports.onCommandRemove = GetOnCommandRemove(firestore, database)
 exports.onCommandRestore = GetOnCommandRestore(firestore, database)
-exports.onCommandBackupIpfs = GetOnCommandBackupIpfs(firestore, database, isProd)
+exports.onCommandBackupIpfs = GetOnCommandBackupIpfs(firestore, database, isProd, isEmulator)
 exports.onCommandSendDigest = GetOnCommandSendDigest(database, firestore, auth, isProd)
 
 // [START everyHalfHourCrontab]

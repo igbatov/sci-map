@@ -32,7 +32,7 @@
       <div style="background-color: lightgrey; width: 31em;">
         @[youtube](https://www.youtube.com/watch?v=MmG2ah5Df4g)
       </div>
-      <br/>- To add add image click on header image, then "upload" and copy URL to node's content.
+      - To add add image click on header image, then "upload" and copy URL to node's content.
       <br/>
       <br/>
       <div style="text-align:center">
