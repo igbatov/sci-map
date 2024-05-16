@@ -11,19 +11,19 @@
       @mousedown.stop
   >
     <template #header>
-      <h3>Help</h3>
+      <h2>Help</h2>
     </template>
     <div style="width:40em;">
-      The goal is to:
-      <br><br>1. Collect the <b>best explanations</b> of the most important knowledge. Correctness of these explanations can be tracked down to fundamental theories/experiments using <b>"based on"</b> feature of SciMap.
+      <h3>Goal</h3>
+      1. Collect the <b>best explanations</b> of the most important knowledge. It should be possible to track correctness of these explanations down to fundamental theories/experiments using <b>"based on"</b> feature of SciMap (see video below).
       <br><br>2. Help to <b>discover and join communities</b> that use this knowledge to solve hard problems of humanity.
       <br><br>
       <div style="text-align:center">
         <iframe width="560" height="315" src="https://www.youtube.com/embed/DuiTlnrK6G4?si=HuVA4cs5U86H9E3l" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
       </div>
 
-
-      <br/><br/>Everyone can edit this map (just like Wikipedia). Here is how you can do it.
+      <h3>Edit content</h3>
+      Everyone can edit this map (just like Wikipedia). Here is how you can do it.
       <br/>When "edit map" mode is off <img src="../../assets/images/edit-map-off.png" style="height: 2em;"/> you can edit node contents.
       <br/>Just click on title or content and write your text in <a target='_blank' href='https://markdown-it.github.io/'>markdown</a>.
       <br/>You can use <a target='_blank' href='https://katex.org/docs/supported.html'>katex</a> notation to write formulas.
@@ -41,15 +41,17 @@
       <div style="text-align:center">
         <iframe width="560" height="315" src="https://www.youtube.com/embed/7W9npc90Vp4?si=h4j3CNhG4tqLhz6z" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
       </div>
-      <br/>When "edit map" mode is on <img src="../../assets/images/edit-map-on.png" style="height: 2em;"/> you can add/remove new nodes but cannot edit node content.
+      <h3>Edit map</h3>
+      When "edit map" mode is on <img src="../../assets/images/edit-map-on.png" style="height: 2em;"/> you can add/remove new nodes but cannot edit node content.
       <br/>In this mode click on node, then click "add", "delete" or "cut" and "paste".
-      <br/>To recover removed node use "log".
+      <br/>To recover removed node use "log" (see video below).
       <br/>
       <br/>
       <div style="text-align:center">
         <iframe width="560" height="315" src="https://www.youtube.com/embed/BVDFqjellcY?si=YJIl9mHFmI4QLezA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
       </div>
-      <br/>Press "eye" button to receive node updates on email. You can receive changes daily or weekly.
+      <h3>Subscribe to changes and become admin</h3>
+      Press "eye" button to receive node updates on email. You can receive changes daily or weekly, track unfortunate edits and ban users.
       <br/>
       <br/>
       <div style="text-align:center">
