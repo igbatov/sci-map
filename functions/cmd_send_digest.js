@@ -2,7 +2,8 @@
  * Collect and send node changes to user's emails according to their subscriptions
  */
 const functions = require('firebase-functions/v1');
-const nodemailer = require('nodemailer');
+// const nodemailer = require('nodemailer');
+const sgMail = require('@sendgrid/mail')
 const {ActionType} = require("./actions");
 const Diff = require('diff');
 const {getNodeLink, getArrayDiff, getTextChangePercent} = require("./helpers");
@@ -293,7 +294,7 @@ exports.getDigest = async (getPeriodLastChange, getPrevPeriodLastChange, getNode
 // Listens for changes in /cmd/send_digest and send digests to subscribers
 exports.GetOnCommandSendDigest = (database, firestore, auth, isProd) => functions
   // Make the secret available to this function
-  .runWith({ secrets: ["IGBATOVSM_PWD"] }).database.ref('/cmd/send_digest')
+  .runWith({ secrets: ["SENDGRID_API_KEY"] }).database.ref('/cmd/send_digest')
   .onWrite(async (change, context) => {
     if (!isProd) {
       functions.logger.info("GetOnCommandSendDigest: refuse to run on stg env, exiting...")
@@ -312,13 +313,15 @@ exports.GetOnCommandSendDigest = (database, firestore, auth, isProd) => function
         return
       }
 
-      const mailTransport = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: "igbatovsm@gmail.com",
-          pass: process.env.IGBATOVSM_PWD,
-        },
-      });
+      // const mailTransport = nodemailer.createTransport({
+      //   service: 'gmail',
+      //   auth: {
+      //     user: "igbatovsm@gmail.com",
+      //     pass: process.env.IGBATOVSM_PWD,
+      //   },
+      // });
+
+      sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
       let cnt = USER_BATCH_LIMIT
       let lastKey = '0'
@@ -405,9 +408,12 @@ exports.GetOnCommandSendDigest = (database, firestore, auth, isProd) => function
             }
 
             const mailOptions = {
-              from: `${APP_NAME} <noreply@firebase.com>`,
+              from: `noreply@scimap.org`,
+              to: '',
+              // from: `${APP_NAME} <noreply@firebase.com>`,
               subject: `Weekly digest from ${APP_NAME}!`,
-              sender: `noreply@scimap.org`
+              // sender: `noreply@scimap.org`
+              html: '',
             };
 
             if (text !== '') {
@@ -417,8 +423,13 @@ exports.GetOnCommandSendDigest = (database, firestore, auth, isProd) => function
               const userRecord = await auth.getUser(userID);
               mailOptions.to = userRecord.toJSON().email
 
-              functions.logger.info('mailOptions', mailOptions)
-              await mailTransport.sendMail(mailOptions);
+              functions.logger.info('GetOnCommandSendDigest: going to send mailOptions', mailOptions)
+              try {
+                await sgMail.send(mailOptions);
+              } catch (e) {
+                functions.logger.error('GetOnCommandSendDigest: error sending email', e)
+              }
+              functions.logger.info('GetOnCommandSendDigest: successfully send mail to ', userRecord.toJSON().email)
             }
 
             lastKey = userID
