@@ -36,6 +36,19 @@ const getPathIDs = async function (database: rtdbTypes.Database, path: string){
   return ids;
 }
 
+const checkNodeContentIDs = async function (database: rtdbTypes.Database){
+  const snapshot = await database.ref('node_content').get();
+  if (!snapshot.exists()) {
+    console.error(FUNCTION_LOG_NAME+" error: /node_content snapshot do not exist")
+    return;
+  }
+  for (const id in snapshot.val()) {
+    if (id.toString() !== snapshot.val()[id].nodeID.toString()) {
+      console.error(FUNCTION_LOG_NAME+" error: node_content nodeID do not match key", id.toString(), snapshot.val()[id].nodeID.toString())
+    }
+  }
+}
+
 // get all nodes from /map in a form hash[nodeID] = [child1ID, child2ID, ...]
 const getMapHash = async function (database: rtdbTypes.Database) {
   const snapshot = await database.ref('map').get();
@@ -195,8 +208,8 @@ getMapHash(rtdb).then(async (hash)=>{
   // remove from /node_content, /precondition, /node_image without /map/{id} correspondence
   for (const path of ["node_content", "precondition", "node_image"]) {
     console.log(`checking ${path}`)
-    const contentIDs = await getPathIDs(rtdb, path);
-    const [added, removed] = getArrayDiff(Object.keys(childrenIDs), contentIDs);
+    const pathIDs = await getPathIDs(rtdb, path);
+    const [added, removed] = getArrayDiff(Object.keys(childrenIDs), pathIDs);
     if (added && added.length > 0) {
       console.error(`/${path} has ids that are not in map`, added)
       if (DO_REMOVE) {
@@ -209,6 +222,9 @@ getMapHash(rtdb).then(async (hash)=>{
       }
     }
   }
+
+  // check that in /node_content nodeID always equals the key
+  await checkNodeContentIDs(rtdb)
 
   process.exit()
 })
