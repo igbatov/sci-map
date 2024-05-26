@@ -1,6 +1,6 @@
 Here is a directory with an admin scripts that can be run like
 ```
-npm run remove-change-logs
+npm run fix-db-consistency
 ```
 As an admin, these scripts have access to read and write all data in prod environment, regardless of Security Rules
 

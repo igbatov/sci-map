@@ -1,12 +1,18 @@
 /**
- * Remove all logs in firestore after FROM_TIMESTAMP (in milliseconds)
+ * Add logs for nodes im map that has not corresponding "create" logs in /changes
+ * (for example, because realtime db was imported from another place)
  * CREATE BACKUP OF FIRESTORE BEFORE RUNNING THIS SCRIPT!!!
  * (See Firestore backup section in README.md)
+ *
+ * In a typical situation (when logging is working) new node has a separate log for every attribute.
+ * For /map: map_id, name, parentID, position, children
+ * For /content: content
+ * For /precondition: precondition
  */
 
 import { firestore, database } from "./bootstrap";
-const FROM_TIMESTAMP= 99999999999999; // 99999999999999 (in milliseconds) is a 5138 year
 
+// get all nodes that exist in /map but do not have a corresponding log in firestore /changes
 firestore
   .collection('changes')
   .where('timestamp', '>', FROM_TIMESTAMP)

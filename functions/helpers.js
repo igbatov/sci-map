@@ -1,7 +1,7 @@
 // if delta between previous change and current change is less than NEW_RECORD_GAP
 // then two changes will be merged into one
 // (NEW_RECORD_GAP is in milliseconds)
-const {logger} = require("firebase-functions");
+const {logger} = require("firebase-functions/v1");
 const Diff = require("diff");
 const NEW_RECORD_GAP = 1*24*60*60*1000 // days*hours*minutes*seconds*1000
 

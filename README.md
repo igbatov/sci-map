@@ -282,8 +282,8 @@ https://firebase.google.com/docs/hosting/github-integration
 
 ## Backups
 ### Realtime Database
-Backups can be configured from firebase UI
-
+Backups can be configured from the firebase UI
+You can also create backup manually from the firebase UI
 ### Firestore
 
 #### Backups from gc console—https://cloud.google.com/firestore/docs/backups?hl=en

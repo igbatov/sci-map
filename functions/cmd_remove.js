@@ -1,4 +1,4 @@
-const {database,  logger} = require("firebase-functions");
+const {database,  logger} = require("firebase-functions/v1");
 const {insertChange, lock, unlock} = require("./helpers");
 const {ActionType} = require("./actions");
 const { nanoid } = require('nanoid');
@@ -118,14 +118,15 @@ exports.GetOnCommandRemove = (firestore, db) => database.ref('/cmd/remove')
           nodeImage = nodeImageSnap.val()
         }
 
-        moveToTrash[`trash/${id}/map`] = nodeMap
-        moveToTrash[`map/${id}`] = null
-        moveToTrash[`trash/${id}/node_content`] = nodeContent
-        moveToTrash[`node_content/${id}`] = null
-        moveToTrash[`trash/${id}/precondition`] = nodePrecondition
-        moveToTrash[`precondition/${id}`] = null
-        moveToTrash[`trash/${id}/node_image`] = nodeImage
-        moveToTrash[`node_image/${id}`] = null
+        moveToTrash[`trash/${id}/timestamp`] = new Date().getTime();
+        moveToTrash[`trash/${id}/map`] = nodeMap;
+        moveToTrash[`map/${id}`] = null;
+        moveToTrash[`trash/${id}/node_content`] = nodeContent;
+        moveToTrash[`node_content/${id}`] = null;
+        moveToTrash[`trash/${id}/precondition`] = nodePrecondition;
+        moveToTrash[`precondition/${id}`] = null;
+        moveToTrash[`trash/${id}/node_image`] = nodeImage;
+        moveToTrash[`node_image/${id}`] = null;
         if (nodeMap.children) {
           for (const idx in nodeMap.children) {
             allChildrenID.push(nodeMap.children[idx]);

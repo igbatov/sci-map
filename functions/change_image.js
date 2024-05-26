@@ -1,4 +1,4 @@
-const {database} = require("firebase-functions");
+const {database} = require("firebase-functions/v1");
 const {insertChange} = require("./helpers");
 const {ActionType} = require("./actions");
 

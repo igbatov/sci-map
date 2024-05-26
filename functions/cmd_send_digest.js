@@ -5,7 +5,6 @@ const functions = require('firebase-functions/v1');
 // const nodemailer = require('nodemailer');
 const sgMail = require('@sendgrid/mail')
 const {ActionType} = require("./actions");
-const Diff = require('diff');
 const {getNodeLink, getArrayDiff, getTextChangePercent} = require("./helpers");
 const APP_NAME = "scimap.org"
 const USER_BATCH_LIMIT = 2

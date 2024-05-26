@@ -1,4 +1,4 @@
-const {database,  logger} = require("firebase-functions");
+const {database,  logger} = require("firebase-functions/v1");
 const {insertChange, lock, unlock, generateKey} = require("./helpers");
 const {ActionType} = require("./actions");
 const { nanoid } = require('nanoid');

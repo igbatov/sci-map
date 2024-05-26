@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "remove-change-logs": "ts-node remove-change-logs.ts"
+    "remove-change-logs": "ts-node remove-change-logs.ts",
+    "fix-db-consistency": "ts-node fix-db-consistency.ts"
   },
   "devDependencies": {
     "@types/node": "^15.0.1",
