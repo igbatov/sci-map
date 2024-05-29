@@ -49,7 +49,10 @@ const checkNodeContentIDs = async function (database: rtdbTypes.Database){
   }
 }
 
-// get all nodes from /map in a form hash[nodeID] = [child1ID, child2ID, ...]
+// get all nodes from /map in a form {
+//  childrenIDs[nodeID]: [child1ID, child2ID, ...],
+//  names[nodeID]: name,
+// }
 const getMapHash = async function (database: rtdbTypes.Database) {
   const snapshot = await database.ref('map').get();
   if (!snapshot.exists()) {

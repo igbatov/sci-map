@@ -33,6 +33,10 @@ exports.GetOnCommandRemove = (firestore, db) => database.ref('/cmd/remove')
 
     // check arguments are valid
     const nodeID = change.after.val()
+    if (nodeID === "0" || nodeID === 0) {
+      logger.info("GetOnCommandRemove:  cannot remove root node (nodeID === '0'), exiting...", nodeID, processCtx)
+      return
+    }
     if (!nodeID) {
       logger.info("GetOnCommandRemove: got empty nodeID, exiting...", nodeID, processCtx)
       return

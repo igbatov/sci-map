@@ -81,6 +81,10 @@ exports.GetOnCommandRestore = (firestore, db) => database.ref('/cmd/restore')
 
     // check nodeID is valid
     const nodeID = change.after.val()['nodeID']
+    if (nodeID === "0" || nodeID === 0) {
+      logger.info("GetOnCommandRestore: got nodeID === '0', exiting...", nodeID, processCtx)
+      return
+    }
     if (!nodeID) {
       logger.info("GetOnCommandRestore: got empty nodeID, exiting...", nodeID, processCtx)
       return

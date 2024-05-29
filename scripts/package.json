@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "add-change-logs": "ts-node add-change-logs.ts",
     "remove-change-logs": "ts-node remove-change-logs.ts",
     "fix-db-consistency": "ts-node fix-db-consistency.ts"
   },

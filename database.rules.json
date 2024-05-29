@@ -2,19 +2,35 @@
   "rules": {
     "map": {
       ".read": true,
-      ".write": "auth !== null && root.child('user_data').child(auth.uid).child('map_editor').val() === 'true'"
+      ".write": "auth !== null && root.child('user_data').child(auth.uid).child('map_editor').val() === 'true'",
+      "0": {
+        ".read": true,
+        ".write": false
+      }
     },
     "node_content": {
       ".read": true,
-      ".write": "auth !== null && root.child('user_data').child(auth.uid).child('map_editor').val() === 'true'"
+      ".write": "auth !== null && root.child('user_data').child(auth.uid).child('map_editor').val() === 'true'",
+      "0": {
+        ".read": true,
+        ".write": false
+      }
     },
     "node_image": {
       ".read": true,
-      ".write": "auth !== null && root.child('user_data').child(auth.uid).child('map_editor').val() === 'true'"
+      ".write": "auth !== null && root.child('user_data').child(auth.uid).child('map_editor').val() === 'true'",
+      "0": {
+        ".read": true,
+        ".write": false
+      }
     },
     "precondition": {
       ".read": true,
-      ".write": "auth !== null && root.child('user_data').child(auth.uid).child('map_editor').val() === 'true'"
+      ".write": "auth !== null && root.child('user_data').child(auth.uid).child('map_editor').val() === 'true'",
+      "0": {
+        ".read": true,
+        ".write": false
+      }
     },
     "trash": {
       ".read": true,
