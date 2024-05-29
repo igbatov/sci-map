@@ -180,9 +180,9 @@ const addPreconditionChanges = async function (database: rtdbTypes.Database, fir
         let attributes = {};
         if (action == ActionType.Precondition) {
           attributes = {
-            added: snapshot.val()[id].precondition,
+            added: snapshot.val()[id],
             removed: [],
-            valueAfter: snapshot.val()[id].precondition,
+            valueAfter: snapshot.val()[id],
             valueBefore: null,
           }
         } else {
