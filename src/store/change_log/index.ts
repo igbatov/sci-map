@@ -72,6 +72,7 @@ export type ChangeLogNodeContent = {
 
   node: Node;
 
+  oldContent: string | null;
   newContent: string;
 };
 
@@ -86,6 +87,7 @@ export type ChangeLogNodeName = {
 
   node: Node;
 
+  oldName: string | null;
   newName: string;
 };
 

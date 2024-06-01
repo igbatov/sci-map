@@ -15,11 +15,13 @@ import firebase from "firebase/compat";
  * TODO: add limit
  * @param actions
  * @param nodeIDs
+ * @param userIDs
  * @param cb
  */
 export async function subscribeChangeLog(
   actions: Array<ActionType>,
   nodeIDs: Array<string>,
+  userIDs: Array<string>,
   cb: (changeLogs: Array<ChangeLog>) => void
 ) {
   const andConditions = [] as Array<QueryFilterConstraint>;
@@ -28,6 +30,9 @@ export async function subscribeChangeLog(
   }
   if (actions.length) {
     andConditions.push(where("action", "in", actions));
+  }
+  if (userIDs.length) {
+    andConditions.push(where("user_id", "in", userIDs));
   }
   // 'remove' and 'restore' changes is made by firebase functions (but logged anyway in firestore)
   // here we skip most details made by function and show only action made by user
@@ -120,7 +125,7 @@ export async function getUserDisplayNames(
 }
 
 // Note: realtime database charges for bandwidth and does not have batch fetch for multiple paths
-// If someday we switch to Firestore this must be implemented in other way
+// If someday we switch to Firestore, this must be implemented in another way
 export async function getNodeNames(
   nodeIDs: Array<string>
 ): Promise<Record<string, string>> {
@@ -156,16 +161,19 @@ function getPathFromNodeName(
  * Same as subscribeChangeLog but enriched with username
  * @param actions
  * @param nodeIDs
+ * @param userIDs
  * @param cb
  */
 export async function subscribeChangeLogEnriched(
   actions: Array<ActionType>,
   nodeIDs: Array<string>,
+  userIDs: Array<string>,
   cb: (changeLogsEnriched: Array<ChangeLogEnriched>) => void
 ) {
   return subscribeChangeLog(
     actions,
     nodeIDs,
+    userIDs,
     (changeLogs: Array<ChangeLog>) => {
       // collect userIDs to request names
       // and nodeIDs to request node names
@@ -214,7 +222,10 @@ export async function subscribeChangeLogEnriched(
           const nodeNames = resp[0];
           const userNames = resp[1];
           const changeLogsEnriched = [] as Array<ChangeLogEnriched>;
+          let prevNodeName = null as string | null;
+          let prevNodeContent = null as string | null;
           changeLogs.forEach(log => {
+            const userDisplayName = userNames[log.userID] && userNames[log.userID].length > 0 ? userNames[log.userID] : log.userID.substring(log.userID.length-8, log.userID.length-1)
             const nodePath = getPathFromNodeName(log.nodeID, nodeNames);
             if (log.action == ActionType.Name) {
               changeLogsEnriched.push({
@@ -224,7 +235,7 @@ export async function subscribeChangeLogEnriched(
                 action: log.action,
 
                 userID: log.userID,
-                userDisplayName: userNames[log.userID],
+                userDisplayName,
 
                 node: {
                   id: log.nodeID,
@@ -232,8 +243,11 @@ export async function subscribeChangeLogEnriched(
                   name: nodeNames[nodePath]
                 },
 
-                newName: log.attributes.value
+                newName: log.attributes.value,
+                oldName: prevNodeName
               });
+              prevNodeName =  log.attributes.value;
+
             } else if (log.action == ActionType.Content) {
               changeLogsEnriched.push({
                 changeLogID: log.changeLogID,
@@ -242,7 +256,7 @@ export async function subscribeChangeLogEnriched(
                 action: log.action,
 
                 userID: log.userID,
-                userDisplayName: userNames[log.userID],
+                userDisplayName,
 
                 node: {
                   id: log.nodeID,
@@ -250,8 +264,11 @@ export async function subscribeChangeLogEnriched(
                   name: nodeNames[nodePath]
                 },
 
-                newContent: log.attributes.value
+                newContent: log.attributes.value,
+                oldContent: prevNodeContent,
               });
+              prevNodeContent = log.attributes.value;
+
             } else if (log.action == ActionType.Precondition) {
               const removed = [];
               if (log.attributes.removed) {
@@ -281,7 +298,7 @@ export async function subscribeChangeLogEnriched(
                 action: log.action,
 
                 userID: log.userID,
-                userDisplayName: userNames[log.userID],
+                userDisplayName,
 
                 node: {
                   id: log.nodeID,
@@ -308,7 +325,7 @@ export async function subscribeChangeLogEnriched(
                 action: log.action,
 
                 userID: log.userID,
-                userDisplayName: userNames[log.userID],
+                userDisplayName,
 
                 node: {
                   id: log.nodeID,
@@ -343,7 +360,7 @@ export async function subscribeChangeLogEnriched(
                 action: log.action,
 
                 userID: log.userID,
-                userDisplayName: userNames[log.userID],
+                userDisplayName,
 
                 node: {
                   id: log.nodeID,
@@ -374,7 +391,7 @@ export async function subscribeChangeLogEnriched(
                 action: log.action,
 
                 userID: log.userID,
-                userDisplayName: userNames[log.userID],
+                userDisplayName,
 
                 node: {
                   id: log.nodeID,
@@ -406,14 +423,17 @@ export function IsNodeInTrash(nodeIDPath: string): boolean {
   return nodeIDPath.startsWith("trash")
 }
 
-export function GetNodeUrl(
+export function GetNodeHref(nodeIDPath: string, nodeID: string) {
+  if (IsNodeInTrash(nodeIDPath)) {
+    return `/node_description/${nodeID}`
+  } else {
+    return `/${nodeID}`
+  }
+}
+export function GetNodeLink(
   nodeIDPath: string,
   nodeID: string,
   nodeName: string
 ): string {
-  if (IsNodeInTrash(nodeIDPath)) {
-    return `<a target="_blank" href="/node_description/${nodeID}">${nodeName}</a>`;
-  } else {
-    return `<a target="_blank" href="/${nodeID}">${nodeName}</a>`;
-  }
+    return `<a target="_blank" href="${GetNodeHref(nodeIDPath, nodeID)}">${nodeName}</a>`;
 }

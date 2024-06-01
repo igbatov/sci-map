@@ -1,15 +1,10 @@
 <template>
-  <ChangeLogComplain
-    :show="complainModalVisible"
-    :complainChangeLink="complainChangeLink"
-    @hide="complainModalVisible = false"
-  />
-  <MenuButton @click="toggleAddDialog">
+  <MenuButton @click="toggleLogModalVisible">
     <img alt="icon" src="../../assets/images/log.svg" style="width: 20px" />
     <span class="p-ml-2">log</span>
   </MenuButton>
   <Dialog
-    v-model:visible="addDialogVisible"
+    v-model:visible="logModalVisible"
     :dismissableMask="false"
     :closable="true"
     :modal="false"
@@ -17,61 +12,48 @@
     @mousedown.stop
   >
     <template #header>
-      <h3>
-        Map change log
-      </h3>
+        node id:
+      <span class="p-input-icon-right">
+        <i class="pi pi-times" style="cursor: pointer;" @click="clearFilterNodeID" />
+        <InputText type="text" v-model="filterNodeID" />
+      </span>
+        user id:
+      <span class="p-input-icon-right">
+        <i class="pi pi-times" style="cursor: pointer;" @click="clearFilterUserID" />
+        <InputText type="text" v-model="filterUserID" />
+      </span>
+      <Button label="Filter" icon="pi pi-check" @click="doFilter" />
     </template>
-    <Card v-for="(event, i) of changes" :key="i" class="p-mt-3">
-      <template #title>
-        <div class="p-grid">
-          <div class="p-col-1">
-            <img alt="add_icon" v-if="event.isAdded" src="../../assets/images/add-off.svg"  style="width: 20px"/>
-            <img alt="add_icon" v-else-if="event.isRemoved" src="../../assets/images/remove-off.svg"  style="width: 20px"/>
-            <img alt="add_icon" v-else src="../../assets/images/move.svg"  style="width: 20px"/>
-          </div>
-          <div class="p-col-6">
-            {{ new Date(event.timestamp).toLocaleDateString() }}
-            {{ new Date(event.timestamp).toLocaleTimeString() }}
-          </div>
-          <div class="p-col-5">
-            <RestoreNode
-                @restore-select-new-parent-is-on="$emit('restore-select-new-parent-is-on')"
-                @restore-select-new-parent-is-off="$emit('restore-select-new-parent-is-off')"
-                :clickedTitleId="clickedTitleId"
-                :event="event"
-            />
-          </div>
-        </div>
-      </template>
-      <template #subtitle>
-        {{ event.userDisplayName }} /
-        <a href="#" @click="showComplain(event.changeLogID)">Complain</a>
-      </template>
-      <template #content>
-        <div style="width:20rem;" v-html="getActionDescription(event)"></div>
-      </template>
-    </Card>
+    <div v-for="(event, i) of changes" :key="i" class="p-mt-3">
+      <ChangeMapCard
+        :event="event"
+        :clickedTitleId="clickedTitleId"
+        @restore-select-new-parent-is-on="$emit('restore-select-new-parent-is-on')"
+        @restore-select-new-parent-is-off="$emit('restore-select-new-parent-is-off')"
+      />
+    </div>
   </Dialog>
 </template>
 
 <script lang="ts">
+import InputText from "primevue/inputtext";
+import Button from "primevue/button";
 import Dialog from "primevue/dialog";
-import Card from "primevue/card";
-import {defineComponent, reactive, ref} from "vue";
-import {ActionType, ChangeLogNodeParent} from "@/store/change_log";
-import {GetNodeUrl, subscribeChangeLogEnriched} from "@/api/change_log";
-import ChangeLogComplain from "@/components/node_content/ChangeLogComplain.vue";
+import {defineComponent, reactive, ref, watch} from "vue";
+import {ActionType, ChangeLogEnriched} from "@/store/change_log";
+import {subscribeChangeLogEnriched} from "@/api/change_log";
+import ChangeMapCard from "@/components/menu/ChangeMapCard.vue";
 import MenuButton from "@/components/menu/MenuButton.vue";
-import RestoreNode from "@/components/menu/RestoreNode.vue";
+import {useRoute, useRouter} from "vue-router";
 
 export default defineComponent({
   name: "MapChangeLog",
   components: {
-    RestoreNode,
     MenuButton,
-    ChangeLogComplain,
-    Card,
-    Dialog
+    Dialog,
+    ChangeMapCard,
+    InputText,
+    Button,
   },
   emits: ["restore-select-new-parent-is-on", "restore-select-new-parent-is-off"],
   props: {
@@ -81,77 +63,81 @@ export default defineComponent({
     }
   },
   setup() {
-    const complainChangeLink = ref("");
-    const complainModalVisible = ref(false);
-    const addDialogVisible = ref(false);
-    const changes = reactive([]) as Array<ChangeLogNodeParent>;
-    subscribeChangeLogEnriched([ActionType.ParentID, ActionType.Remove, ActionType.Restore], [], changeLogs => {
-      changes.splice(
-        0,
-        changes.length,
-        ...(changeLogs as Array<ChangeLogNodeParent>)
-      );
-    });
+    const route = useRoute();
+    const router = useRouter();
+    const filterNodeID = ref("");
+    const filterUserID = ref("");
+    const logModalVisible = ref(false);
+    const changes = reactive([]) as Array<ChangeLogEnriched>;
+    const mapActions = [ActionType.ParentID, ActionType.Remove, ActionType.Restore];
+    const nodeActions = [ActionType.Name, ActionType.Content, ActionType.Precondition];
+    const allActions = mapActions;
+    allActions.push(...nodeActions);
+    let unsubscribe = null as any;
+    const doFilter = async() => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+      unsubscribe = await subscribeChangeLogEnriched(
+          allActions,
+          filterNodeID.value && filterNodeID.value.length>0 ? [filterNodeID.value] : [],
+          filterUserID.value && filterUserID.value.length>0 ? [filterUserID.value] : [],
+          changeLogs => {
+            changes.splice(
+                0,
+                changes.length,
+                ...(changeLogs as Array<ChangeLogEnriched>)
+            );
+          });
+    };
+    watch(
+        () => route.query.logFilterUserID,
+        () => {
+          filterUserID.value = route.query && route.query.logFilterUserID ? route.query.logFilterUserID.toString() : '';
+          doFilter();
+        },
+        { immediate: true }
+    );
+    watch(
+        () => route.query.logFilterNodeID,
+        () => {
+          filterNodeID.value = route.query && route.query.logFilterNodeID ? route.query.logFilterNodeID.toString() : '';
+          doFilter();
+        },
+        { immediate: true }
+    );
 
     return {
-      complainChangeLink,
-      complainModalVisible,
-      showComplain: (id: string) => {
-        complainModalVisible.value = true;
-        complainChangeLink.value = "https://scimap.org/change/" + id;
+      filterNodeID,
+      filterUserID,
+      mapActions,
+      nodeActions,
+      doFilter,
+      clearFilterNodeID: () => {
+        const query = {} as Record<string, string>
+        if (route.query.logFilterUserID) {
+          query['logFilterUserID'] = route.query.logFilterUserID.toString()
+        }
+        router.push({
+          name: "node",
+          params: { id: route.params.id },
+          query,
+        });
       },
-      toggleAddDialog: () => (addDialogVisible.value = !addDialogVisible.value),
-      addDialogVisible,
+      clearFilterUserID: () => {
+        const query = {} as Record<string, string>
+        if (route.query.logFilterNodeID) {
+          query['logFilterNodeID'] = route.query.logFilterNodeID.toString()
+        }
+        router.push({
+          name: "node",
+          params: { id: route.params.id },
+          query,
+        });
+      },
+      toggleLogModalVisible: () => (logModalVisible.value = !logModalVisible.value),
+      logModalVisible,
       changes,
-      getActionDescription: (event: ChangeLogNodeParent): string => {
-        if (event.action === ActionType.Restore) {
-          return `node ${GetNodeUrl(
-            event.node.idPath,
-            event.node.id,
-            event.node.name
-          )} was restored to ${GetNodeUrl(
-            event.parentNodeAfter!.idPath,
-            event.parentNodeAfter!.id,
-            event.parentNodeAfter!.name
-          )}`;
-        }
-        if (event.isAdded) {
-          return `node ${GetNodeUrl(
-            event.node.idPath,
-            event.node.id,
-            event.node.name
-          )} was added to ${GetNodeUrl(
-            event.parentNodeAfter!.idPath,
-            event.parentNodeAfter!.id,
-            event.parentNodeAfter!.name
-          )}`;
-        }
-        if (event.isRemoved) {
-          return `node ${GetNodeUrl(
-            event.node.idPath,
-            event.node.id,
-            event.node.name
-          )} was removed from ${GetNodeUrl(
-            event.parentNodeBefore!.idPath,
-            event.parentNodeBefore!.id,
-            event.parentNodeBefore!.name
-          )}`;
-        }
-
-        return `node ${GetNodeUrl(
-          event.node.idPath,
-          event.node.id,
-          event.node.name
-        )} was moved from ${GetNodeUrl(
-          event.parentNodeBefore!.idPath,
-          event.parentNodeBefore!.id,
-          event.parentNodeBefore!.name
-        )} to ${GetNodeUrl(
-          event.parentNodeAfter!.idPath,
-          event.parentNodeAfter!.id,
-          event.parentNodeAfter!.name
-        )}`;
-      }
     };
   }
 });

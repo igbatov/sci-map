@@ -4,10 +4,12 @@
     v-html="renderedContent"
     @click="setEditOn(true)"
     class="renderedContent"
+     :style="height ? `height: ${height}` : ''"
   />
   <p v-else
     v-html="renderedContent"
     class="renderedContent"
+     :style="height ? `height: ${height}` : ''"
   />
   <textarea
     class="rawContent p-inputtextarea p-inputtext p-component p-inputtextarea-resizable"
@@ -70,6 +72,14 @@ export default {
     rows: {
       type: Number,
       required: true
+    },
+    height: {
+      type: String,
+      required: false
+    },
+    allowEdit: {
+      type: Boolean,
+      required: true
     }
   },
   setup(props: any, ctx: any) {
@@ -82,7 +92,7 @@ export default {
     const txtarea = ref<HTMLDivElement | null>(null);
 
     return {
-      isAuthorized: computed(()=>store.state.user && store.state.user.user && !store.state.user.user.isAnonymous),
+      isAuthorized: computed(()=>props.allowEdit && store.state.user && store.state.user.user && !store.state.user.user.isAnonymous),
       editOn,
       txtarea,
       setEditOn: (val: boolean) => {
@@ -117,7 +127,6 @@ export default {
   text-align: left;
   text-wrap: wrap;
   overflow-y: scroll;
-  height: 300px;
   table :is(td, th) {
     border-top: 1px solid black;
     padding: 0.3em;

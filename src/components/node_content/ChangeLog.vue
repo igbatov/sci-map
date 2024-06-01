@@ -35,7 +35,7 @@
           {{ event.newName }}
         </template>
         <template #content v-else-if="event.action == ActionType.Content">
-          <Markdown :content="event.newContent" :rows="10" />
+          <Markdown :content="event.newContent" :rows="10" :allowEdit="false" height="300px"/>
         </template>
         <template #content v-else-if="event.action == ActionType.Precondition">
           <div v-html="getContent(event)" />
@@ -48,7 +48,7 @@
 <script lang="ts">
 import Fieldset from "primevue/fieldset";
 import Card from "primevue/card";
-import { subscribeChangeLogEnriched, GetNodeUrl } from "@/api/change_log";
+import { subscribeChangeLogEnriched, GetNodeLink } from "@/api/change_log";
 import { computed, reactive, ref, watch, defineComponent } from "vue";
 import {
   ActionType,
@@ -104,6 +104,7 @@ export default defineComponent({
           unsubscribe = await subscribeChangeLogEnriched(
             [ActionType.Name, ActionType.Content, ActionType.Precondition],
             [props.nodeId],
+            [],
             changeLogs => {
               changes.splice(0, changes.length, ...changeLogs);
             }
@@ -125,11 +126,11 @@ export default defineComponent({
         event = event as ChangeLogNodePrecondition;
         const removed = [];
         for (const cd of event.removed) {
-          removed.push(GetNodeUrl(cd.idPath, cd.id, cd.name));
+          removed.push(GetNodeLink(cd.idPath, cd.id, cd.name));
         }
         const added = [];
         for (const cd of event.added) {
-          added.push(GetNodeUrl(cd.idPath, cd.id, cd.name));
+          added.push(GetNodeLink(cd.idPath, cd.id, cd.name));
         }
 
         let result = "";

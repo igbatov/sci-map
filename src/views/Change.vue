@@ -15,6 +15,8 @@
       v-if="['content', 'name'].indexOf(change['action']) != -1"
       :content="change['attributes']['value']"
       :rows="20"
+      :allowEdit="true"
+      height="300px"
     />
     <div v-else>{{ JSON.stringify(change["attributes"]) }}</div>
   </div>

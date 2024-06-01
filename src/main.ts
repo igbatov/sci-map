@@ -11,6 +11,8 @@ import "primevue/resources/primevue.min.css"; //core css
 import "primeicons/primeicons.css"; //icons
 import "primeflex/primeflex.css";
 import Tooltip from 'primevue/tooltip';
+import VueDiff from 'vue-diff';
+import 'vue-diff/dist/index.css';
 
 createApp(App)
   .use(store, key)
@@ -18,5 +20,6 @@ createApp(App)
   .use(PrimeVue)
   .use(ConfirmationService)
   .use(ToastService)
+  .use(VueDiff)
   .directive('tooltip', Tooltip)
   .mount("#app");

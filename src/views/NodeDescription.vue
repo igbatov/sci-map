@@ -14,6 +14,8 @@
     <Markdown
       :content="node['node_content'] ? node['node_content']['content'] : ''"
       :rows="20"
+      height="300px"
+      :allowEdit="true"
     />
     <div>
       <b>precondition:</b>

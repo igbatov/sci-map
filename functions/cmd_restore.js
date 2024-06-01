@@ -5,11 +5,15 @@ const { nanoid } = require('nanoid');
 const { Queue } = require('@datastructures-js/queue');
 
 const LOCK_TIMEOUT_RESTORE = 60*60*1000 // 60 min
-const clearState = async (db, lockNodeIDPath, lockParentIDIDPath, processCtx) => {
+const clearState = async (db, lockNodeIDPath, lockParentIDPath, processCtx) => {
   logger.info("GetOnCommandRestore: clearing", processCtx)
   await db.ref('/cmd/restore').set("")
-  await unlock(db, lockNodeIDPath)
-  await unlock(db, lockParentIDIDPath)
+  if (lockNodeIDPath) {
+    await unlock(db, lockNodeIDPath)
+  }
+  if (lockParentIDPath) {
+    await unlock(db, lockParentIDPath)
+  }
   logger.info("GetOnCommandRestore: finished", processCtx)
 }
 
@@ -124,6 +128,7 @@ exports.GetOnCommandRestore = (firestore, db) => database.ref('/cmd/restore')
       const trashNode = await getTrashNode(db, nodeID, "map")
       if (!trashNode) {
         logger.error("GetOnCommandRestore: cannot find node in /trash", nodeID)
+        await clearState(db, lockNodeIDPath, lockParentIDPath, processCtx)
         return
       }
 
@@ -131,6 +136,7 @@ exports.GetOnCommandRestore = (firestore, db) => database.ref('/cmd/restore')
       const parentNode = await getMapNode(db, parentID)
       if (!parentNode) {
         logger.error("GetOnCommandRestore: cannot find parent node in /map", parentID)
+        await clearState(db, lockNodeIDPath, lockParentIDPath, processCtx)
         return
       }
 
@@ -141,10 +147,10 @@ exports.GetOnCommandRestore = (firestore, db) => database.ref('/cmd/restore')
 
       await restoreNodeWithChildren(db, nodeID, parentID)
       // await new Promise(r => setTimeout(r, 20000)); // for test
-      await clearState(db, lockNodeIDPath, lockParentIDPath)
+      await clearState(db, lockNodeIDPath, lockParentIDPath, processCtx)
     } catch (e) {
       logger.error(e, processCtx)
-      await clearState(db, lockNodeIDPath, lockParentIDPath)
+      await clearState(db, lockNodeIDPath, lockParentIDPath, processCtx)
     }
   });
 // [END GetOnCommandRestore]
