@@ -22,22 +22,23 @@
         </div>
         <div class="p-col-3">
           <div style="font-weight: 100;">user</div>
-          <div
+          <a
+              href="#"
               style="font-weight: 900; display: inline-block; position: relative; top: -5px; cursor: pointer;"
               @click="filterByUserID(event.userID)"
           >
             {{ event.userDisplayName }}
-          </div>
+          </a>
           <img
               @click="showComplain(event.changeLogID)"
                alt="complain" src="../../assets/images/exclamation.svg"
                style="width: 20px; cursor: pointer; position: relative; top: -2px; left: 0.5em;"
           />
         </div>
-        <div class="p-col-5">
+        <div class="p-col-4">
           <div style="font-weight: 100;">changed node</div>
-          <div style="font-weight: 900; display: inline; cursor: pointer;" @click="filterByNodeID(event.node.id)">{{event.node.name}}</div>
-          <a :href="GetNodeHref(event.node.idPath, event.node.id)"> &#128279;</a>
+          <a  href="#" style="font-weight: 900; display: inline; cursor: pointer;" @click="filterByNodeID(event.node.id)">{{event.node.name}}</a>
+          &nbsp;<a :href="GetNodeHref(event.node.idPath, event.node.id)">[&nearr;]</a>
           <div style="font-weight: 100; display: inline; margin-left:0.5em;">{{ event.action }}</div>
         </div>
         <div
@@ -92,7 +93,7 @@ import Markdown from "@/components/node_content/Markdown.vue";
 import {useRouter, useRoute} from "vue-router";
 
 export default defineComponent({
-  name: "MapChangeLog",
+  name: "ChangeLogCard",
   components: {
     // Markdown,
     ChangeLogComplain,
@@ -131,6 +132,9 @@ export default defineComponent({
         if (route.query.logFilterUserID) {
           query['logFilterUserID'] = route.query.logFilterUserID.toString()
         }
+        if (route.query.logFilterActionType) {
+          query['logFilterActionType'] = route.query.logFilterActionType.toString()
+        }
         query['logFilterNodeID'] = nodeID;
         router.push({
           name: "node",
@@ -142,6 +146,9 @@ export default defineComponent({
         const query = {} as Record<string, string>
         if (route.query.logFilterNodeID) {
           query['logFilterNodeID'] = route.query.logFilterNodeID.toString()
+        }
+        if (route.query.logFilterActionType) {
+          query['logFilterActionType'] = route.query.logFilterActionType.toString()
         }
         query['logFilterUserID'] = userID;
         router.push({

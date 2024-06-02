@@ -23,7 +23,7 @@
           v-if="editModeOn && isWideScreen()"
           style="position: absolute; right: 23rem; top:1.2rem;"
       >
-        <MapChangeLog
+        <ChangeLog
             @restore-select-new-parent-is-on="$emit('restore-select-new-parent-is-on')"
             @restore-select-new-parent-is-off="$emit('restore-select-new-parent-is-off')"
             :clickedTitleId="clickedTitleId"
@@ -64,7 +64,7 @@ import RemoveNode from "./RemoveNode";
 import EditMode from "./EditMode";
 import CutPaste from "@/components/menu/CutPaste";
 import Feedback from "@/components/menu/Feedback";
-import MapChangeLog from "@/components/menu/MapChangeLog";
+import ChangeLog from "@/components/menu/ChangeLog.vue";
 import MenuButton from "@/components/menu/MenuButton";
 import Help from "@/components/menu/Help";
 import PrimeMenu from "primevue/tieredmenu";
@@ -83,7 +83,7 @@ export default {
     AddNode,
     RemoveNode,
     EditMode,
-    MapChangeLog
+    ChangeLog
   },
   emits: ["restore-select-new-parent-is-on", "restore-select-new-parent-is-off"],
   props: {
