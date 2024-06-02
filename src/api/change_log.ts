@@ -238,8 +238,8 @@ export async function subscribeChangeLogEnriched(
           const nodeNames = resp[0];
           const userNames = resp[1];
           const changeLogsEnriched = [] as Array<ChangeLogEnriched>;
-          let prevNodeName = null as string | null;
-          let prevNodeContent = null as string | null;
+          const prevNodeName = {} as Record<string, string>;
+          const prevNodeContent = {} as Record<string, string>;
           changeLogs.forEach(log => {
             const userDisplayName = userNames[log.userID] && userNames[log.userID].length > 0 ? userNames[log.userID] : log.userID.substring(log.userID.length-8, log.userID.length-1)
             const nodePath = getPathFromNodeName(log.nodeID, nodeNames);
@@ -260,9 +260,9 @@ export async function subscribeChangeLogEnriched(
                 },
 
                 newName: log.attributes.value,
-                oldName: prevNodeName
+                oldName: prevNodeName[log.nodeID]
               });
-              prevNodeName =  log.attributes.value;
+              prevNodeName[log.nodeID] =  log.attributes.value;
 
             } else if (log.action == ActionType.Content) {
               changeLogsEnriched.push({
@@ -281,9 +281,9 @@ export async function subscribeChangeLogEnriched(
                 },
 
                 newContent: log.attributes.value,
-                oldContent: prevNodeContent,
+                oldContent: prevNodeContent[log.nodeID],
               });
-              prevNodeContent = log.attributes.value;
+              prevNodeContent[log.nodeID] = log.attributes.value;
 
             } else if (log.action == ActionType.Precondition) {
               const removed = [];
