@@ -363,7 +363,7 @@ export default defineComponent({
     },
     wrapperHeight: {
       type: Number,
-      required: true
+      required: false
     }
   },
   setup(props) {

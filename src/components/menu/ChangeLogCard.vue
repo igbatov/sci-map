@@ -135,6 +135,9 @@ export default defineComponent({
         if (route.query.logFilterActionType) {
           query['logFilterActionType'] = route.query.logFilterActionType.toString()
         }
+        if (route.query.logFilterPeriod) {
+          query['logFilterPeriod'] = route.query.logFilterPeriod.toString()
+        }
         query['logFilterNodeID'] = nodeID;
         router.push({
           name: "node",
@@ -149,6 +152,9 @@ export default defineComponent({
         }
         if (route.query.logFilterActionType) {
           query['logFilterActionType'] = route.query.logFilterActionType.toString()
+        }
+        if (route.query.logFilterPeriod) {
+          query['logFilterPeriod'] = route.query.logFilterPeriod.toString()
         }
         query['logFilterUserID'] = userID;
         router.push({

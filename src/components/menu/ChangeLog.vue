@@ -29,8 +29,15 @@
         <div class="p-col-3" style="margin-left:1.5em;">
           <div style="font-weight: 100;">period:</div>
           <span class="p-input-icon-right">
-            <i class="pi pi-times" style="cursor: pointer;" @click="clearFilterUserID" />
-            <Calendar v-model="period" selectionMode="range" :manualInput="false" />
+            <i class="pi pi-times" style="cursor: pointer;" @click="clearFilterPeriod" />
+            <Calendar
+              v-model="filterPeriod"
+              @update:modelValue="updateFilterPeriod()"
+              selectionMode="range"
+              :manualInput="false"
+              :hideOnRangeSelection="true"
+              showButtonBar
+            />
           </span>
         </div>
         <div class="p-col-3" style="margin-left:-0.5em;">
@@ -101,9 +108,10 @@ export default defineComponent({
     const router = useRouter();
     const filterNodeID = ref("");
     const filterUserID = ref("");
+    const filterPeriod = ref();
     const filterActionType = ref();
     const filterActionTypeOptions = ref([
-      { name: 'All', code: 'All' },
+      { name: 'All', code: 'all' },
       { name: 'Content only', code: 'content' },
       { name: 'Map only', code: 'map' },
     ]);
@@ -111,24 +119,31 @@ export default defineComponent({
     const changes = reactive([]) as Array<ChangeLogEnriched>;
     const mapActions = [ActionType.ParentID, ActionType.Remove, ActionType.Restore];
     const nodeActions = [ActionType.Name, ActionType.Content, ActionType.Precondition];
-    const allActions = mapActions;
-    allActions.push(...nodeActions);
+    const allActions = [...mapActions, ...nodeActions];
     let unsubscribe = null as any;
     const doFilter = async() => {
       if (unsubscribe) {
         unsubscribe();
       }
       let actions = allActions
-      if (filterActionType.value && filterActionType.value === 'map') {
+      if (filterActionType.value && filterActionType.value.code === 'map') {
         actions = mapActions;
       }
-      if (filterActionType.value && filterActionType.value === 'content') {
+      if (filterActionType.value && filterActionType.value.code === 'content') {
         actions = nodeActions;
+      }
+      let fromTs = 0;
+      let toTs = 0;
+      if (filterPeriod.value && filterPeriod.value.length === 2) {
+        fromTs = filterPeriod.value[0].getTime()
+        toTs = filterPeriod.value[1].getTime() + 24*60*60*1000;
       }
       unsubscribe = await subscribeChangeLogEnriched(
           actions,
           filterNodeID.value && filterNodeID.value.length>0 ? [filterNodeID.value] : [],
           filterUserID.value && filterUserID.value.length>0 ? [filterUserID.value] : [],
+          fromTs,
+          toTs,
           changeLogs => {
             changes.splice(
                 0,
@@ -156,8 +171,27 @@ export default defineComponent({
     watch(
         () => route.query.logFilterActionType,
         () => {
-          filterActionType.value = route.query && route.query.logFilterActionType ? route.query.logFilterActionType.toString() : '';
-          console.log(filterActionType.value)
+          if (!route.query || !route.query.logFilterActionType) {
+            filterActionType.value = null
+          } else {
+            filterActionType.value = filterActionTypeOptions.value.find((opt) => opt.code === route.query.logFilterActionType)
+          }
+          doFilter();
+        },
+        { immediate: true }
+    );
+    watch(
+        () => route.query.logFilterPeriod,
+        () => {
+          if (!route.query || !route.query.logFilterPeriod) {
+            filterPeriod.value = null
+          } else {
+            const [fromTs, toTs] = route.query.logFilterPeriod.toString().split('-')
+            filterPeriod.value = [
+              (new Date(Number(fromTs))),
+              (new Date(Number(toTs))),
+            ]
+          }
           doFilter();
         },
         { immediate: true }
@@ -166,19 +200,22 @@ export default defineComponent({
     return {
       filterNodeID,
       filterUserID,
+      filterPeriod,
       filterActionType,
       filterActionTypeOptions,
       mapActions,
       nodeActions,
       doFilter,
       actionTypeChange: (event: DropdownChangeEvent) => {
-        console.log("filterActionType.value", filterActionType.value)
         const query = {} as Record<string, string>
         if (route.query.logFilterNodeID) {
           query['logFilterNodeID'] = route.query.logFilterNodeID.toString()
         }
         if (route.query.logFilterUserID) {
           query['logFilterUserID'] = route.query.logFilterUserID.toString()
+        }
+        if (route.query.logFilterPeriod) {
+          query['logFilterPeriod'] = route.query.logFilterPeriod.toString()
         }
         query['logFilterActionType'] = event.value.code;
         router.push({
@@ -201,6 +238,12 @@ export default defineComponent({
         if (route.query.logFilterUserID) {
           query['logFilterUserID'] = route.query.logFilterUserID.toString()
         }
+        if (route.query.logFilterPeriod) {
+          query['logFilterPeriod'] = route.query.logFilterPeriod.toString()
+        }
+        if (route.query.logFilterActionType) {
+          query['logFilterActionType'] = route.query.logFilterActionType.toString()
+        }
         router.push({
           name: "node",
           params: { id: route.params.id },
@@ -211,6 +254,50 @@ export default defineComponent({
         const query = {} as Record<string, string>
         if (route.query.logFilterNodeID) {
           query['logFilterNodeID'] = route.query.logFilterNodeID.toString()
+        }
+        if (route.query.logFilterPeriod) {
+          query['logFilterPeriod'] = route.query.logFilterPeriod.toString()
+        }
+        if (route.query.logFilterActionType) {
+          query['logFilterActionType'] = route.query.logFilterActionType.toString()
+        }
+        router.push({
+          name: "node",
+          params: { id: route.params.id },
+          query,
+        });
+      },
+      updateFilterPeriod: () => {
+        const query = {} as Record<string, string>
+        if (route.query.logFilterNodeID) {
+          query['logFilterNodeID'] = route.query.logFilterNodeID.toString()
+        }
+        if (route.query.logFilterUserID) {
+          query['logFilterUserID'] = route.query.logFilterUserID.toString()
+        }
+        if (route.query.logFilterActionType) {
+          query['logFilterActionType'] = route.query.logFilterActionType.toString()
+        }
+        if (filterPeriod.value && filterPeriod.value[0] && filterPeriod.value[1]) {
+          query['logFilterPeriod'] = `${filterPeriod.value[0].getTime()}-${filterPeriod.value[1].getTime()}`;
+        }
+
+        router.push({
+          name: "node",
+          params: { id: route.params.id },
+          query,
+        });
+      },
+      clearFilterPeriod: () => {
+        const query = {} as Record<string, string>
+        if (route.query.logFilterNodeID) {
+          query['logFilterNodeID'] = route.query.logFilterNodeID.toString()
+        }
+        if (route.query.logFilterUserID) {
+          query['logFilterUserID'] = route.query.logFilterUserID.toString()
+        }
+        if (route.query.logFilterActionType) {
+          query['logFilterActionType'] = route.query.logFilterActionType.toString()
         }
         router.push({
           name: "node",

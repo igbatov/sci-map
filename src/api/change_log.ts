@@ -16,12 +16,16 @@ import firebase from "firebase/compat";
  * @param actions
  * @param nodeIDs
  * @param userIDs
+ * @param fromTs
+ * @param toTs
  * @param cb
  */
 export async function subscribeChangeLog(
   actions: Array<ActionType>,
   nodeIDs: Array<string>,
   userIDs: Array<string>,
+  fromTs: number,
+  toTs: number,
   cb: (changeLogs: Array<ChangeLog>) => void
 ) {
   const andConditions = [] as Array<QueryFilterConstraint>;
@@ -33,6 +37,12 @@ export async function subscribeChangeLog(
   }
   if (userIDs.length) {
     andConditions.push(where("user_id", "in", userIDs));
+  }
+  if (fromTs>0) {
+    andConditions.push(where("timestamp", ">=", fromTs));
+  }
+  if (toTs>0) {
+    andConditions.push(where("timestamp", "<=", toTs));
   }
   // 'remove' and 'restore' changes is made by firebase functions (but logged anyway in firestore)
   // here we skip most details made by function and show only action made by user
@@ -162,18 +172,24 @@ function getPathFromNodeName(
  * @param actions
  * @param nodeIDs
  * @param userIDs
+ * @param fromTs
+ * @param toTs
  * @param cb
  */
 export async function subscribeChangeLogEnriched(
   actions: Array<ActionType>,
   nodeIDs: Array<string>,
   userIDs: Array<string>,
+  fromTs: number,
+  toTs: number,
   cb: (changeLogsEnriched: Array<ChangeLogEnriched>) => void
 ) {
   return subscribeChangeLog(
     actions,
     nodeIDs,
     userIDs,
+    fromTs,
+    toTs,
     (changeLogs: Array<ChangeLog>) => {
       // collect userIDs to request names
       // and nodeIDs to request node names

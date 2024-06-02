@@ -105,6 +105,8 @@ export default defineComponent({
             [ActionType.Name, ActionType.Content, ActionType.Precondition],
             [props.nodeId],
             [],
+            0,
+            0,
             changeLogs => {
               changes.splice(0, changes.length, ...changeLogs);
             }
