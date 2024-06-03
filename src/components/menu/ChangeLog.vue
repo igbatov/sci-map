@@ -121,6 +121,23 @@ export default defineComponent({
     const nodeActions = [ActionType.Name, ActionType.Content, ActionType.Precondition];
     const allActions = [...mapActions, ...nodeActions];
     let unsubscribe = null as any;
+    const clearFilterPeriod = () => {
+      const query = {} as Record<string, string>
+      if (route.query.logFilterNodeID) {
+        query['logFilterNodeID'] = route.query.logFilterNodeID.toString()
+      }
+      if (route.query.logFilterUserID) {
+        query['logFilterUserID'] = route.query.logFilterUserID.toString()
+      }
+      if (route.query.logFilterActionType) {
+        query['logFilterActionType'] = route.query.logFilterActionType.toString()
+      }
+      router.push({
+        name: "node",
+        params: { id: route.params.id },
+        query,
+      });
+    }
     const doFilter = async() => {
       if (unsubscribe) {
         unsubscribe();
@@ -164,6 +181,9 @@ export default defineComponent({
         () => route.query.logFilterNodeID,
         () => {
           filterNodeID.value = route.query && route.query.logFilterNodeID ? route.query.logFilterNodeID.toString() : '';
+          // hack: drop period filter when nodeID filter is on
+          // (to show oldContent/newContent diff correct on the oldest record)
+          clearFilterPeriod();
           doFilter();
         },
         { immediate: true }
@@ -288,23 +308,7 @@ export default defineComponent({
           query,
         });
       },
-      clearFilterPeriod: () => {
-        const query = {} as Record<string, string>
-        if (route.query.logFilterNodeID) {
-          query['logFilterNodeID'] = route.query.logFilterNodeID.toString()
-        }
-        if (route.query.logFilterUserID) {
-          query['logFilterUserID'] = route.query.logFilterUserID.toString()
-        }
-        if (route.query.logFilterActionType) {
-          query['logFilterActionType'] = route.query.logFilterActionType.toString()
-        }
-        router.push({
-          name: "node",
-          params: { id: route.params.id },
-          query,
-        });
-      },
+      clearFilterPeriod,
       toggleLogModalVisible: () => (logModalVisible.value = !logModalVisible.value),
       logModalVisible,
       changes,

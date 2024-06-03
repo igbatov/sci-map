@@ -55,22 +55,22 @@
       </div>
     </template>
     <template #content v-if="event.action == ActionType.Name">
-      <Diff
+      <div style="width:60rem;"><Diff
           :mode="'split'"
           :theme="'light'"
           :language="'plaintext'"
           :prev="event.oldName ? event.oldName : ''"
           :current="event.newName ? event.newName : ''"
-      />
+      /></div>
     </template>
     <template #content v-else-if="event.action == ActionType.Content && event.newContent">
-      <Diff
+      <div style="width:60rem;"><Diff
           :mode="'split'"
           :theme="'light'"
           :language="'plaintext'"
           :prev="event.oldContent ? event.oldContent : ''"
           :current="event.newContent ? event.newContent : ''"
-      />
+      /></div>
 <!--      <Markdown :content="event.newContent" :rows="2" :allowEdit="false"/>-->
     </template>
     <template #content v-else-if="event.action == ActionType.Precondition">
