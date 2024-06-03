@@ -55,29 +55,29 @@
       </div>
     </template>
     <template #content v-if="event.action == ActionType.Name">
-      <div style="width:60rem;"><Diff
+      <Diff
           :mode="'split'"
           :theme="'light'"
           :language="'plaintext'"
           :prev="event.oldName ? event.oldName : ''"
           :current="event.newName ? event.newName : ''"
-      /></div>
+      />
     </template>
-    <template #content v-else-if="event.action == ActionType.Content && event.newContent">
-      <div style="width:60rem;"><Diff
+    <template #content v-else-if="event.action == ActionType.Content">
+      <Diff
           :mode="'split'"
           :theme="'light'"
           :language="'plaintext'"
           :prev="event.oldContent ? event.oldContent : ''"
           :current="event.newContent ? event.newContent : ''"
-      /></div>
+      />
 <!--      <Markdown :content="event.newContent" :rows="2" :allowEdit="false"/>-->
     </template>
     <template #content v-else-if="event.action == ActionType.Precondition">
-      <div style="width:60rem;" v-html="getContent(event)" />
+      <div v-html="getContent(event)" />
     </template>
     <template #content v-else-if="mapActions.indexOf(event.action) !== -1">
-      <div style="width:60rem;" v-html="getMapActionDescription(event)"></div>
+      <div v-html="getMapActionDescription(event)"></div>
     </template>
   </Card>
 </template>

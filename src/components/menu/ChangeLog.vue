@@ -11,6 +11,7 @@
     :closeOnEscape="true"
     :keepInViewPort="false"
     @mousedown.stop
+    style="width:66rem;"
     @update:visible="clearFilter($event)"
   >
     <template #header>
@@ -23,7 +24,7 @@
               optionLabel="name"
               placeholder="All"
               style="width:6em;"
-              @change="actionTypeChange($event)"
+              @change="actionTypeChange($event.value.code)"
           />
         </div>
         <div class="p-col-3" style="margin-left:1.5em;">
@@ -121,6 +122,26 @@ export default defineComponent({
     const nodeActions = [ActionType.Name, ActionType.Content, ActionType.Precondition];
     const allActions = [...mapActions, ...nodeActions];
     let unsubscribe = null as any;
+
+    const actionTypeChange = (actionTypeCode: string) => {
+      const query = {} as Record<string, string>
+      if (route.query.logFilterNodeID) {
+        query['logFilterNodeID'] = route.query.logFilterNodeID.toString()
+      }
+      if (route.query.logFilterUserID) {
+        query['logFilterUserID'] = route.query.logFilterUserID.toString()
+      }
+      if (route.query.logFilterPeriod) {
+        query['logFilterPeriod'] = route.query.logFilterPeriod.toString()
+      }
+      query['logFilterActionType'] = actionTypeCode;
+      router.push({
+        name: "node",
+        params: { id: route.params.id },
+        query,
+      });
+    };
+
     const clearFilterPeriod = () => {
       const query = {} as Record<string, string>
       if (route.query.logFilterNodeID) {
@@ -138,6 +159,7 @@ export default defineComponent({
         query,
       });
     }
+
     const doFilter = async() => {
       if (unsubscribe) {
         unsubscribe();
@@ -169,6 +191,7 @@ export default defineComponent({
             );
           });
     };
+
     watch(
         () => route.query.logFilterUserID,
         () => {
@@ -226,24 +249,7 @@ export default defineComponent({
       mapActions,
       nodeActions,
       doFilter,
-      actionTypeChange: (event: DropdownChangeEvent) => {
-        const query = {} as Record<string, string>
-        if (route.query.logFilterNodeID) {
-          query['logFilterNodeID'] = route.query.logFilterNodeID.toString()
-        }
-        if (route.query.logFilterUserID) {
-          query['logFilterUserID'] = route.query.logFilterUserID.toString()
-        }
-        if (route.query.logFilterPeriod) {
-          query['logFilterPeriod'] = route.query.logFilterPeriod.toString()
-        }
-        query['logFilterActionType'] = event.value.code;
-        router.push({
-          name: "node",
-          params: { id: route.params.id },
-          query,
-        });
-      },
+      actionTypeChange,
       clearFilter: (isVisible: boolean) => {
         if (isVisible) {
           return
@@ -309,7 +315,12 @@ export default defineComponent({
         });
       },
       clearFilterPeriod,
-      toggleLogModalVisible: () => (logModalVisible.value = !logModalVisible.value),
+      toggleLogModalVisible: () => {
+        if (!logModalVisible.value) {
+          actionTypeChange('map')
+        }
+        logModalVisible.value = !logModalVisible.value
+      },
       logModalVisible,
       changes,
     };
