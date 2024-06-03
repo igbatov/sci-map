@@ -50,7 +50,7 @@ export async function subscribeChangeLog(
   const q = query(
     collection(getFirestore(), "changes"),
     and(...andConditions),
-    orderBy("timestamp", "desc")
+    orderBy("timestamp", "asc")
   );
 
   return onSnapshot(q, snapshot => {
@@ -428,6 +428,10 @@ export async function subscribeChangeLogEnriched(
               });
             }
           });
+
+          // changeLogs must be in ascending order for prevContent to work properly,
+          // but on UI we want new records first
+          changeLogsEnriched.sort((a,b) => b.timestamp - a.timestamp);
           cb(changeLogsEnriched);
         }
       );
