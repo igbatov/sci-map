@@ -60,15 +60,17 @@
           <Button label="Filter"  @click="doFilter" />
         </div>
       </div>
-
     </template>
-    <div v-for="(event, i) of changes" :key="i" class="p-mt-3">
-      <ChangeLogCard
-        :event="event"
-        :clickedTitleId="clickedTitleId"
-        @restore-select-new-parent-is-on="$emit('restore-select-new-parent-is-on')"
-        @restore-select-new-parent-is-off="$emit('restore-select-new-parent-is-off')"
-      />
+    <div>
+      <div v-for="(event, i) of changes" :key="i" class="p-mt-3">
+        <ChangeLogCard
+          :event="event"
+          :clickedTitleId="clickedTitleId"
+          @restore-select-new-parent-is-on="$emit('restore-select-new-parent-is-on')"
+          @restore-select-new-parent-is-off="$emit('restore-select-new-parent-is-off')"
+        />
+      </div>
+      <InfiniteLoading @infinite="loadMoreChanges" />
     </div>
   </Dialog>
 </template>
@@ -77,7 +79,7 @@
 import InputText from "primevue/inputtext";
 import Button from "primevue/button";
 import Dialog from "primevue/dialog";
-import Dropdown, {DropdownChangeEvent} from 'primevue/dropdown';
+import Dropdown from 'primevue/dropdown';
 import Calendar from 'primevue/calendar';
 import {defineComponent, reactive, ref, watch} from "vue";
 import {ActionType, ChangeLogEnriched} from "@/store/change_log";
@@ -85,6 +87,8 @@ import {subscribeChangeLogEnriched} from "@/api/change_log";
 import ChangeLogCard from "@/components/menu/ChangeLogCard.vue";
 import MenuButton from "@/components/menu/MenuButton.vue";
 import {useRoute, useRouter} from "vue-router";
+import InfiniteLoading from "v3-infinite-loading";
+import {useToast} from "primevue/usetoast";
 
 export default defineComponent({
   name: "ChangeLog",
@@ -96,6 +100,7 @@ export default defineComponent({
     Button,
     Dropdown,
     Calendar,
+    InfiniteLoading,
   },
   emits: ["restore-select-new-parent-is-on", "restore-select-new-parent-is-off"],
   props: {
@@ -105,8 +110,12 @@ export default defineComponent({
     }
   },
   setup() {
+    const PAGE_SIZE = 50;
+    const LIMIT_MAX_SIZE = 1000;
+    let currentLimit = PAGE_SIZE
     const route = useRoute();
     const router = useRouter();
+    const toast = useToast();
     const filterNodeID = ref("");
     const filterUserID = ref("");
     const filterPeriod = ref();
@@ -183,6 +192,7 @@ export default defineComponent({
           filterUserID.value && filterUserID.value.length>0 ? [filterUserID.value] : [],
           fromTs,
           toTs,
+          currentLimit,
           changeLogs => {
             changes.splice(
                 0,
@@ -193,48 +203,46 @@ export default defineComponent({
     };
 
     watch(
-        () => route.query.logFilterUserID,
-        () => {
-          filterUserID.value = route.query && route.query.logFilterUserID ? route.query.logFilterUserID.toString() : '';
-          doFilter();
-        },
-        { immediate: true }
-    );
-    watch(
-        () => route.query.logFilterNodeID,
-        () => {
-          filterNodeID.value = route.query && route.query.logFilterNodeID ? route.query.logFilterNodeID.toString() : '';
-          // hack: drop period filter when nodeID filter is on
-          // (to show oldContent/newContent diff correct on the oldest record)
-          clearFilterPeriod();
-          doFilter();
-        },
-        { immediate: true }
-    );
-    watch(
-        () => route.query.logFilterActionType,
-        () => {
-          if (!route.query || !route.query.logFilterActionType) {
-            filterActionType.value = null
-          } else {
-            filterActionType.value = filterActionTypeOptions.value.find((opt) => opt.code === route.query.logFilterActionType)
+        () => [
+          route.query.logFilterUserID,
+          route.query.logFilterNodeID,
+          route.query.logFilterActionType,
+          route.query.logFilterPeriod,
+        ],
+        (newValues) => {
+          if (!route.query) {
+            filterUserID.value = ""
+            filterNodeID.value = ""
+            filterActionType.value = ""
+            filterPeriod.value = ""
+            return
           }
-          doFilter();
-        },
-        { immediate: true }
-    );
-    watch(
-        () => route.query.logFilterPeriod,
-        () => {
-          if (!route.query || !route.query.logFilterPeriod) {
-            filterPeriod.value = null
+          if (newValues[0]) {
+            filterUserID.value = newValues[0].toString()
           } else {
-            const [fromTs, toTs] = route.query.logFilterPeriod.toString().split('-')
+            filterUserID.value = ""
+          }
+          if (newValues[1]) {
+            filterNodeID.value = newValues[1].toString()
+          } else {
+            filterNodeID.value = ""
+          }
+          if (newValues[2]) {
+            filterActionType.value = filterActionTypeOptions.value.find((opt) => opt.code === newValues[2])
+          } else {
+            filterActionType.value = null
+          }
+          if (newValues[3]) {
+            const [fromTs, toTs] = newValues[3].toString().split('-')
             filterPeriod.value = [
               (new Date(Number(fromTs))),
               (new Date(Number(toTs))),
             ]
+          } else {
+            filterPeriod.value = null
           }
+          // if filter changed we start from first page
+          currentLimit = PAGE_SIZE;
           doFilter();
         },
         { immediate: true }
@@ -250,6 +258,19 @@ export default defineComponent({
       nodeActions,
       doFilter,
       actionTypeChange,
+      loadMoreChanges: (state: any) => {
+        currentLimit = currentLimit + PAGE_SIZE;
+        if (currentLimit > LIMIT_MAX_SIZE) {
+          toast.add({
+            severity: "info",
+            summary: "Max log size for one page exceeded",
+            detail: "Please use filters to reduce numbers of logs",
+            life: 5000
+          });
+          currentLimit = LIMIT_MAX_SIZE;
+        }
+        doFilter();
+      },
       clearFilter: (isVisible: boolean) => {
         if (isVisible) {
           return

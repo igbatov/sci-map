@@ -107,6 +107,7 @@ export default defineComponent({
             [],
             0,
             0,
+            0,
             changeLogs => {
               changes.splice(0, changes.length, ...changeLogs);
             }
