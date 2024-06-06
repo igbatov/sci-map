@@ -43,8 +43,9 @@
       :key="i"
       :x="titleBox[mapNode.id] ? titleBox[mapNode.id].position.x : 0"
       :y="
-        titleBox[mapNode.id] && innerWidth>0
-          ? titleBox[mapNode.id].position.y + i * fontSize * Math.max(innerWidth, innerHeight)/100
+        titleBox[mapNode.id] && innerWidth > 0
+          ? titleBox[mapNode.id].position.y +
+            (i * fontSize * Math.max(innerWidth, innerHeight)) / 100
           : 0
       "
       alignment-baseline="hanging"

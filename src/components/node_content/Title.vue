@@ -18,7 +18,7 @@
 
 <script lang="ts">
 import { computed, ref } from "vue";
-import {useStore} from "@/store";
+import { useStore } from "@/store";
 
 export default {
   name: "Title",
@@ -41,10 +41,12 @@ export default {
       editOn,
       txtarea,
       setEditOn: (val: boolean) => {
-        if (!store.state.user ||
-            !store.state.user.user ||
-            store.state.user.user.isAnonymous) {
-          return
+        if (
+          !store.state.user ||
+          !store.state.user.user ||
+          store.state.user.user.isAnonymous
+        ) {
+          return;
         }
         editOn.value = val;
         if (val && txtarea.value) {

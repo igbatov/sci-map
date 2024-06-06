@@ -21,7 +21,7 @@ export default defineComponent({
     markerId: String,
     color: String,
     from: Object as PropType<Point>,
-    to: Object as PropType<Point> || null
+    to: (Object as PropType<Point>) || null
   }
 });
 </script>

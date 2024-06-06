@@ -69,33 +69,33 @@ export default {
 
                 // node_content
                 firebase
-                    .database()
-                    .ref(`/node_content/${route.params.id}`)
-                    .once("value", data => {
-                      if (data.exists()) {
-                        node.value["node_content"] = data.val();
-                      }
-                    });
+                  .database()
+                  .ref(`/node_content/${route.params.id}`)
+                  .once("value", data => {
+                    if (data.exists()) {
+                      node.value["node_content"] = data.val();
+                    }
+                  });
 
                 // precondition
                 firebase
-                    .database()
-                    .ref(`/precondition/${route.params.id}`)
-                    .once("value", data => {
-                      if (data.exists()) {
-                        node.value["precondition"] = data.val();
-                      }
-                    });
+                  .database()
+                  .ref(`/precondition/${route.params.id}`)
+                  .once("value", data => {
+                    if (data.exists()) {
+                      node.value["precondition"] = data.val();
+                    }
+                  });
               } else {
                 firebase
-                    .database()
-                    .ref(`/trash/${route.params.id}`)
-                    .once("value", data => {
-                      if (data.exists()) {
-                        node.value = data.val();
-                        node.value["is_in_trash"] = true;
-                      }
-                    });
+                  .database()
+                  .ref(`/trash/${route.params.id}`)
+                  .once("value", data => {
+                    if (data.exists()) {
+                      node.value = data.val();
+                      node.value["is_in_trash"] = true;
+                    }
+                  });
               }
             });
         }

@@ -12,7 +12,7 @@ import { DBMapNode } from "@/api/types";
 import { printError, round } from "@/tools/utils";
 import api from "@/api/api";
 import { Commit, Dispatch } from "vuex";
-import {subscribeNodeChanges, unSubscribeNodeChanges} from "@/store/helpers";
+import { subscribeNodeChanges, unSubscribeNodeChanges } from "@/store/helpers";
 
 // Every node in map in database is stored for quadratic border 1000x1000.
 // But on a client it is recalculated to the proportion hardcoded in these ROOT_WIDTH/ROOT_HEIGHT
@@ -137,10 +137,7 @@ export const store = {
      * @param dbNode
      */
     async [actions.handleMapNodeUpdate](
-      {
-        commit,
-        state,
-      }: { commit: Commit; state: State; dispatch: Dispatch },
+      { commit, state }: { commit: Commit; state: State; dispatch: Dispatch },
       dbNode: DBMapNode
     ) {
       const dbNodeRecord = state.nodeRecord[dbNode.id];

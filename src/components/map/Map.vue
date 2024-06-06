@@ -72,7 +72,7 @@ import pan from "./MapPan";
 import PinLayer from "@/components/pin_layer/PinLayer.vue";
 import { printError } from "@/tools/utils";
 import PreconditionLayer from "@/components/precondition_layer/PreconditionLayer.vue";
-import {isWideScreen} from "@/components/helpers";
+import { isWideScreen } from "@/components/helpers";
 
 const mapID = "mapID";
 
@@ -148,7 +148,7 @@ export default defineComponent({
        */
       // zoom stuff
       let prevDist = Infinity;
-      let center = {x:0, y:0};
+      let center = { x: 0, y: 0 };
       // drag stuff
       const prevPoint = { x: Infinity, y: Infinity };
       map.addEventListener(
@@ -168,7 +168,7 @@ export default defineComponent({
       );
       map.addEventListener("touchend", event => {
         // zoom stuff
-        center = {x:0, y:0};
+        center = { x: 0, y: 0 };
         prevDist = Infinity;
         // dragging stuff
         prevPoint.x = Infinity;
@@ -194,15 +194,19 @@ export default defineComponent({
             if (prevDist === Infinity) {
               // init center
               center = {
-                x: e.touches[0].pageX + (e.touches[0].pageX - e.touches[1].pageX) / 2,
-                y: e.touches[0].pageY + (e.touches[0].pageY - e.touches[1].pageY) / 2
+                x:
+                  e.touches[0].pageX +
+                  (e.touches[0].pageX - e.touches[1].pageX) / 2,
+                y:
+                  e.touches[0].pageY +
+                  (e.touches[0].pageY - e.touches[1].pageY) / 2
               };
             }
             const dist = Math.max(
-                Math.abs(center.x - e.touches[0].pageX),
-                Math.abs(center.x - e.touches[1].pageX),
-                Math.abs(center.y - e.touches[0].pageY),
-                Math.abs(center.y - e.touches[1].pageY),
+              Math.abs(center.x - e.touches[0].pageX),
+              Math.abs(center.x - e.touches[1].pageX),
+              Math.abs(center.y - e.touches[0].pageY),
+              Math.abs(center.y - e.touches[1].pageY)
             );
             if (prevDist !== Infinity) {
               delta = dist - prevDist;
@@ -210,8 +214,8 @@ export default defineComponent({
             prevDist = dist;
 
             ctx.emit("wheel", {
-              delta: 4*delta,
-              center: center,
+              delta: 4 * delta,
+              center: center
             });
           }
         },
@@ -254,7 +258,7 @@ export default defineComponent({
       mapID,
       fontSize: (index: number): number => {
         let size = 0;
-        let levelSizes: Record<number, number>
+        let levelSizes: Record<number, number>;
         if (isWideScreen()) {
           levelSizes = {
             0: 0.4,
@@ -264,10 +268,10 @@ export default defineComponent({
           };
         } else {
           levelSizes = {
-            0: 1.8*0.4,
-            1: 1.8*0.73,
-            2: 1.8*1.4,
-            3: 1.8*1.86
+            0: 1.8 * 0.4,
+            1: 1.8 * 0.73,
+            2: 1.8 * 1.4,
+            3: 1.8 * 1.86
           };
         }
 

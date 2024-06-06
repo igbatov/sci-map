@@ -4,9 +4,12 @@ import { ErrorKV } from "@/types/errorkv";
 import NewErrorKV from "../tools/errorkv";
 import axios from "axios";
 import { Pins } from "@/store/pin";
-import {mutations as preconditionMutations, Preconditions} from "@/store/precondition";
-import {mutations as imageMutations} from "@/store/image";
-import { DBMapNode, DBImage} from "@/api/types";
+import {
+  mutations as preconditionMutations,
+  Preconditions
+} from "@/store/precondition";
+import { mutations as imageMutations } from "@/store/image";
+import { DBMapNode, DBImage } from "@/api/types";
 import { convertChildren } from "./helpers";
 import { NodeComment, NodeContent } from "@/store/node_content";
 import emulatorConfig from "../../firebase.json";
@@ -15,7 +18,7 @@ import stgConfig from "./stgConfig.json";
 import { debounce } from "lodash";
 
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
-import {store} from "@/store";
+import { store } from "@/store";
 
 const MAP_FROM_STORAGE = false; // use storage as a source for the map (or database)
 
@@ -36,10 +39,22 @@ const debouncedUpdate = debounce(update, 2000);
 // These ROOT_WIDTH and ROOT_HEIGHT is used only to scale to a device window proportionally,
 // An actual proportion and border of map is hardcoded in store/tree ROOT_WIDTH/ROOT_HEIGHT/ROOT_BORDER
 export default {
-  ROOT_WIDTH: window.innerWidth > window.innerHeight ? window.innerWidth : 1.5*0.95*window.innerWidth,
-  ROOT_HEIGHT: window.innerWidth > window.innerHeight ? 0.95*window.innerHeight : 1.5*window.innerHeight,
-  ROOT_CENTER_X: window.innerWidth > window.innerHeight ? 0.3 * window.innerWidth + (0.7 * window.innerWidth) / 2 : window.innerWidth/2,
-  ROOT_CENTER_Y: window.innerWidth > window.innerHeight ? window.innerHeight / 2 : (0.75 * window.innerHeight) / 2,
+  ROOT_WIDTH:
+    window.innerWidth > window.innerHeight
+      ? window.innerWidth
+      : 1.5 * 0.95 * window.innerWidth,
+  ROOT_HEIGHT:
+    window.innerWidth > window.innerHeight
+      ? 0.95 * window.innerHeight
+      : 1.5 * window.innerHeight,
+  ROOT_CENTER_X:
+    window.innerWidth > window.innerHeight
+      ? 0.3 * window.innerWidth + (0.7 * window.innerWidth) / 2
+      : window.innerWidth / 2,
+  ROOT_CENTER_Y:
+    window.innerWidth > window.innerHeight
+      ? window.innerHeight / 2
+      : (0.75 * window.innerHeight) / 2,
   ST_WIDTH: 1000,
   ST_HEIGHT: 1000,
   initFirebase() {
@@ -142,7 +157,6 @@ export default {
         }
         return [snapshot.val(), null];
       }
-
     } catch (e) {
       return [null, NewErrorKV(e.message, { e: e })];
     }
@@ -154,16 +168,19 @@ export default {
     }
     await firebase
       .database()
-      .ref(`user_data/${user.uid}/pins`).set(pins);
+      .ref(`user_data/${user.uid}/pins`)
+      .set(pins);
   },
 
   /**
    * getSubscriptions
    * @param user
    */
-  async getSubscriptions(user: firebase.User | null): Promise<[Pins | null, ErrorKV]> {
+  async getSubscriptions(
+    user: firebase.User | null
+  ): Promise<[Pins | null, ErrorKV]> {
     if (!user) {
-      return [null, null]
+      return [null, null];
     }
     try {
       // for authenticated user use realtime database
@@ -185,13 +202,17 @@ export default {
    * @param user
    * @param v
    */
-  async setSubscription(user: firebase.User | null, v:{nodeID: string, mode: number | null}) {
+  async setSubscription(
+    user: firebase.User | null,
+    v: { nodeID: string; mode: number | null }
+  ) {
     if (!user) {
       return;
     }
     await firebase
       .database()
-      .ref(`user_subscription/${user.uid}/${v.nodeID}`).set(v.mode);
+      .ref(`user_subscription/${user.uid}/${v.nodeID}`)
+      .set(v.mode);
   },
 
   async getPreconditions(
@@ -259,9 +280,7 @@ export default {
     );
   },
 
-  subscribePreconditionNodeChange(
-    nodeID: string,
-  ) {
+  subscribePreconditionNodeChange(nodeID: string) {
     this.subscribeDBChange(
       `precondition/${nodeID}`,
       (snap: firebase.database.DataSnapshot) => {
@@ -277,9 +296,7 @@ export default {
     );
   },
 
-  subscribeNodeImageChange(
-    nodeID: string,
-  ) {
+  subscribeNodeImageChange(nodeID: string) {
     this.subscribeDBChange(
       `node_image/${nodeID}`,
       (snap: firebase.database.DataSnapshot) => {
@@ -287,10 +304,10 @@ export default {
           return;
         }
         const images = snap.val() as Record<string, DBImage>;
-        store.commit(
-          `image/${imageMutations.UPDATE_IMAGES}`,
-          {nodeID, images}
-        );
+        store.commit(`image/${imageMutations.UPDATE_IMAGES}`, {
+          nodeID,
+          images
+        });
       }
     );
   },
@@ -353,8 +370,8 @@ export default {
       .get();
     const node = pr.val();
     if (!node) {
-      console.error("got null fetching from map/nodeID", nodeID)
-      return null
+      console.error("got null fetching from map/nodeID", nodeID);
+      return null;
     }
     node.id = node.id.toString();
     node.children = convertChildren(node.children);
@@ -415,11 +432,9 @@ export default {
    * getUserSubscribePeriod
    * @param user
    */
-  async getUserSubscribePeriod(
-    user: firebase.User | null
-  ): Promise<string> {
+  async getUserSubscribePeriod(user: firebase.User | null): Promise<string> {
     if (!user) {
-      return ''
+      return "";
     }
     const userID = user.uid;
     const snapshot = await firebase
@@ -427,7 +442,7 @@ export default {
       .ref(`user_data/${userID}/subscribe_period`)
       .get();
     if (!snapshot.exists()) {
-      return '';
+      return "";
     }
     return snapshot.val();
   },
@@ -437,10 +452,7 @@ export default {
    * @param user
    * @param period
    */
-  async setUserSubscribePeriod(
-    user: firebase.User,
-    period: string,
-  ){
+  async setUserSubscribePeriod(user: firebase.User, period: string) {
     const userID = user.uid;
     return await firebase
       .database()
@@ -453,10 +465,7 @@ export default {
    * @param userID
    * @param searchPhrase
    */
-  async setUserLastSearch(
-    userID: string,
-    searchPhrase: string,
-  ){
+  async setUserLastSearch(userID: string, searchPhrase: string) {
     return await firebase
       .database()
       .ref(`user_data/${userID}/last_search`)

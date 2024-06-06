@@ -118,15 +118,15 @@ export default defineComponent({
         const zoomedPannedSelectedNode = clone(mapNode);
         if (isMobile().phone) {
           zoomedPannedSelectedNode.center = zoomAndPanPoint(
-              zoomedPannedSelectedNode.center,
-              zoomPanState.debouncedZoom,
-              zoomPanState.debouncedPan
+            zoomedPannedSelectedNode.center,
+            zoomPanState.debouncedZoom,
+            zoomPanState.debouncedPan
           );
         } else {
           zoomedPannedSelectedNode.center = zoomAndPanPoint(
-              zoomedPannedSelectedNode.center,
-              zoomPanState.zoom,
-              zoomPanState.pan
+            zoomedPannedSelectedNode.center,
+            zoomPanState.zoom,
+            zoomPanState.pan
           );
         }
 
@@ -159,49 +159,51 @@ export default defineComponent({
     );
 
     watch(
-() => {
-        return isMobile().phone ? [
-          zoomPanState.debouncedZoom,
-          zoomPanState.debouncedPan,
-          props.selectedNodeId,
-          store.state.precondition.preconditions,
-          props.visibleTitleIds,
-        ] : [
-          zoomPanState.zoom,
-          zoomPanState.pan,
-          props.selectedNodeId,
-          store.state.precondition.preconditions,
-          props.visibleTitleIds,
-        ]
+      () => {
+        return isMobile().phone
+          ? [
+              zoomPanState.debouncedZoom,
+              zoomPanState.debouncedPan,
+              props.selectedNodeId,
+              store.state.precondition.preconditions,
+              props.visibleTitleIds
+            ]
+          : [
+              zoomPanState.zoom,
+              zoomPanState.pan,
+              props.selectedNodeId,
+              store.state.precondition.preconditions,
+              props.visibleTitleIds
+            ];
       },
-  () => {
+      () => {
         preconditions.value = {};
         // some precondition nodes may be not visible on current layout
         // so collect these extra titles into extraPreconditionTitles and show them
         extraPreconditionTitles.value = {};
         if (
-            props.selectedNodeId &&
-            store.state.precondition.preconditions[props.selectedNodeId] &&
-            store.state.tree.mapNodeLayers
+          props.selectedNodeId &&
+          store.state.precondition.preconditions[props.selectedNodeId] &&
+          store.state.tree.mapNodeLayers
         ) {
           const nodes = clone(
-              findMapNodes(
-                  store.state.precondition.preconditions[props.selectedNodeId],
-                  store.state.tree.mapNodeLayers
-              )
+            findMapNodes(
+              store.state.precondition.preconditions[props.selectedNodeId],
+              store.state.tree.mapNodeLayers
+            )
           );
           for (const node of nodes) {
             if (isMobile().phone) {
               node.center = zoomAndPanPoint(
-                  node.center,
-                  zoomPanState.debouncedZoom,
-                  zoomPanState.debouncedPan
+                node.center,
+                zoomPanState.debouncedZoom,
+                zoomPanState.debouncedPan
               );
             } else {
               node.center = zoomAndPanPoint(
-                  node.center,
-                  zoomPanState.zoom,
-                  zoomPanState.pan
+                node.center,
+                zoomPanState.zoom,
+                zoomPanState.pan
               );
             }
 
@@ -214,15 +216,17 @@ export default defineComponent({
           }
         }
         if (
-            props.selectedNodeId &&
-            selectedNode.value &&
-            store.state.tree.mapNodeLayers &&
-            props.visibleTitleIds?.indexOf(props.selectedNodeId) == -1
+          props.selectedNodeId &&
+          selectedNode.value &&
+          store.state.tree.mapNodeLayers &&
+          props.visibleTitleIds?.indexOf(props.selectedNodeId) == -1
         ) {
-          extraPreconditionTitles.value[props.selectedNodeId] = selectedNode.value;
+          extraPreconditionTitles.value[props.selectedNodeId] =
+            selectedNode.value;
         }
-  },
-{immediate:true, deep:true});
+      },
+      { immediate: true, deep: true }
+    );
 
     return {
       TITLE_PREFIX,

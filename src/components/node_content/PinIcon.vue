@@ -23,7 +23,7 @@
 
 <script>
 import { useStore } from "@/store";
-import {computed, ref, watch} from "vue";
+import { computed, ref, watch } from "vue";
 
 export default {
   name: "PinIcon",
@@ -31,11 +31,11 @@ export default {
     const store = useStore();
     const mouseOver = ref(false);
     watch(
-        () => store.state.tree.selectedNodeId,
-        async () => {
-          mouseOver.value = false;
-        }
-    )
+      () => store.state.tree.selectedNodeId,
+      async () => {
+        mouseOver.value = false;
+      }
+    );
     return {
       isPinned: computed(
         () =>

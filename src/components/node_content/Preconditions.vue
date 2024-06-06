@@ -5,29 +5,28 @@
     :key="precondition.id"
   >
     <div class="p-col-10 p-pl-md-2">
-        <p :class="`${$style.preconditionPath}`">
-          {{preconditionPaths[precondition.id]}}
-        </p>
-        <p :class="`${$style.title}`">
-          <Link :nodeID="precondition.id" :nodeTitle="precondition.title" />
-        </p>
+      <p :class="`${$style.preconditionPath}`">
+        {{ preconditionPaths[precondition.id] }}
+      </p>
+      <p :class="`${$style.title}`">
+        <Link :nodeID="precondition.id" :nodeTitle="precondition.title" />
+      </p>
     </div>
     <div class="p-col-2 p-p-md-0">
       <RemoveIcon @click="remove(precondition.id)" />
     </div>
   </div>
-
 </template>
 
 <script lang="ts">
 import { ref, watchEffect, defineComponent } from "vue";
-import {actions, useStore} from "@/store";
+import { actions, useStore } from "@/store";
 import api from "@/api/api";
 import { Tree } from "@/types/graphics";
 import RemoveIcon from "@/components/node_content/RemoveIcon.vue";
-import {useConfirm} from "primevue/useconfirm";
-import {mutations as preconditionMutations} from "@/store/precondition";
-import {getTreePathString} from "../helpers";
+import { useConfirm } from "primevue/useconfirm";
+import { mutations as preconditionMutations } from "@/store/precondition";
+import { getTreePathString } from "../helpers";
 import Link from "@/components/Link.vue";
 
 export default defineComponent({
@@ -56,7 +55,10 @@ export default defineComponent({
       ) {
         for (const id of store.state.precondition.preconditions[props.nodeId]) {
           preconditions.value.push(store.state.tree.nodeRecord[id].node);
-          preconditionPaths.value[id] = getTreePathString(id, store.state.tree.nodeRecord)
+          preconditionPaths.value[id] = getTreePathString(
+            id,
+            store.state.tree.nodeRecord
+          );
         }
       }
     });
@@ -65,15 +67,27 @@ export default defineComponent({
       preconditions,
       preconditionPaths,
       remove: async (id: string) => {
-        if (!(store.state.user && store.state.user.user && !store.state.user.user.isAnonymous)) {
-          await store.dispatch(`${actions.confirmSignInPopup}`, {confirm, message:"Please authorize to added node prerequisites"});
-          return
+        if (
+          !(
+            store.state.user &&
+            store.state.user.user &&
+            !store.state.user.user.isAnonymous
+          )
+        ) {
+          await store.dispatch(`${actions.confirmSignInPopup}`, {
+            confirm,
+            message: "Please authorize to added node prerequisites"
+          });
+          return;
         }
 
-        store.commit(`precondition/${preconditionMutations.REMOVE_PRECONDITION}`, {
-          nodeID: props.nodeId,
-          preconditionID: id,
-        });
+        store.commit(
+          `precondition/${preconditionMutations.REMOVE_PRECONDITION}`,
+          {
+            nodeID: props.nodeId,
+            preconditionID: id
+          }
+        );
         api.savePreconditions(store.state.user.user, {
           nodeId: props.nodeId,
           preconditionIds: store.state.precondition.preconditions[props.nodeId]

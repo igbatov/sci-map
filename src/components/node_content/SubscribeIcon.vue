@@ -1,21 +1,21 @@
 <template>
   <div
-      style="cursor: pointer;"
-      @mouseenter="mouseOver = true"
-      @mouseleave="mouseOver = false"
+    style="cursor: pointer;"
+    @mouseenter="mouseOver = true"
+    @mouseleave="mouseOver = false"
   >
     <div v-if="isOn || mouseOver" class="subscribe">
       <img
-          style="height: 35px"
-          alt="img"
-          src="../../assets/images/eye-on.svg"
+        style="height: 35px"
+        alt="img"
+        src="../../assets/images/eye-on.svg"
       />
     </div>
     <div v-else class="subscribe">
       <img
-          style="height: 35px"
-          alt="img"
-          src="../../assets/images/eye-off.svg"
+        style="height: 35px"
+        alt="img"
+        src="../../assets/images/eye-off.svg"
       />
     </div>
   </div>
@@ -27,7 +27,7 @@ import { ref } from "vue";
 export default {
   name: "SubscribeIcon",
   props: {
-    isOn: Boolean,
+    isOn: Boolean
   },
   setup() {
     const mouseOver = ref(false);

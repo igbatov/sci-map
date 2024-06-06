@@ -8,75 +8,89 @@
     </template>
     <template #message="slotProps">
       <div class="p-toast-message-text">
-        <span class="p-toast-summary">{{slotProps.message.summary}}</span>
+        <span class="p-toast-summary">{{ slotProps.message.summary }}</span>
         <div class="p-toast-detail" v-html="slotProps.message.detail" />
       </div>
     </template>
   </Toast>
   <div v-if="!(visibleZoomedPanedLayers && visibleZoomedPanedLayers.length)">
-    <LogoDummy
-        :wrapHeight="innerHeight"
-        :wrapWidth="innerWidth"
-    />
+    <LogoDummy :wrapHeight="innerHeight" :wrapWidth="innerWidth" />
   </div>
   <div v-else>
-    <div :class="isWideScreen() ? $style.textWrapperSearch : $style.textWrapperSearchMobile">
+    <div
+      :class="
+        isWideScreen()
+          ? $style.textWrapperSearch
+          : $style.textWrapperSearchMobile
+      "
+    >
       <TextSearch :style="isWideScreen() ? '' : 'width: 80%;'" />
     </div>
     <Menu
-        @restore-select-new-parent-is-on="setRestoreSelectNewParentON"
-        @restore-select-new-parent-is-off="setRestoreSelectNewParentOFF"
-        :clickedTitleId="clickedTitleId"
+      @restore-select-new-parent-is-on="setRestoreSelectNewParentON"
+      @restore-select-new-parent-is-off="setRestoreSelectNewParentOFF"
+      :clickedTitleId="clickedTitleId"
     />
     <div v-if="isWideScreen()">
       <NodeContent
-          :clickedTitleId="clickedTitleId"
-          @select-precondition-is-on="setSelectPreconditionON"
-          @select-precondition-is-off="setSelectPreconditionOFF"
-          :show="!editModeOn"
-          :selectedNodeId="selectedNodeId"
+        :clickedTitleId="clickedTitleId"
+        @select-precondition-is-on="setSelectPreconditionON"
+        @select-precondition-is-off="setSelectPreconditionOFF"
+        :show="!editModeOn"
+        :selectedNodeId="selectedNodeId"
       />
       <Map
-          :layers="visibleZoomedPanedLayers"
-          :selectedNodeId="selectedNodeId"
-          :selectedNodePreconditionIds="selectedNodePreconditionIds"
-          :pin-nodes="pinNodes"
-          :searchResultPinNodes="searchResultPinNodes"
-          :searchResultNodeIDs="searchResultNodeIDs"
-          @title-dragging="nodeDragging"
-          @title-click="titleClick"
-          @title-over="titleOver"
-          @title-leave="titleLeave"
-          @dragging-background="mapDragging"
-          @wheel="zoom"
+        :layers="visibleZoomedPanedLayers"
+        :selectedNodeId="selectedNodeId"
+        :selectedNodePreconditionIds="selectedNodePreconditionIds"
+        :pin-nodes="pinNodes"
+        :searchResultPinNodes="searchResultPinNodes"
+        :searchResultNodeIDs="searchResultNodeIDs"
+        @title-dragging="nodeDragging"
+        @title-click="titleClick"
+        @title-over="titleOver"
+        @title-leave="titleLeave"
+        @dragging-background="mapDragging"
+        @wheel="zoom"
       />
     </div>
     <div v-else>
-      <Splitter :style="`height:${innerHeight}px`" :gutterSize="15" layout="vertical" @resize="splitterResize($event)">
-        <SplitterPanel class="flex align-items-center justify-content-center" :size="60">
+      <Splitter
+        :style="`height:${innerHeight}px`"
+        :gutterSize="15"
+        layout="vertical"
+        @resize="splitterResize($event)"
+      >
+        <SplitterPanel
+          class="flex align-items-center justify-content-center"
+          :size="60"
+        >
           <Map
-              :layers="visibleZoomedPanedLayers"
-              :selectedNodeId="selectedNodeId"
-              :selectedNodePreconditionIds="selectedNodePreconditionIds"
-              :pin-nodes="pinNodes"
-              :searchResultPinNodes="searchResultPinNodes"
-              :searchResultNodeIDs="searchResultNodeIDs"
-              @title-dragging="nodeDragging"
-              @title-click="titleClick"
-              @title-over="titleOver"
-              @title-leave="titleLeave"
-              @dragging-background="mapDragging"
-              @wheel="zoom"
+            :layers="visibleZoomedPanedLayers"
+            :selectedNodeId="selectedNodeId"
+            :selectedNodePreconditionIds="selectedNodePreconditionIds"
+            :pin-nodes="pinNodes"
+            :searchResultPinNodes="searchResultPinNodes"
+            :searchResultNodeIDs="searchResultNodeIDs"
+            @title-dragging="nodeDragging"
+            @title-click="titleClick"
+            @title-over="titleOver"
+            @title-leave="titleLeave"
+            @dragging-background="mapDragging"
+            @wheel="zoom"
           />
         </SplitterPanel>
-        <SplitterPanel class="flex align-items-center justify-content-center" :size="40">
+        <SplitterPanel
+          class="flex align-items-center justify-content-center"
+          :size="40"
+        >
           <NodeContent
-              :wrapperHeight="contentSplitHeight"
-              :clickedTitleId="clickedTitleId"
-              @select-precondition-is-on="setSelectPreconditionON"
-              @select-precondition-is-off="setSelectPreconditionOFF"
-              :show="!editModeOn"
-              :selectedNodeId="selectedNodeId"
+            :wrapperHeight="contentSplitHeight"
+            :clickedTitleId="clickedTitleId"
+            @select-precondition-is-on="setSelectPreconditionON"
+            @select-precondition-is-off="setSelectPreconditionOFF"
+            :show="!editModeOn"
+            :selectedNodeId="selectedNodeId"
           />
         </SplitterPanel>
       </Splitter>
@@ -114,11 +128,11 @@ import { MapNode, Point } from "@/types/graphics";
 import { findMapNode, findMapNodes } from "@/store/tree/helpers";
 import { actions as positionChangePermitsActions } from "@/store/position_change_permits";
 import api from "@/api/api";
-import isMobile from 'ismobilejs';
+import isMobile from "ismobilejs";
 import TextSearch from "@/components/menu/Textsearch.vue";
-import {isWideScreen} from "@/components/helpers";
-import Splitter, { SplitterResizeEvent } from 'primevue/splitter';
-import SplitterPanel from 'primevue/splitterpanel';
+import { isWideScreen } from "@/components/helpers";
+import Splitter, { SplitterResizeEvent } from "primevue/splitter";
+import SplitterPanel from "primevue/splitterpanel";
 import LogoDummy from "@/views/LogoDummy.vue";
 
 export default defineComponent({
@@ -233,7 +247,7 @@ export default defineComponent({
           { width: window.innerWidth, height: window.innerHeight },
           zoomPanState.debouncedZoom,
           zoomPanState.pan,
-            {x:api.ROOT_CENTER_X, y:api.ROOT_CENTER_Y}
+          { x: api.ROOT_CENTER_X, y: api.ROOT_CENTER_Y }
           // zoomPanState.zoomCenter
         );
         if (err != null) {
@@ -252,44 +266,51 @@ export default defineComponent({
 
     const visibleZoomedPanedLayers = ref<Array<Record<string, MapNode>>>([]);
     let layersToZoomAndPan = [] as Array<Record<string, MapNode>>;
-    watch(visibleLayers, ()=>{
-      // visibleLayers это всегда слои с zoom=1 и pan={0, 0} состоящие только из видимых прямо сейчас элементов.
-      // Мы применяем к этому объекту текущий zoomPanState, но сам эталон не трогаем, поэтому здесь clone
-      const svg = document.getElementById("mapID") as any
-      if (svg && isMobile().phone) {
-        // сбрасываем svg трансформацию
-        svg.setAttribute('transform', ` scale(1 1)`);
-        const viewBox = svg.viewBox.baseVal;
-        // сбрасываем pan viewBox
-        viewBox.x = 0;
-        viewBox.y = 0;
-      }
-      layersToZoomAndPan = clone(visibleLayers.value);
-      visibleZoomedPanedLayers.value = zoomAnPanLayers(
+    watch(
+      visibleLayers,
+      () => {
+        // visibleLayers это всегда слои с zoom=1 и pan={0, 0} состоящие только из видимых прямо сейчас элементов.
+        // Мы применяем к этому объекту текущий zoomPanState, но сам эталон не трогаем, поэтому здесь clone
+        const svg = document.getElementById("mapID") as any;
+        if (svg && isMobile().phone) {
+          // сбрасываем svg трансформацию
+          svg.setAttribute("transform", ` scale(1 1)`);
+          const viewBox = svg.viewBox.baseVal;
+          // сбрасываем pan viewBox
+          viewBox.x = 0;
+          viewBox.y = 0;
+        }
+        layersToZoomAndPan = clone(visibleLayers.value);
+        visibleZoomedPanedLayers.value = zoomAnPanLayers(
           layersToZoomAndPan,
           zoomPanState.zoom,
           zoomPanState.pan
-      );
-    },{ immediate: true, deep: true })
+        );
+      },
+      { immediate: true, deep: true }
+    );
     watch(
-      () => [
-        zoomPanState.zoom,
-        zoomPanState.pan,
-      ],
-        (newArgs, oldArgs) => {
+      () => [zoomPanState.zoom, zoomPanState.pan],
+      (newArgs, oldArgs) => {
         if (!oldArgs) {
           visibleZoomedPanedLayers.value = zoomAnPanLayers(
-              layersToZoomAndPan,
-              zoomPanState.zoom,
-              zoomPanState.pan
-          )
+            layersToZoomAndPan,
+            zoomPanState.zoom,
+            zoomPanState.pan
+          );
         } else {
-          const svg = document.getElementById("mapID") as any
+          const svg = document.getElementById("mapID") as any;
           if (svg && isMobile().phone) {
             // для мобильного в реальном времени pan и zoom делаем через svg transform
             // т к на мобильном пересчет через zoomAnPanLayersInPlace притормаживает
-            svg.setAttribute('transform-origin', ` ${zoomPanState.zoomCenter.x}px ${zoomPanState.zoomCenter.y}px`);
-            svg.setAttribute('transform', ` scale(${zoomPanState.relative.zoom})`);
+            svg.setAttribute(
+              "transform-origin",
+              ` ${zoomPanState.zoomCenter.x}px ${zoomPanState.zoomCenter.y}px`
+            );
+            svg.setAttribute(
+              "transform",
+              ` scale(${zoomPanState.relative.zoom})`
+            );
             // TODO: для pan вместо viewBox лучше использовать svg transform translate для единообразия
             // svg.setAttribute('transform', ` scale(${zoomPanState.relative.zoom}) translate(${zoomPanState.relative.pan.x} ${zoomPanState.relative.pan.y})`);
             // Но при таком подходе после pan обрезается все что вне экрана (так же как сейчас при zoom)
@@ -302,11 +323,11 @@ export default defineComponent({
             viewBox.y = -zoomPanState.relative.pan.y;
           } else {
             zoomAnPanLayersInPlace(
-                visibleZoomedPanedLayers.value,
-                newArgs[0] as number,
-                newArgs[1] as Point,
-                oldArgs[0] as number,
-                oldArgs[1] as Point,
+              visibleZoomedPanedLayers.value,
+              newArgs[0] as number,
+              newArgs[1] as Point,
+              oldArgs[0] as number,
+              oldArgs[1] as Point
             );
           }
         }
@@ -314,7 +335,7 @@ export default defineComponent({
       { immediate: true, deep: true }
     );
 
-    const contentSplitHeight = ref(window.innerHeight*0.4);
+    const contentSplitHeight = ref(window.innerHeight * 0.4);
 
     return {
       innerHeight: window.innerHeight,
@@ -351,15 +372,15 @@ export default defineComponent({
           const cl = clone(pinMapNode);
           if (isMobile().phone) {
             cl.center = zoomAndPanPoint(
-                pinMapNode.center,
-                zoomPanState.debouncedZoom,
-                zoomPanState.debouncedPan
+              pinMapNode.center,
+              zoomPanState.debouncedZoom,
+              zoomPanState.debouncedPan
             );
           } else {
             cl.center = zoomAndPanPoint(
-                pinMapNode.center,
-                zoomPanState.zoom,
-                zoomPanState.pan
+              pinMapNode.center,
+              zoomPanState.zoom,
+              zoomPanState.pan
             );
           }
 
@@ -410,15 +431,15 @@ export default defineComponent({
           const cl = clone(searchResultMapNode);
           if (isMobile().phone) {
             cl.center = zoomAndPanPoint(
-                searchResultMapNode.center,
-                zoomPanState.debouncedZoom,
-                zoomPanState.debouncedPan
+              searchResultMapNode.center,
+              zoomPanState.debouncedZoom,
+              zoomPanState.debouncedPan
             );
           } else {
             cl.center = zoomAndPanPoint(
-                searchResultMapNode.center,
-                zoomPanState.zoom,
-                zoomPanState.pan
+              searchResultMapNode.center,
+              zoomPanState.zoom,
+              zoomPanState.pan
             );
           }
 
@@ -457,7 +478,7 @@ export default defineComponent({
       },
       setSelectPreconditionOFF: () => {
         selectPreconditionIsOn = false;
-        clickedTitleId.value = "-1"
+        clickedTitleId.value = "-1";
       },
       setRestoreSelectNewParentON: () => {
         restoreSelectNewParentIsOn = true;
@@ -499,8 +520,8 @@ export default defineComponent({
           y: (event.center.y - zoomPanState.pan.y) / zoomPanState.zoom
         };
         store.commit(
-            `zoomPan/${zoomPanMutations.SET_ZOOM_CENTER}`,
-            event.center
+          `zoomPan/${zoomPanMutations.SET_ZOOM_CENTER}`,
+          event.center
         );
         store.commit(`zoomPan/${zoomPanMutations.ADD_ZOOM}`, event.delta);
         const after = {
@@ -513,9 +534,9 @@ export default defineComponent({
         });
       },
       splitterResize: (event: SplitterResizeEvent) => {
-        contentSplitHeight.value = window.innerHeight*event.sizes[1]/100
+        contentSplitHeight.value = (window.innerHeight * event.sizes[1]) / 100;
       },
-      contentSplitHeight,
+      contentSplitHeight
     };
   }
 });
@@ -523,7 +544,7 @@ export default defineComponent({
 
 <style module>
 .textWrapperSearch {
-  z-index:20;
+  z-index: 20;
   position: fixed;
   display: flex;
   top: 0;
@@ -533,7 +554,7 @@ export default defineComponent({
   background: linear-gradient(rgba(120, 120, 120, 0.4), rgba(120, 120, 120, 0));
 }
 .textWrapperSearchMobile {
-  z-index:20;
+  z-index: 20;
   position: fixed;
   display: flex;
   top: 0;

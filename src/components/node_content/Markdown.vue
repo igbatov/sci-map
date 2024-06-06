@@ -1,15 +1,17 @@
 <template>
-  <p v-if="isAuthorized"
+  <p
+    v-if="isAuthorized"
     v-show="!editOn"
     v-html="renderedContent"
     @click="setEditOn(true)"
     class="renderedContent"
-     :style="height ? `height: ${height}` : ''"
+    :style="height ? `height: ${height}` : ''"
   />
-  <p v-else
+  <p
+    v-else
     v-html="renderedContent"
     class="renderedContent"
-     :style="height ? `height: ${height}` : ''"
+    :style="height ? `height: ${height}` : ''"
   />
   <textarea
     class="rawContent p-inputtextarea p-inputtext p-component p-inputtextarea-resizable"
@@ -25,7 +27,7 @@
 <script lang="ts">
 import { computed, ref } from "vue";
 import MarkdownIt from "markdown-it";
-import {useStore} from "@/store";
+import { useStore } from "@/store";
 const mdKatex = require('markdown-it-katex'); // eslint-disable-line
 const mdImsize = require('markdown-it-imsize'); // eslint-disable-line
 const mdContainer = require('markdown-it-container'); // eslint-disable-line
@@ -37,7 +39,7 @@ md.use(mdKatex, { output: "html" })
     containerClassName: "video-embed",
     youtube: {
       width: 370,
-      height: 209,
+      height: 209
     }
   })
   .use(mdContainer, "warning", {
@@ -92,7 +94,13 @@ export default {
     const txtarea = ref<HTMLDivElement | null>(null);
 
     return {
-      isAuthorized: computed(()=>props.allowEdit && store.state.user && store.state.user.user && !store.state.user.user.isAnonymous),
+      isAuthorized: computed(
+        () =>
+          props.allowEdit &&
+          store.state.user &&
+          store.state.user.user &&
+          !store.state.user.user.isAnonymous
+      ),
       editOn,
       txtarea,
       setEditOn: (val: boolean) => {

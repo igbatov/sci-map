@@ -13,17 +13,17 @@ export interface State {
 
 export const mutations = {
   SET_SUBSCRIPTIONS: "SET_SUBSCRIPTIONS",
-  SET_SUBSCRIPTION: "SET_SUBSCRIPTION",
+  SET_SUBSCRIPTION: "SET_SUBSCRIPTION"
 };
 
 export const actions = {
-  ToggleSubscription: "ToggleSubscription",
+  ToggleSubscription: "ToggleSubscription"
 };
 
 export const store = {
   namespaced: true,
   state: {
-    subscriptions: {},
+    subscriptions: {}
   },
   actions: {
     /**
@@ -35,7 +35,9 @@ export const store = {
      */
     [actions.ToggleSubscription](
       {
-        commit, state, rootState
+        commit,
+        state,
+        rootState
       }: {
         commit: Commit;
         state: State;
@@ -43,15 +45,18 @@ export const store = {
       },
       nodeID: string
     ) {
-      const v = {nodeID: nodeID, mode: 0} as {nodeID: string, mode: number | null}
+      const v = { nodeID: nodeID, mode: 0 } as {
+        nodeID: string;
+        mode: number | null;
+      };
       if (!state.subscriptions[nodeID] || state.subscriptions[nodeID] == 0) {
-        v.mode = 1
+        v.mode = 1;
       } else if (state.subscriptions[nodeID] == 1) {
-        v.mode = null
+        v.mode = null;
       }
       commit(mutations.SET_SUBSCRIPTION, v);
       api.setSubscription(rootState.user.user, v);
-    },
+    }
   },
   mutations: {
     /**
@@ -63,7 +68,7 @@ export const store = {
       if (!subscriptions) {
         state.subscriptions = {};
       } else {
-        state.subscriptions = subscriptions
+        state.subscriptions = subscriptions;
       }
     },
 
@@ -74,13 +79,13 @@ export const store = {
      */
     [mutations.SET_SUBSCRIPTION](
       state: State,
-      v: {nodeID: string, mode: number}
+      v: { nodeID: string; mode: number }
     ) {
-      if (v.mode>0) {
+      if (v.mode > 0) {
         state.subscriptions[v.nodeID] = v.mode;
       } else {
         delete state.subscriptions[v.nodeID];
       }
-    },
+    }
   }
 };

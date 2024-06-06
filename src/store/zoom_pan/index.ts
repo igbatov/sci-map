@@ -11,7 +11,7 @@ export interface State {
   relative: {
     zoom: number;
     pan: Point;
-  }
+  };
 }
 
 export const mutations = {
@@ -34,7 +34,7 @@ const zoomDebounce = debounce((state, value: number) => {
 
 const panDebounce = debounce((state, value: Point) => {
   state.debouncedPan = value;
-  state.relative.pan = {x:0, y:0};
+  state.relative.pan = { x: 0, y: 0 };
 }, DEBOUNCE_WAIT);
 
 export const store = {
@@ -47,8 +47,8 @@ export const store = {
     zoomCenter: { x: 0, y: 0 },
     relative: {
       zoom: 1,
-      pan: { x: 0, y: 0 },
-    },
+      pan: { x: 0, y: 0 }
+    }
   },
   mutations: {
     [mutations.SET_ZOOM_CENTER](state: State, center: Point) {
@@ -61,7 +61,8 @@ export const store = {
         return;
       }
       state.zoom = newZoom;
-      state.relative.zoom =  state.relative.zoom * Math.pow(2, delta * ZOOM_SENSITIVITY);
+      state.relative.zoom =
+        state.relative.zoom * Math.pow(2, delta * ZOOM_SENSITIVITY);
       zoomDebounce(state, state.zoom);
     },
     [mutations.ADD_PAN](state: State, delta: Vector) {
@@ -83,7 +84,7 @@ export const store = {
       panDebounce(state, state.pan);
     },
     [mutations.RESET_ZOOM_AND_PAN](state: State, point: Point) {
-      state.pan = {x:0, y:0};
+      state.pan = { x: 0, y: 0 };
       panDebounce(state, state.pan);
       state.zoom = 1;
       zoomDebounce(state, state.zoom);

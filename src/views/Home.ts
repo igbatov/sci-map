@@ -5,7 +5,7 @@ import NewErrorKV from "@/tools/errorkv";
 import { NodeRecordItem } from "@/store/tree";
 import { findMapNode } from "@/store/tree/helpers";
 import { clone } from "@/tools/utils";
-import {isWideScreen} from "@/components/helpers";
+import { isWideScreen } from "@/components/helpers";
 
 const MIN_VISIBLE_NODES_NUM = isWideScreen() ? 3 : 1;
 
@@ -26,10 +26,10 @@ export function zoomAndPanPointInPlace(
   newZoom: number,
   oldZoom: number,
   newPan: Point,
-  oldPan: Point,
+  oldPan: Point
 ) {
-  p.x = ((p.x-oldPan.x)/oldZoom)*newZoom + newPan.x
-  p.y = ((p.y-oldPan.y)/oldZoom)*newZoom + newPan.y
+  p.x = ((p.x - oldPan.x) / oldZoom) * newZoom + newPan.x;
+  p.y = ((p.y - oldPan.y) / oldZoom) * newZoom + newPan.y;
 }
 
 export function zoomAndPanPolygonInPlace(
@@ -37,9 +37,11 @@ export function zoomAndPanPolygonInPlace(
   newZoom: number,
   oldZoom: number,
   newPan: Point,
-  oldPan: Point,
+  oldPan: Point
 ) {
-  p.forEach(point => zoomAndPanPointInPlace(point, newZoom, oldZoom, newPan, oldPan));
+  p.forEach(point =>
+    zoomAndPanPointInPlace(point, newZoom, oldZoom, newPan, oldPan)
+  );
 }
 
 /**
@@ -106,10 +108,15 @@ export function findCentralNode(
     }
 
     const underCursorNodeArea = area(
-      zoomAndPanPolygon(nodesToCheck[underFocusPointNodeId].border, zoomFactor, pan)
+      zoomAndPanPolygon(
+        nodesToCheck[underFocusPointNodeId].border,
+        zoomFactor,
+        pan
+      )
     );
     if (
-      Math.floor(underCursorNodeArea)*MIN_VISIBLE_NODES_NUM <= Math.floor(viewportArea)
+      Math.floor(underCursorNodeArea) * MIN_VISIBLE_NODES_NUM <=
+      Math.floor(viewportArea)
     ) {
       if (nodeRecord[underFocusPointNodeId].parent == null) {
         return [underFocusPointNodeId, null];
@@ -285,16 +292,28 @@ export function zoomAnPanLayersInPlace(
   newZoom: number,
   newPan: Point,
   oldZoom: number,
-  oldPan: Point,
+  oldPan: Point
 ) {
   if (!layers || layers.length == 0) {
     return [];
   }
   for (const idx in layers) {
-    const layer = {} as Record<number, MapNode>
+    const layer = {} as Record<number, MapNode>;
     for (const id in layers[idx]) {
-      zoomAndPanPointInPlace(layers[idx][id].center, newZoom, oldZoom, newPan, oldPan)
-      zoomAndPanPolygonInPlace(layers[idx][id].border, newZoom, oldZoom, newPan, oldPan)
+      zoomAndPanPointInPlace(
+        layers[idx][id].center,
+        newZoom,
+        oldZoom,
+        newPan,
+        oldPan
+      );
+      zoomAndPanPolygonInPlace(
+        layers[idx][id].border,
+        newZoom,
+        oldZoom,
+        newPan,
+        oldPan
+      );
     }
   }
 }
@@ -307,19 +326,19 @@ export function zoomAnPanLayers(
   if (!layers || layers.length == 0) {
     return [];
   }
-  const resultLayers = [] as Array<Record<number, MapNode>>
+  const resultLayers = [] as Array<Record<number, MapNode>>;
   for (const idx in layers) {
-    const layer = {} as Record<number, MapNode>
+    const layer = {} as Record<number, MapNode>;
     for (const id in layers[idx]) {
       const node = layers[idx][id];
       layer[id] = {
         id: node.id,
         title: node.title,
-        center:  zoomAndPanPoint(node.center, zoom, pan),
-        border: zoomAndPanPolygon(node.border, zoom, pan),
-      }
+        center: zoomAndPanPoint(node.center, zoom, pan),
+        border: zoomAndPanPolygon(node.border, zoom, pan)
+      };
     }
-    resultLayers.push(layer)
+    resultLayers.push(layer);
   }
 
   return resultLayers;

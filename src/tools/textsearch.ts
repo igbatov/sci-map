@@ -41,19 +41,19 @@ const indexUserComment = new FlexSearch({
 export enum SearchFieldName {
   Title = "Title",
   Content = "Content",
-  UserComment = "UserComment",
+  UserComment = "UserComment"
 }
 
 // best practice is to use numbers as ids for FlexSearch
 let idMapCnt = 0;
-const nodeIDMap = {} as Record<string, number>
-const searchIdMap = {} as Record<number, string>
+const nodeIDMap = {} as Record<string, number>;
+const searchIdMap = {} as Record<number, string>;
 
 export function add(nodeID: string, field: SearchFieldName, text: string) {
   if (!nodeIDMap[nodeID]) {
-    idMapCnt++
-    nodeIDMap[nodeID] = idMapCnt
-    searchIdMap[idMapCnt] = nodeID
+    idMapCnt++;
+    nodeIDMap[nodeID] = idMapCnt;
+    searchIdMap[idMapCnt] = nodeID;
   }
   if (field === SearchFieldName.Title) {
     indexTitle.add(nodeIDMap[nodeID], text.toLowerCase());
@@ -70,9 +70,9 @@ export async function search(text: string): Promise<Array<string>> {
   const ids1 = await indexTitle.search(text.toLowerCase());
   const ids2 = await indexContent.search(text.toLowerCase());
   const ids3 = await indexUserComment.search(text.toLowerCase());
-  const result = [] as string[]
-  result.push(...ids1.map((id: number) => searchIdMap[id]))
-  result.push(...ids2.map((id: number) => searchIdMap[id]))
-  result.push(...ids3.map((id: number) => searchIdMap[id]))
-  return result
+  const result = [] as string[];
+  result.push(...ids1.map((id: number) => searchIdMap[id]));
+  result.push(...ids2.map((id: number) => searchIdMap[id]));
+  result.push(...ids3.map((id: number) => searchIdMap[id]));
+  return result;
 }

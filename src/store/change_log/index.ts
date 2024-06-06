@@ -23,7 +23,7 @@ export enum ActionType {
   /**
    * /cmd/restore
    */
-  Restore = "restore",
+  Restore = "restore"
 }
 
 export type Node = {

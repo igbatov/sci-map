@@ -8,7 +8,12 @@
       />
       <span class="p-ml-2">edit map</span>
     </MenuButton>
-    <MenuButton v-if="editModeOn" @click="off" style="height:35px;" bg-color="#03dbfc;">
+    <MenuButton
+      v-if="editModeOn"
+      @click="off"
+      style="height:35px;"
+      bg-color="#03dbfc;"
+    >
       <img
         alt="icon"
         src="../../assets/images/switch-off.svg"
@@ -23,7 +28,7 @@
 import { actions, useStore } from "@/store";
 import { computed } from "vue";
 import MenuButton from "@/components/menu/MenuButton.vue";
-import {useToast} from "primevue/usetoast";
+import { useToast } from "primevue/usetoast";
 
 export default {
   name: "EditMode",
@@ -34,7 +39,7 @@ export default {
     isNodeSelected: {
       type: Boolean,
       required: true
-    },
+    }
   },
   setup(props) {
     const store = useStore();

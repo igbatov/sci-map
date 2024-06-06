@@ -1,5 +1,8 @@
 import { ActionType, ChangeLog, ChangeLogEnriched } from "@/store/change_log";
-import { QueryFilterConstraint, QueryNonFilterConstraint } from "@firebase/firestore";
+import {
+  QueryFilterConstraint,
+  QueryNonFilterConstraint
+} from "@firebase/firestore";
 import {
   and,
   collection,
@@ -8,7 +11,7 @@ import {
   orderBy,
   query,
   where,
-  limit,
+  limit
 } from "firebase/firestore";
 import firebase from "firebase/compat";
 
@@ -41,25 +44,25 @@ export async function subscribeChangeLog(
   if (userIDs.length) {
     andConditions.push(where("user_id", "in", userIDs));
   }
-  if (fromTs>0) {
+  if (fromTs > 0) {
     andConditions.push(where("timestamp", ">=", fromTs));
   }
-  if (toTs>0) {
+  if (toTs > 0) {
     andConditions.push(where("timestamp", "<=", toTs));
   }
   // 'remove' and 'restore' changes is made by firebase functions (but logged anyway in firestore)
   // here we skip most details made by function and show only action made by user
   andConditions.push(where("user_id", "!=", "function"));
 
-  const nonFilterConstraint = [] as Array<QueryNonFilterConstraint>
+  const nonFilterConstraint = [] as Array<QueryNonFilterConstraint>;
   nonFilterConstraint.push(orderBy("timestamp", "desc"));
-  if (limitNum>0) {
+  if (limitNum > 0) {
     nonFilterConstraint.push(limit(limitNum));
   }
   const q = query(
     collection(getFirestore(), "changes"),
     and(...andConditions),
-    ...nonFilterConstraint,
+    ...nonFilterConstraint
   );
 
   return onSnapshot(q, snapshot => {
@@ -77,7 +80,7 @@ export async function subscribeChangeLog(
           valueAfter: doc.get("attributes.valueAfter"),
           added: doc.get("attributes.added"),
           removed: doc.get("attributes.removed"),
-          parentNodeID: doc.get("attributes.parentNodeID"),
+          parentNodeID: doc.get("attributes.parentNodeID")
         }
       });
     });
@@ -204,7 +207,7 @@ export async function subscribeChangeLogEnriched(
     limitNum,
     (changeLogs: Array<ChangeLog>) => {
       // changeLogs must be in ascending order for prevContent logic to work properly (see below oldContent calculation)
-      changeLogs.sort((a, b) =>  a.timestamp - b.timestamp);
+      changeLogs.sort((a, b) => a.timestamp - b.timestamp);
 
       // collect userIDs to request names
       // and nodeIDs to request node names
@@ -256,7 +259,13 @@ export async function subscribeChangeLogEnriched(
           const prevNodeName = {} as Record<string, string>;
           const prevNodeContent = {} as Record<string, string>;
           changeLogs.forEach(log => {
-            const userDisplayName = userNames[log.userID] && userNames[log.userID].length > 0 ? userNames[log.userID] : log.userID.substring(log.userID.length-8, log.userID.length-1)
+            const userDisplayName =
+              userNames[log.userID] && userNames[log.userID].length > 0
+                ? userNames[log.userID]
+                : log.userID.substring(
+                    log.userID.length - 8,
+                    log.userID.length - 1
+                  );
             const nodePath = getPathFromNodeName(log.nodeID, nodeNames);
             if (log.action == ActionType.Name) {
               changeLogsEnriched.push({
@@ -277,8 +286,7 @@ export async function subscribeChangeLogEnriched(
                 newName: log.attributes.value,
                 oldName: prevNodeName[log.nodeID]
               });
-              prevNodeName[log.nodeID] =  log.attributes.value;
-
+              prevNodeName[log.nodeID] = log.attributes.value;
             } else if (log.action == ActionType.Content) {
               changeLogsEnriched.push({
                 changeLogID: log.changeLogID,
@@ -296,10 +304,9 @@ export async function subscribeChangeLogEnriched(
                 },
 
                 newContent: log.attributes.value,
-                oldContent: prevNodeContent[log.nodeID],
+                oldContent: prevNodeContent[log.nodeID]
               });
               prevNodeContent[log.nodeID] = log.attributes.value;
-
             } else if (log.action == ActionType.Precondition) {
               const removed = [];
               if (log.attributes.removed) {
@@ -450,7 +457,7 @@ export async function subscribeChangeLogEnriched(
           });
 
           // on UI we want new records first
-          changeLogsEnriched.sort((a,b) => b.timestamp - a.timestamp);
+          changeLogsEnriched.sort((a, b) => b.timestamp - a.timestamp);
           cb(changeLogsEnriched);
         }
       );
@@ -459,14 +466,14 @@ export async function subscribeChangeLogEnriched(
 }
 
 export function IsNodeInTrash(nodeIDPath: string): boolean {
-  return nodeIDPath.startsWith("trash")
+  return nodeIDPath.startsWith("trash");
 }
 
 export function GetNodeHref(nodeIDPath: string, nodeID: string) {
   if (IsNodeInTrash(nodeIDPath)) {
-    return `/node_description/${nodeID}`
+    return `/node_description/${nodeID}`;
   } else {
-    return `/${nodeID}`
+    return `/${nodeID}`;
   }
 }
 export function GetNodeLink(
@@ -474,5 +481,8 @@ export function GetNodeLink(
   nodeID: string,
   nodeName: string
 ): string {
-    return `<a target="_blank" href="${GetNodeHref(nodeIDPath, nodeID)}">${nodeName}</a>`;
+  return `<a target="_blank" href="${GetNodeHref(
+    nodeIDPath,
+    nodeID
+  )}">${nodeName}</a>`;
 }

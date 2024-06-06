@@ -8,7 +8,10 @@ import {
 import { InjectionKey } from "vue";
 
 import { store as pinStore, State as PinState } from "./pin";
-import { store as subscriptionsStore, State as SubscriptionsState } from "./subscriptions";
+import {
+  store as subscriptionsStore,
+  State as SubscriptionsState
+} from "./subscriptions";
 
 import { store as titleBoxStore, State as TitleBoxState } from "./title_box";
 
@@ -17,10 +20,7 @@ import {
   State as PreconditionState
 } from "./precondition";
 
-import {
-  store as imageStore,
-  State as ImageState
-} from "./image";
+import { store as imageStore, State as ImageState } from "./image";
 
 import {
   store as positionChangePermitsStore,
@@ -104,7 +104,7 @@ export const actions = {
 };
 
 export const mutations = {
-  SET_EDIT_MODE: "SET_EDIT_MODE",
+  SET_EDIT_MODE: "SET_EDIT_MODE"
 };
 
 const debouncedPositionSet = debounce(
@@ -130,12 +130,12 @@ export const key: InjectionKey<Store<State>> = Symbol();
 
 export const store = createStore<State>({
   state: {
-    editModeOn: false,
+    editModeOn: false
   } as State,
   mutations: {
     [mutations.SET_EDIT_MODE](state: State, val: boolean) {
       state.editModeOn = val;
-    },
+    }
   },
   actions: {
     /**
@@ -145,27 +145,28 @@ export const store = createStore<State>({
      */
     async [actions.confirmSignInPopup](
       { dispatch }: { dispatch: Dispatch; state: State },
-      val: {confirm:  {
-        require(args: {
-          message?: string;
-          target?: EventTarget;
-          group?: string;
-          icon?: string;
-          header?: string;
-          accept?: () => void;
-          reject?: () => void;
-          acceptLabel?: string;
-          rejectLabel?: string;
-          acceptIcon?: string;
-          rejectIcon?: string;
-          blockScroll?: boolean;
-          acceptClass?: string;
-          rejectClass?: string;
-        }): void;
+      val: {
+        confirm: {
+          require(args: {
+            message?: string;
+            target?: EventTarget;
+            group?: string;
+            icon?: string;
+            header?: string;
+            accept?: () => void;
+            reject?: () => void;
+            acceptLabel?: string;
+            rejectLabel?: string;
+            acceptIcon?: string;
+            rejectIcon?: string;
+            blockScroll?: boolean;
+            acceptClass?: string;
+            rejectClass?: string;
+          }): void;
 
-        close(): void;
-      },
-      message: string,
+          close(): void;
+        };
+        message: string;
       }
     ) {
       val.confirm.require({
@@ -280,10 +281,10 @@ export const store = createStore<State>({
 
       // check that parent node still exists
       // maybe it's better to check this as a security rule?
-      const pn = await api.getMapNode(v.parentID)
+      const pn = await api.getMapNode(v.parentID);
       if (!pn) {
-        console.error("Cannot find parent to add node", v.parentID)
-        return
+        console.error("Cannot find parent to add node", v.parentID);
+        return;
       }
       await api.update(updateMap);
 

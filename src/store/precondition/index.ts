@@ -106,13 +106,15 @@ export const store = {
 
       // remove from reverseIndex
       if (!state.reverseIndex[v.preconditionID]) {
-        return
+        return;
       }
       if (state.reverseIndex[v.preconditionID].indexOf(v.nodeID) == -1) {
         return;
       }
-      state.reverseIndex[v.preconditionID].splice(state.reverseIndex[v.preconditionID].indexOf(v.nodeID), 1);
+      state.reverseIndex[v.preconditionID].splice(
+        state.reverseIndex[v.preconditionID].indexOf(v.nodeID),
+        1
+      );
     }
-  },
-
+  }
 };

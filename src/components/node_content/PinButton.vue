@@ -1,5 +1,5 @@
 <template>
-  <PinIcon @click="clickPin"/>
+  <PinIcon @click="clickPin" />
   <Dialog
     v-model:visible="addDialogVisible"
     :dismissableMask="true"
@@ -31,12 +31,12 @@
 import Dialog from "primevue/dialog";
 import Button from "primevue/button";
 import Listbox from "primevue/listbox";
-import {actions, useStore} from "@/store";
+import { actions, useStore } from "@/store";
 import { computed, ref } from "vue";
 import { actions as pinActions } from "@/store/pin";
 import api from "@/api/api";
 import PinIcon from "@/components/node_content/PinIcon.vue";
-import {useConfirm} from "primevue/useconfirm";
+import { useConfirm } from "primevue/useconfirm";
 
 export default {
   name: "PinButton",
@@ -70,9 +70,18 @@ export default {
 
     return {
       clickPin: async () => {
-        if (!(store.state.user && store.state.user.user && !store.state.user.user.isAnonymous)) {
-          await store.dispatch(`${actions.confirmSignInPopup}`, {confirm, message:"Please authorize to pin nodes"});
-          return
+        if (
+          !(
+            store.state.user &&
+            store.state.user.user &&
+            !store.state.user.user.isAnonymous
+          )
+        ) {
+          await store.dispatch(`${actions.confirmSignInPopup}`, {
+            confirm,
+            message: "Please authorize to pin nodes"
+          });
+          return;
         }
         if (
           store.state.pin.pins[store.state.tree.selectedNodeId] !== undefined

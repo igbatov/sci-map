@@ -14,4 +14,3 @@ export type DBImage = {
   url: string;
   removed: number;
 };
-

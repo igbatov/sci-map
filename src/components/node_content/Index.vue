@@ -1,5 +1,9 @@
 <template>
-  <div v-if="show && selectedNode" :class="`${wrapperClass()}`" :style="!isWideScreen() ? `height:${wrapperHeight}px;` : ''">
+  <div
+    v-if="show && selectedNode"
+    :class="`${wrapperClass()}`"
+    :style="!isWideScreen() ? `height:${wrapperHeight}px;` : ''"
+  >
     <div class="p-fluid">
       <!-- Image -->
       <TitleImage
@@ -20,7 +24,9 @@
           />
         </div>
         <div class="p-col-1">
-          <SubscribeButton :nodeID="selectedNodeContent ? selectedNodeContent.nodeID : ''" />
+          <SubscribeButton
+            :nodeID="selectedNodeContent ? selectedNodeContent.nodeID : ''"
+          />
         </div>
         <div class="p-col-2">
           <PinButton />
@@ -83,7 +89,11 @@
       <ChangeLog :node-id="selectedNode.id" />
     </div>
   </div>
-  <div v-else-if="editModeOn" :class="`${wrapperClass()}`" :style="!isWideScreen() ? `height:${wrapperHeight}px;` : ''">
+  <div
+    v-else-if="editModeOn"
+    :class="`${wrapperClass()}`"
+    :style="!isWideScreen() ? `height:${wrapperHeight}px;` : ''"
+  >
     <div class="p-fluid">
       <div class="p-field p-grid">
         <div class="p-col-12">
@@ -95,17 +105,20 @@
           </div>
         </div>
         <div :class="`p-col-12 ${$style.list}`">
-          In this mode you can change map structure but cannot edit contents of individual nodes. To return back to content editing push "edit map" button again.
+          In this mode you can change map structure but cannot edit contents of
+          individual nodes. To return back to content editing push "edit map"
+          button again.
         </div>
         <div :class="`p-col-1 ${$style.icon}`">
           <img
-              alt="logo"
-              src="../../assets/images/add-off.svg"
-              style="width: 30px"
+            alt="logo"
+            src="../../assets/images/add-off.svg"
+            style="width: 30px"
           />
         </div>
         <div :class="`p-col-11 ${$style.list}`">
-          To add new node 1) select parent node on map and then 2) click "add" button in upper menu.
+          To add new node 1) select parent node on map and then 2) click "add"
+          button in upper menu.
         </div>
         <div :class="`p-col-1 ${$style.icon}`">
           <img
@@ -115,7 +128,8 @@
           />
         </div>
         <div :class="`p-col-11 ${$style.list}`">
-          To remove node 1) select it on map and 2) click "delete" button in upper menu.
+          To remove node 1) select it on map and 2) click "delete" button in
+          upper menu.
         </div>
         <div :class="`p-col-1 ${$style.icon}`">
           <img
@@ -125,7 +139,8 @@
           />
         </div>
         <div :class="`p-col-11 ${$style.list}`">
-          To move node 1) select it on map, then 2) press "cut" button, then 3) select its new parent and 4) press "paste" button.
+          To move node 1) select it on map, then 2) press "cut" button, then 3)
+          select its new parent and 4) press "paste" button.
         </div>
         <div :class="`p-col-1 ${$style.icon}`">
           <img
@@ -135,31 +150,53 @@
           />
         </div>
         <div :class="`p-col-11 ${$style.list}`">
-          You can use "log" to see log of map edits and revert or complain any unfortunate edit.
+          You can use "log" to see log of map edits and revert or complain any
+          unfortunate edit.
         </div>
         <div :class="`p-col-12 ${$style.list}`">
-            After add, paste or remove you can drag node title and its neighbours to adjust node centers position.
+          After add, paste or remove you can drag node title and its neighbours
+          to adjust node centers position.
         </div>
       </div>
     </div>
   </div>
-  <div v-else :class="`${wrapperClass()}`" :style="!isWideScreen() ? `height:${wrapperHeight}px;` : ''">
+  <div
+    v-else
+    :class="`${wrapperClass()}`"
+    :style="!isWideScreen() ? `height:${wrapperHeight}px;` : ''"
+  >
     <div class="p-fluid">
       <div class="p-field p-grid">
         <div v-if="isWideScreen()" class="p-col-12">
           <div style="height: 60px;"></div>
         </div>
         <div class="p-col-12" style="margin-bottom:2em;">
-          <iframe width="100%" src="https://www.youtube.com/embed/DuiTlnrK6G4?si=HuVA4cs5U86H9E3l" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          <iframe
+            width="100%"
+            src="https://www.youtube.com/embed/DuiTlnrK6G4?si=HuVA4cs5U86H9E3l"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+          ></iframe>
         </div>
         <div :class="`${$style.list}`">
-          The goal  of the project is to
-          <br><br>1. Collect the <b>best explanations</b> of the fundamentally important knowledge. It should be possible to track correctness of these explanations down to fundamental theories/experiments using <b>"based on"</b> feature of SciMap (see video above).
-          <br><br>2. Help to <b>discover and join communities</b> that use this knowledge to solve hard problems of humanity.
-          <br><br>When everyone in tech goes crazy on AI and blockchain it seems that we should invest more in platform that can help to navigate in exponential abundance of information generated by AI and to find new meaningful jobs in a new reality.
-          SciMap should be a breath of fresh air and <b>guiding star</b> in the chaos of rapidly changing world.
+          The goal of the project is to
+          <br /><br />1. Collect the <b>best explanations</b> of the
+          fundamentally important knowledge. It should be possible to track
+          correctness of these explanations down to fundamental
+          theories/experiments using <b>"based on"</b> feature of SciMap (see
+          video above). <br /><br />2. Help to
+          <b>discover and join communities</b> that use this knowledge to solve
+          hard problems of humanity. <br /><br />When everyone in tech goes
+          crazy on AI and blockchain it seems that we should invest more in
+          platform that can help to navigate in exponential abundance of
+          information generated by AI and to find new meaningful jobs in a new
+          reality. SciMap should be a breath of fresh air and
+          <b>guiding star</b> in the chaos of rapidly changing world.
 
-          <br><br>Here are the features:
+          <br /><br />Here are the features:
         </div>
         <div :class="`p-col-2 ${$style.icon}`">
           <img
@@ -178,29 +215,31 @@
             style="width: 30px"
           />
         </div>
-        <div v-tooltip="{ escape:false,
-         autoHide: false,
-         pt: {
-          root: {
-            style: {
-              'max-width': 'fit-content',
+        <div
+          v-tooltip="{
+            escape: false,
+            autoHide: false,
+            pt: {
+              root: {
+                style: {
+                  'max-width': 'fit-content'
+                }
+              },
+              arrow: {
+                style: {
+                  borderRightColor: '#dcdcde',
+                  borderBottomColor: 'rgb(255 255 255 / 0)',
+                  borderTopColor: 'rgb(255 255 255 / 0)'
+                }
+              },
+              text: {
+                style: {
+                  'background-color': '#dcdcde',
+                  color: 'black'
+                }
+              }
             },
-          },
-          arrow: {
-            style: {
-              borderRightColor: '#dcdcde',
-              borderBottomColor: 'rgb(255 255 255 / 0)',
-              borderTopColor: 'rgb(255 255 255 / 0)'
-            }
-          },
-          text: {
-            style: {
-              'background-color': '#dcdcde',
-              'color': 'black'
-            }
-          }
-         },
-        value: `
+            value: `
 <div style='padding-left: 20px; width:410px;height:600px;'>
   Use <a target='_blank' href='https://markdown-it.github.io/'>markdown</a> to format text
   and <a target='_blank' href='https://katex.org/docs/supported.html'>katex</a> notation to write formulas.
@@ -222,12 +261,19 @@ $$`)}
    ${md.render(`@[youtube](https://www.youtube.com/watch?v=E8YCQ0zjCZA)`)}
    </div>
 </div>`
-        }" :class="`p-col-10 ${$style.list}`">
-          Keep node content <b>focused and simple but profound</b> (you can use <a target='_blank' href='https://markdown-it.github.io/'>markdown</a> and <a target='_blank' href='https://katex.org/docs/supported.html'>katex</a>&nbsp;<img
+          }"
+          :class="`p-col-10 ${$style.list}`"
+        >
+          Keep node content <b>focused and simple but profound</b> (you can use
+          <a target="_blank" href="https://markdown-it.github.io/">markdown</a>
+          and
+          <a target="_blank" href="https://katex.org/docs/supported.html"
+            >katex</a
+          >&nbsp;<img
             alt="logo"
             src="../../assets/images/question.svg"
             style="width: 20px; margin-bottom:-5px;"
-        />). We are focusing on <b>quality and pithiness</b> of content.
+          />). We are focusing on <b>quality and pithiness</b> of content.
         </div>
         <div :class="`p-col-2 ${$style.icon}`">
           <img
@@ -242,19 +288,29 @@ $$`)}
         </div>
         <div :class="`p-col-2 ${$style.icon}`">
           <img
-              alt="logo"
-              src="../../assets/images/chat.svg"
-              style="width: 20px"
+            alt="logo"
+            src="../../assets/images/chat.svg"
+            style="width: 20px"
           />
         </div>
         <div :class="`p-col-10 ${$style.list}`">
-          Talk to your coauthors in <a target="_blank" href="https://discord.com/channels/1171118046543347782/1171118047587745953">chat</a> to adapt community rules and create a great content
+          Talk to your coauthors in
+          <a
+            target="_blank"
+            href="https://discord.com/channels/1171118046543347782/1171118047587745953"
+            >chat</a
+          >
+          to adapt community rules and create a great content
         </div>
-        <div :class="`p-col-2 ${$style.icon}`" style="color: #3B6BF9; padding-left:10px; font-weight: bold; font-size:1.5em;">
+        <div
+          :class="`p-col-2 ${$style.icon}`"
+          style="color: #3B6BF9; padding-left:10px; font-weight: bold; font-size:1.5em;"
+        >
           W
         </div>
         <div :class="`p-col-10 ${$style.list}`">
-          Use Wikipedia core content policies: neutral point of view, verifiability, and no original research
+          Use Wikipedia core content policies: neutral point of view,
+          verifiability, and no original research
         </div>
         <div :class="`p-col-2 ${$style.icon}`">
           <img
@@ -280,14 +336,24 @@ $$`)}
           [ORG]
         </div>
         <div :class="`p-col-10 ${$style.list}`">
-          If you know actions one can take to push
-          knowledge further (jobs, crowdsourcing, etc.) - you can also add it!
+          If you know actions one can take to push knowledge further (jobs,
+          crowdsourcing, etc.) - you can also add it!
         </div>
         <div :class="`p-col-2 ${$style.icon}`" style="color: #3B6BF9;">
           Open
         </div>
         <div :class="`p-col-10 ${$style.list}`">
-          Project is <a target="_blank" href="https://github.com/igbatov/sci-map">open source</a> and data is <a target="_blank" href="https://github.com/igbatov/scimap-backup-list/blob/main/backup-list.json">publicly available</a> on <b>decentralized storage</b> in JSON format
+          Project is
+          <a target="_blank" href="https://github.com/igbatov/sci-map"
+            >open source</a
+          >
+          and data is
+          <a
+            target="_blank"
+            href="https://github.com/igbatov/scimap-backup-list/blob/main/backup-list.json"
+            >publicly available</a
+          >
+          on <b>decentralized storage</b> in JSON format
         </div>
       </div>
     </div>
@@ -315,19 +381,18 @@ import AddBasedOnButton from "@/components/node_content/AddBasedOnButton.vue";
 import TitleImage from "@/components/node_content/TitleImage.vue";
 import MarkdownIt from "markdown-it";
 import { isWideScreen } from "../helpers";
-import {add as textSearchAdd, SearchFieldName} from "@/tools/textsearch";
+import { add as textSearchAdd, SearchFieldName } from "@/tools/textsearch";
 const mdKatex = require('markdown-it-katex'); // eslint-disable-line
 const mdImsize = require('markdown-it-imsize'); // eslint-disable-line
 const mdVideo = require('markdown-it-block-embed'); // eslint-disable-line
 const md = new MarkdownIt();
-md
-  .use(mdKatex, { output: "html" })
+md.use(mdKatex, { output: "html" })
   .use(mdImsize)
   .use(mdVideo, {
     containerClassName: "video-embed",
     youtube: {
       width: 370,
-      height: 209,
+      height: 209
     }
   });
 
@@ -343,7 +408,7 @@ export default defineComponent({
     SectionPreconditions,
     ChangeLog,
     PinButton,
-    SubscribeButton,
+    SubscribeButton
   },
   emits: ["select-precondition-is-on", "select-precondition-is-off"],
   props: {
@@ -367,7 +432,7 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const $style = useCssModule()
+    const $style = useCssModule();
     const store = useStore();
     const confirm = useConfirm();
     const tree = store.state.tree;
@@ -399,13 +464,18 @@ export default defineComponent({
 
     return {
       md,
-      usedBy: computed(() => store.state.precondition.reverseIndex[props.selectedNodeId]),
+      usedBy: computed(
+        () => store.state.precondition.reverseIndex[props.selectedNodeId]
+      ),
       editModeOn: computed(() => store.state.editModeOn),
       selectedNode,
       selectedNodeContent,
       checkAuthorized: async (e: Event) => {
         if (!store.state.user.user || store.state.user.user.isAnonymous) {
-          await store.dispatch(`${actions.confirmSignInPopup}`, {confirm, message:"Please authorize to add comments and edit content"});
+          await store.dispatch(`${actions.confirmSignInPopup}`, {
+            confirm,
+            message: "Please authorize to add comments and edit content"
+          });
           e.preventDefault();
         }
       },
@@ -436,7 +506,11 @@ export default defineComponent({
         }
       },
       changeComment: async (value: string) => {
-        textSearchAdd(selectedNode.value!.id, SearchFieldName.UserComment, value);
+        textSearchAdd(
+          selectedNode.value!.id,
+          SearchFieldName.UserComment,
+          value
+        );
         const err = await store.dispatch(
           `nodeContent/${nodeContentActions.setNodeComment}`,
           {
@@ -451,8 +525,10 @@ export default defineComponent({
       },
       isWideScreen,
       wrapperClass: () => {
-        return isWideScreen() ? $style.wrapperContent : $style.wrapperContentMobile;
-      },
+        return isWideScreen()
+          ? $style.wrapperContent
+          : $style.wrapperContentMobile;
+      }
     };
   }
 });
@@ -460,7 +536,7 @@ export default defineComponent({
 
 <style module>
 .wrapperContentMobile {
-  z-index:10;
+  z-index: 10;
   padding: 24px;
   background-color: rgba(255, 255, 255, 1);
   font-family: Roboto, Arial, sans-serif;
@@ -468,7 +544,7 @@ export default defineComponent({
   overflow-y: scroll;
 }
 .wrapperContent {
-  z-index:10;
+  z-index: 10;
   position: absolute;
   width: 30%;
   height: 100%;
@@ -484,7 +560,7 @@ export default defineComponent({
 }
 .title {
   font-family: "Google Sans", Roboto, Arial, sans-serif;
-  font-size: 1.250rem;
+  font-size: 1.25rem;
   font-weight: 400;
   letter-spacing: 0;
   line-height: 1.75rem;

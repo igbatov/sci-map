@@ -14,14 +14,14 @@ export const mutations = {
 export const actions = {
   signIn: "signIn",
   signOut: "signOut",
-  setSubscribePeriod: "setSubscribePeriod",
+  setSubscribePeriod: "setSubscribePeriod"
 };
 
 export const store = {
   namespaced: true,
   state: {
     user: null,
-    subscribePeriod: '',
+    subscribePeriod: ""
   },
   mutations: {
     [mutations.SET_USER](state: State, user: firebase.User) {
@@ -29,7 +29,7 @@ export const store = {
     },
     [mutations.SET_SUBSCRIBE_PERIOD](state: State, subscribePeriod: string) {
       state.subscribePeriod = subscribePeriod;
-    },
+    }
   },
   actions: {
     async [actions.signIn]({ commit }: { commit: Commit }) {
@@ -43,9 +43,12 @@ export const store = {
       commit(mutations.SET_USER, null);
     },
 
-    async [actions.setSubscribePeriod]({ commit, state }: { commit: Commit; state: State }, period: string) {
+    async [actions.setSubscribePeriod](
+      { commit, state }: { commit: Commit; state: State },
+      period: string
+    ) {
       if (!state.user) {
-        return
+        return;
       }
       commit(mutations.SET_SUBSCRIBE_PERIOD, period);
       await api.setUserSubscribePeriod(state.user, period);

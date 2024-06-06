@@ -141,7 +141,7 @@ export const setTitleBoxes = (
     },
     {
       immediate: true,
-      deep: true,
+      deep: true
     }
   );
 };

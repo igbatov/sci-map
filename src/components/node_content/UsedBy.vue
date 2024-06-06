@@ -1,11 +1,12 @@
 <template>
-  <div v-for="usedByNode of usedBy"
-       :class="`p-grid ${$style.precondition} p-p-md-0`"
-       :key="usedByNode.id"
+  <div
+    v-for="usedByNode of usedBy"
+    :class="`p-grid ${$style.precondition} p-p-md-0`"
+    :key="usedByNode.id"
   >
     <div class="p-col-12">
       <p :class="`${$style.preconditionPath}`">
-        {{usedByPaths[usedByNode.id]}}
+        {{ usedByPaths[usedByNode.id] }}
       </p>
       <p :class="`${$style.title}`">
         <Link :nodeID="usedByNode.id" :nodeTitle="usedByNode.title" />
@@ -15,16 +16,16 @@
 </template>
 
 <script lang="ts">
-import {ref, watchEffect, defineComponent, PropType} from "vue";
+import { ref, watchEffect, defineComponent, PropType } from "vue";
 import { useStore } from "@/store";
 import { Tree } from "@/types/graphics";
-import {getTreePathString} from "@/components/helpers";
+import { getTreePathString } from "@/components/helpers";
 import Link from "@/components/Link.vue";
 
 export default defineComponent({
   name: "UsedBy",
   components: {
-    Link,
+    Link
   },
   props: {
     nodeIDs: Object as PropType<Array<string>>
@@ -42,7 +43,10 @@ export default defineComponent({
             console.log("UsedBy: cannot find id in nodeRecord", id);
           } else {
             usedBy.value.push(store.state.tree.nodeRecord[id].node);
-            usedByPaths.value[id] = getTreePathString(id, store.state.tree.nodeRecord)
+            usedByPaths.value[id] = getTreePathString(
+              id,
+              store.state.tree.nodeRecord
+            );
           }
         }
       }
@@ -50,12 +54,11 @@ export default defineComponent({
 
     return {
       usedBy,
-      usedByPaths,
+      usedByPaths
     };
   }
 });
 </script>
-
 
 <style module>
 .title {

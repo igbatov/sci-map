@@ -1,16 +1,22 @@
 import firebase from "firebase/compat";
 import api from "@/api/api";
-import {actions as treeActions, mutations as treeMutations} from "@/store/tree";
-import {mutations as pinMutations} from "@/store/pin";
-import {mutations as subscriptionsMutations} from "@/store/subscriptions";
-import {mutations as preconditionMutations} from "@/store/precondition";
-import {mutations as nodeContentMutations, NodeContent} from "@/store/node_content";
-import {store} from "@/store/index";
-import {printError} from "@/tools/utils";
-import {convertDBMapToTree} from "@/api/helpers";
-import {DBMapNode} from "@/api/types";
-import {add as textSearchAdd, SearchFieldName} from "@/tools/textsearch";
-import {mutations as userMutations} from "@/store/user";
+import {
+  actions as treeActions,
+  mutations as treeMutations
+} from "@/store/tree";
+import { mutations as pinMutations } from "@/store/pin";
+import { mutations as subscriptionsMutations } from "@/store/subscriptions";
+import { mutations as preconditionMutations } from "@/store/precondition";
+import {
+  mutations as nodeContentMutations,
+  NodeContent
+} from "@/store/node_content";
+import { store } from "@/store/index";
+import { printError } from "@/tools/utils";
+import { convertDBMapToTree } from "@/api/helpers";
+import { DBMapNode } from "@/api/types";
+import { add as textSearchAdd, SearchFieldName } from "@/tools/textsearch";
+import { mutations as userMutations } from "@/store/user";
 
 /**
  * 1) fetch map
@@ -34,22 +40,22 @@ export async function initMap(user: firebase.User | null) {
   // General advice is to listen to specific paths (not root) and dynamically change subscribe/unsubscribe
   // https://firebase.google.com/docs/database/usage/optimize#efficient-listeners
   for (const id in map) {
-    subscribeNodeChanges(id)
+    subscribeNodeChanges(id);
   }
 }
 
 export function unSubscribeNodeChanges(id: string) {
-  api.unsubscribeDBChange(`map/${id}`)
-  api.unsubscribeDBChange(`node_content/${id}`)
-  api.unsubscribeDBChange(`precondition/${id}`)
-  api.unsubscribeDBChange(`node_image/${id}`)
+  api.unsubscribeDBChange(`map/${id}`);
+  api.unsubscribeDBChange(`node_content/${id}`);
+  api.unsubscribeDBChange(`precondition/${id}`);
+  api.unsubscribeDBChange(`node_image/${id}`);
 }
 
 export function subscribeNodeChanges(id: string) {
   // subscribe children, name or position change
   api.subscribeMapNodeChange(id, async (dbNode: DBMapNode) => {
-      textSearchAdd(dbNode.id, SearchFieldName.Title, dbNode.name);
-      await store.dispatch(`tree/${treeActions.handleMapNodeUpdate}`, dbNode)
+    textSearchAdd(dbNode.id, SearchFieldName.Title, dbNode.name);
+    await store.dispatch(`tree/${treeActions.handleMapNodeUpdate}`, dbNode);
   });
 
   // subscribe node content change
@@ -65,7 +71,7 @@ export function subscribeNodeChanges(id: string) {
   api.subscribePreconditionNodeChange(id);
 
   // subscribe image change
-  api.subscribeNodeImageChange(id)
+  api.subscribeNodeImageChange(id);
 }
 
 export async function fetchPins(user: firebase.User | null) {
@@ -91,7 +97,7 @@ export async function fetchPins(user: firebase.User | null) {
 
 export async function fetchSubscribePeriod(user: firebase.User | null) {
   if (!user) {
-    return
+    return;
   }
   const period = await api.getUserSubscribePeriod(user);
   store.commit(`user/${userMutations.SET_SUBSCRIBE_PERIOD}`, period);
@@ -107,7 +113,10 @@ export async function fetchSubscriptions(user: firebase.User | null) {
     }
   }
 
-  store.commit(`subscriptions/${subscriptionsMutations.SET_SUBSCRIPTIONS}`, subscriptions);
+  store.commit(
+    `subscriptions/${subscriptionsMutations.SET_SUBSCRIPTIONS}`,
+    subscriptions
+  );
 }
 
 export async function initPreconditions(user: firebase.User | null) {
@@ -168,7 +177,11 @@ export async function initNodeContents(user: firebase.User | null) {
 
     // add to search
     for (const idx in userComments) {
-      textSearchAdd(userComments[idx].nodeID, SearchFieldName.UserComment, userComments[idx].comment)
+      textSearchAdd(
+        userComments[idx].nodeID,
+        SearchFieldName.UserComment,
+        userComments[idx].comment
+      );
     }
 
     // fix in store
