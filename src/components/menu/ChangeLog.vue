@@ -183,7 +183,7 @@ export default defineComponent({
       let fromTs = 0;
       let toTs = 0;
       if (filterPeriod.value && filterPeriod.value.length === 2) {
-        fromTs = filterPeriod.value[0].getTime()
+        fromTs = filterPeriod.value[0].getTime();
         toTs = filterPeriod.value[1].getTime() + 24*60*60*1000;
       }
       unsubscribe = await subscribeChangeLogEnriched(
@@ -210,36 +210,44 @@ export default defineComponent({
           route.query.logFilterPeriod,
         ],
         (newValues) => {
+          logModalVisible.value = false;
           if (!route.query) {
             filterUserID.value = ""
             filterNodeID.value = ""
             filterActionType.value = ""
             filterPeriod.value = ""
+            if (unsubscribe) {
+              unsubscribe();
+            }
             return
           }
           if (newValues[0]) {
-            filterUserID.value = newValues[0].toString()
+            filterUserID.value = newValues[0].toString();
+            logModalVisible.value = true;
           } else {
-            filterUserID.value = ""
+            filterUserID.value = "";
           }
           if (newValues[1]) {
-            filterNodeID.value = newValues[1].toString()
+            filterNodeID.value = newValues[1].toString();
+            logModalVisible.value = true;
           } else {
-            filterNodeID.value = ""
+            filterNodeID.value = "";
           }
           if (newValues[2]) {
-            filterActionType.value = filterActionTypeOptions.value.find((opt) => opt.code === newValues[2])
+            filterActionType.value = filterActionTypeOptions.value.find((opt) => opt.code === newValues[2]);
+            logModalVisible.value = true;
           } else {
-            filterActionType.value = null
+            filterActionType.value = null;
           }
           if (newValues[3]) {
-            const [fromTs, toTs] = newValues[3].toString().split('-')
+            const [fromTs, toTs] = newValues[3].toString().split('-');
             filterPeriod.value = [
               (new Date(Number(fromTs))),
               (new Date(Number(toTs))),
-            ]
+            ];
+            logModalVisible.value = true;
           } else {
-            filterPeriod.value = null
+            filterPeriod.value = null;
           }
           // if filter changed we start from first page
           currentLimit = PAGE_SIZE;
@@ -340,7 +348,6 @@ export default defineComponent({
         if (!logModalVisible.value) {
           actionTypeChange('map')
         }
-        logModalVisible.value = !logModalVisible.value
       },
       logModalVisible,
       changes,

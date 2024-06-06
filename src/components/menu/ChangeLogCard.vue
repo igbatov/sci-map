@@ -88,7 +88,7 @@ import {defineComponent, PropType, ref} from "vue";
 import {ActionType, ChangeLogEnriched, ChangeLogNodeParent, ChangeLogNodePrecondition} from "@/store/change_log";
 import {GetNodeLink, GetNodeHref} from "@/api/change_log";
 import Card from "primevue/card";
-import ChangeLogComplain from "@/components/node_content/ChangeLogComplain.vue";
+import ChangeLogComplain from "@/components/menu/ChangeLogComplain.vue";
 import Markdown from "@/components/node_content/Markdown.vue";
 import {useRouter, useRoute} from "vue-router";
 

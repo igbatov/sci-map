@@ -18,10 +18,9 @@
         <Feedback />
       </div>
 
-      <EditMode v-if="isWideScreen()" :isNodeSelected="isNodeSelected" style="position: absolute; right: 15rem; top:1.2rem;" />
       <div
-          v-if="editModeOn && isWideScreen()"
-          style="position: absolute; right: 23rem; top:1.2rem;"
+          v-if="isWideScreen()"
+          style="position: absolute; right:15rem; top:1.2rem;"
       >
         <ChangeLog
             @restore-select-new-parent-is-on="$emit('restore-select-new-parent-is-on')"
@@ -29,6 +28,9 @@
             :clickedTitleId="clickedTitleId"
         />
       </div>
+
+      <EditMode v-if="isWideScreen()" :isNodeSelected="isNodeSelected" style="position: absolute; right: 20.5rem; top:1.2rem;" />
+
       <div v-if="editModeOn" style="position: absolute; right: 28.3rem; top:1.2rem;">
         <AddNode />
       </div>
