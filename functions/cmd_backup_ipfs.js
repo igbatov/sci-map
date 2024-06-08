@@ -90,7 +90,7 @@ const removeOldObjects = async (firestore, s3) => {
       firestore
         .collection('backup_ipfs_cid_list')
         .where('timestamp', '==', doc.get('timestamp'))
-        .remove()
+        .delete()
     });
   })
 }
