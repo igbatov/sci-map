@@ -75,17 +75,16 @@ const removeOldObjects = async (firestore, s3) => {
     return;
   }
   snapshot.docs.forEach((doc) => {
+    const key = 'db/' + doc.get('timestamp') + '.json'
     const request = s3.deleteObject({
       Bucket: FILEBASE_BUCKET,
-      Key: 'db/' + doc.get('timestamp') + '.json',
+      Key: key,
     }, (err, res) => {
       if (err) {
         functions.logger.error('error removing old backup', err);
       }
+      functions.logger.info('removed old backup', key);
     });
-    request.on('httpHeaders', async (statusCode, headers) => {
-      functions.logger.info('removed old backup', statusCode, headers)
-    })
   })
 }
 
