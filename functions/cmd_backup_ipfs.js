@@ -5,6 +5,8 @@ const functions = require('firebase-functions/v1');
 const AWS = require('aws-sdk');
 const axios = require("axios");
 const CIDsListPath = 'https://api.github.com/repos/igbatov/scimap-backup-list/contents/backup-list.json'
+const FILEBASE_BUCKET = 'scimap-backup'
+const REMOVE_OLDER_THAN = 19*24*60*60 // in seconds from now
 
 const githubCommit = async function(token, text) {
   const content = btoa(text)
@@ -38,6 +40,7 @@ const githubCommit = async function(token, text) {
   }
 }
 
+// save CIDs to GitHub and Firestore
 const saveCIDs = async function (githubSecret, firestore) {
   const cidListResult = await firestore
     .collection('backup_ipfs_cid_list')
@@ -63,6 +66,29 @@ const saveCIDs = async function (githubSecret, firestore) {
   }
 }
 
+const removeOldObjects = async (firestore, s3) => {
+  const snapshot = await firestore
+    .collection('backup_ipfs_cid_list')
+    .where('timestamp', '<', (new Date()).getTime() - REMOVE_OLDER_THAN*1000)
+    .get()
+  if (!snapshot.docs || snapshot.docs.length === 0) {
+    return;
+  }
+  snapshot.docs.forEach((doc) => {
+    const request = s3.deleteObject({
+      Bucket: FILEBASE_BUCKET,
+      Key: 'db/' + doc.get('timestamp') + '.json',
+    }, (err, res) => {
+      if (err) {
+        functions.logger.error('error removing old backup', err);
+      }
+    });
+    request.on('httpHeaders', async (statusCode, headers) => {
+      functions.logger.info('removed old backup', statusCode, headers)
+    })
+  })
+}
+
 // [START GetOnCommandBackupIpfs]
 // Listens for changes in /cmd/backup_ipfs and send digests to subscribers
 exports.GetOnCommandBackupIpfs = (firestore, database, isProd, isEmulator) => functions
@@ -78,6 +104,8 @@ exports.GetOnCommandBackupIpfs = (firestore, database, isProd, isEmulator) => fu
     if (change.after.val() !== '1') {
       return
     }
+
+    // init storage config
     const s3 = new AWS.S3({
       apiVersion: '2006-03-01',
       accessKeyId: process.env.FILEBASE_IPFS_KEY,
@@ -87,18 +115,21 @@ exports.GetOnCommandBackupIpfs = (firestore, database, isProd, isEmulator) => fu
       s3ForcePathStyle: true
     });
     const now = new Date().getTime();
-
     const data = await database.ref('/').get()
 
     const params = {
-      Bucket: 'scimap-backup',
+      Bucket: FILEBASE_BUCKET,
       Key: 'db/'+now+'.json',
       ContentType: "application/json",
       Body: JSON.stringify(data.val()),
       ACL: 'public-read',
     };
 
-    const request = s3.putObject(params);
+    const request = s3.putObject(params, (err, res) => {
+      if (err) {
+        return functions.logger.error(err);
+      }
+    });
     request.on('httpHeaders', async (statusCode, headers) => {
       await firestore
         .collection('backup_ipfs_cid_list')
@@ -116,6 +147,8 @@ exports.GetOnCommandBackupIpfs = (firestore, database, isProd, isEmulator) => fu
         process.env.GITHUB_SCIMAP_BACKUP_KEY,
         firestore
       )
+
+      await removeOldObjects(firestore, s3);
     });
 
     request.send((err, data) => {
