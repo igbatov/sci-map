@@ -40,8 +40,8 @@ const githubCommit = async function(token, text) {
   }
 }
 
-// save CIDs to GitHub and Firestore
-const saveCIDs = async function (githubSecret, firestore) {
+// save CIDs to GitHub
+const saveCIDsToGitHub = async function (githubSecret, firestore) {
   const cidListResult = await firestore
     .collection('backup_ipfs_cid_list')
     .orderBy('timestamp', 'desc')
@@ -72,8 +72,10 @@ const removeOldObjects = async (firestore, s3) => {
     .where('timestamp', '<', (new Date()).getTime() - REMOVE_OLDER_THAN*1000)
     .get()
   if (!snapshot.docs || snapshot.docs.length === 0) {
+    functions.logger.info('no old backups found');
     return;
   }
+  functions.logger.info('found backups to remove', snapshot.docs.length);
   snapshot.docs.forEach((doc) => {
     const key = 'db/' + doc.get('timestamp') + '.json'
     const request = s3.deleteObject({
@@ -82,8 +84,13 @@ const removeOldObjects = async (firestore, s3) => {
     }, (err, res) => {
       if (err) {
         functions.logger.error('error removing old backup', err);
+        return;
       }
       functions.logger.info('removed old backup', key);
+      firestore
+        .collection('backup_ipfs_cid_list')
+        .where('timestamp', '==', doc.get('timestamp'))
+        .remove()
     });
   })
 }
@@ -140,14 +147,14 @@ exports.GetOnCommandBackupIpfs = (firestore, database, isProd, isEmulator) => fu
         cid: headers['x-amz-meta-cid'],
       });
 
+      await removeOldObjects(firestore, s3);
+
       // update a list of backup URLs in GitHub
-      await saveCIDs(
+      await saveCIDsToGitHub(
         // Expires on Mon, May 12 2025, regenerate here https://github.com/settings/personal-access-tokens/3267003
         process.env.GITHUB_SCIMAP_BACKUP_KEY,
         firestore
       )
-
-      await removeOldObjects(firestore, s3);
     });
 
     request.send((err, data) => {
