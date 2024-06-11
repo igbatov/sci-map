@@ -67,18 +67,30 @@ export interface NodeRecordItem {
   parent: Tree | null;
 }
 
+export enum ChangeTypeEnum {
+  ADD = "ADD",
+  REMOVE = "REMOVE",
+}
+
+export interface Change {
+  type: ChangeTypeEnum;
+  nodeID: string;
+}
+
 export interface State {
   tree: Tree | null;
   nodeRecord: Record<string, NodeRecordItem>;
   mapNodeLayers: Array<Record<string, MapNode>>;
   selectedNodeId: string | null;
+  lastChange: Change, // stream of changes from /map subscription
 }
 
 export const mutations = {
   SET_SELECTED_NODE_ID: "SET_SELECTED_NODE_ID",
   SET_TREE: "SET_TREE",
   UPDATE_NODE_POSITION: "UPDATE_NODE_POSITION",
-  REMOVE_NODE: "REMOVE_NODE"
+  REMOVE_NODE: "REMOVE_NODE",
+  ADD_NODE: "ADD_NODE"
 };
 
 export const actions = {
@@ -146,7 +158,7 @@ export const store = {
         return;
       }
 
-      const oldDBNode = {
+      const changedDBNode = {
         id: dbNodeRecord.node.id,
         parentID: dbNodeRecord.parent ? dbNodeRecord.parent.id : null,
         name: dbNodeRecord.node.title,
@@ -155,9 +167,9 @@ export const store = {
       };
 
       const newChildren = dbNode.children.filter(
-        x => !oldDBNode.children.includes(x)
+        x => !changedDBNode.children.includes(x)
       );
-      const removedChildren = oldDBNode.children.filter(
+      const removedChildren = changedDBNode.children.filter(
         x => !dbNode.children.includes(x)
       );
 
@@ -186,16 +198,16 @@ export const store = {
             }
           }
 
-          // request node and its children from the server, fill in tree
+          // request node and its children from the server, fill in a tree
           const addedDBNode = await api.getMapNode(childID);
           console.log(
-            "actions.handleDBUpdate: add node for cut-and-paste",
+            "actions.handleDBUpdate: add node",
             addedDBNode
           );
 
           const toProcess = [addedDBNode];
           if (!addedDBNode) {
-            // we cannot find node for addition, remove it from parent
+            // we cannot find a node for addition, remove it from parent
             dbNode.children = dbNode.children.filter(id => id != childID);
             printError("Cannot find node for addition", { nodeID: childID });
             continue;
@@ -205,7 +217,7 @@ export const store = {
             if (!inProcessNode) {
               continue;
             }
-            // create new MapNode
+            // create new Tree node
             const treeNode = {
               id: inProcessNode.id,
               title: inProcessNode.name,
@@ -218,27 +230,17 @@ export const store = {
               });
               return;
             }
-            // make sure we have no duplicates
-            state.nodeRecord[
-              inProcessNode.parentID
-            ].node.children = state.nodeRecord[
-              inProcessNode.parentID
-            ].node.children.filter(n => n.id != treeNode.id);
-            // add child to parent
-            state.nodeRecord[inProcessNode.parentID].node.children.push(
-              treeNode
-            );
-            // add child to nodeRecord
-            state.nodeRecord[treeNode.id] = {
-              parent: state.nodeRecord[inProcessNode.parentID].node,
-              node: treeNode
-            };
+            commit(mutations.ADD_NODE, {
+              parentID: inProcessNode.parentID,
+              treeNode: treeNode,
+            });
+
             // subscribe to new node changes
             subscribeNodeChanges(treeNode.id);
             for (const childID of inProcessNode.children) {
               const childNode = await api.getMapNode(childID);
               if (!childNode) {
-                // we cannot find node for addition, remove it from parent
+                // we cannot find a node for addition, remove it from parent
                 inProcessNode.children = inProcessNode.children.filter(
                   id => id != childID
                 );
@@ -299,8 +301,8 @@ export const store = {
 
       // Change of position
       if (
-        round(dbNode.position.x) !== round(oldDBNode.position.x) ||
-        round(dbNode.position.y) !== round(oldDBNode.position.y)
+        round(dbNode.position.x) !== round(changedDBNode.position.x) ||
+        round(dbNode.position.y) !== round(changedDBNode.position.y)
       ) {
         // calculate denormalized position of dbNode
         const [denormalizedPosition] = convertPosition(
@@ -309,7 +311,7 @@ export const store = {
           dbNodeRecord.parent ? dbNodeRecord.parent.id : null,
           state.mapNodeLayers
         );
-        if (oldDBNode.parentID == dbNode.parentID) {
+        if (changedDBNode.parentID == dbNode.parentID) {
           // we do not want to process position change due to parent change - it is already processed by ADD_NODE
           const v = {
             nodeId: dbNode.id,
@@ -328,9 +330,9 @@ export const store = {
       }
 
       // Change of name
-      if (oldDBNode.name !== dbNode.name) {
+      if (changedDBNode.name !== dbNode.name) {
         dbNodeRecord.node.title = dbNode.name;
-        const [node] = findMapNode(oldDBNode.id, state.mapNodeLayers);
+        const [node] = findMapNode(changedDBNode.id, state.mapNodeLayers);
         if (!node) {
           return;
         }
@@ -382,6 +384,43 @@ export const store = {
       // remove from parent's children
       const ind = parent.children.findIndex(node => node.id === v.nodeID);
       parent.children.splice(ind, 1);
+
+      // add change to lastChange stream
+      state.lastChange = {
+        type: ChangeTypeEnum.REMOVE,
+        nodeID: v.nodeID,
+      } as Change;
+    },
+
+    /**
+     * ADD_NODE
+     * @param state
+     * @param v
+     */
+    [mutations.ADD_NODE](
+      state: State,
+      v: {parentID: string, treeNode: Tree},
+    ) {
+      // make sure we have no duplicates
+      state.nodeRecord[v.parentID].node.children =
+        state.nodeRecord[v.parentID].node.children.filter(n => n.id != v.treeNode.id);
+
+      // add child to parent
+      state.nodeRecord[v.parentID].node.children.push(
+        v.treeNode
+      );
+
+      // add node to nodeRecord
+      state.nodeRecord[v.treeNode.id] = {
+        parent: state.nodeRecord[v.parentID].node,
+        node: v.treeNode
+      };
+
+      // add change to lastChange stream
+      state.lastChange = {
+        type: ChangeTypeEnum.ADD,
+        nodeID: v.treeNode.id,
+      } as Change;
     },
 
     /**

@@ -44,6 +44,8 @@ import { Tree } from "@/types/graphics";
 import Dialog from "primevue/dialog";
 import Button from "primevue/button";
 import { useToast } from "primevue/usetoast";
+import {ToastMessageOptions} from "primevue/toast";
+import {ChangeTypeEnum} from "@/store/tree";
 
 export default defineComponent({
   name: "RestoreNode",
@@ -100,6 +102,35 @@ export default defineComponent({
         }
       });
     };
+
+    const beforeRestoreMsg = {
+      severity: "info",
+      summary: "Please, wait",
+      detail: "Restore can take up to 15 seconds",
+      life: 15000,
+      showProgressBar: true,
+    } as ToastMessageOptions;
+    const afterRestoreMsg = {
+      severity: "info",
+      summary: "Node restored",
+      detail: "",
+      life: 3000
+    } as ToastMessageOptions;
+
+    watch(
+        ()=>store.state.tree.lastChange,
+        ()=> {
+          if (store.state.tree.lastChange &&
+              store.state.tree.lastChange.type == ChangeTypeEnum.ADD &&
+              store.state.tree.lastChange.nodeID == props.event.node.id
+          ) {
+            toast.remove(beforeRestoreMsg)
+            toast.add(afterRestoreMsg)
+          }
+        }
+    )
+
+
     return {
       newParentDialogVisible,
       newParentNode,
@@ -110,12 +141,7 @@ export default defineComponent({
         ctx.emit("restore-select-new-parent-is-off");
       },
       add: async () => {
-        toast.add({
-          severity: "info",
-          summary: "Please, wait",
-          detail: "Restore can take up to 15 seconds",
-          life: 15000
-        });
+        toast.add(beforeRestoreMsg);
         await restoreNodeWithChildren(
           nodeIdToRestore.value,
           newParentNode.value!.id
@@ -136,12 +162,7 @@ export default defineComponent({
           !IsNodeInTrash(event.parentNodeBefore.idPath)
         ) {
           if (IsNodeInTrash(event.node.idPath)) {
-            toast.add({
-              severity: "info",
-              summary: "Please, wait",
-              detail: "Restore can take up to 15 seconds",
-              life: 15000
-            });
+            toast.add(beforeRestoreMsg);
             await restoreNodeWithChildren(
               event.node.id,
               event.parentNodeBefore.id

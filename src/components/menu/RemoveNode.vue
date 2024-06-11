@@ -36,12 +36,13 @@
 import Dialog from "primevue/dialog";
 import Button from "primevue/button";
 import { useStore, actions } from "@/store";
-import { computed, ref } from "vue";
+import {computed, ref, watch} from "vue";
 import { mutations as positionChangePermitMutations } from "@/store/position_change_permits";
 import MenuButton from "@/components/menu/MenuButton.vue";
-import { mutations as treeMutations } from "@/store/tree";
+import {ChangeTypeEnum, mutations as treeMutations} from "@/store/tree";
 import { useToast } from "primevue/usetoast";
 import { getArrayDiff, idToLink } from "../helpers";
+import {ToastMessageOptions} from "primevue/toast";
 
 export default {
   name: "RemoveNode",
@@ -55,6 +56,31 @@ export default {
     const toast = useToast();
     const addDialogVisible = ref(false);
     const selectedNode = computed(() => store.getters["tree/selectedNode"]);
+    const beforeRemoveMsg = {
+      severity: "info",
+      summary: "Please, wait",
+      detail: "Removal can take up to 15 seconds",
+      life: 15000,
+      showProgressBar: true,
+    } as ToastMessageOptions;
+    const afterRemoveMsg = {
+      severity: "info",
+      summary: "Node removed",
+      life: 3000,
+    } as ToastMessageOptions;
+    let removedNodeID = null as string | null;
+    watch(
+      ()=>store.state.tree.lastChange,
+      ()=> {
+        if (store.state.tree.lastChange &&
+            store.state.tree.lastChange.type == ChangeTypeEnum.REMOVE &&
+            store.state.tree.lastChange.nodeID == removedNodeID
+        ) {
+          toast.remove(beforeRemoveMsg)
+          toast.add(afterRemoveMsg)
+        }
+      }
+    )
 
     return {
       selectedNodeTitle: computed(() =>
@@ -121,13 +147,9 @@ export default {
         addDialogVisible.value = !addDialogVisible.value;
       },
       remove: () => {
+        removedNodeID = selectedNode.value.id;
         addDialogVisible.value = false;
-        toast.add({
-          severity: "info",
-          summary: "Please, wait",
-          detail: "Removal can take up to 15 seconds",
-          life: 15000
-        });
+        toast.add(beforeRemoveMsg);
         store.dispatch(`${actions.removeNode}`, selectedNode.value.id);
         store.commit(
           `positionChangePermits/${positionChangePermitMutations.ADD_NODES}`,

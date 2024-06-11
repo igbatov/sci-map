@@ -10,6 +10,7 @@
       <div class="p-toast-message-text">
         <span class="p-toast-summary">{{ slotProps.message.summary }}</span>
         <div class="p-toast-detail" v-html="slotProps.message.detail" />
+        <ProgressBar v-if="slotProps.message.showProgressBar" mode="indeterminate" :style="`height: 6px; margin-top: 1rem; margin-bottom: 1rem;`"></ProgressBar>
       </div>
     </template>
   </Toast>
@@ -134,6 +135,7 @@ import { isWideScreen } from "@/components/helpers";
 import Splitter, { SplitterResizeEvent } from "primevue/splitter";
 import SplitterPanel from "primevue/splitterpanel";
 import LogoDummy from "@/views/LogoDummy.vue";
+import ProgressBar from "primevue/progressbar";
 
 export default defineComponent({
   name: "Home",
@@ -147,7 +149,8 @@ export default defineComponent({
     Menu,
     NodeContent,
     ConfirmDialog,
-    Toast
+    Toast,
+    ProgressBar,
   },
 
   setup() {

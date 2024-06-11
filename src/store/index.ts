@@ -43,12 +43,6 @@ import {
 } from "./user";
 
 import {
-  store as historyStore,
-  State as HistoryState,
-  mutations as historyMutations
-} from "./history";
-
-import {
   store as nodeContentStore,
   State as NodeContentState
 } from "./node_content";
@@ -86,7 +80,6 @@ export type State = {
   tree: TreeState;
   user: UserState;
   zoomPan: ZoomPanState;
-  history: HistoryState;
   nodeContent: NodeContentState;
   searchResult: SearchResultState;
 };
@@ -288,11 +281,6 @@ export const store = createStore<State>({
       }
       await api.update(updateMap);
 
-      commit(`history/${historyMutations.ADD_CREATE}`, {
-        nodeID: node.id,
-        parentID: v.parentID
-      });
-
       return node.id;
     },
 
@@ -358,11 +346,6 @@ export const store = createStore<State>({
         updateMap[`map/${changedNode.id}/position`] = normalizedChangedCenter;
       }
       await api.update(updateMap);
-
-      commit(`history/${historyMutations.ADD_CUT_PASTE}`, {
-        nodeID: v.nodeID,
-        parentID: v.parentID
-      });
     },
 
     /**
@@ -382,11 +365,6 @@ export const store = createStore<State>({
 
       // do main actions on backend (see functions/cmd_remove.js)
       await api.update({ [`cmd/remove`]: nodeID });
-
-      commit(`history/${historyMutations.ADD_REMOVE}`, {
-        parentNodeID: parent.id,
-        nodeID: nodeID
-      });
     },
 
     /**
@@ -417,13 +395,7 @@ export const store = createStore<State>({
       const args = { nodeId: v.nodeId, newCenter, returnError: null };
       commit(`tree/${treeMutations.UPDATE_NODE_POSITION}`, args);
       if (args.returnError === null) {
-        commit(`history/${historyMutations.ADD_POSITION_CHANGE}`, {
-          nodeID: v.nodeId,
-          oldPosition: mapNode.center,
-          newPosition: newCenter
-        });
-
-        // save to DB with debounce
+        // save to DB with debouncing
         debouncedPositionSet(
           v.nodeId,
           newCenter,
@@ -443,7 +415,6 @@ export const store = createStore<State>({
     tree: treeStore,
     user: userStore,
     zoomPan: zoomPanStore,
-    history: historyStore,
     nodeContent: nodeContentStore,
     searchResult: searchResultStore
   }
