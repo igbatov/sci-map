@@ -71,3 +71,42 @@ export function getTreePathString(
 export function isWideScreen() {
   return window.innerWidth > window.innerHeight;
 }
+
+function addMarkedWord(el: Element, elWord: string, words: string[]) {
+  for (const word of words) {
+    if (elWord.startsWith(word)){
+      const newEl = document.createElement('span');
+      newEl.setAttribute('style', 'background-color: #4cd07d')
+      newEl.textContent = word
+      el.append(newEl);
+      if (elWord.length > word.length) {
+        const txtEl = document.createTextNode(elWord.substring(word.length)+' ');
+        el.append(txtEl)
+      }
+      return;
+    }
+  }
+
+  el.textContent = el.textContent + `${elWord} `
+}
+
+export function markWords(htmlString: string, words: string[]) {
+  const span= document.createElement('span');
+  span.innerHTML= htmlString;
+
+  const children= span.querySelectorAll('*');
+  for (let i = 0 ; i < children.length ; i++) {
+    if (!children[i].textContent) {
+      continue;
+    }
+
+    const textContentWords = children[i].textContent!.split(/\s+/);
+    children[i].textContent = ''
+
+    for (const textContentWord of textContentWords) {
+      addMarkedWord(children[i], textContentWord, words)
+    }
+  }
+
+  return span.innerHTML
+}

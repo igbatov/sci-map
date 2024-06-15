@@ -35,6 +35,7 @@ export default {
     const debouncedLog = debounce(api.setUserLastSearch, 2000);
     const doSearch = async (value: string) => {
       const res = await search(value);
+      store.commit(`searchResult/${searchMutations.SET_SEARCH_STRING}`, value);
       store.commit(`searchResult/${searchMutations.SET_NODE_IDS}`, res);
       if (value.length > 0) {
         debouncedLog(store.state.user.user!.uid, value);

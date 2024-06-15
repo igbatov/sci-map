@@ -28,6 +28,7 @@
 import { computed, ref } from "vue";
 import MarkdownIt from "markdown-it";
 import { useStore } from "@/store";
+import {markWords} from "@/components/helpers";
 const mdKatex = require('markdown-it-katex'); // eslint-disable-line
 const mdImsize = require('markdown-it-imsize'); // eslint-disable-line
 const mdContainer = require('markdown-it-container'); // eslint-disable-line
@@ -44,7 +45,6 @@ md.use(mdKatex, { output: "html" })
   })
   .use(mdContainer, "warning", {
     validate: function(params: any) {
-      console.log("validate", params.trim(), params.trim() == "warning");
       return params.trim().match(/^warning$/);
     },
     render: function(tokens: any, idx: any) {
@@ -87,7 +87,11 @@ export default {
   setup(props: any, ctx: any) {
     const store = useStore();
     const renderedContent = computed(() => {
-      return md.render(props.content);
+      let searchWords = [] as string[]
+      if (store.state.searchResult.searchString.length > 0) {
+        searchWords = store.state.searchResult.searchString.split(/\s/);
+      }
+      return markWords(md.render(props.content), searchWords);
     });
     const editOn = ref(false);
 
