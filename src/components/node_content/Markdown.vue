@@ -28,11 +28,13 @@
 import { computed, ref } from "vue";
 import MarkdownIt from "markdown-it";
 import { useStore } from "@/store";
-import {markWords} from "@/components/helpers";
 const mdKatex = require('markdown-it-katex'); // eslint-disable-line
 const mdImsize = require('markdown-it-imsize'); // eslint-disable-line
 const mdContainer = require('markdown-it-container'); // eslint-disable-line
 const mdVideo = require('markdown-it-block-embed'); // eslint-disable-line
+import Token from "markdown-it/lib/token";
+import {escapeHtml} from "markdown-it/lib/common/utils";
+
 const md = new MarkdownIt();
 md.use(mdKatex, { output: "html" })
   .use(mdImsize)
@@ -86,12 +88,45 @@ export default {
   },
   setup(props: any, ctx: any) {
     const store = useStore();
-    const renderedContent = computed(() => {
-      let searchWords = [] as string[]
-      if (store.state.searchResult.searchString.length > 0) {
-        searchWords = store.state.searchResult.searchString.split(/\s/);
+
+    function markSearchWords(tokens: Token[], idx: number) {
+      if (store.state.searchResult.searchString.length === 0) {
+        return escapeHtml(tokens[idx].content)
       }
-      return markWords(md.render(props.content), searchWords);
+      // traverse all children token with type === text
+      // and mark search words
+      const searchWords = store.state.searchResult.searchString.toLowerCase().
+      split(/\s+/).
+      filter(w => w.length>0);
+
+      const newWords = [];
+      const token = tokens[idx];
+      if (token.type === 'text' && token.content.length > 0) {
+        const words = token.content.split(/\s+/);
+        for (const word of words) {
+          if (word.length === 0) {
+            continue;
+          }
+          let wordMarked = false;
+          for (const searchWord of searchWords) {
+            if (word.toLowerCase().startsWith(searchWord)) {
+              newWords.push(`<span style="background-color: springgreen;">${escapeHtml(word)}</span>`);
+              wordMarked = true;
+              break;
+            }
+          }
+          if (!wordMarked) {
+            newWords.push(escapeHtml(word));
+          }
+        }
+      }
+
+      return newWords.join(' ');
+    }
+
+    md.renderer.rules.text = markSearchWords
+    const renderedContent = computed(() => {
+      return md.render(props.content);
     });
     const editOn = ref(false);
 

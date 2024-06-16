@@ -17,7 +17,29 @@ import { convertDBMapToTree } from "@/api/helpers";
 import { DBMapNode } from "@/api/types";
 import { add as textSearchAdd, SearchFieldName } from "@/tools/textsearch";
 import { mutations as userMutations } from "@/store/user";
+import MarkdownIt from "markdown-it";
+import Token from "markdown-it/lib/token";
 
+// Create markdown plain text extractor
+const md = new MarkdownIt();
+const mdTextExtractor = {
+  sentences: [] as string[],
+  md,
+  extract: (mdText: string) => {
+    return ''
+  },
+}
+mdTextExtractor.extract = (mdText: string) => {
+  md.render(mdText);
+  const res = mdTextExtractor.sentences.join(' ')
+  mdTextExtractor.sentences = []
+  return res;
+}
+// text extractor for search engine
+md.renderer.rules.text = (tokens: Token[], idx: number) => {
+  mdTextExtractor.sentences.push(tokens[idx].content)
+  return '';
+}
 /**
  * 1) fetch map
  * 2) subscribe to changes
@@ -62,7 +84,7 @@ export function subscribeNodeChanges(id: string) {
   api.subscribeNodeContentChange(
     id,
     (v: { nodeID: string; content: string }) => {
-      textSearchAdd(v.nodeID, SearchFieldName.Content, v.content);
+      textSearchAdd(v.nodeID, SearchFieldName.Content, mdTextExtractor.extract(v.content));
       store.commit(`nodeContent/${nodeContentMutations.SET_NODE_CONTENT}`, v);
     }
   );
