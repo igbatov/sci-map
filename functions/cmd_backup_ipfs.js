@@ -81,6 +81,7 @@ const removeOldObjects = async (firestore, s3) => {
   functions.logger.info('found backups to remove', snapshot.docs.length);
   snapshot.docs.forEach((doc) => {
     const key = 'db/' + doc.get('timestamp') + '.json'
+    functions.logger.info('going to remove backup, key', key);
     const request = s3.deleteObject({
       Bucket: FILEBASE_BUCKET,
       Key: key,
@@ -92,9 +93,9 @@ const removeOldObjects = async (firestore, s3) => {
       functions.logger.info('removed old backup from ipfs, key', key);
       const ts = doc.get('timestamp');
       doc.ref.delete().then(() => {
-        console.log("ipfs record successfully deleted from firestore, timestamp of the record", ts);
+        functions.logger.info("ipfs record successfully deleted from firestore, timestamp of the record", ts);
       }).catch((error) => {
-        console.error("Error removing ipfs record from firestore", error, "timestamp of the record", ts);
+        functions.logger.error("Error removing ipfs record from firestore", error, "timestamp of the record", ts);
       });
     })
   })
