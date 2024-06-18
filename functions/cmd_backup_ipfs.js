@@ -67,9 +67,12 @@ const saveCIDsToGitHub = async function (githubSecret, firestore) {
 }
 
 const removeOldObjects = async (firestore, s3) => {
+  const olderThan = (new Date()).getTime() - REMOVE_OLDER_THAN*1000;
+  functions.logger.info('going to remove backups older than', olderThan);
   const snapshot = await firestore
     .collection('backup_ipfs_cid_list')
-    .where('timestamp', '<', (new Date()).getTime() - REMOVE_OLDER_THAN*1000)
+    .where('timestamp', '<', olderThan)
+    .orderBy('timestamp', 'asc')
     .get()
   if (!snapshot.docs || snapshot.docs.length === 0) {
     functions.logger.info('no old backups found');
@@ -83,15 +86,17 @@ const removeOldObjects = async (firestore, s3) => {
       Key: key,
     }, (err, res) => {
       if (err) {
-        functions.logger.error('error removing old backup', err);
+        functions.logger.error('error removing old backup from ipfs', err, "key", key);
         return;
       }
-      functions.logger.info('removed old backup', key);
-      firestore
-        .collection('backup_ipfs_cid_list')
-        .where('timestamp', '==', doc.get('timestamp'))
-        .delete()
-    });
+      functions.logger.info('removed old backup from ipfs, key', key);
+      const ts = doc.get('timestamp');
+      doc.ref.delete().then(() => {
+        console.log("ipfs record successfully deleted from firestore, timestamp of the record", ts);
+      }).catch((error) => {
+        console.error("Error removing ipfs record from firestore", error, "timestamp of the record", ts);
+      });
+    })
   })
 }
 
@@ -137,6 +142,10 @@ exports.GetOnCommandBackupIpfs = (firestore, database, isProd, isEmulator) => fu
       }
     });
     request.on('httpHeaders', async (statusCode, headers) => {
+      if (headers['x-amz-meta-cid'].length === 0) {
+        functions.logger.error("got empty x-amz-meta-cid");
+        return;
+      }
       await firestore
         .collection('backup_ipfs_cid_list')
         .add({
