@@ -227,9 +227,25 @@ export default defineComponent({
             treeState.mapNodeLayers
           );
           if (firstNode != null) {
-            store.commit(`zoomPan/${zoomPanMutations.SET_PAN}`, {
-              x: -firstNode.center.x + treeState.mapNodeLayers[0]["0"].center.x,
-              y: -firstNode.center.y + treeState.mapNodeLayers[0]["0"].center.y
+            const initial = clone(firstNode.center);
+            // Zoom until Ymax-Ymin = "window height" or Xmax-Xmin = "window width"
+            const maxY = Math.max(...firstNode.border.map(o => o.y));
+            const minY = Math.min(...firstNode.border.map(o => o.y));
+            const maxX = Math.max(...firstNode.border.map(o => o.x));
+            const minX = Math.min(...firstNode.border.map(o => o.x));
+            const areaHeight = maxY - minY;
+            const areaWidth = maxX - minX;
+            store.commit(
+              `zoomPan/${zoomPanMutations.ADD_ZOOM}`,
+              Math.min(api.ROOT_HEIGHT/areaHeight, api.ROOT_WIDTH/areaWidth),
+            );
+            const after = {
+              x: initial.x * zoomPanState.zoom + zoomPanState.pan.x,
+              y: initial.y * zoomPanState.zoom + zoomPanState.pan.y
+            };
+            store.commit(`zoomPan/${zoomPanMutations.ADD_PAN}`, {
+              from: after,
+              to: {x:api.ROOT_CENTER_X, y:api.ROOT_CENTER_Y},
             });
           }
         }
@@ -523,10 +539,10 @@ export default defineComponent({
           y: (event.center.y - zoomPanState.pan.y) / zoomPanState.zoom
         };
         store.commit(
-          `zoomPan/${zoomPanMutations.SET_ZOOM_CENTER}`,
-          event.center
+          `zoomPan/${zoomPanMutations.SET_ZOOM_CENTER}`, event.center
         );
-        store.commit(`zoomPan/${zoomPanMutations.ADD_ZOOM}`, event.delta);
+        const ZOOM_SENSITIVITY = 1 / 500;
+        store.commit(`zoomPan/${zoomPanMutations.ADD_ZOOM}`,  Math.pow(2, event.delta * ZOOM_SENSITIVITY));
         const after = {
           x: initial.x * zoomPanState.zoom + zoomPanState.pan.x,
           y: initial.y * zoomPanState.zoom + zoomPanState.pan.y

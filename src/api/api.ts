@@ -41,7 +41,7 @@ const debouncedUpdate = debounce(update, 2000);
 export default {
   ROOT_WIDTH:
     window.innerWidth > window.innerHeight
-      ? window.innerWidth
+      ? 0.7*window.innerWidth
       : 1.5 * 0.95 * window.innerWidth,
   ROOT_HEIGHT:
     window.innerWidth > window.innerHeight

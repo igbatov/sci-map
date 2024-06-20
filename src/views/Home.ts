@@ -49,10 +49,10 @@ export function zoomAndPanPolygonInPlace(
  * Начинаем смотреть с самого верхнего слоя.
  * Для каждого узла слоя применяем zoomFactor, затем pan
  * Потом смотрим находиться ли focusPoint внутри него.
- * Если да, то это претендент на currentNode (назовем его N).
+ * Если да, то это претендент на currentNode (назовем его currentNodePretender).
  * Мы берем его полную площадь и умножаем на MIN_VISIBLE_NODES_NUM.
- * Если получившееся значение ≤ площади экрана, то мы считаем что currentNode это parent узла N
- * Если больше, то повторяем итерацию, но только с детьми N.
+ * Если получившееся значение ≤ площади экрана, то мы считаем что currentNode это parent узла currentNodePretender
+ * Если больше, то повторяем итерацию, но только с детьми currentNodePretender.
  * @param layers
  * @param nodeRecord
  * @param viewport

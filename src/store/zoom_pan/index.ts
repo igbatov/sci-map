@@ -23,7 +23,6 @@ export const mutations = {
   RESET_ZOOM_AND_PAN: "RESET_ZOOM_AND_PAN"
 };
 
-const ZOOM_SENSITIVITY = 1 / 500;
 const PAN_SENSITIVITY = 1;
 const DEBOUNCE_WAIT = 100;
 
@@ -55,14 +54,14 @@ export const store = {
       state.zoomCenter = center;
     },
     [mutations.ADD_ZOOM](state: State, delta: number) {
-      const newZoom = state.zoom * Math.pow(2, delta * ZOOM_SENSITIVITY);
+      const newZoom = state.zoom * delta;
       if (newZoom < 0.5) {
         // foolproof from too much zoom
         return;
       }
       state.zoom = newZoom;
       state.relative.zoom =
-        state.relative.zoom * Math.pow(2, delta * ZOOM_SENSITIVITY);
+        state.relative.zoom * delta;
       zoomDebounce(state, state.zoom);
     },
     [mutations.ADD_PAN](state: State, delta: Vector) {
