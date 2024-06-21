@@ -6,6 +6,9 @@ import { NodeRecordItem } from "@/store/tree";
 import { findMapNode } from "@/store/tree/helpers";
 import { clone } from "@/tools/utils";
 import { isWideScreen } from "@/components/helpers";
+import {mutations as zoomPanMutations, State} from "@/store/zoom_pan";
+import api from "@/api/api";
+import {Store} from "vuex";
 
 const MIN_VISIBLE_NODES_NUM = isWideScreen() ? 3 : 1;
 
@@ -342,4 +345,28 @@ export function zoomAnPanLayers(
   }
 
   return resultLayers;
+}
+
+export function zoomAndPanToNode(
+  toNode: MapNode,
+  viewport: Viewport,
+  zoomPanState: State,
+  store: Store<any>,
+) {
+  const initial = clone(toNode.center);
+  const zoomCf = Math.sqrt(
+    (viewport.width*viewport.height)/((MIN_VISIBLE_NODES_NUM-0.01)*area(toNode.border))
+  );
+  store.commit(
+    `zoomPan/${zoomPanMutations.ADD_ZOOM}`,
+    zoomCf,
+  );
+  const after = {
+    x: initial.x * zoomPanState.zoom + zoomPanState.pan.x,
+    y: initial.y * zoomPanState.zoom + zoomPanState.pan.y
+  };
+  store.commit(`zoomPan/${zoomPanMutations.ADD_PAN}`, {
+    from: after,
+    to: {x:api.ROOT_CENTER_X, y:api.ROOT_CENTER_Y},
+  });
 }

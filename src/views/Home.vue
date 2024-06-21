@@ -122,7 +122,8 @@ import {
   findCentralNode,
   zoomAndPanPoint,
   zoomAnPanLayers,
-  zoomAnPanLayersInPlace
+  zoomAnPanLayersInPlace,
+  zoomAndPanToNode
 } from "@/views/Home";
 import { clone, printError } from "@/tools/utils";
 import { MapNode, Point } from "@/types/graphics";
@@ -136,6 +137,8 @@ import Splitter, { SplitterResizeEvent } from "primevue/splitter";
 import SplitterPanel from "primevue/splitterpanel";
 import LogoDummy from "@/views/LogoDummy.vue";
 import ProgressBar from "primevue/progressbar";
+
+const VIEWPORT = { width: window.innerWidth, height: window.innerHeight }
 
 export default defineComponent({
   name: "Home",
@@ -227,26 +230,7 @@ export default defineComponent({
             treeState.mapNodeLayers
           );
           if (firstNode != null) {
-            const initial = clone(firstNode.center);
-            // Zoom until Ymax-Ymin = "window height" or Xmax-Xmin = "window width"
-            const maxY = Math.max(...firstNode.border.map(o => o.y));
-            const minY = Math.min(...firstNode.border.map(o => o.y));
-            const maxX = Math.max(...firstNode.border.map(o => o.x));
-            const minX = Math.min(...firstNode.border.map(o => o.x));
-            const areaHeight = maxY - minY;
-            const areaWidth = maxX - minX;
-            store.commit(
-              `zoomPan/${zoomPanMutations.ADD_ZOOM}`,
-              Math.min(api.ROOT_HEIGHT/areaHeight, api.ROOT_WIDTH/areaWidth),
-            );
-            const after = {
-              x: initial.x * zoomPanState.zoom + zoomPanState.pan.x,
-              y: initial.y * zoomPanState.zoom + zoomPanState.pan.y
-            };
-            store.commit(`zoomPan/${zoomPanMutations.ADD_PAN}`, {
-              from: after,
-              to: {x:api.ROOT_CENTER_X, y:api.ROOT_CENTER_Y},
-            });
+            zoomAndPanToNode(firstNode, VIEWPORT, zoomPanState, store)
           }
         }
       }
@@ -263,7 +247,7 @@ export default defineComponent({
         const [newCentralNodeId, err] = findCentralNode(
           treeState.mapNodeLayers,
           treeState.nodeRecord,
-          { width: window.innerWidth, height: window.innerHeight },
+          VIEWPORT,
           zoomPanState.debouncedZoom,
           zoomPanState.pan,
           { x: api.ROOT_CENTER_X, y: api.ROOT_CENTER_Y }
