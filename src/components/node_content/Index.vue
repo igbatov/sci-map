@@ -3,6 +3,7 @@
     v-if="show && selectedNode"
     :class="`${wrapperClass()}`"
     :style="!isWideScreen() ? `height:${wrapperHeight}px;` : ''"
+    id="contentBox"
   >
     <div class="p-fluid">
       <!-- Image -->
@@ -18,10 +19,14 @@
           <div style="height: 240px"></div>
         </div>
         <div class="p-col-9">
-          <Title
-            :content="selectedNodeContent ? selectedNode.title : ''"
-            @content-changed="changeNodeTitle($event)"
-          />
+          <div class="p-grid">
+            <div class="p-col-12" style="height: 4rem;">
+              <Title
+                  :content="selectedNodeContent ? selectedNode.title : ''"
+                  @content-changed="changeNodeTitle($event)"
+              />
+            </div>
+          </div>
         </div>
         <div class="p-col-1">
           <SubscribeButton
@@ -31,19 +36,59 @@
         <div class="p-col-2">
           <PinButton />
         </div>
+        <div class="p-col-4">
+          <MenuButton @click="basedOnClick" width="6.7rem">
+            <span class="p-ml-2">based on</span>
+          </MenuButton>
+        </div>
+        <div class="p-col-5">
+          <MenuButton @click="myCommentsClick" width="8.7rem">
+            <span class="p-ml-2">my comments</span>
+          </MenuButton>
+        </div>
         <div class="p-col-12">
           <Markdown
             :content="selectedNodeContent ? selectedNodeContent.content : ''"
             :rows="20"
-            height="300px"
             :allowEdit="true"
             @content-changed="changeContent($event)"
           />
         </div>
       </div>
 
+      <!-- 'Based on' section -->
+      <div class="p-grid" id="basedOnSection">
+        <div :class="`p-col-10 ${$style.section} p-pt-2`">
+          Based on
+        </div>
+        <div class="p-col-2">
+          <AddBasedOnButton
+              :clickedTitleId="clickedTitleId"
+              @select-precondition-is-on="$emit('select-precondition-is-on')"
+              @select-precondition-is-off="$emit('select-precondition-is-off')"
+          />
+        </div>
+      </div>
+      <SectionPreconditions
+          v-if="selectedNodeContent"
+          :node-id="selectedNode.id"
+      />
+
+      <!-- 'Basis for' section -->
+      <div v-if="selectedNodeContent && usedBy && usedBy.length > 0">
+        <div class="p-field p-grid">
+          <div :class="`p-col-12 ${$style.section} p-pt-5`">
+            Basis for
+          </div>
+        </div>
+        <SectionUsedBy :nodeIDs="usedBy" />
+      </div>
+
       <!-- Comment -->
-      <div class="p-field p-grid">
+      <div class="p-field p-grid" id="myCommentsSection">
+        <div :class="`p-col-10 ${$style.section} p-pt-2`">
+          My comments
+        </div>
         <div class="p-col-12 p-md-12">
           <TextArea
             id="comment"
@@ -55,34 +100,6 @@
             v-on:keydown="checkAuthorized"
           />
         </div>
-      </div>
-
-      <!-- 'Based on' section -->
-      <div class="p-field p-grid">
-        <div :class="`p-col-10 ${$style.section} p-pt-2`">
-          based on
-        </div>
-        <div class="p-col-2">
-          <AddBasedOnButton
-            :clickedTitleId="clickedTitleId"
-            @select-precondition-is-on="$emit('select-precondition-is-on')"
-            @select-precondition-is-off="$emit('select-precondition-is-off')"
-          />
-        </div>
-      </div>
-      <SectionPreconditions
-        v-if="selectedNodeContent"
-        :node-id="selectedNode.id"
-      />
-
-      <!-- 'Basis for' section -->
-      <div v-if="selectedNodeContent && usedBy && usedBy.length > 0">
-        <div class="p-field p-grid">
-          <div :class="`p-col-12 ${$style.section} p-pt-5`">
-            basis for
-          </div>
-        </div>
-        <SectionUsedBy :nodeIDs="usedBy" />
       </div>
 
       <!-- ChangeLog section -->
@@ -382,6 +399,7 @@ import TitleImage from "@/components/node_content/TitleImage.vue";
 import MarkdownIt from "markdown-it";
 import { isWideScreen } from "../helpers";
 import { add as textSearchAdd, SearchFieldName } from "@/tools/textsearch";
+import MenuButton from "@/components/menu/MenuButton.vue";
 const mdKatex = require('markdown-it-katex'); // eslint-disable-line
 const mdImsize = require('markdown-it-imsize'); // eslint-disable-line
 const mdVideo = require('markdown-it-block-embed'); // eslint-disable-line
@@ -399,6 +417,7 @@ md.use(mdKatex, { output: "html" })
 export default defineComponent({
   name: "NodeContent",
   components: {
+    MenuButton,
     TitleImage,
     AddBasedOnButton,
     Title,
@@ -528,7 +547,21 @@ export default defineComponent({
         return isWideScreen()
           ? $style.wrapperContent
           : $style.wrapperContentMobile;
-      }
+      },
+      basedOnClick: () => {
+        const contentBox = document.getElementById('contentBox');
+        const scrollToSection = document.getElementById('basedOnSection');
+        if (contentBox && scrollToSection) {
+          contentBox.scrollTop = scrollToSection.offsetTop;
+        }
+      },
+      myCommentsClick: () => {
+        const contentBox = document.getElementById('contentBox');
+        const scrollToSection = document.getElementById('myCommentsSection');
+        if (contentBox && scrollToSection) {
+          contentBox.scrollTop = scrollToSection.offsetTop;
+        }
+      },
     };
   }
 });
@@ -542,6 +575,7 @@ export default defineComponent({
   font-family: Roboto, Arial, sans-serif;
   color: rgb(73, 80, 87);
   overflow-y: scroll;
+  scroll-behavior: smooth;
 }
 .wrapperContent {
   z-index: 10;
@@ -557,6 +591,7 @@ export default defineComponent({
   border-right: 1px solid rgb(218, 220, 224);
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
   clip-path: inset(0px -5px 0px 0px);
+  scroll-behavior: smooth;
 }
 .title {
   font-family: "Google Sans", Roboto, Arial, sans-serif;

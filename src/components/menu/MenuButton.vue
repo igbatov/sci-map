@@ -4,13 +4,7 @@
     rounded
     @mouseenter="mouseover = true"
     @mouseleave="mouseover = false"
-    :style="
-      (mouseover
-        ? `background-color: #03dbfc; `
-        : bgColor
-        ? `background-color: ${bgColor};`
-        : `background-color: white;`) + `color: black; border-color:#3B6BF9;`
-    "
+    :style="style"
   >
     <slot></slot>
   </Button>
@@ -18,7 +12,7 @@
 
 <script>
 import Button from "primevue/button";
-import { ref, defineComponent } from "vue";
+import {ref, defineComponent, computed} from "vue";
 
 export default defineComponent({
   name: "MenuButton",
@@ -26,12 +20,31 @@ export default defineComponent({
     Button
   },
   props: {
-    bgColor: String
+    bgColor: String,
+    width: String
   },
-  setup() {
+  setup(props) {
     const mouseover = ref(false);
     return {
-      mouseover
+      mouseover,
+      style: computed(()=> {
+        let style = 'color: black; border-color:#3B6BF9;'
+        let bgColor = '';
+        if (mouseover.value) {
+          bgColor = `background-color: #03dbfc; `
+        } else {
+          if (props.bgColor) {
+            bgColor = `background-color: ${props.bgColor}; `
+          } else {
+            bgColor = `background-color: white;`
+          }
+        }
+        style = style + bgColor;
+        if (props.width) {
+          style = style + `width:${props.width}`;
+        }
+        return style;
+      })
     };
   }
 });
