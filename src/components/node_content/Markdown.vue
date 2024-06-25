@@ -5,13 +5,13 @@
     v-html="renderedContent"
     @click="setEditOn(true)"
     class="renderedContent"
-    :style="height ? `height: ${height}` : ''"
+    :style="contentHeight ? `height: ${contentHeight}; margin-bottom: 0;` : ''"
   />
   <p
     v-else
     v-html="renderedContent"
     class="renderedContent"
-    :style="height ? `height: ${height}` : ''"
+    :style="contentHeight ? `height: ${contentHeight}; margin-bottom: 0;` : ''"
   />
   <textarea
     class="rawContent p-inputtextarea p-inputtext p-component p-inputtextarea-resizable"
@@ -132,7 +132,20 @@ export default {
 
     const txtarea = ref<HTMLDivElement | null>(null);
 
+    const contentHeight = computed(()=>{
+      if (props.height) {
+        return props.height
+      }
+
+      if (props.content.length) {
+        return ''
+      }
+
+      return '3rem';
+    })
+
     return {
+      contentHeight,
       isAuthorized: computed(
         () =>
           props.allowEdit &&
