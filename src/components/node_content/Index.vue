@@ -47,6 +47,9 @@
           </MenuButton>
         </div>
         <div class="p-col-12">
+          <hr/>
+        </div>
+        <div class="p-col-12">
           <Markdown
             :content="selectedNodeContent ? selectedNodeContent.content : ''"
             :rows="20"
@@ -55,6 +58,8 @@
           />
         </div>
       </div>
+
+      <hr/>
 
       <!-- 'Based on' section -->
       <div class="p-grid" id="basedOnSection">
@@ -83,6 +88,8 @@
         </div>
         <SectionUsedBy :nodeIDs="usedBy" />
       </div>
+
+      <hr/>
 
       <!-- Comment -->
       <div class="p-field p-grid" id="myCommentsSection">
@@ -620,5 +627,11 @@ export default defineComponent({
   font-weight: 500;
   letter-spacing: 0;
   line-height: 1.5rem;
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  background: rgb(218, 220, 224);
 }
 </style>
