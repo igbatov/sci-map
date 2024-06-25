@@ -20,7 +20,7 @@
         </div>
         <div class="p-col-9">
           <div class="p-grid">
-            <div class="p-col-12" style="height: 4rem;">
+            <div class="p-col-12">
               <Title
                   :content="selectedNodeContent ? selectedNode.title : ''"
                   @content-changed="changeNodeTitle($event)"
@@ -47,7 +47,7 @@
           </MenuButton>
         </div>
         <div class="p-col-12">
-          <hr/>
+          <hr style="margin-top: 2rem;"/>
         </div>
         <div class="p-col-12">
           <Markdown
