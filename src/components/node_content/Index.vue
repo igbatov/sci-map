@@ -52,9 +52,10 @@
         <div class="p-col-12">
           <Markdown
             :content="selectedNodeContent ? selectedNodeContent.content : ''"
-            :rows="20"
             :allowEdit="true"
             @content-changed="changeContent($event)"
+            :editClickBegin="editClickBegin"
+            :editClickFinish="editClickFinish"
           />
         </div>
       </div>
@@ -488,7 +489,22 @@ export default defineComponent({
         : ""
     );
 
+    let contentBoxScrollTop = 0;
     return {
+      editClickBegin: () => {
+        const contentBox = document.getElementById("contentBox");
+        if (contentBox) {
+          contentBoxScrollTop = contentBox.scrollTop
+        }
+      },
+      editClickFinish: () => {
+        const contentBox = document.getElementById("contentBox");
+        if (contentBox) {
+          setTimeout(()=>{
+            contentBox.scrollTop = contentBoxScrollTop+1
+          }, 0);
+        }
+      },
       md,
       usedBy: computed(
         () => store.state.precondition.reverseIndex[props.selectedNodeId]

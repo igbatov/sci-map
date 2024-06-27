@@ -17,7 +17,7 @@
     class="rawContent p-inputtextarea p-inputtext p-component p-inputtextarea-resizable"
     style="display: none"
     ref="txtarea"
-    :rows="rows"
+    :rows="rows ? rows : 1"
     :value="content"
     @input="changeContent($event.target.value)"
     @focusout="setEditOn(false)"
@@ -84,6 +84,14 @@ export default {
     allowEdit: {
       type: Boolean,
       required: true
+    },
+    editClickBegin: {
+      type: Function,
+      required: false
+    },
+    editClickFinish: {
+      type: Function,
+      required: false
     }
   },
   setup(props: any, ctx: any) {
@@ -130,7 +138,7 @@ export default {
     });
     const editOn = ref(false);
 
-    const txtarea = ref<HTMLDivElement | null>(null);
+    const txtarea = ref<HTMLTextAreaElement | null>(null);
 
     const contentHeight = computed(()=>{
       if (props.height) {
@@ -158,8 +166,12 @@ export default {
       setEditOn: (val: boolean) => {
         editOn.value = val;
         if (val && txtarea.value) {
+          props.editClickBegin();
           txtarea.value.style.display = "block";
           txtarea.value.focus();
+          txtarea.value.style.height = txtarea.value.scrollHeight + 3 + "px";
+          props.editClickFinish();
+          // txtarea.value.setSelectionRange(3, 3);
         }
         if (!val && txtarea.value) {
           txtarea.value.style.display = "none";
@@ -177,6 +189,7 @@ export default {
 <style scoped>
 @import "../../../node_modules/katex/dist/katex.min.css";
 .renderedContent {
+  padding: 8px 9px;
   color: rgb(32, 33, 36);
   font-family: Roboto, Arial, sans-serif;
   font-size: 14px;
@@ -200,7 +213,14 @@ export default {
   }
 }
 .rawContent {
+  margin-top: 20px;
   overflow-y: scroll;
   height: 100%;
+  font-family: Roboto, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: normal;
+  line-height: 20px;
+  padding: 8px 10px;
 }
 </style>
