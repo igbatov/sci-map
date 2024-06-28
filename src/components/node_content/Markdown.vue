@@ -54,7 +54,7 @@ md.use(mdKatex, { output: "html" })
       if (tokens[idx].nesting === 1) {
         // opening tag
         return (
-          '<div style="background-color: #c6f68d; padding: 8px;">' +
+          '<div style="background-color: #c6f68d; padding-left:0.5rem;">' +
           md.utils.escapeHtml(m[1]) +
           "\n"
         );
