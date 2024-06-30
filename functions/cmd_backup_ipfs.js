@@ -92,10 +92,13 @@ const removeOldObjects = async (firestore, s3) => {
       }
       functions.logger.info('removed old backup from ipfs, key', key);
       const ts = doc.get('timestamp');
+      const startTime = (new Date()).getTime()
       doc.ref.delete().then(() => {
-        functions.logger.info("ipfs record successfully deleted from firestore, timestamp of the record", ts);
+        const finishTime = (new Date()).getTime()
+        functions.logger.info("ipfs record successfully deleted from firestore, timestamp of the record", ts, "process time", (finishTime-startTime));
       }).catch((error) => {
-        functions.logger.error("Error removing ipfs record from firestore", error, "timestamp of the record", ts);
+        const finishTime = (new Date()).getTime()
+        functions.logger.warn("Error removing ipfs record from firestore", error, "timestamp of the record", ts, "process time", (finishTime-startTime));
       });
     })
   })
