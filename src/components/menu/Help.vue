@@ -22,7 +22,8 @@
       1. Collect the <b>best explanations</b> of the fundamentally important
       knowledge. It should be possible to track correctness of these
       explanations down to fundamental theories/experiments using
-      <b>"based on"</b> feature of SciMap (see video below). <br /><br />2. Help
+      <b>"based on"</b> feature of SciMap (see video below).
+      And equally important it should take <b>the least possible time</b> to grasp the essence of the subject.<br /><br />2. Help
       to <b>discover and join communities</b> that use this knowledge to solve
       hard problems of humanity. <br /><br />When everyone in tech goes crazy on
       AI and blockchain it seems that we should invest more in platform that can
