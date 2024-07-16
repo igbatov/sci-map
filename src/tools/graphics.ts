@@ -15,13 +15,13 @@ import { polygonArea } from "d3-polygon";
 import polygonClipping from "polygon-clipping";
 import { clone, mod, round } from "../tools/utils";
 import { findMapNode } from "../store/tree/helpers";
-import api from "../api/api";
+import api_const from "../../src/api/api_const";
 
 const NORMALIZED_BORDER = [
   { x: 0, y: 0 },
-  { x: 0, y: api.ST_HEIGHT },
-  { x: api.ST_WIDTH, y: api.ST_HEIGHT },
-  { x: api.ST_WIDTH, y: 0 }
+  { x: 0, y: api_const.ST_HEIGHT },
+  { x: api_const.ST_WIDTH, y: api_const.ST_HEIGHT },
+  { x: api_const.ST_WIDTH, y: 0 }
 ];
 
 export function getVectorLength(v: Vector): number {
@@ -207,7 +207,14 @@ export function getVoronoiCells(
       ];
     }
 
-    const [intersections, err] = intersect(cellMap[index], outerBorder); // мы хотим чтобы граница всех cell совпадала с outerBorder
+    // мы хотим чтобы граница всех cell совпадала с outerBorder
+    // x
+    // :
+    // 594.4125810135458
+    // y
+    // :
+    // 405.4017891388754
+    const [intersections, err] = intersect(cellMap[index], outerBorder);
     if (intersections == null || err != null) {
       return [
         [],
@@ -218,6 +225,10 @@ export function getVoronoiCells(
         })
       ];
     }
+    // if (centers[index].x === 594.4125810135458 && centers[index].y === 405.4017891388754) {
+    //   console.log("bb", bb)
+    //   console.log(centers[index], cellMap[index], outerBorder, intersections[0])
+    // }
 
     if (intersections == []) {
       return [
@@ -245,28 +256,28 @@ export function getVoronoiCells(
   return [res, null];
 }
 
-export function getVoronoiCellRecords(
-  outerBorder: Polygon, //(граница массива точек)
-  centers: Record<string, Point> //(точки внутри этой границы)
-): [Record<string, Polygon>, ErrorKV] {
-  const result: Record<string, Polygon> = {};
-  const ids: string[] = [];
-  const centersArray: Point[] = [];
-  for (const id in centers) {
-    ids.push(id);
-    centersArray.push(centers[id]);
-  }
-
-  const [cells, err] = getVoronoiCells(outerBorder, centersArray);
-  if (err !== null) {
-    return [{}, err];
-  }
-  for (const i in ids) {
-    result[ids[i]] = cells[i].border;
-  }
-
-  return [result, null];
-}
+// export function getVoronoiCellRecords(
+//   outerBorder: Polygon, //(граница массива точек)
+//   centers: Record<string, Point> //(точки внутри этой границы)
+// ): [Record<string, Polygon>, ErrorKV] {
+//   const result: Record<string, Polygon> = {};
+//   const ids: string[] = [];
+//   const centersArray: Point[] = [];
+//   for (const id in centers) {
+//     ids.push(id);
+//     centersArray.push(centers[id]);
+//   }
+//
+//   const [cells, err] = getVoronoiCells(outerBorder, centersArray);
+//   if (err !== null) {
+//     return [{}, err];
+//   }
+//   for (const i in ids) {
+//     result[ids[i]] = cells[i].border;
+//   }
+//
+//   return [result, null];
+// }
 
 export function polygonFill(
   selectedNodeId: string,
@@ -665,14 +676,14 @@ export function convertPosition(
       if (morphedPositions!["tmp"].x < 0) {
         morphedPositions!["tmp"].x = 1;
       }
-      if (morphedPositions!["tmp"].x > api.ST_WIDTH) {
-        morphedPositions!["tmp"].x = api.ST_WIDTH - 1;
+      if (morphedPositions!["tmp"].x > api_const.ST_WIDTH) {
+        morphedPositions!["tmp"].x = api_const.ST_WIDTH - 1;
       }
       if (morphedPositions!["tmp"].y < 0) {
         morphedPositions!["tmp"].y = 1;
       }
-      if (morphedPositions!["tmp"].y > api.ST_HEIGHT) {
-        morphedPositions!["tmp"].y = api.ST_HEIGHT - 1;
+      if (morphedPositions!["tmp"].y > api_const.ST_HEIGHT) {
+        morphedPositions!["tmp"].y = api_const.ST_HEIGHT - 1;
       }
     }
     if (err !== null) {
@@ -689,9 +700,9 @@ export function convertPosition(
     convertedPosition = morphedPositions!["tmp"];
   } else {
     if (type === "denormalize") {
-      convertedPosition = { x: api.ROOT_CENTER_X, y: api.ROOT_CENTER_Y };
+      convertedPosition = { x: api_const.ROOT_CENTER_X, y: api_const.ROOT_CENTER_Y };
     } else {
-      convertedPosition = { x: api.ST_WIDTH / 2, y: api.ST_HEIGHT / 2 };
+      convertedPosition = { x: api_const.ST_WIDTH / 2, y: api_const.ST_HEIGHT / 2 };
     }
   }
 
@@ -805,6 +816,10 @@ export function treeToMapNodeLayers(
               center: child.position,
               border: cell.border
             };
+            if (child.id === '1543410730') {
+              console.log("border", lastMapNodeLayer[treeNode.id].border)
+              console.log("child", child.position, newMapNodeLayer[child.id])
+            }
           }
         }
       }

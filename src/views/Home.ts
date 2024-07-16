@@ -9,6 +9,7 @@ import { isWideScreen } from "@/components/helpers";
 import {mutations as zoomPanMutations, State} from "@/store/zoom_pan";
 import api from "@/api/api";
 import {Store} from "vuex";
+import api_const from "@/api/api_const";
 
 const MIN_VISIBLE_NODES_NUM = isWideScreen() ? 3 : 1;
 
@@ -367,6 +368,6 @@ export function zoomAndPanToNode(
   };
   store.commit(`zoomPan/${zoomPanMutations.ADD_PAN}`, {
     from: after,
-    to: {x:api.ROOT_CENTER_X, y:api.ROOT_CENTER_Y},
+    to: {x:api_const.ROOT_CENTER_X, y:api_const.ROOT_CENTER_Y},
   });
 }

@@ -137,6 +137,7 @@ import Splitter, { SplitterResizeEvent } from "primevue/splitter";
 import SplitterPanel from "primevue/splitterpanel";
 import LogoDummy from "@/views/LogoDummy.vue";
 import ProgressBar from "primevue/progressbar";
+import api_const from "@/api/api_const";
 
 const VIEWPORT = { width: window.innerWidth, height: window.innerHeight }
 
@@ -250,7 +251,7 @@ export default defineComponent({
           VIEWPORT,
           zoomPanState.debouncedZoom,
           zoomPanState.pan,
-          { x: api.ROOT_CENTER_X, y: api.ROOT_CENTER_Y }
+          { x: api_const.ROOT_CENTER_X, y: api_const.ROOT_CENTER_Y }
           // zoomPanState.zoomCenter
         );
         if (err != null) {

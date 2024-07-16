@@ -10,7 +10,7 @@ import {
   area,
   getVoronoiCellsInSquare,
   getMaxDiagonal
-} from "@/tools/graphics";
+} from "../../src/tools/graphics";
 
 describe("transferToPoint", () => {
   it("", () => {
@@ -585,6 +585,59 @@ describe("intersect", () => {
     expect(is![0]).toContainEqual({ x: -50, y: 0 });
     expect(is![0]).toContainEqual({ x: 0, y: 50 });
     expect(is![0]).toContainEqual({ x: 50, y: 0 });
+  });
+
+  it("correctly works with fractions", () => {
+    const [is, err] = intersect(
+      [
+        {
+          "x": 555.5880681818181,
+          "y": 411.6397305
+        },
+        {
+          "x": 622.2570087645323,
+          "y": 411.6397305
+        },
+        {
+          "x": 613.6320801361145,
+          "y": 407.35409111429584
+        },
+        {
+          "x": 555.5880681818181,
+          "y": 390.7412199796843
+        }
+      ],
+      [
+        {
+          "x": 555.5880681818181,
+          "y": 411.4417613636364
+        },
+        {
+          "x": 570,
+          "y": 361
+        },
+        {
+          "x": 574,
+          "y": 356
+        },
+        {
+          "x": 629.064353665361,
+          "y": 403.7224398433128
+        },
+        {
+          "x": 620,
+          "y": 473
+        }
+      ]
+    );
+
+    expect(err).toBeNull();
+    expect(is).toHaveLength(1);
+    expect(is![0]).toHaveLength(5);
+    expect(is![0]).toContainEqual({
+      "x": 622.2570087645323,
+      "y": 411.6397305
+    });
   });
 
   it("returns Polygon that is fully contains inside second one even for abnormally big numbers", () => {

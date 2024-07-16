@@ -13,6 +13,7 @@ import { printError, round } from "@/tools/utils";
 import api from "@/api/api";
 import { Commit, Dispatch } from "vuex";
 import { subscribeNodeChanges, unSubscribeNodeChanges } from "@/store/helpers";
+import api_const from "@/api/api_const";
 
 // Every node in map in database is stored for quadratic border 1000x1000.
 // But on a client it is recalculated to the proportion hardcoded in these ROOT_WIDTH/ROOT_HEIGHT
@@ -44,21 +45,21 @@ const ROOT_BORDER = [
   { x: cf * ROOT_WIDTH, y: 0 },
   { x: (cf / 2.5) * ROOT_WIDTH, y: (cf / 4) * ROOT_HEIGHT }
 ];
-const ROOT_CENTER = { x: api.ROOT_CENTER_X, y: api.ROOT_CENTER_Y };
+const ROOT_CENTER = { x: api_const.ROOT_CENTER_X, y: api_const.ROOT_CENTER_Y };
 
 // Scale a root border proportionally to fit user browser viewport and move the left
 const userFitCoefficient = Math.min(
-  api.ROOT_WIDTH / ROOT_WIDTH,
-  api.ROOT_HEIGHT / ROOT_HEIGHT
+  api_const.ROOT_WIDTH / ROOT_WIDTH,
+  api_const.ROOT_HEIGHT / ROOT_HEIGHT
 );
 for (const idx in ROOT_BORDER) {
   ROOT_BORDER[idx].x =
     userFitCoefficient * ROOT_BORDER[idx].x +
-    api.ROOT_CENTER_X -
+    api_const.ROOT_CENTER_X -
     (userFitCoefficient * ROOT_WIDTH) / 2;
   ROOT_BORDER[idx].y =
     userFitCoefficient * ROOT_BORDER[idx].y +
-    api.ROOT_CENTER_Y -
+    api_const.ROOT_CENTER_Y -
     (userFitCoefficient * ROOT_HEIGHT) / 2;
 }
 

@@ -19,6 +19,7 @@ import { debounce } from "lodash";
 
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import { store } from "@/store";
+import api_const from "@/api/api_const";
 
 const MAP_FROM_STORAGE = false; // use storage as a source for the map (or database)
 
@@ -36,27 +37,7 @@ const update = async (data: Record<string, any>): Promise<ErrorKV> => {
 
 const debouncedUpdate = debounce(update, 2000);
 
-// These ROOT_WIDTH and ROOT_HEIGHT is used only to scale to a device window proportionally,
-// An actual proportion and border of map is hardcoded in store/tree ROOT_WIDTH/ROOT_HEIGHT/ROOT_BORDER
 export default {
-  ROOT_WIDTH:
-    window.innerWidth > window.innerHeight
-      ? 0.7*window.innerWidth
-      : 1.5 * 0.95 * window.innerWidth,
-  ROOT_HEIGHT:
-    window.innerWidth > window.innerHeight
-      ? 0.95 * window.innerHeight
-      : 1.5 * window.innerHeight,
-  ROOT_CENTER_X:
-    window.innerWidth > window.innerHeight
-      ? 0.3 * window.innerWidth + (0.7 * window.innerWidth) / 2
-      : window.innerWidth / 2,
-  ROOT_CENTER_Y:
-    window.innerWidth > window.innerHeight
-      ? window.innerHeight / 2
-      : (0.75 * window.innerHeight) / 2,
-  ST_WIDTH: 1000,
-  ST_HEIGHT: 1000,
   initFirebase() {
     // Initialize Firebase
     if (process.env.VUE_APP_PROJECT === "prod") {
@@ -118,7 +99,7 @@ export default {
       {
         id: "0",
         title: "",
-        position: { x: this.ROOT_WIDTH / 2, y: this.ROOT_HEIGHT / 2 },
+        position: { x: api_const.ROOT_WIDTH / 2, y: api_const.ROOT_HEIGHT / 2 },
         // children: apiTree.children
         children: response.data
       },
