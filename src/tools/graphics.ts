@@ -16,6 +16,8 @@ import polygonClipping from "polygon-clipping";
 import { clone, mod, round } from "../tools/utils";
 import { findMapNode } from "../store/tree/helpers";
 import api_const from "../../src/api/api_const";
+import * as martinez from 'martinez-polygon-clipping';
+import {Position} from "martinez-polygon-clipping";
 
 const NORMALIZED_BORDER = [
   { x: 0, y: 0 },
@@ -58,7 +60,7 @@ export function area(p: Polygon): number {
   return Math.abs(polygonArea(p.map(point => [point.x, point.y])));
 }
 
-export function intersect(
+export function intersectPC(
   p1: Polygon,
   p2: Polygon
 ): [Polygon[] | null, ErrorKV] {
@@ -104,6 +106,50 @@ export function intersect(
   }
 
   return [resultPolys, null];
+}
+
+/**
+ * You can play with martinez at https://codepen.io/w8r/pen/MjgqMx
+ * @param p1
+ * @param p2
+ */
+export function intersect(
+  p1: Polygon,
+  p2: Polygon
+): [Polygon[] | null, ErrorKV] {
+  const p1Arr = [];
+  for (const p of p1) {
+    p1Arr.push([p.x, p.y]);
+  }
+  p1Arr.push([p1[0].x, p1[0].y]);
+  const gj1 = [[ p1Arr ]];
+
+  const p2Arr = []
+  for (const p of p2) {
+    p2Arr.push([p.x, p.y]);
+  }
+  p2Arr.push([p2[0].x, p2[0].y]);
+  const gj2 = [[ p2Arr ]]
+
+  const polygonIntersect = martinez.intersection(gj2, gj1);
+  if (polygonIntersect === null) {
+    // no intersection
+    return [[], null]
+  }
+  const resultPolys = [];
+  for (const poly of polygonIntersect[0]) {
+    const resultPoly = [];
+    for (const p of poly ) {
+      const p1 = p as Position
+      resultPoly.push({ x: p1[0], y: p1[1] });
+    }
+    // удаляем последнюю точку если она совпадает с первой
+    if(resultPoly[0].x === resultPoly[resultPoly.length-1].x && resultPoly[0].y === resultPoly[resultPoly.length-1].y) {
+      resultPoly.pop();
+    }
+    resultPolys.push(resultPoly);
+  }
+  return [resultPolys as Polygon[], null]
 }
 
 // Возвращает левый нижний и правый верхний углы описанного вокруг Polygon квадрата
@@ -225,10 +271,10 @@ export function getVoronoiCells(
         })
       ];
     }
-    // if (centers[index].x === 594.4125810135458 && centers[index].y === 405.4017891388754) {
-    //   console.log("bb", bb)
-    //   console.log(centers[index], cellMap[index], outerBorder, intersections[0])
-    // }
+    if (centers[index].x === 594.4125810135458 && centers[index].y === 405.4017891388754) {
+      console.log("bb", bb)
+      console.log(centers[index], cellMap[index], outerBorder, intersections[0])
+    }
 
     if (intersections == []) {
       return [
@@ -816,10 +862,10 @@ export function treeToMapNodeLayers(
               center: child.position,
               border: cell.border
             };
-            if (child.id === '1543410730') {
-              console.log("border", lastMapNodeLayer[treeNode.id].border)
-              console.log("child", child.position, newMapNodeLayer[child.id])
-            }
+            // if (child.id === '1543410730') {
+            //   console.log("border", lastMapNodeLayer[treeNode.id].border)
+            //   console.log("child", child.position, newMapNodeLayer[child.id])
+            // }
           }
         }
       }

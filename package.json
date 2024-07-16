@@ -41,6 +41,7 @@
     "markdown-it-container": "^3.0.0",
     "markdown-it-imsize": "^2.0.1",
     "markdown-it-katex": "https://github.com/igbatov/markdown-it-katex.git",
+    "martinez-polygon-clipping": "^0.7.3",
     "mitt": "^2.1.0",
     "normalize-url": "^6.1.0",
     "polygon-clipping": "^0.15.2",
