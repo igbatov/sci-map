@@ -148,7 +148,7 @@ const removeNodes = async function (ids: Array<string>, names: Record<string, st
     return
   }
   // remove orphan nodes
-  console.log("!!!!removing nodes nodes!!!!")
+  console.log("!!!!removing nodes!!!!")
   const updateMap = {} as Record<string, null>
   for(const id of ids) {
     console.log(id, names[id])

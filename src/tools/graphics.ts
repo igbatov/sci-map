@@ -271,10 +271,6 @@ export function getVoronoiCells(
         })
       ];
     }
-    if (centers[index].x === 594.4125810135458 && centers[index].y === 405.4017891388754) {
-      console.log("bb", bb)
-      console.log(centers[index], cellMap[index], outerBorder, intersections[0])
-    }
 
     if (intersections == []) {
       return [
@@ -862,10 +858,6 @@ export function treeToMapNodeLayers(
               center: child.position,
               border: cell.border
             };
-            // if (child.id === '1543410730') {
-            //   console.log("border", lastMapNodeLayer[treeNode.id].border)
-            //   console.log("child", child.position, newMapNodeLayer[child.id])
-            // }
           }
         }
       }
