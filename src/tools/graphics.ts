@@ -40,7 +40,14 @@ export function polygonToTurf(
   }
   const pp = p.map(point => [point.x, point.y]);
   pp.push([p[0].x, p[0].y]);
-  return turf.polygon([pp]);
+  let result = null
+  try {
+    result = turf.polygon([pp])
+  } catch (e) {
+    console.log(e, pp)
+    throw e;
+  }
+  return result;
 }
 
 export function isInside(point: Point, polygon: Polygon): boolean {
@@ -312,7 +319,8 @@ export function getVoronoiCells(
         })
       ];
     }
-    if (intersections.length > 1) {
+    result = intersections;
+    if (intersections.length > 1 || (intersections.length === 1 && intersections[0].length<=2)) {
       // Sometimes martinez library goes crazy (see unit test "crazy case for martinez-polygon-clipping")
       // We use ugly hack here in this case - just use another library - intersectPC
       const [intersectionsPC, err] = intersectPC(cellMap[index], outerBorder);
@@ -347,7 +355,6 @@ export function getVoronoiCells(
       }
       result = intersectionsPC
     }
-    result = intersections
     res.push({
       border: orderConvexPolygonPoints(result[0]),
       center: centers[index]
