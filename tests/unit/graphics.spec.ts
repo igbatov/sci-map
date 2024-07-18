@@ -9,7 +9,7 @@ import {
   morphChildrenPoints,
   area,
   getVoronoiCellsInSquare,
-  getMaxDiagonal
+  getMaxDiagonal, intersectPC, polygonAsArray
 } from "../../src/tools/graphics";
 
 describe("transferToPoint", () => {
@@ -516,6 +516,52 @@ describe("getVectorIntersection", () => {
 });
 
 describe("intersect", () => {
+  it("crazy case for martinez-polygon-clipping", () => {
+    const [is, err] = intersectPC(
+      [
+        {
+          "x": 1040.2186425178609,
+          "y": 59.21651540636367
+        },
+        {
+          "x": 1063.9932357618593,
+          "y": 54.805556385249645
+        },
+        {
+          "x": 1063.9932357618593,
+          "y": 20.509062784352313
+        },
+        {
+          "x": 1040.2186425178609,
+          "y": 20.509062784352313
+        }
+      ],
+      [
+        {
+          "x": 1040.2186425178609,
+          "y": 86.45164340162916
+        },
+        {
+          "x": 1042.3019742068636,
+          "y": 20.509062784352313
+        },
+        {
+          "x": 1055.2553337023883,
+          "y": 24.725651161801736
+        },
+        {
+          "x": 1063.9932357618593,
+          "y": 82.33586646835008
+        }
+      ]
+    );
+
+
+    expect(err).toEqual(null);
+    expect(is!.length).toEqual(1);
+    expect(is![0]).toHaveLength(4);
+  });
+
   it("returns Polygon", () => {
     const [is, err] = intersect(
       [

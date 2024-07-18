@@ -122,14 +122,14 @@ export function intersect(
     p1Arr.push([p.x, p.y]);
   }
   p1Arr.push([p1[0].x, p1[0].y]);
-  const gj1 = [[ p1Arr ]];
+  const gj1 = [ p1Arr ];
 
   const p2Arr = []
   for (const p of p2) {
     p2Arr.push([p.x, p.y]);
   }
   p2Arr.push([p2[0].x, p2[0].y]);
-  const gj2 = [[ p2Arr ]]
+  const gj2 = [ p2Arr ]
 
   const polygonIntersect = martinez.intersection(gj2, gj1);
   if (polygonIntersect === null) {
@@ -211,6 +211,40 @@ export function getVoronoiCellsInSquare(
   return [cellMap, null];
 }
 
+/**
+ * Point of polygon should be in clockwise or anticlockwise order
+ * Otherwise it will not be convex
+ * This function orders Points in a clockwise order
+ * @param unorderedPoly
+ */
+export function orderConvexPolygonPoints(unorderedPoly: Polygon) {
+  // find the lowest point
+  let lowestLeftPoint = {x:0, y:Number.POSITIVE_INFINITY}
+  for (const p of unorderedPoly) {
+    if (p.y < lowestLeftPoint.y || (p.y === lowestLeftPoint.y && p.x < lowestLeftPoint.x)) {
+      lowestLeftPoint = p
+    }
+  }
+
+  // order by
+  unorderedPoly.sort((a, b) => {
+    return Math.atan2(a.y-lowestLeftPoint.y, a.x-lowestLeftPoint.x) - Math.atan2(b.y-lowestLeftPoint.y, b.x-lowestLeftPoint.x)
+  })
+
+  return unorderedPoly;
+}
+
+/**
+ * Get voronoi cells with "centers" inside "outerBorder"
+ * Current implementation uses turf.voronoi which can generate cells only in square border
+ * Because of this we use intersect of cells for square with outerBorder polygon.
+ * Intersect function works ugly and thus we ugly hack two different libraries for this.
+ * More appropriate implementation would be
+ * to use d3 delaunay voronoi implementation https://d3js.org/d3-delaunay/voronoi#delaunay_voronoi
+ * because it can be used with any polygon like here https://github.com/Kcnarf/d3-voronoi-map
+ * @param outerBorder
+ * @param centers
+ */
 export function getVoronoiCells(
   outerBorder: Polygon, //(граница массива точек)
   centers: Point[] //(точки внутри этой границы)
@@ -253,13 +287,8 @@ export function getVoronoiCells(
       ];
     }
 
+    let result = []
     // мы хотим чтобы граница всех cell совпадала с outerBorder
-    // x
-    // :
-    // 594.4125810135458
-    // y
-    // :
-    // 405.4017891388754
     const [intersections, err] = intersect(cellMap[index], outerBorder);
     if (intersections == null || err != null) {
       return [
@@ -281,16 +310,43 @@ export function getVoronoiCells(
       ];
     }
     if (intersections.length > 1) {
-      return [
-        [],
-        NewErrorKV(
-          "Voronoi cell has more than one intersection with outerBorder",
-          { problemCenter: centers[index], intersections, outerBorder, centers}
-        )
-      ];
+      // Sometimes martinez library goes crazy (see unit test "crazy case for martinez-polygon-clipping")
+      // We use ugly hack here in this case - just use another library - intersectPC
+      const [intersectionsPC, err] = intersectPC(cellMap[index], outerBorder);
+
+      if (intersectionsPC == [] || intersectionsPC == null) {
+        return [
+          [],
+          NewErrorKV("Voronoi cell has no intersection with outerBorder", {
+            point: centers[index]
+          })
+        ];
+      }
+      if (intersectionsPC.length > 1) {
+        return [
+          [],
+          NewErrorKV(
+            "Voronoi cell has more than one intersection with outerBorder",
+            {
+              "cellBorderObj":cellMap[index],
+              "cellBorder":polygonAsArray(cellMap[index]),
+              "outerBorderObj":outerBorder,
+              "outerBorder":polygonAsArray(outerBorder),
+              "borderSquare": [
+                [bb.leftBottom.x, bb.leftBottom.y],
+                [bb.leftBottom.x, bb.rightTop.y],
+                [bb.rightTop.x, bb.rightTop.y],
+                [bb.rightTop.x, bb.leftBottom.y]
+              ]
+            }
+          )
+        ];
+      }
+      result = intersectionsPC
     }
+    result = intersections
     res.push({
-      border: intersections[0],
+      border: orderConvexPolygonPoints(result[0]),
       center: centers[index]
     });
   }
@@ -653,6 +709,14 @@ export function getMaxDiagonal(polygon: Polygon): [Vector, ErrorKV] {
   return [maxDiagonal, null];
 }
 
+export function polygonAsArray(poly: Polygon) {
+  const parentMapNodeBorderArr = [];
+  for (const point of poly) {
+    parentMapNodeBorderArr.push([point.x, point.y])
+  }
+  return parentMapNodeBorderArr;
+}
+
 export function convertPosition(
   type: "normalize" | "denormalize",
   position: Point,
@@ -709,6 +773,7 @@ export function convertPosition(
           NewErrorKV("UPDATE_NODE: Cannot morphChildrenPoints", {
             type: type,
             normalizedBorder: NORMALIZED_BORDER,
+            parentID: parentID,
             "parentMapNode.border": parentMapNode.border,
             "dbNode.position": position
           })
@@ -733,8 +798,10 @@ export function convertPosition(
         null,
         NewErrorKV("UPDATE_NODE: Cannot morphChildrenPoints", {
           type: type,
+          parentID: parentID,
           normalizedBorder: NORMALIZED_BORDER,
           "parentMapNode.border": parentMapNode.border,
+          "parentMapNode.border as array": polygonAsArray(parentMapNode.border),
           "dbNode.position": position
         })
       ];
