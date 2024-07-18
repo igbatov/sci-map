@@ -285,7 +285,7 @@ export function getVoronoiCells(
         [],
         NewErrorKV(
           "Voronoi cell has more than one intersection with outerBorder",
-          { point: centers[index] }
+          { problemCenter: centers[index], intersections, outerBorder, centers}
         )
       ];
     }
@@ -843,7 +843,7 @@ export function treeToMapNodeLayers(
         treeNodeChildren.map(ch => ({ x: ch.position.x, y: ch.position.y }))
       );
       if (error != null) {
-        return [null, error];
+        return [null, NewErrorKV("error in getVoronoiCells", {error, "parent node id":treeNode.id})];
       }
 
       for (const cell of cells) {
