@@ -242,6 +242,9 @@ export function orderConvexPolygonPoints(unorderedPoly: Polygon) {
  * More appropriate implementation would be
  * to use d3 delaunay voronoi implementation https://d3js.org/d3-delaunay/voronoi#delaunay_voronoi
  * because it can be used with any polygon like here https://github.com/Kcnarf/d3-voronoi-map
+ *
+ * Or try to use d3.geom.hull().clip()
+ * as an intersection library like here https://stackoverflow.com/questions/21646822/clip-d3-voronoi-with-d3-hull
  * @param outerBorder
  * @param centers
  */
