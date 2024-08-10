@@ -297,35 +297,55 @@ export function getVoronoiCells(
       ];
     }
 
-    let result = []
+    let result = <Polygon[] | null>[]
     // мы хотим чтобы граница всех cell совпадала с outerBorder
-    const [intersections, err] = intersect(cellMap[index], outerBorder);
-    if (intersections == null || err != null) {
-      return [
-        [],
-        NewErrorKV("getVoronoiCells error", {
-          err,
-          cellBorder: cellMap[index],
-          outerBorder
-        })
-      ];
-    }
+    let defaultIntersectError = false;
+    let intersections = <Polygon[] | null>null
+    intersections = []
+    /**
+     * Quick hack - I tried to use martinez-polygon-clipping library
+     * (because it has problems with float numbers accuracy and creates artifacts)
+     * but sometomes it gives inadequate results
+     * (for example intersection result is not convex)
+     * So I commented out its default usage, because I even cannot reliably determine all inadequate results
+     * (I can only see them visually)
+     * Because its better to have minor float erros than totally crazy intersections 
+     */
+    // let err = null
+    // try {
+    //   [intersections, err] = intersect(cellMap[index], outerBorder);
+    //   if (intersections == null || err != null) {
+    //     return [
+    //       [],
+    //       NewErrorKV("getVoronoiCells error", {
+    //         err,
+    //         cellBorder: cellMap[index],
+    //         outerBorder
+    //       })
+    //     ];
+    //   }
+  
+    //   if (intersections.length === 0) {
+    //     return [
+    //       [],
+    //       NewErrorKV("Voronoi cell has no intersection with outerBorder", {
+    //         point: centers[index]
+    //       })
+    //     ];
+    //   }
+    // } catch(e) {
+    //   defaultIntersectError = true;
+    // }
+    // result = intersections;
 
-    if (intersections == []) {
-      return [
-        [],
-        NewErrorKV("Voronoi cell has no intersection with outerBorder", {
-          point: centers[index]
-        })
-      ];
-    }
-    result = intersections;
-    if (intersections.length > 1 || (intersections.length === 1 && intersections[0].length<=2)) {
+    defaultIntersectError = true; // use intersectPC because sometimes martinez-polygon-clipping gives inadequate results
+    if (defaultIntersectError || (intersections && intersections.length > 1) || (intersections && intersections.length === 1 && intersections[0].length<=2)) {
       // Sometimes martinez library goes crazy (see unit test "crazy case for martinez-polygon-clipping")
       // We use ugly hack here in this case - just use another library - intersectPC
+      // We were not using intersectPC as default library though because it has problems with float numbers accuracy and creates artifacts
       const [intersectionsPC, err] = intersectPC(cellMap[index], outerBorder);
 
-      if (intersectionsPC == [] || intersectionsPC == null) {
+      if (intersectionsPC == null || intersectionsPC.length === 0) {
         return [
           [],
           NewErrorKV("Voronoi cell has no intersection with outerBorder", {
@@ -356,7 +376,7 @@ export function getVoronoiCells(
       result = intersectionsPC
     }
     res.push({
-      border: orderConvexPolygonPoints(result[0]),
+      border: orderConvexPolygonPoints(result![0]),
       center: centers[index]
     });
   }
