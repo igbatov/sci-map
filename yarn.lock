@@ -4035,6 +4035,13 @@
     "@typescript-eslint/types" "4.33.0"
     eslint-visitor-keys "^2.0.0"
 
+"@velipso/polybool@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@velipso/polybool/-/polybool-1.1.1.tgz#7dd8cf9957d73f1c566c0b85efa6d7550b20f5f6"
+  integrity sha512-HlWrm/wloLkUDHPQ1AgUdXysKL3y+rqV94udU5CVTtEPci5v6WjEfozNJTOOSwCsz50ySIxJK4gABqfbx1sD7A==
+  dependencies:
+    tslib "^2.6.2"
+
 "@vue/babel-helper-vue-jsx-merge-props@^1.2.1":
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/@vue/babel-helper-vue-jsx-merge-props/-/babel-helper-vue-jsx-merge-props-1.2.1.tgz#31624a7a505fb14da1d58023725a4c5f270e6a81"
@@ -14600,6 +14607,11 @@ tslib@^2.1.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.3.0.tgz#803b8cdab3e12ba581a4ca41c8839bbb0dacb09e"
   integrity sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg==
+
+tslib@^2.6.2:
+  version "2.6.3"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.6.3.tgz#0438f810ad7a9edcde7a241c3d80db693c8cbfe0"
+  integrity sha512-xNvxJEOUiWPGhUuUdQgAJPKOOJfGnIyKySOc09XkKsgdUV/3E2zvwZYdejjmRgPCgcym1juLH3226yA7sEFJKQ==
 
 tslint@^5.20.1:
   version "5.20.1"

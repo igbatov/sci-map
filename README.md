@@ -141,6 +141,7 @@ yarn build
 ## Run your unit tests
 ```
 yarn test:unit
+yarn test:unit intersect.spec.ts
 ```
 
 ## Run your end-to-end tests

@@ -18,6 +18,7 @@ import { findMapNode } from "../store/tree/helpers";
 import api_const from "../../src/api/api_const";
 import * as martinez from 'martinez-polygon-clipping';
 import {Position} from "martinez-polygon-clipping";
+import * as polybool from '@velipso/polybool';
 
 const NORMALIZED_BORDER = [
   { x: 0, y: 0 },
@@ -48,6 +49,36 @@ export function polygonToTurf(
     throw e;
   }
   return result;
+}
+
+export function intersectPolybool(
+  p1: Polygon,
+  p2: Polygon
+): [Polygon[] | null, ErrorKV] {
+  const outerPolygon = <polybool.Point[]>[]
+  for (const point of p1) {
+    outerPolygon.push([point.x, point.y])
+  }
+  const clipPolygon = <polybool.Point[]>[]
+  for (const point of p2) {
+    clipPolygon.push([point.x, point.y])
+  }
+  const polyboolPolygon = polybool.default.intersect({regions:[clipPolygon], inverted:false}, {regions:[outerPolygon], inverted:false});
+  if (!polyboolPolygon || !polyboolPolygon.regions || polyboolPolygon.regions.length === 0) {
+    return [[], null]
+  }
+  const intersect = polyboolPolygon.regions[0]
+  if (!intersect || intersect.length === 0) {
+    return [[], null]
+  }
+  if (intersect.length < 3) {
+    return [[], NewErrorKV("bad intersects",{"source":p1, "clip":p2})]
+  }
+  const result = [];
+  for (const point of intersect) {
+    result.push({x:point[0], y:point[1]})
+  }
+  return [[result], null]
 }
 
 export function isInside(point: Point, polygon: Polygon): boolean {
@@ -299,84 +330,32 @@ export function getVoronoiCells(
 
     let result = <Polygon[] | null>[]
     // мы хотим чтобы граница всех cell совпадала с outerBorder
-    let defaultIntersectError = false;
-    let intersections = <Polygon[] | null>null
-    intersections = []
-    /**
-     * Quick hack - I tried to use martinez-polygon-clipping library
-     * (because it has problems with float numbers accuracy and creates artifacts)
-     * but sometomes it gives inadequate results
-     * (for example intersection result is not convex)
-     * So I commented out its default usage, because I even cannot reliably determine all inadequate results
-     * (I can only see them visually)
-     * Because its better to have minor float erros than totally crazy intersections 
-     */
-    // let err = null
-    // try {
-    //   [intersections, err] = intersect(cellMap[index], outerBorder);
-    //   if (intersections == null || err != null) {
-    //     return [
-    //       [],
-    //       NewErrorKV("getVoronoiCells error", {
-    //         err,
-    //         cellBorder: cellMap[index],
-    //         outerBorder
-    //       })
-    //     ];
-    //   }
-  
-    //   if (intersections.length === 0) {
-    //     return [
-    //       [],
-    //       NewErrorKV("Voronoi cell has no intersection with outerBorder", {
-    //         point: centers[index]
-    //       })
-    //     ];
-    //   }
-    // } catch(e) {
-    //   defaultIntersectError = true;
-    // }
-    // result = intersections;
-
-    defaultIntersectError = true; // use intersectPC because sometimes martinez-polygon-clipping gives inadequate results
-    if (defaultIntersectError || (intersections && intersections.length > 1) || (intersections && intersections.length === 1 && intersections[0].length<=2)) {
-      // Sometimes martinez library goes crazy (see unit test "crazy case for martinez-polygon-clipping")
-      // We use ugly hack here in this case - just use another library - intersectPC
-      // We were not using intersectPC as default library though because it has problems with float numbers accuracy and creates artifacts
-      const [intersectionsPC, err] = intersectPC(cellMap[index], outerBorder);
-
-      if (intersectionsPC == null || intersectionsPC.length === 0) {
-        return [
-          [],
-          NewErrorKV("Voronoi cell has no intersection with outerBorder", {
-            point: centers[index]
-          })
-        ];
-      }
-      if (intersectionsPC.length > 1) {
-        return [
-          [],
-          NewErrorKV(
-            "Voronoi cell has more than one intersection with outerBorder",
-            {
-              "cellBorderObj":cellMap[index],
-              "cellBorder":polygonAsArray(cellMap[index]),
-              "outerBorderObj":outerBorder,
-              "outerBorder":polygonAsArray(outerBorder),
-              "borderSquare": [
-                [bb.leftBottom.x, bb.leftBottom.y],
-                [bb.leftBottom.x, bb.rightTop.y],
-                [bb.rightTop.x, bb.rightTop.y],
-                [bb.rightTop.x, bb.leftBottom.y]
-              ]
-            }
-          )
-        ];
-      }
-      result = intersectionsPC
+ 
+    const [intersections, err] = intersectPolybool(cellMap[index], outerBorder);
+    if (intersections == null || err != null) {
+      return [
+        [],
+        NewErrorKV("getVoronoiCells error", {
+          err,
+          cellBorder: cellMap[index],
+          outerBorder
+        })
+      ];
     }
+
+    if (intersections.length === 0) {
+      return [
+        [],
+        NewErrorKV("Voronoi cell has no intersection with outerBorder", {
+          point: centers[index]
+        })
+      ];
+    }
+    
+    result = intersections;
+
     res.push({
-      border: orderConvexPolygonPoints(result![0]),
+      border: result![0],
       center: centers[index]
     });
   }
