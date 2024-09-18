@@ -212,7 +212,8 @@
           fundamentally important knowledge. It should be possible to track
           correctness of these explanations down to fundamental
           theories/experiments using <b>"based on"</b> feature of SciMap (see
-          video above). And equally important it should take <b>the least possible time</b> to grasp the essence of the subject. <br /><br />2. Help to
+          video above). And equally important it should take <b>the least possible time</b> to grasp the essence of the subject. <br />
+          Explanation at each level should contain only strictly necesary information (without nitty-gritty details of its lower levels).<br />2. Help to
           <b>discover and join communities</b> that use this knowledge to solve
           hard problems of humanity. <br /><br />SciMap should be a breath of fresh air and
           <b>guiding star</b> in the chaos of rapidly changing world and abundance of information.
