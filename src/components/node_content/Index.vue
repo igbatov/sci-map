@@ -208,17 +208,17 @@
         </div>
         <div :class="`${$style.list}`">
           The goal of the project is to
-          <br /><br />1. Collect the <b>best explanations</b> of the
-          fundamentally important knowledge. It should be possible to track
-          correctness of these explanations down to fundamental
-          theories/experiments using <b>"based on"</b> feature of SciMap (see
-          video above). And equally important it should take <b>the least possible time</b> to grasp the essence of the subject. <br />
-          Explanation at each level should contain only strictly necesary information (without nitty-gritty details of its lower levels).<br />2. Help to
-          <b>discover and join communities</b> that use this knowledge to solve
-          hard problems of humanity. <br /><br />SciMap should be a breath of fresh air and
-          <b>guiding star</b> in the chaos of rapidly changing world and abundance of information.
+          <br /><br />1. Collect the <b>best explanations</b> of the fundamentally important
+      knowledge. It should be possible to  <b>track correctness of these
+      explanations</b> down to fundamental theories/experiments using
+      <b>"based on"</b> feature of SciMap (see video above).<br /><br />
+      2.Equally important it should take <b>the least possible time</b> to grasp the essence of the subject. People should feel there is  <b>no chance to find more understandable explanations somewhere else.</b>
+      Explanation at each level should contain only strictly necesary information (without nitty-gritty details of its lower levels).<br /><br />
+      3. Help to <b>discover and join communities</b> that use this knowledge to solve
+      hard problems.  <br /><br />SciMap should be a breath of fresh air and
+      <b>guiding star</b> in the chaos of rapidly changing world and abundance of information. <br /><br />
 
-          <br /><br />Here are the features:
+      Here are the features:
         </div>
         <div :class="`p-col-2 ${$style.icon}`">
           <img
