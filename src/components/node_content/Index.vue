@@ -213,7 +213,7 @@
       explanations</b> down to fundamental theories/experiments using
       <b>"based on"</b> feature of SciMap (see video above).<br /><br />
       2.Equally important it should take <b>the least possible time</b> to grasp the essence of the subject. People should feel there is  <b>no chance to find more understandable explanations somewhere else.</b>
-      Explanation at each level should contain only strictly necesary information (without nitty-gritty details of its lower levels).<br /><br />
+      Explanation at each level should contain only strictly necessary information (without nitty-gritty details of its lower levels).<br /><br />
       3. Help to <b>discover and join communities</b> that use this knowledge to solve
       hard problems.  <br /><br />SciMap should be a breath of fresh air and
       <b>guiding star</b> in the chaos of rapidly changing world and abundance of information. <br /><br />
