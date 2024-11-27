@@ -32,12 +32,15 @@ const mdKatex = require('markdown-it-katex'); // eslint-disable-line
 const mdImsize = require('markdown-it-imsize'); // eslint-disable-line
 const mdContainer = require('markdown-it-container'); // eslint-disable-line
 const mdVideo = require('markdown-it-block-embed'); // eslint-disable-line
+//import MarkdownItCollapsible from "markdown-it-collapsible";
+import { tooltip } from "@/components/node_content/mdTooltipPlugin"
 import Token from "markdown-it/lib/token";
 import {escapeHtml} from "markdown-it/lib/common/utils";
 
 const md = new MarkdownIt();
 md.use(mdKatex, { output: "html" })
   .use(mdImsize)
+  .use(tooltip) 
   .use(mdVideo, {
     containerClassName: "video-embed",
     youtube: {
@@ -198,6 +201,7 @@ export default {
 </script>
 
 <style scoped>
+@import "./mdTooltip.css";
 @import "../../../node_modules/katex/dist/katex.min.css";
 .renderedContent {
   padding: 8px 9px;

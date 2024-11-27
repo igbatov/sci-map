@@ -78,6 +78,12 @@
       This assumption needs citation. Also more details on stem cell depletion should be provided.<br>
       :::
       </div>
+      - To add annotation that is showed on mouse hover
+      <div
+          style="background-color: lightgrey; width: 33em; height: 6em; padding-top:0.4em; padding-left:1em;"
+      >
+      [tooltip text]{tooltip-note details ...}
+      </div>
       <br />
       <br />
       <div style="text-align:center">
