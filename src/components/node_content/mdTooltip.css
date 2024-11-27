@@ -1,0 +1,15 @@
+  .tooltip {
+    border-bottom: 1px dotted black;
+  }
+  .summary:hover + .detail {
+    display: block;
+  }
+  .summary + .detail {
+    display: none;
+  }
+  .detail {
+    color: white;
+    background-color: rgb(190, 161, 161);
+    padding: 10px;
+    border-radius: 25px;
+  }
