@@ -80,7 +80,7 @@
       </div>
       - To add annotation that is showed on mouse hover
       <div
-          style="background-color: lightgrey; width: 33em; height: 6em; padding-top:0.4em; padding-left:1em;"
+          style="background-color: lightgrey; width: 33em; height: 2em; padding-top:0.4em; padding-left:1em;"
       >
       [tooltip text]{tooltip-note details ...}
       </div>
