@@ -1,4 +1,6 @@
   .tooltip {
+    vertical-align: super;
+    font-size: small;
     border-bottom: 1px dotted black;
   }
   .summary:hover + .detail {
