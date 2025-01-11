@@ -46,7 +46,7 @@ md.use(mdKatex, { output: "html" })
     youtube: {
       width: 370,
       height: 209
-    }
+    },
   })
   .use(mdContainer, "warning", {
     validate: function(params: any) {

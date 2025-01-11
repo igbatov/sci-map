@@ -10982,10 +10982,9 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
-markdown-it-block-embed@^0.0.3:
+"markdown-it-block-embed@https://github.com/igbatov/markdown-it-block-embed.git":
   version "0.0.3"
-  resolved "https://registry.yarnpkg.com/markdown-it-block-embed/-/markdown-it-block-embed-0.0.3.tgz#5eb08253f35c37b34c07eec2b9e275ee85eea906"
-  integrity sha512-coWuC/uZY6Z1Gp3wthhJo5yjkG3/gHErNF/emaiEvD98fKzEHNP6GCYGfJfk5o0n31xiaYjbDgef+XtabKOZzA==
+  resolved "https://github.com/igbatov/markdown-it-block-embed.git#0e4d2584a090f06aba9f7d9c208dd1f41126b461"
 
 markdown-it-collapsible@^2.0.2:
   version "2.0.2"
