@@ -278,6 +278,11 @@ Just ssh to your host and do
 docker system prune --all
 ```
 
+### upload picture to cdn
+```shell
+gcloud storage cp \~/Downloads/Path_integral_example.gif       gs://sci-map-cdn/images/
+```
+
 ## Deploy with github and firebase
 https://firebase.google.com/docs/hosting/github-integration
 

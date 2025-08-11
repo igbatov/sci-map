@@ -209,10 +209,11 @@
         <div :class="`${$style.list}`">
           The goal of the project is to
           <br /><br />1. Collect the <b>best explanations</b> of the fundamentally important
-      knowledge. It should be possible to  <b>track correctness of these
-      explanations</b> down to fundamental theories/experiments using
+      knowledge. It should be possible to <b>track correctness of these
+      explanations</b> down to fundamental postulates and experiments using
       <b>"based on"</b> feature of SciMap (see video above).<br /><br />
-      2.Equally important it should take <b>the least possible time</b> to grasp the essence of the subject. People should feel there is  <b>no chance to find more understandable explanations somewhere else.</b>
+      2.Equally important it should take <b>the least possible time</b> to track any statement down to fundamental postulates and experiments and thus grasp the essence of the subject.
+          People should feel there is <b>no chance to find more concise and understandable explanations somewhere else.</b>
       Explanation at each level should contain only strictly necessary information (without nitty-gritty details of its lower levels).<br /><br />
       3. Help to <b>discover and join communities</b> that use this knowledge to solve
       hard problems.  <br /><br />SciMap should be a breath of fresh air and
