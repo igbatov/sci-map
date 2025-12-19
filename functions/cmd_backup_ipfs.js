@@ -6,7 +6,7 @@ const AWS = require('aws-sdk');
 const axios = require("axios");
 const CIDsListPath = 'https://api.github.com/repos/igbatov/scimap-backup-list/contents/backup-list.json'
 const FILEBASE_BUCKET = 'scimap-backup'
-const REMOVE_OLDER_THAN = 19*24*60*60 // in seconds from now
+const REMOVE_OLDER_THAN = 10*24*60*60 // in seconds from now
 
 const githubCommit = async function(token, text) {
   const content = btoa(text)
