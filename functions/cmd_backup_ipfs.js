@@ -129,6 +129,9 @@ exports.GetOnCommandBackupIpfs = (firestore, database, isProd, isEmulator) => fu
       region: 'us-east-1',
       s3ForcePathStyle: true
     });
+
+    await removeOldObjects(firestore, s3);
+
     const now = new Date().getTime();
     const data = await database.ref('/').get()
 
@@ -159,8 +162,6 @@ exports.GetOnCommandBackupIpfs = (firestore, database, isProd, isEmulator) => fu
       functions.logger.info("upload file to ipfs got cid", {
         cid: headers['x-amz-meta-cid'],
       });
-
-      await removeOldObjects(firestore, s3);
 
       // update a list of backup URLs in GitHub
       await saveCIDsToGitHub(
