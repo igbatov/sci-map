@@ -124,9 +124,62 @@ Besides users that can edit anything we can allow for everyone registered user t
 There is no collaborative editing for such users so this is simple in developing.
 
 # Application setup for developers
+
+Install git
+
+Clone project to your computer
+
+```shell
+git clone https://github.com/igbatov/sci-map.git
 ```
+
+[Install nvm](https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating)
+
+Install node 21 with nvm and use it
+
+```shell
+nvm install 21
+nvm use 21
+```
+
+Install yarn
+```shell
+brew install yarn
+```
+
+Install packages needed to build scimap
+```
+cd scimap
 yarn install
 ```
+
+### Install firebase-tools (once)
+```shell
+$ npm install -g firebase-tools
+$ firebase logout
+$ firebase login
+```
+### Choose emulators to run
+
+Check all except "Hostings"
+```shell
+firebase init emulators
+```
+
+### Install java
+See java.com
+
+### Run emulator with exported data
+```shell
+firebase emulators:start --import=functions/data
+```
+
+### Save data from running emulator
+If you can changed smth on map under firebase emulator and want to use it further then save data
+```shell
+firebase emulators:export functions/data
+```
+
 
 ## Compiles and hot-reloads for development
 ```
@@ -189,30 +242,7 @@ firebase firestore:indexes > firestore.indexes.json
 
 ## Firebase function
 Sits in ./function index.js (and included in it files)
-For now we use them mainly to log in "firestore" changes that was made in "realtime database"
 
-### Install firebase-tools (once)
-```shell
-$ npm install -g firebase-tools
-$ firebase logout
-$ firebase login
-```
-### Choose emulators to run
-```shell
-firebase init emulators
-```
-### Run empty emulator
-```shell
-firebase emulators:start
-```
-### Save data from running emulator
-```shell
-firebase emulators:export functions/data
-```
-### Run emulator with exported data
-```shell
-firebase emulators:start --import=functions/data
-```
 ### Deploy functions on production
 Generate private key in firebase console as described here https://firebase.google.com/docs/admin/setup#initialize_the_sdk_in_non-google_environments
 Move this file to /scripts/private-key.json
