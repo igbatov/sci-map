@@ -19,8 +19,9 @@
     </template>
     <div style="width:40em;">
       <h3>Goal</h3>
-      1. Collect the <b>best explanations</b> of the fundamentally important
-      knowledge. It should be possible to <b>track correctness of these
+      1.Collect the <b>best explanations</b> of the fundamentally important
+      knowledge and organize it in a way that forces its <b>verifiability</b>.
+      It should be possible to <b>track correctness of these
       explanations</b> down to fundamental theories/experiments using
       <b>"based on"</b> feature of SciMap (see video below).<br /><br />
       2.Equally important it should take <b>the least possible time</b> to grasp the essence of the subject. People should feel there is <b>no chance to find more understandable explanations somewhere else.</b>

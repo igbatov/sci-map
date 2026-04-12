@@ -209,7 +209,7 @@
         <div :class="`${$style.list}`">
           The goal of the project is to
           <br /><br />1. Collect the <b>best explanations</b> of the fundamentally important
-      knowledge. It should be possible to <b>track correctness of these
+      knowledge and organize it in a way that forces its <b>verifiability</b>. It should be possible to <b>track correctness of these
       explanations</b> down to fundamental postulates and experiments using
       <b>"based on"</b> feature of SciMap (see video above).<br /><br />
       2.Equally important it should take <b>the least possible time</b> to track any statement down to fundamental postulates and experiments and thus grasp the essence of the subject.
